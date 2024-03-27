@@ -1,0 +1,77 @@
+<template>
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New Referring Optician</h2>
+                </header>
+                <div class="slds-modal__content slds-var-p-around_medium modalBody" id="modal-content-id-1">
+                    <lightning-layout  flexibility="auto" padding="around-small">
+                        <lightning-layout-item>
+                            <lightning-record-edit-form object-api-name="Identified_Business_Opportunity__c" onsuccess={handleSuccess}>
+                               
+                               <!--added newly -->
+                               
+                            <div class="slds-grid slds-var-m-left_medium">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field field-name="Project_Name__c" ></lightning-input-field>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-input-field field-name="Project_Category__c"></lightning-input-field>                    
+                                </div>             
+                            </div>
+    
+                            <div class="slds-grid slds-var-m-left_medium">
+                                <div class="slds-form-element slds-form-element_stacked slds-size_1-of-1">
+                                    <lightning-input-field field-name="Description__c"></lightning-input-field>  
+                                </div>              
+                            </div>
+    
+                            <div class="slds-grid slds-var-m-left_medium">
+                                <div class="slds-form-element slds-form-element_stacked slds-size_1-of-1">
+                                    <lightning-input-field field-name="Next_Steps__c"></lightning-input-field>  
+                                </div>              
+                            </div>
+    
+                            <div class="slds-grid slds-var-m-left_medium">
+                                <div class="slds-form-element slds-form-element_stacked slds-size_1-of-2">
+                                    <lightning-input-field field-name="Project_Status__c"></lightning-input-field>                   
+                                </div> 
+                                <div class="slds-form-element slds-form-element_stacked slds-size_1-of-2">
+                                    <lightning-input-field field-name="Priority_level__c"></lightning-input-field>                   
+                                </div>                
+                            </div>
+                            <br>
+                        <!--section header-->
+                            <table class="slds-table slds-table_bordered" aria-label="Sales Details" style="background-color: #215ca0;">
+                                <tr class="row" style="background-color: #aacbff;">
+                                <td><h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{expected_Incremental_Sales}</p></h3></td>
+                                </tr>
+                            </table><br>
+    
+                            <div class="slds-grid slds-var-m-left_medium">
+                                <div class="slds-form-element slds-form-element_stacked slds-size_1-of-2">
+                                    <lightning-input type="number" label={monthly_Incremental} value={monthlyInc} onchange={monthlyIncCH}
+                                    step=".01" formatter="currency"></lightning-input>
+                                </div>              
+                            </div> 
+                               
+                               <!---->
+                                <br/>  <br/>
+                                <div class="slds-grid" style="width:100%">
+                                    <div class="slds-col slds-size_2-of-3"></div>
+                                    <div class="slds-col slds-size_1-of-4" align="center"><lightning-button variant="brand" type="submit" label="Save" ></lightning-button></div>
+                                    <div class="slds-col slds-size_2-of-3"><button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button></div>
+                                </div>
+                            </lightning-record-edit-form>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </div>
+        </section>
+    </template>
+    </template>

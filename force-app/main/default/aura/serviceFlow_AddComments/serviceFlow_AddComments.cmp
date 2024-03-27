@@ -1,0 +1,94 @@
+<aura:component controller="serviceFlow_UpdateCallType"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="description" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="isLoading" type="boolean" default="false" />
+    <aura:attribute name="taskRecordData" type="Object" />
+    <aura:attribute name="initConfigData" type="Object" />
+    <aura:attribute name="descriptionTokens" type="Object" />
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }     
+        .modal-body{ 
+        height : 200vh !important; 
+        max-height: 500vh !important; 
+        } 
+        .slds-modal__container{ 
+        width: 70%;
+        max-width: 377vh !important;
+        } 
+    </aura:html>
+    
+    <div class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading--medium">Add Comments</h4>
+    </div>
+    <div class="slds-m-around_large">
+        <aura:if isTrue="{!v.isLoading}">
+            <div class="demo-only demo-only_viewport">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_6-of-12">
+                <lightning:textarea class="topText" name="description" value="{!v.description}" variant="label-hidden" label="Add Comment" placeholder="Enter description here"/>
+                <lightning:button variant="Brand" class="slds-button" label="Add Comment" onclick="{!c.handleSubmit}"/>
+            </div>
+            <div class="slds-col slds-size_6-of-12">
+                <aura:if isTrue="{!!empty(v.descriptionTokens)}">
+                    <div class="slds-scrollable" style="height:317px;">                     
+                        <div class="slds-tabs_card">
+                            <div class="slds-page-header slds-page-css">
+                                <div class="slds-page-header__row">
+                                    <div class="slds-page-header__col-title">
+                                        <div class="slds-media">                                                                    
+                                            <div class="slds-media__body">
+                                                <div class="slds-page-header__name">
+                                                    <div class="slds-page-header__name-title">
+                                                        <h1>
+                                                            <span>Comments</span>
+                                                            <span class="slds-page-header__title slds-truncate">Detailed View</span>
+                                                        </h1>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                                        
+                            </div>
+                            <div class="slds-form" role="list">
+                                <aura:iteration items="{!v.descriptionTokens}" var="description">
+                                    <div class="slds-p-around_small">
+                                        <div class="slds-form__row">
+                                            <div class="slds-form__item" role="listitem">
+                                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-form-element__static">{!description}</div>                                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </aura:iteration>                                                            
+                            </div>
+                        </div>
+                    </div>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+    <!--
+    <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+        <lightning:button variant="Brand" class="slds-button" label="Add Comment" onclick="{!c.handleSubmit}"/>
+        <lightning:button variant="Neutral" class="slds-button" label="Close" onclick="{!c.handleClose}"/>
+    </div>
+ -->
+</aura:component>

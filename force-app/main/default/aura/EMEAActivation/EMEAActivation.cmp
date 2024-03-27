@@ -1,0 +1,136 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" 
+                access="global"
+                description="APACSalesTabStatistic"
+                controller="APACAccountNearAccountController">
+
+    <!--<aura:attribute name="equipement" type="List" />-->
+    <!--<aura:attribute name="equipHoyalog" type="List" />-->
+    <!--<aura:attribute name="visualreel" type="List" />-->
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="Instrument" type="List" />
+    <aura:attribute name="Software" type="List" />
+    <aura:attribute name="myColumn1" type="List" />
+    <aura:attribute name="myColumn2" type="List" />
+    <aura:attribute name="miyoSmartFields" type="String[]" default="['Myo_Smart_AuthorizeDealer__c', 'Myo_Smart_TrainingComplete__c', 'Myo_Kids_Corner__c', 'Presentation_date__c', 'Myo_Main_Comp_Myopia_Control__c', 'Myo_NotesComments__c']" />
+    <aura:attribute name="VisionaryAllianceFields" type="String[]" default="['Visionary_Alliance__c', 'Loyalty_Programms__c', 'Loyalty_Point_Status__c', 'Loyalty_Points__c']" />
+    <!--<aura:attribute name="equipFields" type="String[]" default="['Name', 'Product_Type__c', 'Brand2__c', 'Model2__c', 'Subtype__c', 'Shipment_Date__c', 'SEIKO_Login__c', 'SEIKO_Password__c']" />-->
+    <!--<aura:attribute name="miyoSmartFields" type="String[]" default="['Myo_Smart_AuthorizeDealer__c', 'Myo_Smart_TrainingComplete__c', 'Myo_Kids_Corner__c', 'Presentation_date__c', 'Myo_Main_Comp_Myopia_Control__c', 'Myo_NotesComments__c']" />-->
+    <!--<aura:attribute name="mycolumns" type="List" />-->
+    <!--<aura:attribute name="myColumnsHoyalog" type="List" />-->
+    <!--<aura:attribute name="myColumnsVisualReel" type="List" />-->
+    <aura:attribute name="CompanyName" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <ltng:require scripts="{!join(',',
+    $Resource.chartjs2 + '/Chart.min.js',
+    $Resource.chartjs2 + '/Chart.bundle.min.js')}"
+    styles="{!$Resource.chartjs2 + '/Chart.min.css'}" />
+
+    <!--
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">MiyoSmart Authorize Dealer</span>
+            </button>
+        </h3>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:recordForm aura:id="miyoSmart" objectApiName="Account" fields="{!v.miyoSmartFields}" 
+                    recordId="{!v.recordId}" mode="view" density="comfy" columns="3"
+                >
+                </lightning:recordForm>
+            </div>
+        </div>
+    </div>
+    <br/>-->
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Visionary Alliance</span>
+            </button>
+        </h3>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:recordForm aura:id="visionayalliance" objectApiName="Account" fields="{!v.VisionaryAllianceFields}" 
+                    recordId="{!v.recordId}" mode="view" density="comfy" columns="3"
+                ></lightning:recordForm>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">MiyoSmart Authorize Dealer</span>
+            </button>
+        </h3>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:recordForm aura:id="miyoSmart" objectApiName="Account" fields="{!v.miyoSmartFields}" 
+                    recordId="{!v.recordId}" mode="view" density="comfy" columns="3"
+                ></lightning:recordForm>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <!--
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Instrument In Shop</span>
+            </button>
+        </h3><br/>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:datatable data="{!v.Instrument}"
+                        columns="{!v.myColumn1}"
+                        keyField="id"
+                        hideCheckboxColumn="true"/>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Software In Shop</span>
+            </button>
+        </h3><br/>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:datatable data="{!v.Software}"
+                    columns="{!v.myColumn2}"
+                    keyField="id"
+                    hideCheckboxColumn="true"
+                />
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Identifier</span>
+            </button>
+        </h3>
+        <div class="slds-scrollable_x" style="width:100%">
+            <div class="slds-grid"><canvas aura:id="line-chart1" id="mychart" height="50"></canvas></div>
+        </div>
+        <br/>
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Hoyailog Order</span>
+            </button>
+        </h3>
+        <div class="slds-scrollable_x" style="width:100%">
+            <div class="slds-grid"><canvas aura:id="line-chart2" id="mychart2" height="100"></canvas></div>
+        </div>
+    </div>-->
+</aura:component>

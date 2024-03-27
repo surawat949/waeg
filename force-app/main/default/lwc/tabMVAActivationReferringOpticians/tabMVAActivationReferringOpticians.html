@@ -1,0 +1,42 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+ 
+        <table class="slds-table slds-table_bordered" aria-label="referringOpticians" style="background-color: #aacbff;">
+           <tr class="row" style="background-color: #aacbff;">
+             <td>
+                <h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left"><lightning-icon icon-name="custom:custom86" alternative-text="doctore" size="small"></lightning-icon> &nbsp; {lables.Referring_Opticians}</p></h3>
+             </td>
+           </tr>
+        </table><br>
+        <div if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <div style="width: auto;">                    
+                    <template lwc:if ={isDataExists}>
+                        <template if:true={data}>
+                            <lightning-datatable data={data}
+                                    columns={columns}
+                                    key-field="id"
+                                    sorted-by={sortBy}
+                                    sorted-direction={sortDirection}
+                                    onsort={doSorting}
+                                    hide-checkbox-column="true">
+                            </lightning-datatable>
+                        </template>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                            <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                            <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                                <b>No Data Available at the moment</b>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+</template>

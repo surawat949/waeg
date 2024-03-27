@@ -1,0 +1,13 @@
+<aura:component implements="lightning:actionOverride,force:hasRecordId,force:hasSObjectName" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <lightning:listView aura:id="listObject" 
+                        objectApiName="RejectAndReturn_CS__c"
+                        listName="All"
+                        rows="10"
+                        showSearchBar="true"
+                        showActionBar="true"
+                        enableInlineEdit="true"
+                        showRowLevelActions="false"
+                        />
+                     
+</aura:component>

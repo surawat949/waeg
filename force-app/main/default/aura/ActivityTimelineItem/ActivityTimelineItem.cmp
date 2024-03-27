@@ -1,0 +1,149 @@
+<aura:component>
+    <aura:attribute name="item" type="ActivityTimelineModel"/>
+    <aura:attribute name="isExpanded" type="boolean" default="false"/>    
+    <li>
+        <div class="{!'slds-timeline__item_expandable slds-p-bottom_x-small ' +
+                    if(v.item.activityTimelineType == 'Call', 'slds-timeline__item_call',
+                    if(v.item.activityTimelineType == 'Email', 'slds-timeline__item_email',
+                    if(v.item.activityTimelineType == 'Event', 'slds-timeline__item_event',
+                    'slds-timeline__item_task')
+                    )
+                    ) + (v.isExpanded ? ' slds-is-open' : '')
+                    }" aura:id="activityContainer">
+            <span class="slds-assistive-text">{!v.item.activityTimelineType}</span>
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <button class="slds-button slds-button_icon" title="{!'Toggle details for ' + v.item.subject}" onclick="{!c.toggleActivityDetail}">
+                        <lightning:icon iconName="utility:switch" size="x-small" class="slds-button__icon slds-timeline__details-action-icon"/>
+                    </button>
+                    <aura:if isTrue="{!v.item.activityTimelineType == 'Task'}">
+                        <div class="slds-icon_container slds-icon-standard-task slds-timeline__icon" title="task">
+                            <lightning:icon iconName="standard:task" size="small"/>
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.item.activityTimelineType == 'Call'}">
+                        <div class="slds-icon_container slds-icon-standard-log-a-call slds-timeline__icon" title="call">
+                            <lightning:icon iconName="standard:log_a_call" size="small"/>
+                        </div>
+                    </aura:if>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
+                        <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space">                            
+                            <h3 class="slds-truncate" title="{!v.item.subject}">
+                                <a class="pq--link pq--link-no-border" href="{!'/lightning/r/' + v.item.sobjectName + '/' + v.item.recordId + '/view'}"  target="_blank">
+                                    <strong>{!v.item.SFlow_Subject}&nbsp;{!v.item.serviceFlow_Hoya_reference_number}</strong>
+                                </a>
+                            </h3>
+                            <aura:if isTrue="{!v.item.isPriority}">
+                                <div class="slds-no-flex">
+                                    <span class="slds-icon_container slds-icon-utility-priority" title="High Priority">
+                                        <lightning:icon iconName="utility:priority" variant="error" size="xx-small" class="slds-m-left_x-small"/>
+                                    </span>
+                                </div>
+                            </aura:if>
+                            <aura:if isTrue="{!v.item.isRecurring}">
+                                <div class="slds-no-flex">
+                                    <span class="slds-icon_container slds-icon-utility-rotate" title="Recurring Task">
+                                        <lightning:icon iconName="utility:rotate" size="xx-small" class="slds-m-left_x-small"/>
+                                    </span>
+                                </div>
+                            </aura:if>                            
+                        </div>
+                        <div class="slds-timeline__actions slds-timeline__actions_inline">
+                            <p class="{!v.item.isOverdue ? 'slds-timeline__date slds-text-color_error' : 'slds-timeline__date'}">                               
+                                <aura:if isTrue="{!v.item.activityDate == 'No due date'}">
+                                    {!v.item.activityDate}
+                                    <aura:set attribute="else">
+                                        <lightning:formattedDateTime value="{!v.item.activityDate}" year="numeric" day="2-digit" month="long" timeZone="UTC"/>
+                                    </aura:set>
+                                </aura:if>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <p class="slds-m-horizontal_xx-small">
+                        <aura:if isTrue="{!v.item.assignedTo}">
+                            <aura:if isTrue="{!v.item.assignedTo.isCurrentUser}">
+                                You
+                                <aura:set attribute="else">
+                                    <a class="pq--link" href="{!'/lightning/r/' + v.item.assignedTo.sobjectName + '/' + v.item.assignedTo.recordId + '/view'}" target="_blank">
+                                        {!v.item.assignedTo.recordName}
+                                    </a>
+                                </aura:set>
+                            </aura:if>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.item.isComplete}">
+                            <aura:if isTrue="{!v.item.activityTimelineType == 'Task'}">
+                                had a task 
+                            </aura:if>
+                            <aura:if isTrue="{!v.item.activityTimelineType == 'Call'}">
+                                logged a call 
+                            </aura:if>
+                            <aura:set attribute="else">
+                                {!v.item.assignedTo.isCurrentUser ? ' have' : ' has'}
+                                <aura:if isTrue="{!v.item.activityTimelineType == 'Task'}">
+                                    an upcoming task 
+                                </aura:if>
+                                <aura:if isTrue="{!v.item.activityTimelineType == 'Call'}">
+                                    an upcoming call 
+                                </aura:if>                                
+                            </aura:set>
+                        </aura:if>
+                        <aura:if isTrue="{!v.item.relatedTo}">
+                            about 
+                            <a class="pq--link" href="{!'/lightning/r/' + v.item.relatedTo.sobjectName + '/' + v.item.relatedTo.recordId + '/view'}"  target="_blank">
+                                {!v.item.relatedTo.recordName}
+                            </a>
+                        </aura:if>
+                    </p>                    
+                    <article class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small"
+                             id="task-item-base"
+                             aria-hidden="true">
+                        <ul class="slds-list_horizontal slds-wrap">
+                            <li class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">                                
+                                <span class="slds-text-title slds-p-bottom_x-small">Created Date</span>                                
+                                <span class="slds-text-body_medium slds-truncate" title="{!v.item.CreatedDate}">{!v.item.CreatedDate}</span>
+                            </li> 
+                            <li class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">                                
+                                <span class="slds-text-title slds-p-bottom_x-small">Lastmodified Date</span>                                
+                                <span class="slds-text-body_medium slds-truncate" title="{!v.item.LastModifiedDate}">{!v.item.LastModifiedDate}</span>
+                            </li>
+                            <aura:if isTrue="{!v.item.serviceFlow_Hoya_reference_number != ''}">
+                                <li class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">                                
+                                    <span class="slds-text-title slds-p-bottom_x-small">Hoya Ref. Num</span>                                
+                                    <span class="slds-text-body_medium slds-truncate" title="{!v.item.serviceFlow_Hoya_reference_number}">{!v.item.serviceFlow_Hoya_reference_number	}</span>
+                                </li>
+                            </aura:if>
+                            <aura:if isTrue="{!v.item.Priority != ''}">
+                                <li class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">                                
+                                    <span class="slds-text-title slds-p-bottom_x-small">Priority</span>                                
+                                    <span class="slds-text-body_medium slds-truncate" title="{!v.item.Priority}">{!v.item.Priority}</span>                                
+                                </li>
+                            </aura:if>
+                            <aura:if isTrue="{!v.item.serviceFlow_ECP_patient_order_number != ''}">
+                                <li class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">                                
+                                    <span class="slds-text-title slds-p-bottom_x-small">ECP Patient Order</span>                                
+                                    <span class="slds-text-body_medium slds-truncate" title="{!v.item.serviceFlow_ECP_patient_order_number}">{!v.item.serviceFlow_ECP_patient_order_number}</span>
+                                </li>
+                            </aura:if>
+                            <aura:if isTrue="{!v.item.CallType != ''}">
+                                <li class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">                                
+                                    <span class="slds-text-title slds-p-bottom_x-small">Call Type</span>                                
+                                    <span class="slds-text-body_medium slds-truncate" title="{!v.item.CallType}">{!v.item.CallType}</span>                                
+                                </li>
+                            </aura:if>
+                            <aura:if isTrue="{!v.item.Description != ''}">
+                                <li class="slds-grid slds-grid_vertical slds-size_1-of-1 slds-p-bottom_small">                                
+                                    <span class="slds-text-title slds-p-bottom_x-small">Description</span>                                
+                                    <span class="slds-text-body_medium slds-truncate" title="{!v.item.Description}">{!v.item.Description}</span>                                
+                                </li>                            
+                            </aura:if>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </li>
+</aura:component>

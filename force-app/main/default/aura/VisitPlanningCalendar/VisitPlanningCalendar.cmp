@@ -1,0 +1,55 @@
+<!--
+ - Created by thomas.schnocklake on 22.12.17.
+ -->
+
+<aura:component controller="VisitPlanningController">
+    <aura:attribute name="translations" type="Object"/>
+    <aura:attribute name="visit" type="Visits__c"/>
+    <aura:attribute name="companyName" type="String"/>
+    <aura:attribute name="UserName" type="String" default=""/>
+
+    <aura:attribute name="events" type="Object[]"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <ltng:require styles="{!$Resource.fullcalendar + '/fullcalendar.min.css'}"
+                  scripts="{!join(',',
+                          $Resource.fullcalendar + '/moment.min.js',
+                          $Resource.fullcalendar + '/moment-timezone-with-data.min.js'
+                          )}"
+                  afterScriptsLoaded="{!c.jsLoaded}"/>
+        
+            <c:FullCalendar events="{!v.events}"
+                    dropEvent="{!c.onDropEvent}"
+                    viewChange="{!c.onViewChange}"
+                    moveEvent="{!c.onMoveEvent}"
+                    openEvent="{!c.onOpenEvent}"
+            ></c:FullCalendar>
+    
+            <aura:if isTrue="{!not(empty(v.visit))}">
+                
+                <!--aura:if isTrue="{!v.companyName=='HVC'||v.companyName=='HOLI'||v.companyName=='HOLK'||v.companyName=='HAPL' || v.companyName == 'HLSI' || v.companyName == 'HLHK' || v.companyName == 'HLID'|| v.companyName == 'HLFR'|| v.UserName =='leighann.tibbs@hoya.com'|| v.UserName=='scott.stanton@hoya.com'}" -->
+                <aura:if isTrue="{!v.companyName=='HAPL' || v.companyName== 'HOLK' || v.companyName=='HLHK' || v.companyName=='HOLM' || v.companyName=='ILENS' || v.companyName=='HOMM' || v.companyName=='THAI' || v.companyName=='HLSI' || v.companyName=='HLSH' || v.companyName=='SOC' || v.companyName=='HLPH' || v.companyName=='HLID' || v.companyName=='HLIN' || v.companyName=='HOTA' || v.companyName == 'HLFR' || v.UserName =='leighann.tibbs@hoya.com'|| v.UserName=='scott.stanton@hoya.com' || v.UserName=='dupre@hoya.com' || v.UserName=='yung.chan@hoya.com' || v.UserName=='samson.tang@hoya.com'|| v.UserName=='giorgio.tombini@hoya.com'}">
+                <!--new component-->
+                <c:VisitPlanningVisitEditForm visit="{!v.visit}"
+                decisionresult="{!c.handleModalDecision}"
+                translations="{!v.translations}"
+                >
+                </c:VisitPlanningVisitEditForm>
+                
+                <aura:set attribute="else">
+                    <!-- OLD Component -->
+                    <c:VisitPlanningVisitEdit visit="{!v.visit}"
+                        decisionresult="{!c.handleModalDecision}"
+                        translations="{!v.translations}"
+                    >
+                    </c:VisitPlanningVisitEdit>
+                </aura:set>
+                </aura:if>
+            </aura:if>
+    <!--
+
+    <lightning:overlayLibrary aura:id="overlayLib">
+    </lightning:overlayLibrary>
+
+    <lightning:button name="modal" label="Show Modal" onclick="{!c.handleShowModal}"/>
+    -->
+</aura:component>

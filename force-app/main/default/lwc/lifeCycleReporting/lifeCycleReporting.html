@@ -1,0 +1,38 @@
+<template>
+    <div class="slds-grid slds-grid_vertical">
+        <div class="filterSection slds-col">
+            <lightning-button onclick={toggleChartsVisibility} class="right-end slds-m-left_xx-small" icon-name="utility:chart" icon-position="right"></lightning-button>
+        </div>
+        <div class="slds-col">
+            <div class={containerClass}>
+                <div class={firstComponentClass}>
+                    <div class="card_Design">
+                        <template for:each={pickVals} for:item="item">
+                            <div class="slds-tabs--path borderLine"  role="application" key={item}  style = {equalwidthHorizontalAndVertical}>
+                                <ul class="slds-tabs--path__nav" role="tablist">
+                                <li class="slds-tabs--path__item slds-is-incomplete  slds-path__item slds-is-current bgcolor"  role="presentation">
+                                    <a class="slds-tabs--path__link slds-button_brand " tabindex="-1" role="tab" >
+                                        <span class="slds-tabs--path__title" >
+                                            <div class="stage-info">
+                                                <span class="stage-name">{item.stage} ({item.noOfRecords})</span>
+                                            </div>
+                                        </span>
+                                    </a>
+                                </li>
+                                </ul>
+                                <div class="stage-info spacing">
+                                    Lenses Net Sales Last 12Mo
+                                    <span class="record-count">{item.summation} {item.accountCurrency}</span>
+                                </div>
+                                <c-life-cycle-Reporting-List records={records} stage={item.stage}></c-life-cycle-Reporting-List>
+                            </div>
+                        </template>
+                    </div> 
+                </div>
+                <div class={secondComponentClass}>
+                    
+                </div>
+            </div>
+        </div>  
+    </div>
+</template>

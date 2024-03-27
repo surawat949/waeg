@@ -1,0 +1,103 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:isUrlAddressable" 
+                access="global"
+                description="APAC User Comment" controller="APACUserPerformanceController">
+    <aura:attribute name="UserCommentList" type="List" />
+    <aura:attribute name="message" type="String" />
+    <aura:attribute name="reloadForm" type="boolean" default="true" />
+    <lightning:spinner aura:id="spinner" variant="brand" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div class="slds-theme_default slds-box">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:recordEditForm aura:id="UserCommentCreateForm"
+                    objectApiName="User_Comment__c"
+                    onload="{!c.handleLoad}"
+                    onsuccess="{!c.handleSuccess}"
+                >
+                    <aura:if isTrue="{!v.reloadForm}">
+
+                        <label for="Name">Topic</label>
+                        <lightning:inputField fieldName="Name" required="true"  variant="label-hidden" />
+
+                        <label for="Topic_Sub_Subject__c">Subject</label>
+                        <lightning:inputField fieldName="Topic_Sub_Subject__c" required="true" variant="label-hidden" />
+
+                        <label for="Comments__c">Comment</label>
+                        <lightning:inputField fieldName="Comments__c" required="true" variant="label-hidden" />
+
+                        <label for="Send_Email__c">Send Email</label>
+                        <lightning:inputField fieldName="Send_Email__c" variant="label-hidden" />
+
+                        <div class="slds-hidden">
+                            <label for="Comment_to_user__c">Comment To</label>
+                            <lightning:inputField fieldName="Comment_to_user__c" value="{!v.recordId}" variant="label-hidden" disabled="true" />
+                        </div>
+                    <aura:set attribute="else">
+                            Saving...
+                    </aura:set>
+                    </aura:if>
+                    <lightning:button variant="brand" type="submit" name="Save" label="Save" />
+                </lightning:recordEditForm>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="slds-theme_default slds-box">
+        <aura:iteration var="item" items="{!v.UserCommentList}">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <ul class="slds-timeline">
+                    <div class="isExpendable slds-timeline__item_expandable slds-timeline__item_task slds-is-open" aura:id="expId">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <button class="slds-button slds-button_icon" onclick="{!c.toggleAcitivity}"
+                                    title="test" aria-controls="task-item-base">
+                                        <lightning:icon iconName="utility:switch" size="x-small"  class="slds-button__icon slds-timeline__details-action-icon" />
+                                </button>
+                                <div class="slds-icon_container" title="task">
+                                    <lightning:icon iconName="standard:task" size="small" />
+                                </div>
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space">
+                                        <h3 class="slds-truncate" title="{!item.Name}">
+                                            <strong>{!item.Name}</strong>
+                                        </h3>
+                                    </div>
+                                </div>
+                                <p class="slds-m-horizontal_xx-small"><lightning:formattedDateTime value="{!item.CreatedDate}" /></p>
+                                <!--Expandable section start-->
+                                <article class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small" id="task-item-base" aria-hidden="true">
+                                    <ul class="slds-list_horizontal slds-wrap">
+                                        <li class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">
+                                            <span class="slds-text-title slds-p-bottom_x-medium">Topic</span>
+                                            <!--<span class="slds-text-body_medium slds-truncate" title="{!item.Topic_Subject__c}">{!item.Topic_Subject__c}</span>-->
+                                            <!--<span class="slds-text-title slds-p-bottom_x-medium">Category</span>-->
+                                            <span class="slds-text-body_medium slds-truncate" title="{!item.Topic_Sub_Subject__c}">{!item.Topic_Sub_Subject__c}</span>
+                                            
+                                        </li>
+                                        
+                                        <li class="slds-grid slds-grid_vertical slds-size_1-of-2 slds-p-bottom_small">
+                                            <span class="slds-text-title slds-p-bottom_x-medium">Comment By</span>
+                                            <span class="slds-text-body_medium slds-truncate" title="{!item.Owner.Name}">{!item.Owner.Name}</span>
+                                        </li>
+
+                                        <div class="slds-scrollable" style="height:5rem;width:24rem">
+                                            <p>Comment</p>
+                                            <div class="slds-text-longform" style="width:150%">
+                                                <p>{!item.Comments__c}</p>
+                                            </div>
+                                        </div>
+                                    </ul>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        </aura:iteration>
+    </div>
+</aura:component>

@@ -1,0 +1,184 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" 
+                controller="APACUserPerformanceController">
+    
+    <aura:attribute name="sObjectName" type="String" default="Opportunity"/>
+    <aura:attribute name="sObjectFieldsNames" type="List" default="Account_Name__c,ExpectedRevenue,Amount_manual__c,CloseDate,Last_Visit__c,NextStep"/>
+    <aura:attribute name="AndWhere" type="String" default=" AND IsClosed=false AND AccountId!=null" />
+    <aura:attribute name="OwnerWhere" type="String" default=" WHERE OwnerId=" />
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>    
+    <aura:attribute name="allData" type="List" />
+    <aura:attribute name="filteredData" type="List" />
+    <aura:attribute name="pageSize" type="Integer" default="10" />
+    <aura:attribute name="pageSizeOptions" type="Integer[]" default="10,15,20,25,50,100" />
+    <aura:attribute name="currentPageNumber" type="Integer" default="1" />
+    <aura:attribute name="totalPages" type="Integer" default="1" />
+    <aura:attribute name="searchPhrase" type="String" />
+    <aura:attribute name="Last3MthsVisited" type="Object" />
+    <aura:attribute name="ActiveDoors" type="Object" />
+    <aura:attribute name="SalesData" type="Object" />
+    <aura:attribute name="SalesVol" type="Object" />
+    <aura:attribute name="OppByStage" type="List" />
+
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+
+    <ltng:require scripts="{!join(',',
+        $Resource.chartjs2 + '/Chart.min.js',
+        $Resource.chartjs2 + '/Chart.bundle.min.js')}"
+        styles="{!$Resource.chartjs2 + '/Chart.min.css'}" />
+
+    <aura:html tag="style">
+        .slds-form-element__label{
+        display:none !important;
+        }
+    </aura:html>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-6">
+            <div class="exampleHolder">
+                <lightning:spinner aura:id="mySpinner" class="slds-hide"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1"><canvas aura:id="pie-chart-2" id="pie-chart-2" height="80"></canvas><br/>
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                        <tr class="row">
+                            <th scope="col">Opportunity Stage</th>
+                            <th scope="col">Num(s) of Account</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.OppByStage}" var="item">
+                            <tr class="row">
+                                <td class="col"><lightning:formattedText value="{!item.label}" /></td>
+                                <td class="col"><lightning:formattedNumber value="{!item.Qty}" maximumFractionDigits="0" /></td>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-2"><canvas aura:id="pie-chart-1" id="pie-chart-1" height="150"></canvas>
+                <br/>
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                        <tr class="row">
+                            <th scope="col">Doors visit last 3 months</th>
+                            <th scope="col">{!v.Last3MthsVisited.Last2MthLabel}</th>
+                            <th scope="col">{!v.Last3MthsVisited.Last1MthLabel}</th>
+                            <th scope="col">{!v.Last3MthsVisited.LastMthLabel}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row">
+                            <td>Last 3 Months</td>
+                            <td><lightning:formattedNumber value="{!v.Last3MthsVisited.Last2MthVisited}" maximumFractionDigits="0" /></td>
+                            <td><lightning:formattedNumber value="{!v.Last3MthsVisited.Last1MthVisited}" maximumFractionDigits="0" /></td>
+                            <td><lightning:formattedNumber value="{!v.Last3MthsVisited.LastMthVisited}" maximumFractionDigits="0" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slds-col slds-size_1-of-2"><canvas aura:id="pie-chart-3" id="pie-chart-3" height="150"></canvas>
+                <br/>
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                        <tr class="row">
+                            <th scope="col">Active door (over $1 last 3 month)</th>
+                            <th scope="col"><lightning:formattedText value="{!v.ActiveDoors.Last2MthLabel}" /></th>
+                            <th scope="col"><lightning:formattedText value="{!v.ActiveDoors.Last1MthLabel}" /></th>
+                            <th scope="col"><lightning:formattedText value="{!v.ActiveDoors.LastMthLabel}" /></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row">
+                            <td>Last 3 Months</td>
+                            <td><lightning:formattedNumber value="{!v.ActiveDoors.Last2MthActiveSales}" maximumFractionDigits="0" /></td>
+                            <td><lightning:formattedNumber value="{!v.ActiveDoors.Last1MthActiveSales}" maximumFractionDigits="0" /></td>
+                            <td><lightning:formattedNumber value="{!v.ActiveDoors.LastMthActiveSales}" maximumFractionDigits="0" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br/>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-2"><canvas aura:id="bar-chart-01" id="bar-chart-01" height="150"></canvas>
+            <br/>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr class="row">
+                        <th scope="col">Sales Values</th>
+                        <th scope="col"><lightning:formattedText value="{!v.SalesData.LastMonthLabel}" /></th>
+                        <th scope="col"><lightning:formattedText value="{!v.SalesData.LastMonthLabelLY}" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row">
+                        <td>Values</td>
+                        <td><lightning:formattedNumber value="{!v.SalesData.LastMonthVal}" maximumFractionDigits="0" /></td>
+                        <td><lightning:formattedNumber value="{!v.SalesData.LastMonthValLY}" maximumFractionDigits="0" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+            <div class="slds-col slds-size_1-of-2"><canvas aura:id="bar-chart-02" id="bar-chart-02" height="150"></canvas>
+            <br/>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr class="row">
+                        <th scope="col">Sales Volumns</th>
+                        <th scope="col"><lightning:formattedText value="{!v.SalesVol.LastMonthLabel}" /></th>
+                        <th scope="col"><lightning:formattedText value="{!v.SalesVol.LastMonthLabelLY}" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row">
+                        <td>Volumns</td>
+                        <td><lightning:formattedNumber value="{!v.SalesVol.LastMonthVol}" maximumFractionDigits="0" /></td>
+                        <td><lightning:formattedNumber value="{!v.SalesVol.LastMonthVolLY}" maximumFractionDigits="0" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="container slds-theme_default slds-box">
+        <lightning:card>
+            <div class="slds-p-around_small slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+                <div>
+                    <lightning:select label="" value="{!v.pageSize }" onchange="{!c.onPageSizeChange}">
+                        <aura:iteration items="{!v.pageSizeOptions}" var="opt">
+                            <option text="{!opt}"></option>
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+                <div>
+                    <lightning:button label="First" iconName="utility:left" iconPosition="left" onclick="{!c.onFirst}" disabled="{!v.currentPageNumber == 1 }" />
+                    <lightning:button label="Previous" iconName="utility:chevronleft" iconPosition="left" onclick="{!c.onPrev}" disabled="{!v.currentPageNumber == 1 }" />
+                    <span class="slds-var-p-horizontal_x-small"> Page {! (v.currentPageNumber) } of {! (v.totalPages) } </span>                
+                    <lightning:button label="Next" iconName="utility:chevronright" iconPosition="right" onclick="{!c.onNext }" disabled="{!v.currentPageNumber == v.totalPages }"/>
+                    <lightning:button label="Last" iconName="utility:right" iconPosition="right" onclick="{!c.onLast }" disabled="{!v.currentPageNumber == v.totalPages }" />
+                </div>
+                <div class="inline-container">
+                    <span class="padding-right">
+                        <lightning:input onkeyup="{!c.handleSearch}" variant="label-hidden" placeholder="Search Account Name" type="search" value="{!v.searchPhrase }" onchange="{!c.onChangeSearchPhrase}" />
+                    </span>
+                </div>
+            </div>         
+        </lightning:card> 
+        <lightning:datatable data="{!v.data}" 
+                 columns="{!v.columns}"  
+                 keyField="id" 
+                 hideCheckboxColumn="true"/>
+    </div>
+</aura:component>

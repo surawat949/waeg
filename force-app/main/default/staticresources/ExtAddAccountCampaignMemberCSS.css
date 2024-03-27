@@ -1,0 +1,239 @@
+html,body{ margin:0px; height:100%; }
+input{outline:none !important;} 
+
+#loading-curtain-div{top:0px;left:0px;text-align:center;width:100%;height:100%;background-color:#FFF;opacity:0.85;position:fixed;z-index:8000;filter:alpha(opacity=85);background-repeat:no-repeat;background-position:center center;background-image:url('/changemgmt/img/spinner24.gif');}
+
+.display-ib{display: inline-block}
+.filter-box {
+	background-color: #fffcce;
+    padding: 5px;
+    border-bottom: 1px solid #E7E7E7;
+}
+
+.filter-box div{display: inline-block;}
+
+.tablesorter .filtered {
+  display: none;
+}
+
+/* All of the following css is already contained within each theme file; modify it as desired */
+/* filter row */
+.tablesorter-filter-row td {
+  background: #eee;
+  line-height: normal;
+  text-align: center; /* center the input */
+  -webkit-transition: line-height 0.1s ease;
+  -moz-transition: line-height 0.1s ease;
+  -o-transition: line-height 0.1s ease;
+  transition: line-height 0.1s ease;
+}
+/* optional disabled input styling */
+.tablesorter-filter-row .disabled {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  cursor: not-allowed;
+}
+
+/* hidden filter row */
+.tablesorter-filter-row.hideme td {
+  /*** *********************************************** ***/
+  /*** change this padding to modify the thickness     ***/
+  /*** of the closed filter row (height = padding x 2) ***/
+  padding: 2px;
+  /*** *********************************************** ***/
+  margin: 0;
+  line-height: 0;
+  cursor: pointer;
+}
+.tablesorter-filter-row.hideme * {
+  height: 1px;
+  min-height: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  /* don't use visibility: hidden because it disables tabbing */
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+
+/* filters */
+.tablesorter-filter {
+  width: 95%;
+  height: inherit;
+  margin: 4px;
+  padding: 4px;
+  background-color: #fff;
+  border: 1px solid #bbb;
+  color: #333;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: height 0.1s ease;
+  -moz-transition: height 0.1s ease;
+  -o-transition: height 0.1s ease;
+  transition: height 0.1s ease;
+}
+/*
+
+div.dataTables_length label {
+	float: left;
+	text-align: left;
+}
+
+div.dataTables_length select {
+	width: 75px;
+}
+
+div.dataTables_filter label {
+	float: right;
+}
+
+div.dataTables_info {
+	padding-top: 2px;
+	padding-bottom: 8px;
+	position: absolute;
+}
+
+div.dataTables_paginate {
+	float: right;
+	margin: 0;
+}
+
+.paging_full_numbers .ui-button {
+	padding: 2px 6px;
+	margin: 0;
+	cursor: pointer; *
+	cursor: hand;
+}
+
+div.leftColumn {
+	float: left;
+	width: 20%;
+	height: auto;
+}
+
+table.table {
+	clear: both;
+	margin-bottom: 6px !important;
+	max-width: none !important;
+}
+
+#automaticTable {
+	margin-bottom: 0px !important;
+}
+
+#manualTable {
+	margin-bottom: 0px !important;
+}
+
+table.table thead .sorting,table.table thead .sorting_asc,table.table thead .sorting_desc,table.table thead .sorting_asc_disabled,table.table thead .sorting_desc_disabled
+	{
+	cursor: pointer; *
+	cursor: hand;
+}
+
+table.table thead .sorting {
+	background: url('images/sort_both.png') no-repeat center right;
+}
+
+table.table thead .sorting_asc {
+	background: url('images/sort_asc.png') no-repeat center right;
+}
+
+table.table thead .sorting_desc {
+	background: url('images/sort_desc.png') no-repeat center right;
+}
+
+table.table thead .sorting_asc_disabled {
+	background: url('images/sort_asc_disabled.png') no-repeat center right;
+}
+
+table.table thead .sorting_desc_disabled {
+	background: url('images/sort_desc_disabled.png') no-repeat center right;
+}
+
+.dataTables_info {
+	padding-top: 0;
+	position: absolute;
+}
+
+.dataTables_paginate {
+	padding-top: 0;
+}
+
+.css_right {
+	float: right;
+}
+
+#theme_links span {
+	float: left;
+	padding: 2px 10px;
+}
+
+table.dataTable th:active {
+	outline: none;
+}
+
+
+div.dataTables_scrollHead table {
+	margin-bottom: 0 !important;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+div.dataTables_scrollHead table thead tr:last-child th:first-child,div.dataTables_scrollHead table thead tr:last-child td:first-child
+	{
+	border-bottom-left-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+
+div.dataTables_scrollBody table {
+	border-top: none;
+	margin-bottom: 0 !important;
+}
+
+div.dataTables_scrollBody tbody tr:first-child th,div.dataTables_scrollBody tbody tr:first-child td
+	{
+	border-top: none;
+}
+
+div.dataTables_scrollFoot table {
+	border-top: none;
+}
+
+
+    .ui-icon-triangle-1-n {
+        background-position: -64px -16px;
+    }
+    .ui-icon-triangle-1-s {
+        background-position: -64px -16px;
+    }
+    .ui-icon-carat-2-n-s {
+        background-position: -128px 3px;
+    } 
+.headerRow span img {
+	padding: 3px 0 0 0;
+	display: inline !important;
+}
+
+.vfHelpText a {
+	position: relative;
+}
+
+.vfHelpText a span {
+	display: none;
+}
+
+.vfHelpText a:hover span {
+	display: block;
+	position: absolute;
+	top: 1.25em;
+	padding: 2px 5px;
+	left: -15em;
+	width: 15em;
+	z-index: 100;
+	border: 1px solid orange;
+	background-color: #FEFDB9;
+	color: black;
+}
+*/

@@ -1,0 +1,109 @@
+<aura:component   implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" access="public"
+controller="SalesStatisticsController">
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="accountFields" type="String[]" default="['Potential__c', 'AnnualRevenue', 'Share_of_Wallet__c','First_Competitor_global_name__c', 'First_Competitor_local_name__c', 'First_Competitor_SOW__c', 'Second_Competitor_global_name__c', 'Second_Competitor_Local_Name__c', 'Second_Competitor_SOW__c']"/>
+    <aura:attribute name="account" type="Account"/>
+    <aura:attribute name="statPdf" type="String"/>
+    <aura:attribute name="statConsoPdf" type="String"/>
+
+
+    <div class="container slds-theme_default slds-box" >   
+        <div class="slds-theme_default slds-box" style="margin-bottom: 10px;" >
+            <!-- LENS SUPPLIER-->
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">     
+                <button aria-controls="toggle" id="toggle1" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountVisitTabLensSupplier}</span>
+                </button>
+            </h3>
+            <lightning:recordForm aura:id="accountRecordForm" recordId="{!v.recordId}" objectApiName="Account"
+                fields="{!v.accountFields}" columns="3" mode="view"
+                density="auto"/>
+            
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountVisitTabSalesTarget}</span>
+                </button>
+            </h3>
+            <!-- SALES TARGETS-->
+            <lightning:recordEditForm aura:id="accountRecordSalesTargetForm" recordId="{!v.recordId}" objectApiName="Account">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_4-of-12"><lightning:inputField fieldName="Seiko_objective_ECP_agr__c" /></div>
+                    
+                    <div class="slds-col slds-size_3-of-12 slds-align_absolute-center">
+                        <span><label class="slds-form-element__label">{!$Label.c.AccountVisitTabMonthlyVsSeiko}</label></span>
+                        <div><lightning:formattedNumber value="{!v.account.Seiko_objective_ECP_agr__c/12}" maximumFractionDigits="0"/>&euro;</div>
+                    </div>
+                    <div class="slds-col slds-size_4-of-12 slds-align_absolute-center">
+                        <span><label class="slds-form-element__label">{!$Label.c.AccountVisitTabAnnualVsSeiko}</label></span>
+                        <div><lightning:formattedNumber value="{!(v.account.AnnualRevenue/v.account.Seiko_objective_ECP_agr__c)*100}" maximumFractionDigits="0"/> %</div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-12 slds-align_absolute-center"> 
+                        <lightning:button variant="brand" type="submit" label="Save" />
+                    </div>
+                </div>
+            </lightning:recordEditForm>
+        </div>
+
+        <!-- Monthly net Sales And Figures-->
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle3" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.MonthlyNetSalesFigures}</span>
+            </button>
+        </h3>
+
+        <!-- Lenses Net Sales And Volume Trends-->
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle4" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.LensesNetSalesAndVolumeTrends}</span>
+            </button>
+        </h3>
+
+        <!-- Lenses delays before Shipment-->
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle5" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.LensesDelaysBeforeShipment}</span>
+            </button>
+        </h3>
+
+        
+        <!-- Parent accounts Net Sales trends (Lenses only)-->
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle6" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.ParentaccountsNetSalestrends}</span>
+            </button>
+        </h3>
+
+
+        <!-- Calendar Year Product Mix Figures (Lenses only)-->
+        <br/>
+        <aura:if isTrue="{!v.account.Brand__c=='SEIKO'}">
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a" style="padding-top:20px;">    
+                <button aria-controls="toggle" id="toggle7" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountCalendarYearProductMixFigures}</span>
+                </button>
+            </h3>
+                <br/>
+                <lightning:formattedUrl 
+                    value="{!v.statPdf}"
+                    label="Statistics (PDF)"
+                    target="_blank"/>
+                    <br/><br/>
+                <lightning:formattedUrl 
+                    value="{!v.statConsoPdf}"
+                    label="Statistics conso (PDF)"
+                target="_blank"/>
+            <aura:set attribute="else">
+                <div class="slds-grid"><div class="slds-col slds-size_1-of-1"><span>&nbsp;</span></div></div>
+            </aura:set>
+        </aura:if>
+                
+    </div>
+</aura:component>

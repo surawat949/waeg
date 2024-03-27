@@ -1,0 +1,205 @@
+<aura:component implements="force:hasRecordId,force:lightningQuickAction,lightning:actionOverride,flexipage:availableForAllPageTypes"
+                controller="APACCreateNewProductFormController" access="global">
+
+    <aura:attribute name="message" type="String" />
+    <aura:attribute name="requesttype" type="List" />
+    <aura:attribute name="reloadForm" type="boolean" default="true" />
+    <aura:attribute name="displayModal" type="boolean" default="true" />
+    <lightning:spinner aura:id="spinner" variant="brand" />
+    <aura:attribute name="displaySection" type="String" default="" />
+    <aura:attribute name="displayInvent" type="String" default="" />
+    <aura:attribute name="displayViewForm" type="String" />
+    <!--<aura:attribute name="recordForm1" type="String[]" default="['Name','OwnerId']" />-->
+    <aura:attribute name="recordForm2" type="String[]" default="['APAC_Company_Entity__c', 'OwnerId', 'Name', 'APAC_Request_Type__c']" />
+    <aura:attribute name="recordForm3" type="String[]" default="['APAC_Product_Name_Comm__c']" />
+    <aura:attribute name="recordForm4" type="String[]" default="['APAC_Product_Name__c', 'APAC_Product_Code__c', 'APAC_Product_Coating__c', 'APAC_Product_Name_2__c', 'APAC_Product_Code_2__c', 'APAC_Product_Coating_2__c', 'APAC_Product_Name_3__c', 'APAC_Product_Code_3__c', 'APAC_Product_Coating_3__c','APAC_Product_Name_4__c', 'APAC_Product_Code_4__c', 'APAC_Product_Coating_4__c', 'APAC_Product_Name_5__c', 'APAC_Product_Code_5__c', 'APAC_Product_Coating_5__c']" />
+    <aura:attribute name="recordForm5" type="String[]" default="['APAC_Oversea_Production__c', 'APAC_Supplier_2__c', 'APAC_Local_Production__c']" />
+    <aura:attribute name="recordForm6" type="String[]" default="['APAC_Ax_System__c', 'APAC_VO_System__c', 'APAC_System_Change_Request__c', 'APAC_Others__c']" />
+    <aura:attribute name="recordForm7" type="String[]" default="['APAC_Stock_On_Hand__c', 'APAC_Month_on_Hand__c', 'APAC_Phase_out_plan_attached__c']" />
+    <aura:attribute name="recordForm8" type="String[]" default="['APAC_Description__c']" />
+    <aura:attribute name="recordForm9" type="String[]" default="['CreatedById', 'CreatedDate', 'LastModifiedById', 'LastModifiedDate']" />
+    <aura:attribute name="recordForm10" type="String[]" default="['APAC_Rx__c', 'APAC_Supplier_3__c', 'APAC_FSV__c', 'APAC_Supplier_4__c', 'APAC_Target_Launch_Date__c', 'APAC_Detail_Launch_Schedule__c', 'APAC_Target_Discountinue_Date__c', 'APAC_Propose_Product_Testing_Date__c']" />
+    <lightning:navigation aura:id="navService"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="force:refreshView" action="{!c.doInit}" />
+
+    <aura:html tag="style">
+        @media (max-height: 800px){
+           .slds-modal__content {
+               height: 300px !important;
+           }
+        }
+        @media screen and (max-height: 720px) { 
+           .slds-modal__content {
+                height: 300px !important;
+           }
+        }
+        @media (max-height: 560px){
+           .slds-modal__content {
+               height: 200px !important;
+           }
+        }
+       @media (max-height: 460px){
+           .slds-modal__content {
+               height: 100px !important;
+           }
+       }
+    </aura:html>
+
+    <div class="container slds-theme_default slds-box" >
+        <!--
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <div class="slds-theme_shade slds-box slds-box_xx-small"><p>General Information</p></div><br/>
+                <lightning:recordForm aura:id="recordForm1"
+                    recordId="{!v.recordId}"
+                    objectApiName="APAC_Product__c"
+                    fields="{!v.recordForm1}"
+                    columns="2"
+                    mode="readonly"
+                    density="auto"
+                    onload="{!c.handleLoad}"
+                />
+            </div>
+        </div>
+        -->
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:recordForm aura:id="recordForm2"
+                    recordId="{!v.recordId}"
+                    objectApiName="APAC_Product__c"
+                    fields="{!v.recordForm2}"
+                    columns="2"
+                    mode="readonly"
+                    density="auto"
+                    onload="{!c.handleLoad}"
+                    onsuccess="{!c.handleRefresh}"
+                />
+            </div>
+        </div>
+    </div><br/>
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Product Information</p></div><br/>
+                <lightning:recordForm aura:id="recordForm3"
+                    recordId="{!v.recordId}"
+                    objectApiName="APAC_Product__c"
+                    fields="{!v.recordForm3}"
+                    columns="1"
+                    mode="{!v.displayViewForm}"
+                    density="auto"
+                    onload="{!c.handleLoad}"
+                />
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Product description and reference</p></div><br/>
+                <lightning:recordForm aura:id="recordForm4"
+                    recordId="{!v.recordId}"
+                    objectApiName="APAC_Product__c"
+                    fields="{!v.recordForm4}"
+                    columns="3"
+                    mode="{!v.displayViewForm}"
+                    density="auto"
+                    onload="{!c.handleLoad}"
+                />
+            </div>
+        </div>
+    </div><br/>
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Production Product and Product lenses</p></div><br/>
+                <lightning:recordForm aura:id="recordForm5"
+                    recordId="{!v.recordId}"
+                    objectApiName="APAC_Product__c"
+                    fields="{!v.recordForm5}"
+                    columns="2"
+                    mode="{!v.displayViewForm}"
+                    density="auto"
+                    onload="{!c.handleLoad}"
+                />
+
+                <lightning:recordForm aura:id="recordForm10"
+                    recordId="{!v.recordId}"
+                    objectApiName="APAC_Product__c"
+                    fields="{!v.recordForm10}"
+                    columns="2"
+                    mode="{!v.displayViewForm}"
+                    density="auto"
+                    onload="{!c.handleLoad}"
+                />
+            </div>
+        </div>
+    </div><br/>
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Product or/and Price Registration</p></div><br/>
+                <lightning:recordForm aura:id="recordForm6"
+                    recordId="{!v.recordId}"
+                    objectApiName="APAC_Product__c"
+                    fields="{!v.recordForm6}"
+                    columns="2"
+                    mode="{!v.displayViewForm}"
+                    density="auto"
+                    onload="{!c.handleLoad}"
+                />
+            </div>
+        </div>
+    </div>
+    <aura:iteration var="item" items="{!v.requesttype}">
+        <aura:if isTrue="{!item.APAC_Request_Type__c=='Product Removal'}">
+            <br/>
+            <div class="container slds-theme_default slds-box">
+                <div class="slds-col slds-size-1-of-1">
+                    <div class="slds-theme_shade slds-box slds-box_xx-small"><p>EXISTING INVENTORY DETAILS</p></div><br/>
+                    <lightning:recordForm aura:id="recordForm7"
+                        recordId="{!v.recordId}"
+                        objectApiName="APAC_Product__c"
+                        fields="{!v.recordForm7}"
+                        columns="2"
+                        mode="{!v.displayViewForm}"
+                        density="auto"
+                        onload="{!c.handleLoad}"
+                />
+                </div>
+            </div><br/>
+        <aura:set attribute="else">
+            &nbsp;
+        </aura:set>
+        </aura:if>
+    </aura:iteration>
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-grid">
+            <div class="slds-col slds-size-1-of-1">
+                <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Description</p></div><br/>
+                <lightning:recordForm aura:id="recordForm8"
+                    recordId="{!v.recordId}"
+                    objectApiName="APAC_Product__c"
+                    fields="{!v.recordForm8}"
+                    columns="2"
+                    mode="{!v.displayViewForm}"
+                    density="auto"
+                    onload="{!c.handleLoad}"
+                />
+                <br/>
+                <lightning:recordForm aura:id="recordForm9"
+                    recordId="{!v.recordId}"
+                    objectApiName="APAC_Product__c"
+                    fields="{!v.recordForm9}"
+                    columns="2"
+                    mode="readonly"
+                    density="auto"
+                    onload="{!c.handleLoad}"
+                />
+            </div>
+        </div>
+    </div>
+</aura:component>

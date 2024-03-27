@@ -1,0 +1,16 @@
+.THIS .columns {
+    text-align:right;
+    margin-right: 20px;
+}
+
+.THIS .social_me {
+    padding: 10px;
+}
+
+.THIS .slds-col{
+    color: white;
+}
+
+.THIS #helpIcon{
+    height: 26px !important;
+}

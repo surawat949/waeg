@@ -1,0 +1,83 @@
+<template>
+	<lightning-card>
+		<template if:true={isLoading}>
+			<lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+			</lightning-spinner>
+		</template>
+		<div if:true={isEmptyRecords}>
+			<div class="slds-grid slds-wrap">
+				<div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-5 montserratRegular">
+					<div class="slds-grid slds-wrap">
+						<div>
+							<lightning-combobox name="Search Field" label="Search Field" value=""
+								placeholder="Select field" options={searchOptions} onchange={handleSearchFieldChange}>
+							</lightning-combobox>
+						</div>&nbsp;&nbsp;
+						<lightning-input variant="label-hidden" type="search" onchange={handleSearchKeyChange}
+							class="slds-m-bottom_small" label="Search Text" value={searchKey}></lightning-input>
+						&nbsp;&nbsp;
+						<lightning-button-icon onclick={handleRefresh} icon-name="utility:refresh"
+							alternative-text="Refresh" title="Refresh"></lightning-button-icon>
+					</div>
+				</div>
+			</div>
+			<lightning-layout multiple-rows="true" vertical-align="end">
+				<lightning-layout-item size="12" padding="around-small">
+
+					<div style="height:300px">
+						<lightning-datatable class="slds-table_header-fixed_container slds-scrollable_x slds-border_top"
+							key-field="Id" onrowaction={handleRowActions} data={recordsToDisplay} columns={columns}
+							hide-checkbox-column="true" sorted-by={sortedBy} sorted-direction={sortedDirection}
+							onsort={onSort}></lightning-datatable>
+					</div>
+					<div class="slds-grid slds-grid_vertical-align-center slds-grid_align-spread"
+						style="padding-top: 0.5em;">
+						<!--RECORDS PER PAGE-->
+						<div class="slds-col">
+							<div class="slds-list_inline slds-p-bottom_xx-small">
+								<label class="slds-text-color_weak slds-p-horizontal_x-small" for="recordsPerPage"><b>Size </b></label>
+								<div class="slds-select_container">
+									<select class="slds-select" id="recordsPerPage" onchange={handleRecordsPerPage}>
+                            <template for:each={pageSizeOptions} for:item="option">
+                                <option key={option} value={option}>{option}</option>
+                            </template>
+                        </select>
+								</div>
+							</div>
+						</div>
+
+						<!--PAGE NAVIGATION-->
+						<div class="slds-align_absolute-center" style="height:5rem">
+
+							<lightning-button-icon variant="brand" disabled={bDisableFirst}
+								icon-name="utility:jump_to_left" class="slds-p-horizontal_x-small" onclick={firstPage}>
+							</lightning-button-icon>
+
+							<lightning-button disabled={bDisableFirst} icon-name="utility:left" label="Previous"
+								alternative-text="Previous" onclick={previousPage}></lightning-button>
+							&nbsp;
+							<span class="slds-badge">Page {pageNumber} &nbsp;out of&nbsp; {totalPages}</span>
+							&nbsp;
+							<lightning-button disabled={bDisableLast} icon-name="utility:right" label="Next"
+								alternative-text="Next" onclick={nextPage} class="slds-p-horizontal_x-small"
+								icon-position="right"></lightning-button>
+
+							<lightning-button-icon variant="brand" disabled={bDisableLast}
+								icon-name="utility:jump_to_right" onclick={lastPage}></lightning-button-icon>
+						</div>
+
+						<!--TOTAL RECORDS-->
+						<div class="slds-clearfix">
+							<div class="slds-float_right">
+								<span class="slds-badge"> Total Records: {totalRecords}</span>
+							</div>
+						</div>
+					</div>
+				</lightning-layout-item>
+			</lightning-layout>
+		</div>
+		<div if:false={isEmptyRecords}>
+			<center><b>No customer sales returns exist</b></center>
+		</div>
+	</lightning-card>
+</template>

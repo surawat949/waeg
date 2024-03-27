@@ -1,0 +1,66 @@
+<!--
+ - Created by thomas.schnocklake on 22.12.17.
+ -->
+
+<aura:component description="FullCalendar" implements="flexipage:availableForAllPageTypes"
+                controller="VisitPlanningController" extensible="true">
+
+    <aura:registerEvent name="openEvent" type="c:FullCalendarOpenEvent"/>
+    <aura:registerEvent name="moveEvent" type="c:FullCalendarMoveEvent"/>
+    <aura:registerEvent name="dropEvent" type="c:FullCalendarDropEvent"/>
+    <aura:registerEvent name="viewChange" type="c:FullCalendarViewChangeEvent"/>
+
+    <aura:attribute name="events" type="Object[]" description="A list of events to display on the calendar"/>
+    <aura:handler name="change" value="{!v.events}" action="{!c.loadEvents}"/>
+    <aura:attribute name="view" type="Object"/>
+    <aura:attribute name="headerDate" type="Object"/>
+
+    <!-- LIBRARIES -->
+    <ltng:require styles="{!$Resource.fullcalendar + '/fullcalendar.min.css'}"
+                  scripts="{!join(',',
+                          $Resource.fullcalendar + '/jquery.min.js',
+                          $Resource.fullcalendar + '/moment.min.js',
+                          $Resource.fullcalendar + '/jquery-ui.min.js',
+                          $Resource.fullcalendar + '/fullcalendar.min.js',
+                          $Resource.fullcalendar + '/locale-all.js')}"
+                  afterScriptsLoaded="{!c.jsLoaded}"/>
+
+    <div class="calendarbody slds slds-box slds-m-around--small" id="calendarbodyId">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col
+                slds-order--3 slds-medium-order--1
+                slds-size--1-of-1 slds-medium-size--1-of-3
+                slds-p-bottom--small" >
+                <lightning:buttonGroup class="">
+                    <lightning:button iconName="utility:chevronleft" onclick="{!c.prev}"/>
+                    <lightning:button iconName="utility:chevronright" onclick="{!c.next}"/>
+                    <lightning:button label="{!$Label.c.Today}" onclick="{!c.today}"/>
+                </lightning:buttonGroup>
+            </div>
+            <div class="
+                slds-col
+                slds-order--2 slds-medium-order--2
+                slds-align--absolute-center
+                slds-p-bottom--small">
+                <ui:outputText value="{!v.headerDate}"/>
+            </div>
+            <div class="
+                slds-col
+                slds-order--1 slds-medium-order--3
+                slds-size--1-of-1 slds-medium-size--1-of-3
+                slds-p-bottom--small
+                slds-p-bottom--small">
+                <lightning:buttonGroup class="slds-grid--align-end slds-wrap">
+                    <lightning:button label="{!$Label.c.Month}" onclick="{!c.month}" class="{! v.view == 'month' ? 'slds-button--brand' : ''}"/>
+                    <lightning:button label="{!$Label.c.Week}" onclick="{!c.basicWeek}" class="{! v.view == 'basicWeek' ? 'slds-button--brand' : ''}"/>
+<!--
+                    <lightning:button label="List Week" onclick="{!c.listWeek}" class="{! v.view == 'listWeek' ? 'slds-button- -brand' : ''}"/>
+-->
+                    <lightning:button label="{!$Label.c.Day}" onclick="{!c.listDay}" class="{! v.view == 'listDay' ? 'slds-button--brand' : ''}"/>
+                </lightning:buttonGroup>
+            </div>
+        </div>
+        <div id="calendar"/>
+    </div>
+
+</aura:component>

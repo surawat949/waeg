@@ -1,0 +1,25 @@
+#LoginNew.salesforceIdentityLoginBody2 .cCenterPanel {
+    max-width:unset !important;
+}
+
+@font-face {
+    font-family: 'galano';
+    src: url(../resource/Galano_Font_Regular)format('woff');
+}
+
+@font-face {
+  font-family: "Drescher Grotesk";
+  font-weight: 600;
+  src: url(../resource/Seiko_Theme/fonts/dgdemibold.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Drescher Grotesk";
+  font-weight: 500;
+  src: url(../resource/Seiko_Theme/fonts/dgsemibold.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Drescher Grotesk";
+  font-weight: normal;
+  src: url(../resource/Seiko_Theme/fonts/dgroman.woff2) format("woff2");
+}
+:root { --dxp-c-section-columns-max-width: 1170px; }

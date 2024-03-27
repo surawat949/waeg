@@ -1,0 +1,128 @@
+<aura:component description="VisitPlanningMobileList" controller="VisitPlanningController">
+    <lightning:navigation aura:id="navService"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <aura:attribute name="url" type="String"/>
+
+    <aura:attribute name="userInfo" type="user"/>
+    <aura:attribute name="companyName" type="String"/> 
+    <aura:attribute name="translations" type="Object"/>
+    <aura:attribute name="accountArray" type="Object"/>
+    <aura:attribute name="accountColumns" type="List"/>
+    <aura:attribute name="zonal" type="String"/>
+    <aura:attribute name="accountZonalList" type="List"/>
+    <aura:attribute name="zonalDisplay" type="Boolean" default="false"/>
+    <aura:attribute name="listviews" type="List"/>
+    <aura:attribute name="campaignList" type="List"/>
+    <aura:attribute name="listview" type="Object"/>
+    <aura:attribute name="quickFilter" type="String"/>
+    <aura:attribute name="campaignId" type="String"/>
+    <aura:attribute name="campaignPriority" type="Boolean"/>
+    <aura:attribute name="campaignPresented" type="Boolean"/>
+    <aura:attribute name="loaded" type="Boolean" default="false"/>
+    <aura:attribute name="mobileListSize" type="Integer" default="50"/>
+    <aura:attribute name="isHVNA" type="Boolean" default="false"/>
+    <aura:attribute name="accountFieldList" type="List" default="[]"/>
+    <aura:attribute name="selectedAccountFieldList" type="List" default="[]"/>
+    <aura:attribute name="selectedAccountFieldListInPicklist" type="List"/>
+    
+    <aura:attribute name="zonalFieldList" type="List" default="[]" />
+    <aura:attribute name="selectZonalFieldList" type="List" default="[]" />
+    <aura:attribute name="selectZonalFieldListInPicklist" type="List" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.init }"/>
+    <aura:handler name="change" value="{!v.listview}" action="{!c.listviewChange}"/>
+    <aura:attribute name="targetList" type="Boolean"/>
+    <lightning:card>
+        
+        <p class="slds-p-horizontal_small">
+            <div class="slds-form slds-form_horizontal">
+                <div class="slds-form-element__group">
+                    <div class="slds-form-element__row">
+                        <div class="slds-form-element">
+                            <lightning:select label="{!$Label.c.ListView}"
+                                                value="{!v.listview}" name="KVGR2">
+                                <aura:iteration items="{!v.listviews}" var="option">
+                                    <option value="{!option.Id}" text="{!option.Name}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </div>
+                    </div>
+                    
+                    <div class="slds-form-element__row">
+                        <!-- select visit zone -->
+                        <div class="slds-form-element">
+                           	 <lightning:select disabled="{!v.isdisabled}" onchange="{!c.search}"
+                                 label="Visit Zone"
+                                 required="false" aura:id="zonal"
+                                 value="{!v.zonal}" >
+                                 	<aura:iteration items="{!v.accountZonalList}" var="option">
+                                       <option value="{!option.value}" text="{!option.label}"></option>
+                                    </aura:iteration>
+                            </lightning:select>
+                       	</div>
+                    </div>
+                    
+                    <!--aura:if isTrue="{!v.companyName!='HOLA'}"-->
+                        <!--aura:if isTrue="{!v.companyName!='HLCA'}"-->
+                            <div class="slds-form-element__row">
+                                <!-- select campaign -->
+                                <div class="slds-form-element">
+                                    <lightning:select label="{!$Label.c.VPM_Campaign_Label}" onchange="{!c.search}"
+                                                    value="{!v.campaignId}" name="XYZ3" aura:id="campaignSelect" >
+                                        <aura:iteration items="{!v.campaignList}" var="option">
+                                            <option value="{!option.value}" text="{!option.label}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </div>
+                            </div>
+                            <div class="slds-form-element__row">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">{!$Label.c.VPM_Exclude_Label}&nbsp;{!v.translations.Account_Campaing_Member__c_Campaign_Presented__c}</label>
+                                    <lightning:input checked="{!v.campaignPresented}"
+                                            type="checkbox" onchange="{!c.search}"/>
+                                </div>
+                            </div>
+                            <aura:if isTrue="{!v.isHVNA==false}">
+                                <div class="slds-form-element__row">
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label">{!v.translations.Account_Campaing_Member__c_Campaign_Priority__c}</label>
+                                        <lightning:input checked="{!v.campaignPriority}" type="checkbox" onchange="{!c.search}"/>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element__row">
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label">{!v.translations.Account_Target_List__c}</label>
+                                        <lightning:input checked="{!v.targetList}" type="checkbox" onchange="{!c.search}"/>
+                                    </div>
+                                </div>
+                            </aura:if>
+                        <!--/aura:if-->
+                    <!--/aura:if-->
+
+                    <div class="slds-form-element__row">
+                        <div class="slds-form-element">
+                            <lightning:input label="{!$Label.c.QuickFilter}"
+                                    type="text"
+                                    value="{!v.quickFilter}"/>
+                            <label for="bsearch">&nbsp;</label><br/>
+                            <lightning:button variant="brand" label="Search" onclick="{!c.search }" />
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </p>
+        <!-- <lightning:button label="Toggle spinner" variant="brand" onclick="{! c.toggleSpin }" /> -->
+        
+        <div class="spinnerHolder">
+            <aura:if isTrue="{!v.loaded}">
+                <lightning:spinner alternativeText="Loading" />
+            </aura:if>
+        </div>
+
+    <c:AccountListMobile objectList="{!v.accountArray}" columns="{!v.accountColumns}" />
+
+    <aura:if isTrue="{!not(empty(v.accountArray))}">
+        <lightning:button variant="brand" label="Load more accounts" onclick="{!c.loadMore }"/>
+    </aura:if>
+    </lightning:card>
+</aura:component>

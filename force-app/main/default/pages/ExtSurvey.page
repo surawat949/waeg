@@ -1,0 +1,823 @@
+<apex:page standardcontroller="Survey__c"
+	extensions="ExtSurveyAndQuestion" cache="false" sidebar="false"
+	tabStyle="Surveys__tab" title="{!$ObjectType.Survey__c.label} : {!surveyName}">
+	<apex:sectionHeader title="{!$ObjectType.Survey__c.label}"
+		subtitle="{!$Label.Manage}" />
+
+	<apex:stylesheet value="{!$Page.labs_survey_css}" />
+	<apex:stylesheet value="{!URLFOR($Resource.ITB_Table_Style)}" />
+
+	<apex:includeScript value="{!URLFOR($Resource.SurveyForce, 'jquery.js')}" />
+	<script type="text/javascript"
+		src="{!URLFOR($Resource.SurveyForce, 'survey_jui.js')}"></script>
+
+
+	<style>
+.datePicker,.datePicker .dateBar,.datePicker .calBody,.datePicker .calDays,.datePicker .buttonBar,.datePicker Select
+	{
+	z-index: 20000;
+}
+
+table tr {
+	width: 200px;
+	border: 1px;
+}
+
+form[id *="navBar"] {
+	position: relative;
+	background: #fff;
+	z-index: 10;
+}
+
+#navBarBg {
+	width: 100%;
+	height: 30px;
+	z-index: 9;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: #fff;
+	display: none;
+	-moz-box-shadow: 0 0 30px #000;
+	-webkit-box-shadow: 0 0 30px #000;
+}
+
+#surveyMenu h4 {
+	display: block;
+	margin-top: 10px;
+}
+</style>
+	<script src="/soap/ajax/18.0/connection.js" type="text/javascript"></script>
+	<script src="/soap/ajax/18.0/apex.js" type="text/javascript"></script>
+	<script>
+		sforce.connection.sessionId = '{!$Api.Session_ID}';
+	</script>
+	<script type="text/javascript">
+		function displayLoadStatusImg() {
+			$("#loadStatusImg").css("display", "block");
+		}
+
+		function hideLoadStatusImg() {
+			$("#loadStatusImg").css("display", "none");
+		}
+		
+		
+		function clearFields() {
+			$("textarea[id*='qQuestion']").val("");
+			$("textarea[id*='SingleSelectChoice']").val("");
+			$("textarea[id*='SingleSelectScore']").val("");
+			var singleSelectTable = document.getElementById('singleSelectTable'); 
+			if(singleSelectTable) {
+				var i; 
+				for(i = singleSelectTable.rows.length - 1; i > 0; i--)
+					singleSelectTable.deleteRow(1);			
+			} 
+			var freeTextTable = document.getElementById('freeTextTable'); 
+			if(freeTextTable) {
+				var i; 
+				for(i = freeTextTable.rows.length - 1; i > 0; i--)
+					freeTextTable.deleteRow(1);			
+			} 
+			hideLoadStatusImg();
+		}
+
+		function confirmDelete(deleteId) {
+			var r = confirm("Are you sure you want to delete this question?");
+			if (r) {
+				sforce.apex.execute("ExtTakeSurvey", "deleteQuestion", {
+					deleteId : deleteId
+				});
+			}
+		}
+
+		$(document).ready(
+				function() {
+
+					// Displays overlays
+					$("a[rel]").overlay({
+						oneInstance : 'false',
+						mask : '#000',
+						zIndex : '1000',
+						onLoad : function() {
+							if ($.browser.msie && $.browser.version == 7.0) {
+								$('#exposeMask').hide();
+							}
+						}
+					});
+
+					// setup h2#editMenu to work as tabs for each div directly under div#editSections
+					$("h2#editMenu").tabs("div#editSections > div", {
+						tabs : 'span'
+					});
+
+					$(window).scroll(
+							function() {
+								if ($(this).scrollTop() > 148) {
+									$('#navBarBg').fadeIn(1000);
+									$('form[id*="navBar"]').css('position',
+											"fixed");
+									$('form[id*="navBar"]').css('top', "4px");
+									$('form[id*="navBar"]').css('width',
+											$('body').width() - 40 + "px");
+								} else if ($(this).scrollTop() < 148) {
+									$('#navBarBg').fadeOut(100);
+									$('form[id*="navBar"]').css('position',
+											"relative");
+									$('form[id*="navBar"]').css('top', "0px");
+								}
+							});
+
+					$("#justQuestionList").sortable({
+						axis : 'y',
+						opacity : .6,
+						tolerance : 'pointer',
+						revert : true,
+						update : function(event, ui) {
+							jQuery("a[id*='saveOrder']").effect("pulsate", {
+								times : 2
+							}, 1000);
+						}
+
+					});
+
+					$("#surveyDeleteLink").click(function() {
+						if ($("#surveyDelete").css("display") == "none") {
+							$("#surveyDelete").fadeIn();
+						} else
+							$("#surveyDelete").fadeOut();
+					});
+
+					$("#surveyCancelLink").click(function() {
+						$("#surveyDelete").fadeOut();
+					});
+
+				});
+
+		function resetSelect() {
+			$("select[id*='questionSelect']").val(0);
+		};
+
+		function addRow(tableId) {
+			if (tableId) {
+				var _len = $("#" + tableId + " tr").length;
+				var rowInnerHtml = " <tr id=" + tableId + _len + " align=\"center\">"
+						+ "<td> "
+						+ _len
+						+ " </td> "
+						+ "<td><input type=\"text\" name=\"answer" + _len + "\" id=\"answer" + tableId + _len + "\" /> </td>"
+						+ "<td><input type=\"text\" name=\"score" + _len + "\" id=\"score" + tableId + _len + "\" /> </td>"
+						+ "<td><img src=\"" + minus_icon + "\" width=\"15px\" height=\"15px\" onclick=\"delRow("
+						+ "\'"
+						+ tableId
+						+ "\'"
+						+ ", "
+						+ _len
+						+ ");\" /></td>" + "</tr>";
+				$("#" + tableId).append(rowInnerHtml);
+			}
+
+		};
+
+		var minus_icon = "{!URLFOR($Resource.ITB_Images, 'round_minus16.png')}";
+		
+		function addFreeTextRow(tableId) {
+			
+			if (tableId) {
+				var _len = $("#" + tableId + " tr").length;
+				var rowInnerHtml = " <tr id=" + tableId + _len + " align=\"center\">"
+						+ "<td> "
+						+ _len
+						+ " </td> "
+						+ "<td><input type=\"text\" name=\"min" + _len + "\" id=\"min" + tableId + _len + "\" /> </td>"
+						+ "<td><input type=\"text\" name=\"max" + _len + "\" id=\"max" + tableId + _len + "\" /> </td>"
+						+ "<td><input type=\"text\" name=\"score" + _len + "\" id=\"score" + tableId + _len + "\" /> </td>"
+						+ "<td><img src=\"" + minus_icon + "\" width=\"15px\" height=\"15px\" onclick=\"delFreeTextRow("
+						+ "\'"
+						+ tableId
+						+ "\'"
+						+ ", "
+						+ _len
+						+ ");\" /></td>" + "</tr>";
+				$("#" + tableId).append(rowInnerHtml);
+			}
+
+		};
+
+		function delFreeTextRow(tableId, index) {
+			var _len = $("#" + tableId + " tr").length;
+			$("tr[id=\'" + tableId + index + "\']").remove();
+			var i, j
+			for (i = index + 1, j = _len; i < j; i++) {
+				var nextMinVal = $("#min" + tableId + i).val();
+				var nextMaxVal = $("#max" + tableId + i).val();
+				var nextScoreVal = $('#score' + tableId + i).val();
+				var nextRowInnerHtml = " <tr id=" + tableId + (i - 1)
+						+ " align=\"center\">" + "<td> " + (i - 1) + " </td> "
+						+ "<td><input type=\"text\" name=\"min" + _len
+						+ "\" id=\"min" + tableId + (i - 1) + "\" value=\""
+						+ nextMinVal + "\" /> </td>"
+						+ "<td><input type=\"text\" name=\"max" + _len
+						+ "\" id=\"max" + tableId + (i - 1) + "\" value=\""
+						+ nextMaxVal + "\" /> </td>"
+						+ "<td><input type=\"text\" name=\"score" + _len
+						+ "\" id=\"score" + tableId + (i - 1) + "\" value=\""
+						+ nextScoreVal + "\"  /> </td>"
+						+ "<td><img src=\"" + minus_icon + "\" width=\"15px\" height=\"15px\" onclick=\"delFreeTextRow(" + "\'"
+						+ tableId + "\'" + ", " + (i - 1)
+						+ ");\" /></td>" + "</tr>";
+				$("tr[id=\'" + tableId + i + "\']").replaceWith(
+						nextRowInnerHtml);
+			}
+		};
+				
+		function delRow(tableId, index) {
+			var _len = $("#" + tableId + " tr").length;
+			$("tr[id=\'" + tableId + index + "\']").remove();
+			var i, j
+			for (i = index + 1, j = _len; i < j; i++) {
+				var nextAnswerVal = $("#answer" + tableId + i).val();
+				var nextScoreVal = $('#score' + tableId + i).val();
+				var nextRowInnerHtml = " <tr id=" + tableId + (i - 1)
+						+ " align=\"center\">" + "<td> " + (i - 1) + " </td> "
+						+ "<td><input type=\"text\" name=\"answer" + _len
+						+ "\" id=\"answer" + tableId + (i - 1) + "\" value=\""
+						+ nextAnswerVal + "\" /> </td>"
+						+ "<td><input type=\"text\" name=\"score" + _len
+						+ "\" id=\"score" + tableId + (i - 1) + "\" value=\""
+						+ nextScoreVal + "\"  /> </td>"
+						+ "<td><img src=\"" + minus_icon + "\" width=\"15px\" height=\"15px\" onclick=\"delRow(" + "\'"
+						+ tableId + "\'" + ", " + (i - 1)
+						+ ");\" /></td>" + "</tr>";
+				$("tr[id=\'" + tableId + i + "\']").replaceWith(
+						nextRowInnerHtml);
+			}
+		};
+
+		function preformSave(tableId, choiceId, scoreId) {
+			if (collectInput(tableId, choiceId, scoreId)) {
+				saveQuestion();
+			}
+		};
+
+		function preformFreeTextSave(tableId, choiceId, scoreId) {
+			if (collectFreeTextInput(tableId, choiceId, scoreId)) {
+				saveFreeTextQuestion();
+			}
+		};
+
+		function collectInput(tableId, choiceId, scoreId) {
+			var valid = true;
+			if (tableId && choiceId && scoreId) {
+				var _len = $("#" + tableId + " tr").length;
+				var allAnswers = '';
+				var allScores = '';
+				var answerVal;
+				var scoreVal;
+				var i;
+				for (i = 1; i < _len; i++) {
+					answerVal = $("#answer" + tableId + i).val();
+					if (answerVal) {
+						scoreVal = $("#score" + tableId + i).val();
+						if(scoreVal == '') 
+							scoreVal = '0';
+						if (isNumber(scoreVal)) {
+							allAnswers += answerVal + '\n';
+							allScores += scoreVal + '\n';
+						} else {
+							alert(i + '.th line score invalid');
+							valid = false;
+							break;
+						}
+					} else {
+						alert(i + '.th line answer empty');
+						valid = false;
+						break;
+					}
+				}
+				if (valid) {
+					var choiceInput = document.getElementById(choiceId);
+					choiceInput.value = allAnswers;
+					var scoreInput = document.getElementById(scoreId);
+					scoreInput.value = allScores;				}
+			}
+			return valid;
+		};
+
+
+		function collectFreeTextInput(tableId, choiceId, scoreId) {
+			var valid = true;
+			if (tableId && choiceId && scoreId) {
+				var _len = $("#" + tableId + " tr").length;
+				var allAnswers = '';
+				var allScores = '';
+				var minVal;
+				var maxVal;
+				var previousMaxVal;
+				var rex = /(^\s*)|(\s*$)/g;
+				var scoreVal;
+				var i;
+				for (i = 1; i < _len; i++) {
+					minVal = $("#min" + tableId + i).val();
+					minVal = minVal.replace(rex, "");
+					maxVal = $("#max" + tableId + i).val();
+					maxVal = maxVal.replace(rex, "");
+					
+					if(previousMaxVal == '') {
+						alert((i - 1) + ".th line max is already infinit great" );
+						valid = false;
+						break;						
+					}
+					
+					if(minVal == '' && maxVal == '') {
+						alert(i + ".th line min and max can not both empty" );
+						valid = false;
+						break;					
+					}
+					
+					if(minVal != '' ) {
+						if(!isNumber(minVal)) {
+							alert(i + ".th line min invalid number" );
+							valid = false;
+							break;
+						} else if(parseFloat(minVal) < parseFloat(previousMaxVal)) {
+							alert(i + ".th line min value must greater than the previous max value" );
+							valid = false;
+							break;							
+						}
+					}
+					
+					if(maxVal != '' && !isNumber(maxVal) ) {
+						alert(i + ".th line min invalid number" );
+						valid = false;						
+						break;
+					}
+					if(minVal != '' && maxVal != '' && parseFloat(minVal) > parseFloat(maxVal)) {
+						alert(i + ".th line min value greater than max value" );
+						valid = false;
+						break;
+					}
+					scoreVal = $("#score" + tableId + i).val();
+					scoreVal = scoreVal.replace(rex, "");
+					if(scoreVal == '') 
+							scoreVal = '0';
+					if (isNumber(scoreVal)) {
+						allAnswers += (minVal + ';' + maxVal + ';' + '\n');
+						allScores += (scoreVal + '\n');
+						previousMaxVal = maxVal;
+					} else {
+						alert(i + '.th line score invalid');
+						valid = false;
+						break;
+					}										
+				}
+				if (valid) {
+					var choiceInput = document.getElementById(choiceId);
+					choiceInput.value = allAnswers;
+					var scoreInput = document.getElementById(scoreId);
+					scoreInput.value = allScores;				
+				}
+			}
+			return valid;
+		};
+		
+		function isNumber(val) {
+			var result = false;
+			if (val) {
+				//var strP = /^\d+(\.\d+)?$/;
+				var strP = /^(-?\d+)(\.\d+)?$/;
+				if (strP.test(val)) {
+					try {
+						if (parseFloat(val) == val)
+							result = true;
+					} catch (ex) {
+					}
+				}
+			}
+			return result;
+		}
+	</script>
+	<div id="labs_container">
+		<div id="fade" class="black_overlay"></div>
+		<apex:pageBlock >
+			<h2>
+				<apex:outputText value="{!surveyName}" id="surveyTitle" />
+			</h2>
+			<div id="navBarBg"></div>
+			
+			<!-- Modified by yinfeng.guo 2012-09-11 : after has survey taken is in status "Complete", make the survey unable edit -->
+			<apex:form id="navBar">
+			<!-- Start ITB 2012-10-19 : Comment out  rendered="{!!hasSurveyTakenCompleted}" -->
+				<apex:commandLink styleclass="btn left" rel="#addQuestion" 
+					action="{!makeNewQuestionLink}"
+					value="{!$Label.Add_Question_Button}" onComplete="resetSelect();"
+					reRender="addQuestion, rowQuestion, rowQuestionPreview, singleSelect, singleSelectPreview, multiSelect, multiSelectPreview, freeText, freeTextPreview, selectQuestionType" />
+				<apex:commandLink id="saveOrder2" action="{!refreshQuestionList}" 
+					value="{!$Label.Save_Order_Button}" onclick="updateOrder()"
+					styleclass="btn left" />
+				<apex:outputPanel >	
+					<a href="#" id="editSurvey" rel="#surveyEdit" class="btn left">{!$Label.Survey_Options_Title}</a>
+				</apex:outputPanel>
+				<apex:commandButton action="{!back}" value="{!$Label.BackButton}" />
+				<span id="alertOrderUpdated">{!$Label.Survey_Update_Message}</span>
+			<!-- End ITB 2012-10-19 : Comment out  rendered="{!!hasSurveyTakenCompleted}" -->
+				<!--         <a href="/{!reportId}?pv0={!surveyId}" id="resultToggle" class="btn right">Results</a> -->
+				<!--         <a href="#" id="surveyMenuLink" rel="#surveyMenu" class="btn right">Survey URL</a> -->
+			</apex:form>
+			<!-- Modified by yinfeng.guo 2012-09-11 : after has survey taken is in status "Complete", make the survey unable edit -->
+		</apex:pageBlock>
+
+		<div id="addQuestion" class="overlay">
+			<apex:outputPanel id="selectQuestionType">
+				<apex:form >
+					<span class="prompt">{!$Label.Question_Type_Title}
+						<div id="topPickList">
+							<apex:selectList size="1" value="{!questionType}"
+								onclick="displayLoadStatusImg();" id="questionSelect">
+								<apex:selectOptions value="{!questionTypeOptions}" />
+								<apex:actionSupport event="onchange"
+									action="{!setupQuestionFields}" oncomplete="clearFields();"
+									reRender="rowQuestion, rowQuestionPreview, singleSelect, singleSelectPreview, multiSelect, multiSelectPreview, freeText, freeTextPreview, questionPreview" />
+							</apex:selectList>
+
+						</div>
+						<div id="loadStatusImg" style="float: right; display: none;">
+							<img src="{!$Resource.Loading}" />
+						</div>
+						<div style="clear: both"></div> </span>
+
+				</apex:form>
+			</apex:outputPanel>
+
+			<!-----------------------------------------Single Select Question------------------------------------------->
+			<apex:outputPanel id="singleSelect">
+				<apex:pageBlock rendered="{!showFreeText != 'True'}">
+					<apex:form id="singleSelectForm">
+						<span class="prompt">{!$Label.Question_Title}</span>
+						<apex:inputTextArea cols="30" rows="3" id="qQuestion"
+							value="{!qQuestion}" required="true"
+							title="The question you would like asked" />
+
+						<span class="prompt">{!$Label.Required_Question_Title} <apex:inputCheckbox value="{!qRequired}"
+								title="Is an answer for the quesiton required?(default is true)"
+								selected="{!requiredBool}" />
+							<div>
+								<apex:outputText value="{!$Label.Class_Title}" />
+								<apex:selectList size="1" value="{!qClass}">
+									<apex:selectOptions value="{!classTypeOptions}" />
+								</apex:selectList>
+							</div> <apex:outputText value="{!$Label.Weight_Title}" /> <apex:inputText value="{!qWeight}" /> </span>
+
+
+						<span class="prompt">{!$Label.Enter_Answer_Message}
+							<table id="singleSelectTable">
+								<tr>
+									<td>{!$Label.Index_Title}</td>
+									<td>{!$Label.Choice_Title}</td>
+									<td>{!$Label.Score_Title}</td>
+									<td><img
+										src="{!URLFOR($Resource.ITB_Images, 'round_plus16.png')}"
+										width="15px" height="15px"
+										onclick="addRow('singleSelectTable')" /></td>
+								</tr>
+								<apex:repeat value="{!qChoiceScores}" var="qs">
+									<tr id="singleSelectTable{!qs.index}" align="center">
+										<td>{!qs.index}</td>
+										<td><input type="text" name="answer{!qs.index}"
+											id="answersingleSelectTable{!qs.index}" value="{!qs.choice}" />
+										</td>
+										<td><input type="text" name="score{!qs.index}"
+											id="scoresingleSelectTable{!qs.index}" value="{!qs.score}" />
+										</td>
+										<td><img
+											src="{!URLFOR($Resource.ITB_Images, 'round_minus16.png')}"
+											width="15px" height="15px"
+											onclick="delRow('singleSelectTable', {!qs.index});"
+											value="Del" />
+										</td>
+									</tr>
+								</apex:repeat>
+							</table> <apex:inputHidden id="SingleSelectChoice" value="{!qChoices}" /> <apex:inputHidden id="SingleSelectScore" value="{!qScores}" /> </span>
+
+						<br style="clear: both;"/>
+						<a href="" class="right btn"
+							onClick="$('.close').click(); return false;">{!$Label.CancelButton}</a>
+						<input type="button" class="btn"
+							onclick="preformSave('singleSelectTable', '{!$Component.SingleSelectChoice}', '{!$Component.SingleSelectScore}');"
+							value="{!$Label.SaveButton}" />
+						<apex:actionFunction name="saveQuestion"
+							action="{!controllerSavQuestion}">
+						</apex:actionFunction>
+					</apex:form>
+				</apex:pageBlock>
+			</apex:outputPanel>
+
+			<!---------------------------------------------------------------------------------------------------------->
+			<!-----------------------------------------Free Text Question----------------------------------------------->
+			<apex:outputPanel id="freeText">
+				<apex:pageBlock rendered="{!showFreeText}">
+					<apex:form id="freeTextForm">
+						<span class="prompt">{!$Label.Question_Title} </span>
+
+						<apex:inputTextArea cols="30" rows="3" id="qQuestion"
+							value="{!qQuestion}" required="true"
+							title="The question you would like asked" />
+
+						<div class="prompt" style="float: none;">
+							{!$Label.Required_Question_Title}
+							<apex:inputCheckbox value="{!qRequired}"
+								title="Is an answer for the quesiton required?(default is true)"
+								selected="{!requiredBool}" />
+							{!$Label.Answer_Calculable_Tile}
+							<apex:inputCheckbox value="{!qCalculable}"
+								title="Is the score calculated by the answer?(default is true)"
+								selected="true">
+							</apex:inputCheckbox>
+						</div>
+						<div>
+							<apex:outputText value="{!$Label.Class_Title}" />
+							<apex:selectList size="1" value="{!qClass}">
+								<apex:selectOptions value="{!classTypeOptions}" />
+							</apex:selectList>
+						</div>
+						<apex:outputText value="{!$Label.Weight_Title}" />
+						<apex:inputText value="{!qWeight}" />
+						<apex:outputPanel id="freeTextBoundray">
+							<span class="prompt">{!$Label.Enter_Answer_Message}
+								<table id="freeTextTable">
+									<tr>
+										<td>{!$Label.Index_Title}</td>
+										<td>{!$Label.Min_Title}</td>
+										<td>{!$Label.Max_Title}</td>
+										<td>{!$Label.Score_Title}</td>
+										<td><img
+											src="{!URLFOR($Resource.ITB_Images, 'round_plus16.png')}"
+											width="15px" height="15px"
+											onclick="addFreeTextRow('freeTextTable');" />
+										</td>
+									</tr>
+									<apex:repeat value="{!qChoiceScores}" var="qs">
+										<tr id="freeTextTable{!qs.index}" align="center">
+											<td>{!qs.index}</td>
+											<td><input type="text" name="min{!qs.index}"
+												id="minfreeTextTable{!qs.index}" value="{!qs.min}" /></td>
+											<td><input type="text" name="max{!qs.index}"
+												id="maxfreeTextTable{!qs.index}" value="{!qs.max}" /></td>
+											<td><input type="text" name="score{!qs.index}"
+												id="scorefreeTextTable{!qs.index}" value="{!qs.score}" />
+											</td>
+											<td><img
+												src="{!URLFOR($Resource.ITB_Images, 'round_minus16.png')}"
+												width="15px" height="15px"
+												onclick="delFreeTextRow('freeTextTable', {!qs.index});" />
+											</td>
+										</tr>
+									</apex:repeat>
+								</table> 
+
+								<apex:inputHidden id="FreeTextChoice" value="{!qChoices}" /> <apex:inputHidden id="FreeTextScore" value="{!qScores}" /> </span>
+						</apex:outputPanel>
+
+						<br style="clear: both;"/>
+						<a href="" class="right btn"
+							onClick="$('.close').click(); return false;">{!$Label.CancelButton}</a>
+						<input type="button" class="btn"
+							onclick="preformFreeTextSave('freeTextTable', '{!$Component.FreeTextChoice}', '{!$Component.FreeTextScore}');"
+							value="{!$Label.SaveButton}" />
+						<apex:actionFunction name="saveFreeTextQuestion"
+							action="{!controllerSavQuestion}" />
+					</apex:form>
+				</apex:pageBlock>
+			</apex:outputPanel>
+
+		</div>
+
+		<!-- End addQuestion -->
+		<apex:pageBlock >
+
+			<div id="questionList">
+
+				<!-- Single Select Preview -->
+				<apex:outputPanel id="singleSelectPreview">
+					<apex:pageBlock rendered="{!showSingleSelectPreview}">
+						<div class="question">
+							<div class="question_menu">
+								{!$Label.Single_Select_Preview_Title}</div>
+
+							<table>
+								<h1>{!qQuestion}</h1>
+								<apex:form id="singleSelectPreviewForm">
+									<tr>
+										<td><apex:selectRadio layout="pageDirection">
+												<apex:selectOptions value="{!singleOptions}" />
+											</apex:selectRadio>
+										</td>
+									</tr>
+								</apex:form>
+							</table>
+						</div>
+					</apex:pageBlock>
+				</apex:outputPanel>
+				
+
+				<!-- Multi Select Preview -->
+				<apex:outputPanel id="multiSelectPreview">
+					
+					<apex:pageBlock rendered="{!showMultiSelectPreview}">
+						<div class="question">
+
+							<div class="question_menu">
+								{!$Label.Multi_Select_Preview_Title}</div>
+
+							<table>
+								<h1>{!qQuestion}</h1>
+								<apex:form id="multiSelectPreviewForm">
+									<tr>
+										<td><apex:selectCheckboxes layout="pageDirection">
+												<apex:selectOptions value="{!multiOptions}" />
+											</apex:selectCheckboxes>
+										</td>
+									</tr>
+								</apex:form>
+							</table>
+						</div>
+					</apex:pageBlock>
+				</apex:outputPanel>
+
+				<!-- Free Text Preview -->
+				<apex:outputPanel id="freeTextPreview">
+					
+					<apex:pageBlock rendered="{!showFreeTextPreview}">
+						<div class="question">
+
+							<div class="question_menu">
+								{!$Label.Free_Text_Preview_Title}</div>
+
+							<table>
+								<h1>{!qQuestion}</h1>
+								<apex:form id="freeTextPreviewForm">
+									<tr>
+										<td><apex:inputTextArea cols="50" rows="10" />
+										</td>
+									</tr>
+								</apex:form>
+							</table>
+						</div>
+					</apex:pageBlock>
+				</apex:outputPanel>
+
+				<!-- Row Question Preview -->
+				<apex:outputPanel id="rowQuestionPreview">
+					
+					<apex:pageBlock rendered="{!showRowQuestionPreview}">
+						<div class="question">
+
+							<div class="question_menu">
+								{!$Label.Row_Question_Preview_Title}</div>
+
+							<table>
+								<h1>{!qQuestion}</h1>
+								<apex:form id="rowQuestionForm">
+									<tr>
+										<td><apex:selectRadio >
+												<apex:selectOptions value="{!rowOptions}" />
+											</apex:selectRadio>
+										</td>
+									</tr>
+								</apex:form>
+							</table>
+						</div>
+					</apex:pageBlock>
+				</apex:outputPanel>
+				<!-- ---------------------------------------------------------------------- -->
+
+				<div id="justQuestionList">
+					<apex:repeat value="{!aQuestion}" var="q" id="qRepeat">
+						<div id="{!q.id}" class="question"
+							title="Drag and Drop to Reorder">
+							<apex:form >
+								<div class="question_menu">
+									<div class="questionNum">{!q.orderNumber}</div>
+									<apex:image value="{!URLFOR($Resource.SurveyForce, 'survey_upDown.png')}"
+										styleClass="right" />
+
+									<!-- Modified by yinfeng.guo 2012-09-11 : after has survey taken is in status "Complete", make the survey unable edit -->
+									<!-- Start ITB 2012-10-19 : Comment out  rendered="{!!hasSurveyTakenCompleted}" -->
+									<apex:commandLink styleclass="btn" action="{!editQuestion}"
+										value="{!$Label.EditButton}" rel="#addQuestion" 
+										reRender="addQuestion, rowQuestion, rowQuestionPreview, singleSelect, singleSelectPreview, multiSelect, multiSelectPreview, freeText, freeTextPreview, selectQuestionType">
+										<apex:param name="q" value="{!q.id}"
+											assignTo="{!questionReference}" />
+									</apex:commandLink>
+									<apex:commandLink styleclass="btn" action="{!deleteRefresh}"
+										value="{!$Label.DeleteButton}" 
+										onclick="confirmDelete('{!q.id}')"></apex:commandLink>
+									<!-- Start ITB 2012-10-19 : Comment out  rendered="{!!hasSurveyTakenCompleted}" -->
+									<!-- Modified by yinfeng.guo 2012-09-11 : after has survey taken is in status "Complete", make the survey unable edit -->	
+								</div>
+								<h1>
+									{!q.Name}
+									<apex:outputPanel rendered="{!q.required}"
+										styleClass="requiredText">
+                						(required)
+            						</apex:outputPanel>
+								</h1>
+								<div>
+									<apex:selectRadio layout="pageDirection"
+										rendered="{!q.renderSelectRadio}">
+										<apex:selectOptions value="{!q.singleOptions}" />
+									</apex:selectRadio>
+									<apex:selectCheckboxes layout="pageDirection"
+										rendered="{!q.renderSelectCheckboxes}">
+										<apex:selectOptions value="{!q.multiOptions}" />
+									</apex:selectCheckboxes>
+									<apex:inputTextArea cols="50" rows="10"
+										rendered="{!q.renderFreeText}" />
+									<apex:selectRadio rendered="{!q.renderSelectRow}">
+										<apex:selectOptions value="{!q.rowOptions}" />
+									</apex:selectRadio>
+								</div>
+							</apex:form>
+						</div>
+					</apex:repeat>
+				</div>
+			</div>
+			<div id="surveyEdit" class="overlay">
+
+				<h2 id="editMenu">
+					{!$Label.Edit_Survey_Title} <span>{!$Label.Header_Title}</span> <span>Name</span>
+				</h2>
+
+				<apex:form >
+					<div id="editSections">
+						<div>
+							<apex:inputField value="{!Survey__c.Survey_Header__c}" />
+						</div>
+
+						<div>
+							<apex:inputText value="{!Survey__c.Name}" id="surveyTitle" />
+							<table class="ITB_Table_Style">
+								<tr>
+									<td><apex:outputLabel value="{!$ObjectType.Survey__c.fields.Status__c.label}:" />
+									</td>
+									<td><apex:inputField value="{!Survey__c.Status__c}" /></td>
+								</tr>
+								<tr>
+									<td><apex:outputLabel value="{!$ObjectType.Survey__c.fields.Valid_from__c.label}:" />
+									</td>
+									<td><apex:inputField value="{!Survey__c.Valid_from__c}" />
+									</td>
+								</tr>
+								<tr>
+									<td><apex:outputLabel value="{!$ObjectType.Survey__c.fields.Valid_to__c.label}:" />
+									</td>
+									<td><apex:inputField value="{!Survey__c.Valid_to__c}" />
+									</td>
+								</tr>
+							</table>
+						</div>
+
+						<div>
+							<h3 class="firstHeader">Thank You Text</h3>
+							<h3>Thank You Link</h3>
+						</div>
+					</div>
+
+					<a href="" class="right btn"
+						onClick="$('.close').click(); return false;">{!$Label.CancelButton}</a>
+					<a href="#" id="surveyDeleteLink" class="btn right">{!$Label.Delete_Survey_Button}</a>
+
+					<div id="surveyDelete">
+						{!$Label.Confirm_Delete_Message}
+						<apex:commandButton action="{!delete}"
+							value="{!$Label.Confirm_Delete}" />
+						<a href="#" id="surveyCancelLink" class="btn">{!$Label.CancelButton}</a>
+					</div>
+
+					<apex:commandButton styleClass="left" action="{!save}"
+						value="{!$Label.SaveButton}" />
+
+				</apex:form>
+			</div>
+	</apex:pageBlock>
+	</div>
+
+
+	<!---------------------------------------------------------------------------------------------------------->
+	<script type="text/javascript">
+		function updateOrder() {
+			var elemParent = $('#justQuestionList');
+			var childrenList = elemParent.children();
+			var childIds = new Array();
+			for ( var i = 0; i < childrenList.length; i++) {
+				childIds[i] = childrenList[i].id;
+			}
+			sforce.apex.execute("ExtTakeSurvey", "updateQuestionOrder", {
+				qOrder : childIds
+			});
+
+			jQuery('span#alertOrderUpdated').fadeIn(1000).delay(1000).fadeOut(
+					500);
+		}
+	</script>
+
+</apex:page>

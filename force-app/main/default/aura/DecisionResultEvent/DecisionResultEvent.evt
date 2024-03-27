@@ -1,0 +1,7 @@
+<!--
+ - Created by thomas.schnocklake on 14.02.18.
+ -->
+
+<aura:event type="COMPONENT" description="DecisionResultEvent">
+    <aura:attribute name="result" type="String"/>
+</aura:event>

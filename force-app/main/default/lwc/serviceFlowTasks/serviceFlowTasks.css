@@ -1,0 +1,49 @@
+.montserratRegular{
+    font-family: Montserrat-Regular!important;
+    color: black;
+}
+.montserratBold{
+    font-family: Montserrat-Bold!important;
+    color: black;
+}
+lightning-button.button {
+	--sds-c-button-brand-color-background:#007584;
+    --sds-c-button-brand-color-border:#007584;
+    --sds-c-button-brand-color-background-hover:#39bbbb;
+    --sds-c-button-brand-color-border-hover:#39bbbb;
+    --sds-c-button-text-color: #f4f7f9;
+}
+.spinnerClass{
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.hrefcss{
+    text-decoration: none;
+}
+.boxdynamiccss{
+    border-left-width: thick;
+    border-left-color: cadetblue;
+    background-color: #2b2b2d;
+    color: #fff !important;
+    font-family: Montserrat-Bold!important;
+    height: 70px !important;
+}
+.montserratBolddahsboard{
+    font-family: Montserrat-Bold!important;
+}
+.errorContentCss{
+    color:red !important;
+}
+.bottomMargin{
+    margin-top: 23px;
+}
+.slds-modal__container {
+    width: 53rem !important;
+    height: 40rem !important;
+	max-width: 60rem !important;
+    min-width: 60rem !important;   
+}
+.slds-box {
+    /*box-shadow: inset -5px -5px 9px rgba(255,255,255,0.45), inset 5px 5px 9px rgba(94,104,121,0.3) !important;*/
+}

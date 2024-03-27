@@ -1,0 +1,10 @@
+<apex:page standardController="Account">
+<apex:outputPanel rendered="{! $User.UIThemeDisplayed == 'Theme3' || $User.UIThemeDisplayed == 'Theme4d'}">
+    <apex:include pageName="accountHolkCollectionPage"/>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{! $User.UIThemeDisplayed == 'Theme4t' }">
+    <apex:include pageName="accountHolkCollectionMobilePage"/>
+</apex:outputPanel>
+
+</apex:page>

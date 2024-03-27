@@ -1,0 +1,104 @@
+.boxdynamiccss{
+    border-left-width: thick;
+    border-left-color: cadetblue;
+    background-color: #2b2b2d;
+    color: #fff !important;
+    font-family: Montserrat-Bold!important;
+    background: white;
+}
+.iconStyle{
+    fill: cadetblue;
+}
+lightning-button.button {
+	--sds-c-button-brand-color-background:#007584;
+    --sds-c-button-brand-color-border:#007584;
+    --sds-c-button-brand-color-background-hover:#39bbbb;
+    --sds-c-button-brand-color-border-hover:#39bbbb;
+    --sds-c-button-text-color: #f4f7f9;
+}
+.spinnerClass{
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.montserratBold{
+    font-family: Montserrat-Bold!important;
+    color: black;
+}
+.montserratBolddahsboard{
+    font-family: Montserrat-Bold!important;
+}
+.montserratRegular{
+    font-family: Montserrat-Regular!important;
+    color: black;
+}
+.montserratRegulardashboard{
+    font-family: Montserrat-Regular!important;
+}
+.tableFixHead {
+    overflow: auto;
+    height: 300px;
+}
+
+.tableFixHead table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.tableFixOnlyHead{
+    position: sticky;
+    top: 0;
+    z-index: 4;
+ }
+ .itemNumberCss:hover{
+    color: blue !important;
+ }
+ .itemNumberCss:active{
+    color:blue !important;
+ }
+ .itemNumberCss:link {
+     color:blue !important;
+}
+.slds-modal__container_large {
+    max-width: 60rem !important;
+    box-shadow: 0 2px 0px -1px rgb(0 0 0 / 10%);
+    border-radius: 0.5rem;
+    border: 1px solid transparent; 
+}
+.slds-modal__container {
+    margin: 0 auto;
+    width: 80% !important;
+    max-width: 57rem !important;
+    min-width: 20rem !important;
+    box-shadow: 0 2px 0px -1px rgb(0 0 0 / 10%);
+    border-radius: 0.5rem;
+    border: 1px solid transparent; 
+}
+lightning-textarea{ 
+    --sds-c-textarea-sizing-min-height: 107px;
+}
+.slds-form-element__legend{
+    padding: 9px;
+    background-color: #eeeeee;
+    outline: none;
+    width: 100%;
+}
+section.slds-popover { z-index: 9000 }
+.comboboxcss:hover {cursor: pointer !important;}
+lightning-combobox:hover {cursor: pointer !important;}
+.hrefcss{
+    text-decoration: none;
+}
+.boxcustomcss{
+    border-left-width: thick !important;
+    border-left-color: cadetblue !important;
+    border-style: outset !important;
+    height: 70px !important;
+    background: white;
+}
+.slds-progress-ring_large{
+    height: 3rem !important;
+    width: 3rem !important;
+}
+.errorContentCss{
+    color:red !important;
+}

@@ -1,0 +1,109 @@
+<aura:component controller="PortalInitCsvImport"
+    implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+                access="public">          
+    <!-- export attributes start  -->
+    <!--aura init handler, call js "loadContactList" function on component load, and display contact data on table-->   
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <!--Declare Attribute for store Contact Records List-->  
+    <aura:attribute name="ListOfContact" type="Account[]"/>
+    <aura:attribute name="templateList" type="List" default="[]"/>
+    <aura:attribute name="template" type="String" default=""/>
+    <aura:attribute name="languageList" type="List" default="[]"/>
+    <aura:attribute name="errorList" type="List" default="[]"/>
+    <aura:attribute name="language" type="String" default=""/>
+    <aura:attribute name="portalList" type="List" default="[]"/>
+    <aura:attribute name="portal" type="String" default=""/>
+    <aura:attribute name="systemEmailList" type="List" default="[]"/>
+    <aura:attribute name="systemEmail" type="String" default=""/>
+    <!-- export attributes end-->
+    
+    <!-- Import attributes start  -->
+    <aura:attribute name="ShowModule" type="boolean" default="false"/>
+    <aura:attribute name="showcard" type="boolean" default="false"/>
+    <aura:attribute name="hasError" type="boolean" default="false"/>
+    <!-- Import attributes end  -->
+
+    <aura:attribute name="toggleSpinner" type="boolean" default="false"/> 
+    <aura:if isTrue="{!v.toggleSpinner}">
+        <div class="slds-spinner_container">
+            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-form-element slds-size_1-of-6">
+                <lightning:button label="Download sample template" onclick="{!c.downloadCsvTemplate}" class="slds-button"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-form-element slds-size_1-of-4">
+                <lightning:select label="Template" value="{!v.template}" name="TemplateSelect">
+                    <aura:iteration items="{!v.templateList}" var="option">
+                        <option value="{!option.Id}" text="{!option.Name}"></option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            <div class="slds-form-element slds-size_1-of-4">
+                <lightning:select label="Language"
+                                    value="{!v.language}" name="languageSelect">
+                    <aura:iteration items="{!v.languageList}" var="option">
+                        <option value="{!option.Id}" text="{!option.Name}"></option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            <div class="slds-form-element slds-size_1-of-4">
+                <lightning:select label="Portal"
+                                    value="{!v.portal}" name="portalSelect">
+                    <aura:iteration items="{!v.portalList}" var="option">
+                        <option value="{!option.Id}" text="{!option.Name}"></option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            <div class="slds-form-element slds-size_1-of-4">
+                <lightning:select label="System Invitation Email"
+                                    value="{!v.systemEmail}" name="systemEmailSelect">
+                    <aura:iteration items="{!v.systemEmailList}" var="option">
+                        <option value="{!option.Id}" text="{!option.Name}"></option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-form-element slds-size_1-of-1">
+                <input type="file" class="file" aura:id="file" onchange="{!c.showfiledata}"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-form-element slds-size_3-of-12">
+                <lightning:button label="Init Accounts template" onclick="{!c.CreateRecord}" class="slds-button slds-button--brand"/>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size_1-of-2">
+            <aura:if isTrue = "{!v.showcard}">
+                <lightning:card>
+                    <div id="divCSV" class="slds-form-element slds-scrollable_x" >
+                    </div>  
+                </lightning:card>
+            </aura:if>
+        </div>
+        <aura:if isTrue="{!v.hasError}">
+            <div class="slds-size_1-of-2">
+                <div id="errors" aura:id="errors" class="slds-form-element slds-scrollable_x" style="width: 100%;">
+                    <ul class="ulerror">
+                        <aura:iteration items="{!v.errorList}" var="error">
+                            <li>{!error}</li>
+                        </aura:iteration>
+                    </ul>
+                </div>
+            </div>
+        </aura:if>
+    </div>
+</aura:component>

@@ -1,0 +1,164 @@
+<apex:component controller="Email_Controller" access="global">
+    <!-- == Footer Section == -->
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="em_full_wrap" bgcolor="#ffffff" style="table-layout:fixed;">
+        <tr>
+            <td align="center" valign="top">
+                <table align="center" width="600" border="0" cellspacing="0" cellpadding="0" class="em_main_table" style="width:600px; table-layout:fixed;">
+                    <tr>
+                        <td class="em_aside15" align="center" valign="top" style="padding:0px 15px;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td class="em_pad" align="center" valign="top" style="padding:27px 50px 24px; background-color:#807666;" bgcolor="#807666">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td align="center" valign="top" style="font-family:Arial, sans-serif; font-size:18px; line-height:21px; color:#FFFFFF;">
+                                                    <a href="#" target="_blank" style="text-decoration:none; color:#FFFFFF;">{!$Label.Company_Name}</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td height="13" style="height:13px; font-size:0px; line-height:0px;" class="em_h20">
+                                                    <apex:repeat value="{!list_documents}" var="doc">
+                                                        <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'spacer'}">
+                                                            <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                                    width="1" height="1" alt="" border="0" style="display:block;" />
+                                                        </apex:outputPanel>
+                                                    </apex:repeat>
+                                                    <!--<img src="https://{!serverInstance}/servlet/servlet.ImageServer?id=0159E000000lQrQ&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                        width="1" height="1" alt="" border="0" style="display:block;" />-->
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" valign="top" style="font-family:Arial, sans-serif; font-size:12px; line-height:14px; color:#FFFFFF;">
+                                                    {!$Label.HOYA_Address}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td height="22" style="height:22px; font-size:0px; line-height:0px;" class="em_h20">
+                                                    <apex:repeat value="{!list_documents}" var="doc">
+                                                        <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'spacer'}">
+                                                            <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                                    width="1" height="1" alt="" border="0" style="display:block;" />
+                                                        </apex:outputPanel>
+                                                    </apex:repeat>
+                                                    <!--<img src="https://{!serverInstance}/servlet/servlet.ImageServer?id=0159E000000lQrQ&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                        width="1" height="1" alt="" border="0" style="display:block;" />-->
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td height="1" style="height:1px; font-size:0px;line-height:0px; background-color:#FFFFFF;" bgcolor="#FFFFFF">
+                                                    <apex:repeat value="{!list_documents}" var="doc">
+                                                        <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'spacer'}">
+                                                            <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                                    width="1" height="1" alt="" border="0" style="display:block;" />
+                                                        </apex:outputPanel>
+                                                    </apex:repeat>
+                                                    <!--<img src="https://{!serverInstance}/servlet/servlet.ImageServer?id=0159E000000lQrQ&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                        width="1" height="1" alt="" border="0" style="display:block;" />-->
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td height="19" style="height:19px; font-size:0px; line-height:0px;" class="em_h20">
+                                                    <apex:repeat value="{!list_documents}" var="doc">
+                                                        <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'spacer'}">
+                                                            <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                                    width="1" height="1" alt="" border="0" style="display:block;" />
+                                                        </apex:outputPanel>
+                                                    </apex:repeat>
+                                                    <!--<img src="https://{!serverInstance}/servlet/servlet.ImageServer?id=0159E000000lQrQ&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                        width="1" height="1" alt="" border="0" style="display:block;" />-->
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" valign="top" style="font-family:Arial, sans-serif; font-size:12px; line-height:14px; color:#FFFFFF;">
+                                                    {!$Label.Final_Footer}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" valign="top">
+                                        <table align="center" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td align="center" valign="top" background="https://{!serverInstance}/servlet/servlet.ImageServer?id={!back_g_img}&oid={!$Organization.Id}&lastMod=1596105464000"
+                                                    style="background-image:url(https://{!serverInstance}/servlet/servlet.ImageServer?id={!back_g_img}&oid={!$Organization.Id}&lastMod=1596105464000); background-repeat:no-repeat; height:126px;"
+                                                    height="126">
+                                                    <!--[if gte mso 9]>
+                                      <v:image xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style=" border: 0;display: inline-block; width: 570px; height: 126px;" src="https://{!serverInstance}/servlet/servlet.ImageServer?id={}&oid={!$Organization.Id}&lastMod=1596105464000" />
+                                      <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style=" border: 0;display: inline-block;position: absolute; width: 570px; height: 126px;">
+                                         <v:fill  opacity="0%" color="#f7901e"  />
+                                         <v:textbox inset="0,0,0,0">
+                                            <![endif]-->
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td width="212" style="width:212px;" class="em_side15">
+                                                                <apex:repeat value="{!list_documents}" var="doc">
+                                                                    <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'spacer'}">
+                                                                        <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                                                width="1" height="1" alt="" border="0" style="display:block;" />
+                                                                    </apex:outputPanel>
+                                                                </apex:repeat>
+                                                                <!--<img src="https://{!serverInstance}/servlet/servlet.ImageServer?id=0159E000000lQrQ&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                                    width="1" height="1" alt="" border="0" style="display:block;"
+                                                                />-->
+                                                            </td>
+                                                            <td align="center" valign="top">
+                                                                <apex:repeat value="{!list_documents}" var="doc">
+                                                                    <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'logo_img'}">
+                                                                        <a href="#" target="_blank" style="text-decoration:none;">
+                                                                            <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                                            width="146" alt="HOYA" border="0" style="display:block; font-family:Arial, sans-serif; font-size:20px; line-height:25px; color:#FFFFFF; max-width:146px;"/>
+                                                                        </a>    
+                                                                    </apex:outputPanel>
+                                                                </apex:repeat>
+                                                                <!--<img src="https://{!serverInstance}/servlet/servlet.ImageServer?id=0159E000000lQrL&oid={!$Organization.Id}&lastMod=1596105645000"
+                                                                    width="146" alt="HOYA" border="0" style="display:block; font-family:Arial, sans-serif; font-size:20px; line-height:25px; color:#FFFFFF; max-width:146px;"
+                                                                />-->
+                                                            </td>
+                                                            <td width="212" style="width:212px;" class="em_side15">
+                                                                <apex:repeat value="{!list_documents}" var="doc">
+                                                                    <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'spacer'}">
+                                                                        <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                                                width="1" height="1" alt="" border="0" style="display:block;" />
+                                                                    </apex:outputPanel>
+                                                                </apex:repeat>
+                                                                <!--<img src="https://{!serverInstance}/servlet/servlet.ImageServer?id=0159E000000lQrQ&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                                    width="1" height="1" alt="" border="0" style="display:block;"
+                                                                />-->
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <!--[if gte mso 9]>
+                                         </v:textbox>
+                                         </v:fill>
+                                      </v:rect>
+                                      </v:image>
+                                      <![endif]-->
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="em_hide" style="line-height:1px;min-width:600px;background-color:#ffffff;">
+                            <apex:repeat value="{!list_documents}" var="doc">
+                                <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'spacer'}">
+                                    <img alt="" src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                            height="1" width="600" style="max-height:1px; min-height:1px; display:block; width:600px; min-width:600px;"
+                                            border="0" />
+                                </apex:outputPanel>
+                            </apex:repeat>
+                            <!--<img alt="" src="https://{!serverInstance}/servlet/servlet.ImageServer?id=0159E000000lQrQ&oid={!$Organization.Id}&lastMod=1596105659000"
+                                height="1" width="600" style="max-height:1px; min-height:1px; display:block; width:600px; min-width:600px;"
+                                border="0" />-->
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <!-- == //Footer Section == -->
+</apex:component>

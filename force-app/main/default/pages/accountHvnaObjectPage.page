@@ -1,0 +1,330 @@
+<apex:page standardController="Account" extensions="AccountHvnaFindProviderController"  lightningStylesheets="true" >
+<apex:slds />
+
+    <div class="detailList">
+    <apex:messages />
+
+        <apex:form >
+            <apex:pageBlock mode="maindetail">
+                <apex:pageBlockSection title="Information" columns="2">
+
+             
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Inside_Territory_Sales_Manager__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Startup_Date_for_NAP__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_HIDE__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Entity__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Account_Number__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_HoyaID__c}"/>
+                                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Bill_To_Account_Number__c}"/>
+                    <apex:outputField value="{!account.HOLA_Sales_Rep__c}"/>
+                                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Group_Number__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Direct_Report_Reps__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.SRX_TSM__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Rep_Support__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Link_Account_Number__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Resolution_In_Process__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_First_Name__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Partner_Success_Rep__c}"/>
+                                
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_New_Account_Priority__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Suffix__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Partner_Success_Program_chk__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Title_2__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Partner_Success_Pgm_Enroll_Date__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Primary_Buying_Group__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Program_Status_Date__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Group_Code_2__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Partner_Success_Program_Status__c}"/>
+
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Vision_Source_Office_ID__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Partner_Success_Anniversary_Card__c}"/>
+                
+                    <!-- additional information start here -->
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Stop_Service__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_DVI_Comments1__c}"/>
+            
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Stop_Service_Reason__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_DVI_Comments2__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Notify_CDM_for_account_assistance__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Activation__c}"/>
+                
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Activation_Date__c}"/>
+                                                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Days_Since_Last_Contaxt__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Bill_Status__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_SRV_1__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Finance_Charge_Percentage__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_SRV_2__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Credit_Limit__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_SRV_3__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Discount_Schedule__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_SRV_4__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Regular_RX_Pricelist__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_SRV_5__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Uncut_Rx_Pricelist__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_SRV_6__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Stock_Lens_Pricelist__c}"/>
+                    
+                </apex:pageBlockSection>
+            
+                <apex:pageBlockSection title="Key and Strategic" columns="2">
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Key_Account_Rep__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Strategic_Reps__c}"/>
+                 
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Key_Account_Prospect_Flag__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.CDM__c}"/>
+   
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Key_Account_Engagement__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.CDM_Onboarding_Engagement__c}"/>
+      
+                    <apex:outputField value="{!account.Additionnal_account_data__r.KEY_Target_Type__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Pre_Paid_Discount_Request__c}"/>
+            
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Key_Anticipated_Start_Date__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Key_Anticipated_Group_Monthly_Wallet__c}"/> 
+                    
+                </apex:pageBlockSection>
+             
+                <apex:pageBlockSection title="Find a Provider" columns="2">
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Account_Name__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Email__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Street_Address__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Website__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_City__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Social_Channel_1__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_State_Prov__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Social_Channel_2__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Zip_Post__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Social_Channel_3__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Phone__c}"/>
+        
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection title="ConcessionDeal" columns="2">
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Concession_Effective__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Concession_Mo_Commit__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Concession_Review__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Concession_Labs__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Concession_End_Date__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Concession_Discount__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Concession_Temporary__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Concession_Comments__c}"/>
+          
+                </apex:pageBlockSection>
+             
+                <apex:pageBlockSection title="2020 Pricing" columns="2">
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.X2020_Price_Exception__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.of_Doors_associated_with_this_customer__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Price_Exception_Date__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Group_Code__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Pricing_Exception_Request_Date__c}"/>
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Pricing_instructions__c}"/>
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Detailed_Pricing_Instructions__c}"/>
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    
+                </apex:pageBlockSection>
+                        
+                <apex:pageBlockSection title="Receivables and Collections" columns="2">
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FIRST_JOB_DATE__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_A_R_Last_Pmt_Amount__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Recent_Purchase__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_A_R_Last_Pmt_Date__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_First_Stmt_Date__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_A_R_Curr_Bal__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_In_Collections_Currently__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_A_R_30__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_In_Collections_Date__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_A_R_60__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Off_Collections_Date__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_A_R_90__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Collections_Comments__c}"/>
+         
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection title="Practice Profile" columns="2">
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Zone__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Associated_Buying_Groups__c}"/>
+                
+                    <apex:outputField value="{!account.type}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_MD_Service__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Number_of_Locations__c}"/>
+                    <apex:outputField value="{!account.webSite}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Store_Hours__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Managed_Care__c}"/>       
+                
+                    <apex:outputField value="{!account.NumberOfEmployees}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_VSP_Percentage__c}"/>
+                  
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_In_House_Finishing__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Insurance_Plans__c}"/>
+
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_In_House_Surfacing__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Capture_Rate__c}"/>
+            
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Edger__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Frame_Measuring_Device__c}"/>
+            
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Tracer_Type__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Office_Software__c}"/>
+            
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Tracer_S_N__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Ringisho_Number__c}"/>
+            
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Tracer__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Ringisho_Start_Date__c}"/>
+            
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Tracer_Notes__c}"/>
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                
+               </apex:pageBlockSection>
+                    
+                <apex:pageBlockSection title="Practice Preferences" columns="2">
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Hoya_Primary_Lab_Used__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Secondary_Lab__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Primary_Lab_Name__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Preferred_High_End_PAL__c}"/>
+             
+                </apex:pageBlockSection>                    
+                
+                <apex:pageBlockSection title="Description Information" columns="2">
+                
+                    <apex:outputField value="{!account.description}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Report_Filter_1__c}"/>
+                    
+                </apex:pageBlockSection>
+              
+                <apex:pageBlockSection title="Leads" columns="2">
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Subject__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Source__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Follow_Up__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Date__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Notes__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Lead_File_Link__c}"/>
+
+
+                </apex:pageBlockSection>
+                
+                      <apex:pageBlockSection title="Marketing Programs" columns="2">
+                
+                    <!--apex:outputField value="{!account.Additionnal_account_data__r.Ally_Kickstart__c}"/-->
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem> 
+
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_SpectanglePro__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Spectangle_Pro_Purchase_Date__c}"/>
+
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem> 
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem> 
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Visionary_Alliance_Enrollment_Status__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Visionary_Alliance_Enrollment_Date__c}"/> 
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Prior_Month_Tier_Status__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Current_Month_Tier_Status__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Visionary_Alliance_Campaign__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.VA_Campaign_Enrollment_Date__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.SuperPower_Enrollment_date__c}"/>  
+
+                    <apex:outputField value="{!account.Additionnal_account_data__r.VA_SuperPower_Campaign__c}"/> 
+                    <apex:outputField value="{!account.Additionnal_account_data__r.SuperPower_Enrollment_date__c}"/>  
+                    <!--apex:outputField value="{!account.Additionnal_account_data__r.Growth_Program__c}"/-->  
+
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>      
+                    <!--apex:outputField value="{!account.Additionnal_account_data__r.VSP_Premier_Offer__c}"/-->           
+
+                </apex:pageBlockSection>
+                
+                
+                
+                
+                <apex:pageBlockSection title="Flags" columns="2">
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Unity_Target__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_EyeMed_Target__c}"/>
+                
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_VSP_Premier_Provider__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_EyeMed__c}"/>
+                                 
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Service_Guarantee_Target__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_X24_Hr_Model_Target__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Strategic_Accounts__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.IDOC_Study_Group__c}"/>
+                                       
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Private_Equity_Purchase__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Last_Rep_Office_Visit__c}"/>
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Private_Equity_Date__c}"/>
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Current_Month_Leaky_Bucket__c}"/>         
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Private_Equity_Group__c}"/>    
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>   
+                    
+                    <apex:outputField value="{!account.Additionnal_account_data__r.Other_Private_Equity_Group__c}"/>    
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>   
+                                    
+                </apex:pageBlockSection>                
+                
+                               
+                <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton" hideOnEdit="editButton" />
+                <apex:pageBlockButtons location="bottom" >
+                    <apex:commandButton value="Save" action="{!save}" id="saveButton" style="display:none"/>
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+        </apex:form>
+    </div>
+</apex:page>

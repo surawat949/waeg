@@ -1,0 +1,226 @@
+.THIS .margin{
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.THIS .hide{
+    display:none;
+}
+.THIS .slds-radio {  
+    display: inline !important;  
+}
+.THIS .slds-form-element__icon {
+    display: none !important;
+}
+.THIS .slds-spinner_container  {
+    background-color: rgba(0, 0, 0, 0.10);
+    margin-top: 200px;
+    margin-bottom: 200px; 
+}
+.THIS.spinMargin{
+    margin-top: -300px;
+}
+.THIS .button-search{
+    margin-top: 24px !important;
+}
+.THIS .button{    
+    border-radius: 3px;
+    text-align: center;
+    /*padding: 0% 5% 0% 5%;*/
+    font-size: 14px;
+    font-weight: bold;
+    -webkit-user-select: none;
+    height: 40px;
+}
+.THIS .button-css {
+    background:slategrey !important;
+}
+.THIS .slds-modal__title{
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.THIS .stickyFooter{
+    background :rgb(250, 247, 245);
+}
+.THIS .slds-card{
+    background: white !important;
+}
+.THIS .slds-box{
+    background: white !important;
+}
+
+.THIS .box {
+    position:relative;
+    border:1px solid #BBB;
+    background:#eee;
+}
+.THIS .tableFixHead {
+    overflow: auto;
+}
+
+.THIS .tableFixHead table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.THIS .tableFixOnlyHead{
+    position: sticky;
+    top: 0;
+    z-index: 4;
+}
+.THIS .scoreInformation{
+    width: 5rem !important;
+}
+.THIS .slds-file-selector__text{
+    display:none !important;
+}
+.THIS .tableFixHead {
+    overflow: auto;
+    height: auto;
+}
+
+.THIS .tableFixHead table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.THIS .tableFixHead th {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+}
+.THIS .fix{
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: #f8f8f8;
+}
+.THIS .table-scroll {
+    overflow: auto;
+}
+.THIS .slds-is-resizable{
+    /*background-color: slategrey;
+    color: white;*/
+}
+.THIS .slds-breadcrumb__item{
+    font-weight:bolder !important;
+}
+
+.THIS .verticalAlign {
+    cursor: pointer;
+    margin: 6px 0px 0px 6px!important;
+}
+.THIS .recordListBox {
+    margin-top:0px !important;
+    overflow-y: scroll;
+}
+.THIS .inputBox input {
+    padding-left: 30px;
+}
+.THIS .eachItem {
+    padding: 10px;
+}
+.THIS .eachItem:hover {
+    background-color: #EEE;
+    cursor: pointer;
+}
+
+/* For Scrolling */
+.THIS ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+.THIS ::-webkit-scrollbar-track {
+    display: none !important;
+}
+.THIS ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: rgba(0,0,0,0.4);
+}
+.THIS .button{
+    background:#4F758B;
+    border:#4F758B;
+    color: #f4f7f9;
+    border-radius: 3px;
+    text-align: center;
+    /*padding: 0% 5% 0% 5%;*/
+    font-size: 14px;
+    font-weight: bold;
+    -webkit-user-select: none;
+    height: 40px;
+}
+.THIS .slds-form-element__label{
+    font-weight: bold;
+}
+.THIS .slds-modal__title{
+    font-size: 21px;
+    font-weight: bold;
+}
+.THIS .button:hover{
+    background:#39bbbb;
+    border:#39bbbb;
+}
+.THIS .slds-input{
+    padding-top: 17px;
+    padding-bottom: 17px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 14px;
+    height: 52px;
+}
+.THIS .slds-combobox__input{
+    padding-top: 10px;
+    padding-bottom: 17px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 14px;
+    height: 52px;
+}
+.THIS .stickyFooter{
+    background :rgb(250, 247, 245);
+}
+.THIS .slds-card{
+    background: whitesmoke !important;
+}
+.THIS .slds-box{
+    background: white !important;
+}
+
+.THIS .box {
+   position:relative;
+   border:1px solid #BBB;
+   background:#eee;
+}
+.THIS .ribbon {
+   position: absolute;
+   right: -5px; top: -5px;
+   z-index: 1;
+   overflow: hidden;
+   width: 75px; height: 75px; 
+   text-align: right;
+}
+.THIS .ribbon span {
+   font-size: 10px;
+   color: #fff; 
+   text-transform: uppercase; 
+   text-align: center;
+   font-weight: bold; line-height: 20px;
+   transform: rotate(45deg);
+   -webkit-transform: rotate(45deg); /* Needed for Safari */
+   width: 100px; display: block;
+   background: darkred;
+   box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+   position: absolute;
+   top: 19px; right: -21px;
+}
+.THIS .slds-textarea{
+    width: -webkit-fill-available !important;
+}
+.THIS .slds-combobox__input{
+    width: -webkit-fill-available !important;
+}
+.THIS .slds-input{
+    width: -webkit-fill-available !important;
+}
+.THIS .slds-icon {
+    fill: gray !important;
+}

@@ -1,0 +1,38 @@
+<apex:page standardController="Account" extensions="AccountHolkSpecificController" lightningStylesheets="true">
+<apex:slds />
+    
+    <table class="list" width="100%" >
+        <tbody>
+            <tr>
+                <th class="headerRow" width="5%" colspan="2"><apex:outputLabel value="Keyman 1" style="font-weight:bold"/></th>
+                <td class="dataCell" width="10%"><apex:outputField value="{!account.HOLK_account_data__r.AR_Over90_AMT__c}"/></td>
+            </tr>
+            <tr>
+                <th class="headerRow" width="5%"><apex:outputLabel value="성명" style="font-weight:bold"/></th>
+                <td class="dataCell" width="10%"><apex:outputField value="{!account.HOLK_account_data__r.Keyman_Name__c}"/></td>
+                
+                <th class="headerRow" width="5%"><apex:outputLabel value="직책" style="font-weight:bold"/></th>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.Keyman_Position_Str__c}"/></td>
+                
+                <th class="headerRow" width="5%"><apex:outputLabel value="성별" style="font-weight:bold"/></th>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.Keyman_Gender_Str__c}"/></td>
+                
+                <th class="headerRow" width="5%"><apex:outputLabel value="전화번호" style="font-weight:bold"/></th>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.Keyman_Phone__c}"/></td>
+            </tr>
+            <tr>
+                <th class="headerRow" width="5%"><apex:outputLabel value="충성도" style="font-weight:bold"/></th>
+                <td class="dataCell" width="10%"><apex:outputField value="{!account.HOLK_account_data__r.Keyman_Loyalty_Str__c}"/></td>
+            
+                <th class="headerRow" width="5%"><apex:outputLabel value="선호 판촉물" style="font-weight:bold"/></th>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.Preferable_Materiel__c}"/></td>
+            
+                <th class="headerRow" width="5%"><apex:outputLabel value="SMS" style="font-weight:bold"/></th>
+                <td class="dataCell" width="5%"><apex:outputField value="{!account.HOLK_account_data__r.Sms__c}"/></td>
+                
+                <th class="headerRow" width="5%"><apex:outputLabel value="Note" style="font-weight:bold"/></th>
+                <td class="dataCell" width="30%"><apex:outputField value="{!account.HOLK_account_data__r.Keyman_Note__c}"/></td>
+            </tr>
+        </tbody>
+    </table>
+</apex:page>

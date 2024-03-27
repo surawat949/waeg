@@ -1,0 +1,25 @@
+<apex:page standardController="Account" extensions="AccountHolkSpecificController" lightningStylesheets="true">
+    <apex:slds />
+
+    <table class="slds-table slds-table_bordered" style="font-size:x-small;" width="100%">
+        <tr class="headerRow">
+            <th class="headerRow"><apex:outputLabel value="Over 90" style="font-weight:bold"/></th>
+            <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.AR_Over90_AMT__c}"/></td>
+            <th class="headerRow"><apex:outputLabel value="Over 60" style="font-weight:bold"/></th>
+            <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.AR_Over60_AMT__c}"/></td>
+        </tr><tr>
+            <th class="headerRow"><apex:outputLabel value="Over 30" style="font-weight:bold"/></th>
+            <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.AR_Over30_AMT__c}"/></td>
+            <th class="headerRow"><apex:outputLabel value="Current" style="font-weight:bold"/></th>
+            <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.AR_Current_AMT__c}"/></td>
+        </tr><tr>
+            <th class="headerRow"><apex:outputLabel value="Balance" style="font-weight:bold"/></th>
+            <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.Balance__c}"/></td>
+            <th class="headerRow"><apex:outputLabel value="금월 회수" style="font-weight:bold"/></th><!--This month collection-->
+            <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.Month_collection__c}"/></td>
+        </tr><tr>
+            <th class="headerRow"><apex:outputLabel value="현재 잔액" style="font-weight:bold"/></th><!--Present balance-->
+            <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.Present_Balance__c}"/></td>
+        </tr>
+    </table>
+</apex:page>

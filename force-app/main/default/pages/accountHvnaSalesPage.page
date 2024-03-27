@@ -1,0 +1,173 @@
+<apex:page standardController="Account" extensions="AccountHvnaSalesPageController" cache="false" lightningStylesheets="true" >
+<apex:slds />
+    <div class="detailList">
+        <apex:form >
+        <apex:pageBlock mode="maindetail">
+            <apex:pageBlockSection columns="2">
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_GTQ1__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Wallet__c}"/>
+
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_GTQ2__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_CURR_FY_EST_NNN__c}"/>
+
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_GTQ3__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_SOW_Estimate__c}"/>
+
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_GTQ4__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_X9_BOX_BEG_YR__c}"/>
+
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_RSM_Growth_Target__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_GHQ_9_BOX__c}"/>
+
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Target_Archieve__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_GHQ_Account__c}"/>
+               
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_RSM_Target_Archive__c}"/>
+                <apex:outputField value="{!account.CLASS_CY_FIX__c}"/>
+
+               <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FY13_NNN__c}"/>
+               <apex:outputField value="{!account.Additionnal_account_data__r.X80_Prob__c}"/>
+                                    
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FY14_NNN__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_INDEX__c}"/>
+     
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FY15_NNN__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.X100_SOW__c}"/>
+
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FY16_NNN__c}"/>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                               
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_FY17_NNN__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_GT_CLASS__c}"/>
+                
+                <apex:outputField value="{!account.Additionnal_account_data__r.FY18_NNNN__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.Revenue_Growth_Objective_RGO__c}"/>
+                
+                <apex:outputField value="{!account.Additionnal_account_data__r.FY19_NNNN__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_GT_STATUS__c}"/>
+
+                <apex:pageBlockSectionItem > </apex:pageBlockSectionItem>
+                <apex:outputField value="{!account.Additionnal_account_data__r.Vector_SFDC__c}"/>
+                
+                <apex:pageBlockSectionItem > </apex:pageBlockSectionItem>
+                <apex:outputField value="{!account.Additionnal_account_data__r.STRAT_Code__c}"/>
+
+                <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton" />
+                
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockTable value="{!account.Additionnal_account_data__r}" var="item">
+                        <apex:column value="{!'Forecast'}" headerValue="" style="font-weight:bold" width="100"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_APR_NNN__c}" headerValue="Apr"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_MAY_NNN__c}" headerValue="May"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_JUN_NNN__c}" headerValue="Jun"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_JUL_NNN__c}" headerValue="Jul"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_AUG_NNN__c}" headerValue="Aug"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_SEP_NNN__c}" headerValue="Sep"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_OCT_NNN__c}" headerValue="Oct"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_NOV_NNN__c}" headerValue="Nov"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_DEC_NNN__c}" headerValue="Dec"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_JAN_NNN__c}" headerValue="Jan"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_FEB_NNN__c}" headerValue="Feb"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_Forecast_MAR_NNN__c}" headerValue="Mar"/>
+                        <apex:column value="{!account.Additionnal_account_data__r.HOLA_CURRENT_FORECAST_TOTAL__c}" headerValue="Tot"/>
+                        <apex:column />
+                    </apex:pageBlockTable>
+                    <apex:pageBlockTable value="{!account.Additionnal_account_data__r}" var="item">
+                            <apex:column value="{!'Monthly Growth Forecasted'}" headerValue="" style="font-weight:bold" width="100"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_APR__c}" headerValue="Apr"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_MAY__c}" headerValue="May"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_JUN__c}" headerValue="Jun"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_JUL__c}" headerValue="Jul"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_AUG__c}" headerValue="Aug"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_SEP__c}" headerValue="Sep"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_OCT__c}" headerValue="Oct"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_NOV__c}" headerValue="Nov"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_DEC__c}" headerValue="Dec"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_JAN__c}" headerValue="Jan"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_FEB__c}" headerValue="Feb"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_MAR__c}" headerValue="Mar"/>
+                            <apex:column value="{!account.Additionnal_account_data__r.GROWTH_TOTAL__c}" headerValue="Tot"/>
+                            <apex:column />
+                        </apex:pageBlockTable>
+                <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton" />
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom" >
+                <apex:commandButton value="Save" action="{!save}" id="saveButton" style="display:none"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        </apex:form>
+        <table class="list" width="100%">
+            <thead class="rich-table-thead">
+                <tr class="headerRow">
+                    <th class="headerRow"><apex:outputLabel value="NNNN Monthly Trend" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Apr" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="May" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Jun" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Jul" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Aug" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Sep" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Oct" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Nov" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Dec" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Jan" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Feb" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Mar" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="TOTAL" style="font-weight:bold"/>(<apex:outputLabel value="{!conversionRate}"/>)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="dataRow">
+                    <td class="dataCell"><apex:outputLabel value="NNNN Last Year" style="font-weight:bold"/></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_APR_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_MAY_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_JUN_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_JUL_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_AUG_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_SEP_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_OCT_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_NOV_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_DEC_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_JAN_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_FEB_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_MAR_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_PY_TOTAL__c*conversionRate,0)}"/></apex:outputText></td>
+                </tr>
+                <tr class="dataRow">
+                    <td class="dataCell"><apex:outputLabel value="NNNN Curr Year" style="font-weight:bold"/></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_APR_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_MAY_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_JUN_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_JUL_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_AUG_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_SEP_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_OCT_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_NOV_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_DEC_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_JAN_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_FEB_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_MAR_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_CY_YTD_NNN__c*conversionRate,0)}"/></apex:outputText></td>
+                </tr>
+                <tr class="dataRow">
+                    <td><apex:outputLabel value="NNNN Var To Forecast" style="font-weight:bold"/></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_APR__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_MAY__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_JUN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_JUL__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_AUG__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_SEP__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_OCT__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_NOV__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_DEC__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_JAN__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_FEB__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_MAR__c*conversionRate,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_VAR_TO_FORECAST_YTD__c*conversionRate,0)}"/></apex:outputText></td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </div>
+</apex:page>

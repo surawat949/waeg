@@ -1,0 +1,20 @@
+<!--
+ - Created by thomas.schnocklake on 20.02.18.
+ -->
+
+<aura:component description="VisitPlanning"
+                implements="flexipage:availableForAllPageTypes"
+                controller="VisitPlanningController">
+
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:attribute name="translations" type="Object"/>
+
+    <div class="slds slds-grid">
+        <div class="slds-col slds-size--2-of-5">
+            <c:VisitPlanningList translations="{!v.translations}"/>
+        </div>
+        <div class="slds-col slds-size--3-of-5">
+            <c:VisitPlanningCalendar translations="{!v.translations}"/>
+        </div>
+    </div>
+</aura:component>

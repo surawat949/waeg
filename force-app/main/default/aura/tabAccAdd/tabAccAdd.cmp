@@ -1,0 +1,19 @@
+<aura:component access="public" implements="force:hasRecordId,force:appHostable">
+    <aura:attribute name="accountFields" type="String[]" default="['Portal__c', 'Language__c', 'Brand_Visibility__c', 'Brand__c']"/>       
+    <aura:attribute name="recordId" type="String" />
+    <div class="slds-theme_default slds-box" >
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountSeikoProPortal}</span>
+            </button>
+        </h3>
+        <lightning:recordForm aura:id="accountRecordForm" recordId="{!v.recordId}" objectApiName="Account"
+            fields="{!v.accountFields}" columns="3" mode="view"
+            density="auto"/>
+    </div>
+    <div>
+        This is related List
+        <!--c:demoRelatedList recordId = "{!v.recordId}"/-->
+    </div>
+</aura:component>

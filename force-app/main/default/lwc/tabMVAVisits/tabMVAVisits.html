@@ -1,0 +1,13 @@
+<template>
+    <lightning-tabset variant="scoped">
+        <lightning-tab label={custLabel.tabAccClinicVisitReport}>
+            <c-tab-m-v-a-visits-reports received-id = {recordId}></c-tab-m-v-a-visits-reports>
+        </lightning-tab>
+        <lightning-tab label={custLabel.tabAccClinicVisitTraining}>
+            <c-tab-m-v-a-visits-training received-id = {recordId}></c-tab-m-v-a-visits-training>
+        </lightning-tab>
+        <lightning-tab label={custLabel.tabAccClinicVisitNearby}>
+            <c-tab-m-v-a-visits-clinics-nearby received-id = {recordId}></c-tab-m-v-a-visits-clinics-nearby>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

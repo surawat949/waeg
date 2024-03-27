@@ -1,0 +1,110 @@
+.divDisplayTag{
+font-family:Arial,Helvetica,sans-serif;
+font-size:8pt;
+text-align:center;
+clear:both;
+}
+.divDisplayTag strong{color:black;font-weight:bold;font-size:1.5em}
+.divDisplayTag table{width:100%}
+.information{
+font-weight:bold;text-align:center;
+margin-top:15px;
+height:30px}
+.divDisplayTag .information label{font-weight:bold;}
+table.displayTag th{
+font-family:inherit;
+font-size:inherit;
+height:25px;
+vertical-align:text-top;
+background-image:url(../images/arrowDoubleBlank.gif);
+background-repeat:no-repeat;
+background-position:center 80%;
+background-color:#125FA5}
+table.displayTag th.noSort{
+background-image:none}
+table.displayTag th.order2{
+font-family:inherit;
+font-size:inherit;
+background-image:url(../images/arrowupBlank.gif);
+background-repeat:no-repeat;
+background-position:center 80%}
+table.displayTag th a{color:white}
+table.displayTag th.order1{
+font-family:inherit;
+font-size:inherit;
+color:red;
+background-image:url(../images/arrowdownBlank.gif);
+background-repeat:no-repeat;
+background-position:center 80%}
+table.displayTag td{
+text-align:left;
+font-family:inherit;
+font-size:inherit;
+padding-left: 3px; padding-right: 3px;}
+table.displayTag .sublabel{
+font-family:inherit;
+font-size:inherit;
+font-weight:bold}
+table.displayTag tr.trRed{
+font-family:inherit;
+font-size:inherit;
+background-color:red}
+table.displayTag tr.odd.trRed{
+font-family:inherit;
+font-size:inherit;
+background-color:red}
+span.pagebanner{
+font-family:inherit;
+font-size:1.2em;}
+table.displayTag td{line-height: 20px}
+table.displayTag tr.odd{background-color:White}
+table.displayTag tr.even{background-color:#d2eed4}
+table.displayTag tr:hover{background-color:#BCA394}
+table.displayTag tr.odd.carre1{background-color:#93FF93}
+table.displayTag tr.odd.carre1:hover{background-color:#BCA394}
+table.displayTag tr.odd.carre2{background-color:#81E8F3}
+table.displayTag tr.odd.carre2:hover{background-color:#BCA394}
+table.displayTag tr.odd.carre3{background-color:#FFFF95}
+table.displayTag tr.odd.carre3:hover{background-color:#BCA394}
+table.displayTag tr.odd.carre4{background-color:#FF5555}
+table.displayTag tr.odd.carre4:hover{background-color:#BCA394}
+table.displayTag tr.even.carre1{background-color:#93FF93}
+table.displayTag tr.even.carre1:hover{background-color:#BCA394}
+table.displayTag tr.even.carre2{background-color:#81E8F3}
+table.displayTag tr.even.carre2:hover{background-color:#BCA394}
+table.displayTag tr.even.carre3{background-color:#FFFF95}
+table.displayTag tr.even.carre3:hover{background-color:#BCA394}
+table.displayTag tr.even.carre4{background-color:#FF5555}
+table.displayTag tr.even.carre4:hover{background-color:#BCA394}
+div.progressbarfull{
+height:12px;
+float:left}
+div.progressbarempty{
+height:10px;
+float:left;
+border:1px solid red}
+div.projection{
+font-family:inherit;
+font-size:inherit;
+float:left;
+width:50px;
+padding-right:5px}
+.divDisplayTag a{cursor:pointer}
+
+.pagelinks{
+	color:transparent;
+	display: block;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.pagelinks a{
+	color: black;
+	font-size: 1.4em;
+	padding: 3px 7px 3px 7px;
+	border: 1px solid white;
+	background-image: linear-gradient(white, #CECEDE);
+}
+.pagelinks a:hover{
+	border: 1px solid black;
+	color: white;
+}

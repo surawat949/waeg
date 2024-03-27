@@ -1,0 +1,44 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container">{CustLabel.Seiko_Xtranet}</h3></td>
+            </tr></table> 
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={objectapiname}
+                        fields={portalXtranet}
+                        columns="2"
+                        >
+                    </lightning-record-form>
+                </lightning-layout-item>
+            </lightning-layout>  
+            <div class="slds-var-m-left_xx-small slds-var-m-right_medium slds-grid slds-gutters">
+                <div style="width:50%;margin-left:10px;margin-right:35px;">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">{CustLabel.AccountActivationSnxOrder}</span>
+                        <div class="slds-form-element__static" >{LastUsageDate}</div>            
+                    </div>
+                </div>
+                <div style="width:50%;margin-left:15px;margin-right:15px;">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">{CustLabel.AccountActivationSeikoXTranetTrainingDate}</span>
+                        <div class="slds-form-element__static" >{LastTraningDate}</div>            
+                    </div>   
+                </div>
+            </div>
+        <br/>   
+    
+    </div>   
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container">{CustLabel.Seiko_Xtranet_Orders}</h3></td>
+            </tr></table>      
+        <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+            <canvas class="chartXtranet" height="250"></canvas>
+        </div>
+    </div>      
+</template>

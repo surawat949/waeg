@@ -1,0 +1,14 @@
+<template>
+    <lightning-tabset variant="scoped">
+        <lightning-tab label={custLabel.tabDetails}>
+            <c-tab-m-v-c-contact-details received-id = {recordId}></c-tab-m-v-c-contact-details>
+        </lightning-tab>
+        <lightning-tab label={custLabel.tabWorkingPlaces}>
+            <c-tab-m-v-c-contact-working-places received-id = {recordId}></c-tab-m-v-c-contact-working-places>
+        </lightning-tab>
+        <lightning-tab label={custLabel.tabSystem}>
+            <c-tab-m-v-c-contact-system received-id = {recordId}></c-tab-m-v-c-contact-system>
+        </lightning-tab>
+    </lightning-tabset>
+    
+</template>

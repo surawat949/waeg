@@ -1,0 +1,43 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+    access="public" controller="AccountSalesTabComponentController">
+<aura:attribute name="mycolumns" type="List"/>
+<aura:attribute name="accountList" type="AccountContactRelation[]"/>
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+<aura:attribute name="relationFields" type="String[]" default="['AccountId', 'ContactId', 'Roles']"/>
+
+
+<div class="slds-theme_default slds-box" >
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountReferringOpticians}</span>
+        </button>
+    </h3>
+    
+    <lightning:datatable data="{!v.accountList}"
+                        columns="{!v.mycolumns}"
+                        keyField="id"
+                        hideCheckboxColumn="true"
+                        onrowaction="{!c.handleRowAction}"/>
+    
+    </div>
+    <div class="slds-theme_default slds-box" >
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountOphtaAddNew}</span>
+            </button>
+        </h3>
+        
+        <lightning:recordEditForm aura:id="relationRecordForm" objectApiName="AccountContactRelation" onsuccess="{!c.handleSuccess}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="AccountId"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="ContactId"  value="{!v.recordId}" /></div>
+            </div>
+            
+            <div class="slds-m-top_medium">
+                <lightning:button variant="brand" type="submit" label="Save" />
+            </div>
+        </lightning:recordEditForm>
+        </div>
+</aura:component>

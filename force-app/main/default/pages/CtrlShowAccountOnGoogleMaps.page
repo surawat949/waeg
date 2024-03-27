@@ -1,0 +1,174 @@
+<apex:page sidebar="false" Controller="CtrlShowAccountOnGoogleMaps">
+    <head >
+        <apex:includeScript value="{!URLFOR($Resource.Library_jQuery, '/jQuery/jquery-1.10.2.min.js')}" />
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false&key=AIzaSyD1GQspWqwG9zfG3QRAA7IB9PkxYYRNkTY"></script>
+        <script type="text/javascript"> 
+            var locations = eval({!locationJSON});
+            var geocoder;
+            var map; 
+            function initialize() { 
+                var la = '{!defaultAccount.Latitude}';
+                var lo = '{!defaultAccount.Longitude}';
+                geocoder = new google.maps.Geocoder(); 
+                var latlng = new google.maps.LatLng(la, lo, true); 
+                var myOptions;
+                if(locations == undefined){
+                    myOptions = { 
+                        zoom: 14, 
+                        center: latlng, 
+                        mapTypeId: google.maps.MapTypeId.ROADMAP 
+                    }
+                }else{
+                    myOptions = { 
+                        zoom: 10, 
+                        center: latlng, 
+                        mapTypeId: google.maps.MapTypeId.ROADMAP 
+                    }
+                }
+                map = new google.maps.Map(document.getElementById("map_canvas"), myOptions); 
+                setMarkers(map, locations);
+                
+                // marker for your location
+                var blueIcon = "https://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png";
+                var marker = new google.maps.Marker({                    
+                    position: latlng,                    
+                    map: map,
+                    animation: google.maps.Animation.BOUNCE
+                });
+                marker.setIcon(blueIcon);
+                marker.set("Id", '{!defaultAccount.Id}');
+                marker.set("Latitude", la);
+                marker.set("Longitude", lo);
+                var title = '<h2>Your Location</h2>';
+                
+                set_event(map,marker,title);
+            } 
+    
+            function setMarkers(map,locations){
+                var redIcon = "https://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png";
+                for(var i = 0;i < locations.length;i++){
+                    var longitude = locations[i].Longitude;
+                    var latitude = locations[i].Latitude;
+                    var title = '<h2>' + locations[i].Name + '</h2>';
+                    var latlng = new google.maps.LatLng(latitude,longitude);
+                    var marker = new google.maps.Marker({                    
+                                        position: latlng,                    
+                                        map: map               
+                                    });
+                    marker.setIcon(redIcon);
+                    marker.set("Id",locations[i].Id);
+                    marker.set("Latitude",latitude);
+                    marker.set("Longitude",longitude);
+                    set_event(map,marker,title);
+                }
+            }
+            function set_event(map,marker,title){
+                var infowindow = new google.maps.InfoWindow({                    
+                    content: title                
+                });
+                google.maps.event.addListener(marker,'mouseover',function() {   
+                        infowindow.open(map,marker);
+                });               
+                google.maps.event.addListener(marker, 'mouseout',function() {                  
+                        infowindow.close();                
+                });
+                google.maps.event.addListener(marker, 'click',function() {                  
+                        showAccounts(marker.Latitude, marker.Longitude); 
+                });
+            }
+            
+            $(document).ready(
+                function(){
+                    $(".acctList tbody").find("tr").each(function(){
+                        var $trs = $(this);
+                        var lat = $trs.children().find('span.listLat').text();
+                        var lon = $trs.children().find('span.listLong').text();
+                        $trs.children().find('span.listLat').text(parseFloat(lat));
+                        $trs.children().find('span.listLong').text(parseFloat(lon));
+                        
+                        var distanceTd = $trs.find('.dist');
+                        var num = new Number(parseFloat(distanceTd.text()));
+                        var fixedNum = num.toFixed(1);
+                        distanceTd.text(fixedNum);
+                    });
+                }
+            );
+            
+            function showAccounts(latitude, longitude){
+                $(".acctList tbody").find("tr").each(function(){
+                    var $trs = $(this);
+                    var lat = $trs.children().find('span.listLat').text();
+                    var lon = $trs.children().find('span.listLong').text();
+                    if(latitude == lat && longitude == lon){
+                        $trs.find("td").show();
+                    }else{
+                        $trs.find("td").hide();
+                    }
+                });
+            }
+        </script>
+        
+        <style>
+            #map_canvas {
+                font-family: Arial;
+                font-size: 12px;
+                line-height: normal !important;
+                height: 500px;
+                width: 1000px;
+                background: transparent;
+                margin: 0 auto;
+            }
+            #map_foot {
+                line-height: normal !important;
+                height: 120px;
+                width: 1000px;
+                margin: 0 auto;
+                border: 1px #ECECEC solid;
+            }
+            #locationSpan{
+                color: #3E80C3; 
+                font-size: 11pt; 
+                font-weight: bold; 
+                display: block; 
+                padding: 10px 0 0 10px;
+            }
+            .location{
+                font-size: 11pt; 
+                display: block; 
+                padding: 5px 0 0 10px;
+            }
+        </style>
+    </head>
+    
+    <div id="map_canvas"></div>
+    <script>
+        initialize();
+    </script>
+    <div id="map_foot">
+        <span id="locationSpan">Your location</span>
+        <span class="location">{!defaultAccount.acct.ShippingStreet}</span>
+        <span class="location">{!defaultAccount.acct.ShippingPostalCode + ' ' +defaultAccount.acct.ShippingCity}</span>
+        <span class="location">{!defaultAccount.acct.ShippingCountry}</span>
+    </div>
+    <apex:outputPanel layout="block" style="margin: 0 auto; width: 1000px;">
+        <apex:pageBlock >
+            <apex:pageBlockTable value="{!clsAccounts}" var="ca" styleClass="acctList">
+                <apex:column style="display:none;">
+                    <apex:facet name="header">Name</apex:facet>
+                    <apex:outputText value="{!ca.acct.Id}" style="display:none;"/>
+                    <apex:outputText value="{!ca.acct.Shipping_Geo_Code_Lat__c}" styleClass="listLat" style="display:none;"/>
+                    <apex:outputText value="{!ca.acct.Shipping_Geo_Code_Long__c}" styleClass="listLong" style="display:none;"/>
+                    <apex:outputText value="{!ca.acct.Name}" />
+                </apex:column>
+                <apex:column style="display:none;">
+                    <apex:facet name="header">Address</apex:facet>
+                    <apex:outputText value="{!ca.acct.ShippingStreet + ', ' + ca.acct.ShippingPostalCode + ' ' +ca.acct.ShippingCity + ', ' + ca.acct.ShippingCountry}" />
+                </apex:column>
+                <apex:column style="display:none;">
+                    <apex:facet name="header">Distance</apex:facet>
+                    <apex:outputText value="{!ca.dist}"  styleClass="dist"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:outputPanel>
+</apex:page>

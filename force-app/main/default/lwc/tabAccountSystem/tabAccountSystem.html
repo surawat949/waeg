@@ -1,0 +1,46 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered slds-table_col-bordered slds-max-medium-table-stacked-horizontal" aria-label="Account Address" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">{label.label_sysInfo}</h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_medium slds-m-right_medium slds-m-top_medium slds-m-bottom_medium">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    id="ACC_FIELD"
+                    name="ACC_FIELD"
+                    record-id={receivedId}
+                    object-api-name={objectApiName}
+                    fields={ACC_FIELDS}
+                    columns="2"
+                    mode="readonly"
+                    density="comfy"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <!--<lightning-record-view-form object-api-name="Account" record-id={receivedId}>
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name={accountCreatedBy} id="form-element-01"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name={accountCreatedDate} id="form-element-02"></lightning-output-field>
+                    </div>
+                </div>
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name={accountLastmodifiedBy} id="form-element-03"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name={acocuntLastmodifiedDate} id="form-element-04"></lightning-output-field>
+                    </div>
+                </div>
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-output-field field-name={accountRecordTypeName} id="form-element-05"></lightning-output-field>
+                    </div>
+                </div>
+        </lightning-record-view-form>-->
+    </div>    
+</template>

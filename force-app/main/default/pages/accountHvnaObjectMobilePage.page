@@ -1,0 +1,747 @@
+<apex:page standardController="Account" extensions="AccountHvnaFindProviderController" showHeader="false" standardStylesheets="false" lightningStylesheets="true">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+<apex:slds />
+<head>
+<style>
+    html, body,
+    p { font-family: sans-serif;}
+    table{margin: 0 auto;width:100%;padding-left:15px;font-size:9pt;font-size:0.7em;}
+    td{padding-left:5px;padding-right:5px;}
+    label{font-weight: bold;}
+    h1{font-size:1.2em!important;color:navy;}
+    select[multiple]{height:20px!important;}
+    hr {margin:8px 0 8px 0!important;}
+    textarea {height:20px!important;}
+</style>
+    </head>
+<body>
+    <div class="slds-scope">    
+        
+    <apex:form >
+        <div id="formControls" style="margin: 0 auto;">
+            <apex:commandButton value="Save" action="{!save}" id="saveButtonTop" />
+        </div>
+        
+        <h1>Information</h1>
+        <div id="formInformation">
+            <table>
+                <tbody>
+    
+                    <tr>
+                        <td><apex:outputLabel for="insidetsm" value="Inside Territory Sales Manager"/></td>
+                        <td><apex:inputField id="insidetsm" value="{!account.Additionnal_account_data__r.Inside_Territory_Sales_Manager__c}" style="width:210px;"/></td>
+                    </tr>
+                    
+                    <tr>
+                        <td><apex:outputLabel for="accpriority" value="New Account Priority"/></td>
+                        <td><apex:inputField id="accpriority" value="{!account.Additionnal_account_data__r.HOLA_New_Account_Priority__c}" style="width:210px;"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="accpriority" value="Startup Date for NAP"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Startup_Date_for_NAP__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="hide" value="Hide"/></td>
+                        <td><apex:inputField id="hide" value="{!account.Additionnal_account_data__r.HOLA_HIDE__c}"/></td>
+                     </tr>
+                     <tr>
+                        <td><apex:outputLabel for="entity" value="Entity"/></td>
+                        <td><apex:inputField id="entity" value="{!account.Additionnal_account_data__r.HOLA_Entity__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="accnumber" value="Account Number"/></td>
+                        <td><apex:inputField id="accnumber" value="{!account.Additionnal_account_data__r.HOLA_Account_Number__c}"/></td>
+                     </tr>
+                     <tr>
+                        <td><apex:outputLabel for="hoyaid" value="HoyaID"/></td>
+                        <td><apex:inputField id="hoyaid" value="{!account.Additionnal_account_data__r.HOLA_HoyaID__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="billnumber" value="Bill-To Account Number"/></td>
+                        <td><apex:inputField id="billnumber" value="{!account.Additionnal_account_data__r.HOLA_Bill_To_Account_Number__c}"/></td>
+                        <td><apex:outputLabel for="salesrep" value="Sales Rep"/></td>
+                        <td><apex:inputField id="salesrep" value="{!account.HOLA_Sales_Rep__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="groupnumber" value="Group Number"/></td>
+                        <td><apex:inputField id="groupnumber" value="{!account.Additionnal_account_data__r.HOLA_Group_Number__c}"/></td>
+                        <td><apex:outputLabel for="reportrep" value="Direct Report Reps"/></td>
+                        <td><apex:inputField id="reportrep" value="{!account.Additionnal_account_data__r.HOLA_Direct_Report_Reps__c}"/></td>
+                      </tr>
+                    <tr>
+                       <td><apex:outputLabel for="repsupport" value="Rep Support"/></td>
+                        <td><apex:inputField id="repsupport" value="{!account.Additionnal_account_data__r.Rep_Support__c}"/></td>
+
+                        
+                        
+                         <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+
+                        
+                        
+                        
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="linkgroupnumber" value="Link Account Number"/></td>
+                        <td><apex:inputField id="linkgroupnumber" value="{!account.Additionnal_account_data__r.HOLA_Link_Account_Number__c}"/></td>
+                        <td><apex:outputLabel for="resolutionprogress" value="Resolution In Progress"/></td>
+                        <td><apex:inputField id="resolutionprogress" value="{!account.Additionnal_account_data__r.HOLA_Resolution_In_Process__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="firstname" value="First Name"/></td>
+                        <td><apex:inputField id="firstname" value="{!account.Additionnal_account_data__r.HOLA_First_Name__c}"/></td>
+                        <td><apex:outputLabel for="partnersucc" value="Partner Success Rep"/></td>
+                        <td><apex:inputField id="partnersucc" value="{!account.Additionnal_account_data__r.HOLA_Partner_Success_Rep__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="suffix" value="Suffix"/></td>
+                        <td><apex:inputField id="suffix" value="{!account.Additionnal_account_data__r.HOLA_Suffix__c}"/></td>
+                        <td><apex:outputLabel for="PartnerSuccessProgram" value="Partner Success Program"/></td>
+                        <td><apex:inputField id="PartnerSuccessProgram" value="{!account.Additionnal_account_data__r.HOLA_Partner_Success_Program__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="title2" value="Title 2"/></td>
+                        <td><apex:inputField id="title2" value="{!account.Additionnal_account_data__r.HOLA_Title_2__c}"/></td>
+                        <td><apex:outputLabel for="psed" value="Partner Success Program Enrollment Date"/></td>
+                        <td><apex:inputField id="psed" value="{!account.Additionnal_account_data__r.HOLA_Partner_Success_Pgm_Enroll_Date__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="primBuyingGroup" value="Primary Buying Group"/></td>
+                        <td><apex:inputField id="primBuyingGroup" value="{!account.Additionnal_account_data__r.HOLA_Primary_Buying_Group__c}"/></td>
+                        <td><apex:outputLabel for="progstatdate" value="Program Status Date"/></td>
+                        <td><apex:inputField id="progstatdate" value="{!account.Additionnal_account_data__r.HOLA_Program_Status_Date__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="visionsourceoffice" value="Vision Source Office ID"/></td>
+                        <td><apex:inputField id="visionsourceoffice" value="{!account.Additionnal_account_data__r.Vision_Source_Office_ID__c}"/></td>
+                        <td><apex:outputLabel for="partnerprgstat" value="Partner Success Program Status"/></td>
+                        <td><apex:inputField id="partnerprgstat" value="{!account.Additionnal_account_data__r.HOLA_Partner_Success_Program_Status__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="stopservice" value="Stop Service"/></td>
+                        <td><apex:inputField id="stopservice" value="{!account.Additionnal_account_data__r.HOLA_Stop_Service__c}"/></td>
+                        <td><apex:outputLabel for="activation" value="Activation"/></td>
+                        <td><apex:inputField id="activation" value="{!account.Additionnal_account_data__r.HOLA_Activation__c}"/></td>
+
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="stopservicer" value="Stop Service Reason"/></td>
+                        <td><apex:inputField id="stopservicer" value="{!account.Additionnal_account_data__r.HOLA_Stop_Service_Reason__c}"/></td>
+                        <td><apex:outputLabel for="activationdate" value="Activation Date"/></td>
+                        <td><apex:inputField id="activationdate" value="{!account.Additionnal_account_data__r.HOLA_Activation_Date__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="dvicomment1" value="DVI Comment 1"/></td>
+                        <td><apex:inputField id="dvicomment1" value="{!account.Additionnal_account_data__r.HOLA_DVI_Comments1__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="dvicomment2" value="DVI Comment 2"/></td>
+                        <td><apex:inputField id="dvicomment2" value="{!account.Additionnal_account_data__r.HOLA_DVI_Comments2__c}"/></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="dayslastcontact" value="Days Since Last Contact"/></td>
+                        <td><apex:inputField id="dayslastcontact" value="{!account.Additionnal_account_data__r.HOLA_Days_Since_Last_Contaxt__c}"/></td>
+                        <td><apex:outputLabel for="billstatus" value="Bill Status"/></td>
+                        <td><apex:inputField id="billstatus" value="{!account.Additionnal_account_data__r.HOLA_Bill_Status__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="srv1" value="SRV-1"/></td>
+                        <td><apex:inputField id="srv1" value="{!account.Additionnal_account_data__r.HOLA_SRV_1__c}"/></td>
+                        <td><apex:outputLabel for="financecp" value="Finance Charge Percentage"/></td>
+                        <td><apex:inputField id="financecp" value="{!account.Additionnal_account_data__r.HOLA_Finance_Charge_Percentage__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="srv2" value="SRV-2"/></td>
+                        <td><apex:inputField id="srv2" value="{!account.Additionnal_account_data__r.HOLA_SRV_2__c}"/></td>
+                        <td><apex:outputLabel for="creditlimit" value="Credit Limit"/></td>
+                        <td><apex:inputField id="creditlimit" value="{!account.Additionnal_account_data__r.HOLA_Credit_Limit__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="srv3" value="SRV-3"/></td>
+                        <td><apex:inputField id="srv3" value="{!account.Additionnal_account_data__r.HOLA_SRV_3__c}"/></td>
+                        <td><apex:outputLabel for="discountschedule" value="Discount Schedule"/></td>
+                        <td><apex:inputField id="discoutschedule" value="{!account.Additionnal_account_data__r.HOLA_Discount_Schedule__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="srv4" value="SRV-4"/></td>
+                        <td><apex:inputField id="srv4" value="{!account.Additionnal_account_data__r.HOLA_SRV_4__c}"/></td>
+                        <td><apex:outputLabel for="regularrxprice" value="Regular Rx Pricelist"/></td>
+                        <td><apex:inputField id="regularrxprice" value="{!account.Additionnal_account_data__r.HOLA_Regular_RX_Pricelist__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="srv5" value="SRV-5"/></td>
+                        <td><apex:inputField id="srv5" value="{!account.Additionnal_account_data__r.HOLA_SRV_5__c}"/></td>
+                        <td><apex:outputLabel for="uncutrxprice" value="Uncut Rx Pricelist"/></td>
+                        <td><apex:inputField id="uncutrxprice" value="{!account.Additionnal_account_data__r.HOLA_Uncut_Rx_Pricelist__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="srv6" value="SRV-6"/></td>
+                        <td><apex:inputField id="srv6" value="{!account.Additionnal_account_data__r.HOLA_SRV_6__c}"/></td>
+                        <td><apex:outputLabel for="stocklensprice" value="Stock Lens Pricelist"/></td>
+                        <td><apex:inputField id="stocklensprice" value="{!account.Additionnal_account_data__r.HOLA_Stock_Lens_Pricelist__c}"/></td>
+                        
+                           </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Key and Strategic</h1>
+        <div id="formProvider">
+            <table>
+                <tbody>
+                  <tr>
+                      <td><apex:outputLabel for="keyaccountrep" value="Key Account Rep"/></td>
+                      <td><apex:inputField id="keyaccountrep" value="{!account.Additionnal_account_data__r.HOLA_Key_Account_Rep__c}"/></td>
+                      <td><apex:outputLabel for="stratrep" value="Strategic Reps"/></td>
+                      <td><apex:inputField id="stratrep" value="{!account.Additionnal_account_data__r.Strategic_Reps__c}"/></td>
+                  </tr>
+                  <tr>
+                      <td><apex:outputLabel for="pkeyaccount" value="Key Account Prospect Flag"/></td>
+                      <td><apex:inputField id="pkeyaccount" value="{!account.Additionnal_account_data__r.HOLA_Key_Account_Prospect_Flag__c}"/></td>
+                      <td><apex:outputLabel for="CDM" value="CDM"/></td>
+                      <td><apex:inputField id="CDM" value="{!account.Additionnal_account_data__r.CDM__c}"/></td>
+                  </tr>
+                  <tr>
+                     <td><apex:outputLabel for="keyaccounteng" value="Key Account Engagement"/></td>
+                     <td><apex:inputField id="keyaccounteng" value="{!account.Additionnal_account_data__r.HOLA_Key_Account_Engagement__c}"/></td>
+                     <td><apex:outputLabel for="cdmonboard" value="CDM Onboarding Engagement"/></td>
+                     <td><apex:inputField id="cdmonboard" value="{!account.Additionnal_account_data__r.CDM_Onboarding_Engagement__c}"/></td>
+                  </tr>
+                    <tr>
+                     <td><apex:outputLabel for="keytargettype" value="Key Target Type"/></td>
+                     <td><apex:inputField id="keytargettype" value="{!account.Additionnal_account_data__r.KEY_Target_Type__c}"/></td>
+                     <td><apex:outputLabel for="ppddiscount" value="Pre-Paid Discount Request"/></td>
+                     <td><apex:inputField id="ppddiscount" value="{!account.Additionnal_account_data__r.Pre_Paid_Discount_Request__c}"/></td>
+                    </tr>
+                     <tr>
+                     <td><apex:outputLabel for="keystartdate" value="Key Anticipated Start Date"/></td>
+                     <td><apex:inputField id="keystartdate" value="{!account.Additionnal_account_data__r.Key_Anticipated_Start_Date__c}"/></td>
+                    </tr>
+                    
+                    
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Find a Provider</h1>
+        <div id="formProvider">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel for="accName" value="Account Name"/></td>
+                        <td><apex:inputField id="accName" value="{!account.Additionnal_account_data__r.HOLA_FAP_Account_Name__c}"/></td>
+                        <td><apex:outputLabel for="accName" value="FAP email"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Email__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="fapstreet" value="FAP Street Address"/></td>
+                        <td><apex:inputField id="fapstreet" value="{!account.Additionnal_account_data__r.HOLA_FAP_Street_Address__c}"/></td>
+                        <td><apex:outputLabel for="fapwebsite" value="FAP Website"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Website__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="fapcity" value="FAP City"/></td>
+                        <td><apex:inputField id="fapcity" value="{!account.Additionnal_account_data__r.HOLA_FAP_City__c}"/></td>
+                        <td><apex:outputLabel for="channel1" value="FAP Social Channel 1"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Social_Channel_1__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="fapstate" value="FAP State/Prov"/></td>
+                        <td><apex:inputField id="fapstate" value="{!account.Additionnal_account_data__r.HOLA_FAP_State_Prov__c}"/></td>
+                        <td><apex:outputLabel for="channel2" value="FAP Social Channel 2"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Social_Channel_2__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="fapzip" value="FAP Zip/Post"/></td>
+                        <td><apex:inputField id="fapzip" value="{!account.Additionnal_account_data__r.HOLA_FAP_Zip_Post__c}"/></td>
+                        <td><apex:outputLabel for="channel3" value="FAP Social Channel 3"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Social_Channel_3__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="faphone" value="FAP Phone"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_FAP_Phone__c}"/></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Concession Deal</h1>
+        <div id="formConcession">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel for="ConcessionEffective" value="Concession Effective"/></td>
+                        <td><apex:inputField id="ConcessionEffective" value="{!account.Additionnal_account_data__r.HOLA_Concession_Effective__c}"/></td>
+                        <td><apex:outputLabel for="ConcessionMoCommit" value="Concession Mo Commit"/></td>
+                        <td><apex:inputField id="ConcessionMoCommit" value="{!account.Additionnal_account_data__r.HOLA_Concession_Mo_Commit__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="ConcessionReview" value="Concession Review"/></td>
+                        <td><apex:inputField id="ConcessionReview" value="{!account.Additionnal_account_data__r.HOLA_Concession_Review__c}"/></td>
+                        <td><apex:outputLabel for="ConcessionLabs" value="Concession Labs"/></td>
+                        <td><apex:inputField id="ConcessionLabs" value="{!account.Additionnal_account_data__r.HOLA_Concession_Labs__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="ConcessionEndDate" value="Concession End Date"/></td>
+                        <td><apex:inputField id="ConcessionEndDate" value="{!account.Additionnal_account_data__r.HOLA_Concession_End_Date__c}"/></td>
+                        <td><apex:outputLabel for="ConcessionDiscount" value="Concession Discount"/></td>
+                        <td><apex:inputField id="ConcessionDiscount" value="{!account.Additionnal_account_data__r.HOLA_Concession_Discount__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="ConcessionTemporary" value="Concession Temporary?"/></td>
+                        <td><apex:inputField id="ConcessionTemporary" value="{!account.Additionnal_account_data__r.HOLA_Concession_Temporary__c}"/></td>
+                        <td><apex:outputLabel for="ConcessionComments" value="Concession Comments"/></td>
+                        <td><apex:inputField id="ConcessionComments" value="{!account.Additionnal_account_data__r.HOLA_Concession_Comments__c}"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Receivables and Collections</h1>
+        <div id="formReceivables">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel for="FIRSTJOBDATE" value="FIRST JOB DATE"/></td>
+                        <td><apex:inputField id="FIRSTJOBDATE" value="{!account.Additionnal_account_data__r.HOLA_FIRST_JOB_DATE__c}"/></td>
+                        <td><apex:outputLabel for="LastPmtAmount" value="A/R Last Pmt Amount"/></td>
+                        <td><apex:inputField id="LastPmtAmount" value="{!account.Additionnal_account_data__r.HOLA_A_R_Last_Pmt_Amount__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="RecentPurchase" value="Recent Purchase"/></td>
+                        <td><apex:inputField id="RecentPurchase" value="{!account.Additionnal_account_data__r.HOLA_Recent_Purchase__c}"/></td>
+                        <td><apex:outputLabel for="LastPmtDate" value="A/R Last Pmt Date"/></td>
+                        <td><apex:inputField id="LastPmtDate" value="{!account.Additionnal_account_data__r.HOLA_A_R_Last_Pmt_Date__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="FirstStmtDate" value="First Stmt Date"/></td>
+                        <td><apex:inputField id="FirstStmtDate" value="{!account.Additionnal_account_data__r.HOLA_First_Stmt_Date__c}"/></td>
+                        <td><apex:outputLabel for="CurrBal" value="A/R Curr Bal"/></td>
+                        <td><apex:inputField id="CurrBal" value="{!account.Additionnal_account_data__r.HOLA_A_R_Curr_Bal__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="InCollectionsCurrently" value="In Collections Currently?"/></td>
+                        <td><apex:inputField id="InCollectionsCurrently" value="{!account.Additionnal_account_data__r.HOLA_In_Collections_Currently__c}"/></td>
+                        <td><apex:outputLabel for="ar30" value="A/R 30"/></td>
+                        <td><apex:inputField id="ar30" value="{!account.Additionnal_account_data__r.HOLA_A_R_30__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="InCollectionsDate" value="In Collections Date"/></td>
+                        <td><apex:inputField id="InCollectionsDate" value="{!account.Additionnal_account_data__r.HOLA_In_Collections_Date__c}"/></td>
+                        <td><apex:outputLabel for="ar60" value="A/R 60"/></td>
+                        <td><apex:inputField id="ar60" value="{!account.Additionnal_account_data__r.HOLA_A_R_60__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="OffCollectionsDate" value="Off Collections Date"/></td>
+                        <td><apex:inputField id="OffCollectionsDate" value="{!account.Additionnal_account_data__r.HOLA_Off_Collections_Date__c}"/></td>
+                        <td><apex:outputLabel for="ar90" value="A/R 90"/></td>
+                        <td><apex:inputField id="ar90" value="{!account.Additionnal_account_data__r.HOLA_A_R_90__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel for="CollectionsComments" value="Collections Comments"/></td>
+                        <td><apex:inputField id="CollectionsComments" value="{!account.Additionnal_account_data__r.HOLA_Collections_Comments__c}"/></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Practice Profile</h1>
+        <div id="formDecription">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel value="Number of Locations"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Number_of_Locations__c}"/></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Practice Preferences</h1>
+        <div id="formPractice">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel value="Hoya Primary Lab Used"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Hoya_Primary_Lab_Used__c}"/></td>
+                        <td><apex:outputLabel value="PAL Percentage"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_PAL_Percentage__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Primary Lab Name"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Primary_Lab_Name__c}"/></td>
+                        <td><apex:outputLabel value="Preferred High-End PAL"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Preferred_High_End_PAL__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Primary Lab Percentage"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Primary_Lab_Percentage__c}"/></td>
+                        <td><apex:outputLabel value="Preferred MId-Range PAL"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Preferred_MId_Range_PAL__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Secondary Lab"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Secondary_Lab__c}"/></td>
+                        <td><apex:outputLabel value="Preferred Low-End PAL"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Preferred_Low_End_PAL__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Secondary Lab %"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Secondary_Lab_P__c}"/></td>
+                        <td><apex:outputLabel value="AR Percentage"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_AR_Percentage__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Third Lab"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Third_Lab__c}"/></td>
+                        <td><apex:outputLabel value="Preferred High-End AR"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Preferred_High_End_AR__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Third Lab %"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Third_Lab_P__c}"/></td>
+                        <td><apex:outputLabel value="Preferred Mid-Range AR"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Preferred_Mid_Range_AR__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Lab Comments"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Lab_Comments__c}"/></td>
+                        <td><apex:outputLabel value="Preferred Low-End AR"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Preferred_Low_End_AR__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Hoya Deals"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Hoya_Deals__c}"/></td>
+                        <td><apex:outputLabel value="Transitions Percentage"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Transitions_Percentage__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Competitive Deals"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Competitive_Deals__c}"/></td>
+                        <td><apex:outputLabel value="Primary Lens Material"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Primary_Lens_Material__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Vendor Agreements"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Vendor_Agreements__c}"/></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Vendor Agreement Date Ending"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Vendor_Agreement_Date_Ending__c}"/></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Description Information</h1>
+        <div id="formDecription">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel value="Description"/></td>
+                        <td><apex:inputField value="{!account.description}"/></td>
+                        <td><apex:outputLabel value="Report Filter 1"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Report_Filter_1__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td><apex:outputLabel value="Report Filter 2"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Report_Filter_2__c}"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Leads</h1>
+        <div id="formLead">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel value="Lead Subject"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Subject__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Avantek DF Lead"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Avantek_DF_Lead__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Lead Follow Up"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Follow_Up__c}"/></td>
+                        <td><apex:outputLabel value="Lead Source"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Source__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Lead Date"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Date__c}"/></td>
+                        <td><apex:outputLabel value="Lead Notes"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Lead_Notes__c}"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Marketing Programs</h1>
+        <div id="formMarketing">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel value="HPP 2017"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_HHP_2017__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Staff Using EmpowerU?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Staff_Using_EmpowerU__c}"/></td>
+                        <td><apex:outputLabel value="Advantage Frame (Modern) Promo Date"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Advantage_Frame_Modern_Promo_Date__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Hoya Minute Subscriber?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Hoya_Minute_Subscriber__c}"/></td>
+                        <td><apex:outputLabel value="Super Single Vision Promo Date"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Super_Kidz_Promo_Date__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Diamond Tint Kit"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Diamond_Tint_Kit__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Recharge Demo Kit?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Recharge_Demo_Kit__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        
+                        <td><apex:outputLabel value="National Sunglass Day Promo"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_National_Sunglass_Day_Promo__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Spectangle Pro Owner?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_SpectanglePro__c}"/></td>
+                        <td><apex:outputLabel value="Spectangle Pro Purchase Date"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Spectangle_Pro_Purchase_Date__c}"/></td>                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Inside Sales Team Target"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Inside_Sales_Team_Target__c}"/></td>
+                    </tr>
+                   <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Eligible for Growth Institute Promotion"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Eligible_for_Growth_Institute_Promotion__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Degree Goal"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Degree_Goal__c}"/></td>
+                    </tr>
+                    <tr>
+                       <!--<td><apex:outputLabel value="Ally Winning Combination Participant"/></td>--> 
+                       <!--<td><apex:inputField value="{!account.Additionnal_account_data__r.Ally_Winning_Combination_Participant__c}"/></td>--> 
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Gross $PD needed for goal"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Gross_PD_needed_for_goal__c}"/></td>
+                       <!--<td><apex:outputLabel value="Ally Challenge Particpant"/></td>--> 
+                      <!--<td><apex:inputField value="{!account.Additionnal_account_data__r.Ally_Challenge_Participant__c}"/></td>-->  
+                    </tr>
+
+                    <tr>
+                        <td><apex:outputLabel value="Mid-July Result"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Mid_July_Result__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="July Results (growth over baseline)"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.July_Results__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="July Results Degree"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.July_Results_Degree__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Mid-August Results"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Mid_Aug_Result__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="August Results (growth over baseline)"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.August_Results__c}"/></td>
+                    </tr>
+                       <tr>
+                        <td><apex:outputLabel value="August Results Degree"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.August_Results_Degree__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Mid-Sep Results"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Mid_Sep_Result__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="September Results (growth over baseline)"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.September_Results_growth_over_baseline__c}"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><apex:outputLabel value="Dropped off a Transitions Gen 8 Kit?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Dropped_off_a_Transitions_Gen_8_Kit__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Date Gen 8 Kit dropped off"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Date_Gen_8_Kit_dropped_off__c}"/></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>Flags</h1>
+        <div id="formFlags">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel value="Unity Target?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Unity_Target__c}"/></td>
+                        </tr>
+                              <tr>
+                        <td><apex:outputLabel value="VSP Premier Provider?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_VSP_Premier_Provider__c}"/></td>
+                        </tr>
+                        <tr>
+                        <td><apex:outputLabel value="EyeMed Target?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_EyeMed_Target__c}"/></td>
+                    </tr>
+                                      <tr>
+                        <td><apex:outputLabel value="EyeMed"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_EyeMed__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Service Guarantee Target?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Service_Guarantee_Target__c}"/></td>
+                        <td><apex:outputLabel value="On Service Guarantee Program"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_On_Service_Guarantee_Program__c}"/></td>
+                    </tr>
+                    <tr> 
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="24 Hr Model Target?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_X24_Hr_Model_Target__c}"/></td>
+                        <td><apex:outputLabel value="Sight Overnight Last Mo Purch"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Sight_Overnight_Last_Mo_Purch__c}"/></td>
+                     </tr>
+                     <tr>   
+                        <td><apex:outputLabel value="Strategic Accounts"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Strategic_Accounts__c}"/></td>
+                         <td><apex:outputLabel value="Glimpse Install Date"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Glimpse_Install_Date__c}"/></td>
+                       
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Strategic Market Rebate Enrollment Date"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Strategic_Market_Rebate_Enrollment_Date__c}"/></td>
+                        <td><apex:outputLabel value="Glimpse Install Date"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Glimpse_Install_Date__c}"/></td>
+                     </tr>
+                     <tr>   
+                        <td><apex:outputLabel value="Strategic Market Rebate Enrollment Date"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Strategic_Market_Rebate_Enrollment_Date__c}"/></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                      <tr>   
+                        <td><apex:outputLabel value="IDOC Study Group"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.IDOC_Study_Group__c}"/></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                                         <tr>   
+                        <td><apex:outputLabel value="Leaky Bucket July 2019?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Leaky_Bucket_July_2019__c}"/></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                                         <tr>   
+                        <td><apex:outputLabel value="Cause of Loss"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Cause_of_Loss__c}"/></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                                         <tr>   
+                        <td><apex:outputLabel value="Competitive Detail"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Competitive_Detail__c}"/></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                                         <tr>   
+                        <td><apex:outputLabel value="Next Planned Visit"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Next_Planned_Visit__c}"/></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                                         <tr>   
+                        <td><apex:outputLabel value="Leaky Bucket Detail"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.Leaky_Bucket_Detail__c}"/></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <h1>ESLUX - Open Your Eyes</h1>  
+        <div id="formOye">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel value="OYE1 Target?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_OYE1_Target__c}"/></td>
+                        <td><apex:outputLabel value="OYE2 Target?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_OYE2_Target__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="Intend to switch ESLUX sales?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_Intend_to_switch_ESLUX_sales__c}"/></td>
+                        <td><apex:outputLabel value="OYE2 Qualified"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_OYE2_Qualified__c}"/></td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="If switch ESLUX will it be to Hoya?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_If_switch_ESLUX_will_it_be_to_Hoya__c}"/></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><apex:outputLabel value="ESLUX Date for Startup First Job"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.HOLA_ESLUX_Date_for_Startup_First_Job__c}"/></td>
+                        <td><apex:outputLabel value="OYE3 Target?"/></td>
+                        <td><apex:inputField value="{!account.Additionnal_account_data__r.OYE3_Target__c}"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="formControls">
+            <apex:commandButton value="Save" action="{!save}" id="saveButton" />
+        </div>
+        
+    </apex:form>
+    </div>
+</body>
+</html>
+
+</apex:page>

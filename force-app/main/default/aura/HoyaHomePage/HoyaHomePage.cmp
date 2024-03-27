@@ -1,0 +1,43 @@
+<aura:component implements="lightning:homeTemplate" description="Home Page Custom Template" >
+    <aura:attribute name="column1" type="Aura.Component[]" />
+    <aura:attribute name="column2" type="Aura.Component[]" />
+    <aura:attribute name="header1" type="Aura.Component[]" description="Header"/>
+    <aura:attribute name="header2" type="Aura.Component[]" description="Header"/>
+    <aura:attribute name="header3" type="Aura.Component[]" description="Header"/>
+    <aura:attribute name="header4" type="Aura.Component[]" description="Header"/>
+    <aura:attribute name="isSidebarCollapsed" type="Boolean" access="PRIVATE" default="false" />
+    <aura:attribute name="header" type="Aura.Component[]" description="Header"/>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_8-of-12">
+            <lightning:layout horizontalAlign="spread" pullToBoundary="large">
+                <lightning:layoutItem size="3" flexibility="grow">
+                    {!v.header1}
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" flexibility="grow">
+                    {!v.header2}
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" flexibility="grow">
+                    {!v.header3}
+                </lightning:layoutItem> 
+                <lightning:layoutItem size="3" flexibility="grow">
+                    {!v.header4}
+                </lightning:layoutItem> 
+            </lightning:layout>
+            <lightning:layout horizontalAlign="spread" pullToBoundary="large">
+                <lightning:layoutItem flexibility="grow">
+                    {!v.column1}
+                </lightning:layoutItem> 
+            </lightning:layout>
+        </div>
+        <div class="slds-col slds-size_4-of-12">
+            <lightning:layout horizontalAlign="spread" pullToBoundary="large">
+                <lightning:layoutItem size="1" flexibility="grow">
+                    
+                </lightning:layoutItem>
+                <lightning:layoutItem size="11" flexibility="grow">
+                    {!v.column2}
+                </lightning:layoutItem> 
+            </lightning:layout>
+        </div>
+    </div>
+</aura:component>

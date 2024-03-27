@@ -1,0 +1,202 @@
+<template>
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="mvcDetails" style="background-color: #aacbff;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.label_IQVIADB}</p>
+                    </h3>
+                </td>
+                <!--td><p align="right"><lightning-button label="Demand of modification" onclick={showPopup}></lightning-button></p></td-->
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_medium slds-m-right_medium slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={contactObj}
+                    fields={IqviaField1}
+                    density="comfy"
+                    columns="3"
+                    mode="readonly"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_medium slds-m-right_medium slds-m-bottom_small">
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={contactObj}
+                    fields={IqviaField2}
+                    density="comfy"
+                    columns="2"
+                    mode="readonly"
+                ></lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_1-of-3 slds-m-left_medium">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={contactObj}
+                    fields={IqviaField3}
+                    density="comfy"
+                    columns="1"
+                    mode="view"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_medium slds-m-right_medium slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={contactObj}
+                    fields={IqviaField4}
+                    density="comfy"
+                    columns="3"
+                    mode="readonly"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <br>
+    </div>
+    <!--New section for IQVIA Database - IQVIA Doctor's specialization -->
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="mvcDetails" style="background-color: #aacbff;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.label_IQVIA_Specialization}</p>
+                    </h3>
+                </td>
+                <!--td><p align="right"><lightning-button label="Demand of modification" onclick={showPopup}></lightning-button></p></td-->
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_medium slds-m-right_medium slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={contactObj}
+                    fields={contactFieldsSpeciality}
+                    density="comfy"
+                    mode="readonly"
+                    columns="2"
+                ></lightning-record-form>
+            </div>
+        </div>
+    </div>
+    <!--Local DB section-->
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="mvcLocal" style="background-color: #aacbff;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.label_LocalDB}</p>
+                    </h3>
+                </td>
+                <!--td><p align="right"><lightning-button label="Demand of modification" onclick={showPopup}></lightning-button></p></td-->
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    object-api-name={contactObj}
+                    record-id={receivedId}
+                    fields={LocalDBFields1}
+                    columns="3"
+                    density="comfy"
+                    mode="view"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={contactObj}
+                    fields={LocalDBFields2}
+                    columns="2"
+                    density="comfy"
+                    mode="view"
+                ></lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_1-of-3">&nbsp;</div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={contactObj}
+                    fields={LocalDBFields3}
+                    columns="1"
+                    density="comfy"
+                    mode="view"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <br>
+    </div>
+
+    <!--Communication section-->
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="mvcComm" style="background-color: #aacbff;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.label_communication}</p>
+                    </h3>
+                </td>
+                <!--td><p align="right"><lightning-button label="Demand of modification" onclick={showPopup}></lightning-button></p></td-->
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    object-api-name={contactObj}
+                    record-id={receivedId}
+                    fields={CommunicationFields1}
+                    columns="3"
+                    mode="view"
+                    density="comfy"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-3"></div>
+            &nbsp;<div class="slds-col slds-size_2-of-3">
+                <lightning-record-form
+                    object-api-name={contactObj}
+                    record-id={receivedId}
+                    fields={CommunicationFields4}
+                    columns="2"
+                    mode="view"
+                    density="comfy"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-3"></div>
+            &nbsp;<div class="slds-col slds-size_2-of-3">
+                <lightning-record-form
+                    object-api-name={contactObj}
+                    record-id={receivedId}
+                    fields={CommunicationFields2}
+                    columns="2"
+                    density="comfy"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    object-api-name={contactObj}
+                    record-id={receivedId}
+                    fields={CommunicationFields3}
+                    columns="3"
+                    density="comfy"
+                ></lightning-record-form>
+            </div>
+        </div>
+    </div>
+</template>

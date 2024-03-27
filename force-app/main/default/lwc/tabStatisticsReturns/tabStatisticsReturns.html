@@ -1,0 +1,243 @@
+<template>
+    <!-- Production Returns-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">       
+        <div class="slds-scrollable_x" style="width:100%">
+            <table class="slds-table  slds-table_cell-buffer">
+                <thead>
+                    <tr >
+                        <th class="fix" style="width:25%;">Production Returns</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 12Mo (Net)</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 12Mo (Qty)</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 3Mo (Net)</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 3Mo (Qty)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr >
+                        <td class="fix">Production</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={prodcutonSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={prodcutonLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={productionSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={productionLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                    <tr style="text-align:right;">
+                        <td class="fix">CutAndEdge</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={cutEdgeSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={cutEdgeLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={cutEdgeSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={cutEdgeLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                    <tr style="text-align:right;">
+                        <td class="fix">Mounting</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={mountingSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={mountingLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={mountngSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={mountngLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="text-align:right;">
+                        <td class="fix">Total Production Returns</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalProdSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalProdLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalProdSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalProdLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--Non Production Returns-->
+        <br/>
+        <div class="slds-scrollable_x" style="width:100%">
+            <table class="slds-table  slds-table_cell-buffer">
+                <thead>
+                    <tr >
+                        <th class="fix" style="width:25%;">Non Production Returns</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 12Mo (Net)</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 12Mo (Qty)</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 3Mo (Net)</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 3Mo (Qty)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr >
+                        <td class="fix">Sales Agreements</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={salesAgreementsSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={salesAgreementsLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={salesAgreementsSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={salesAgreementsLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                    <tr style="text-align:right;">
+                        <td class="fix">Ordering Mistakes</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={orderingMistakesSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={orderingMistakesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={orderingMistakesSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={orderingMistakesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                    <tr style="text-align:right;">
+                        <td class="fix">Non Adapatation</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={nonAdaptationSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={nonAdaptationLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={nonAdaptationSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={nonAdaptationLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                    <tr style="text-align:right;">
+                        <td class="fix">Delivery</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={deliverySalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={deliveryLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={deliverySalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={deliveryLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                    <tr style="text-align:right;">
+                        <td class="fix">Other</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={otherSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={otherLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={otherSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={otherLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="text-align:right;">
+                        <td class="fix">Total Non Production Returns</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalNonProdSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalNonProdLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalNonProdSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalNonProdLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>        
+        <!-- Total Returns-->
+        <br/>
+        <div class="slds-scrollable_x" style="width:100%">
+            <table class="slds-table  slds-table_cell-buffer">
+                <thead>
+                    <tr >
+                        <th class="fix" style="width:25%;">Total Returns</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 12Mo (Net)</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 12Mo (Qty)</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 3Mo (Net)</th>
+                        <th class="fix" style="width:18%;text-align:right;">Last 3Mo (Qty)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr >
+                        <td class="fix">Total Returns</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalRetSalesLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalRetLast12Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalRetSalesLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                        <td style="text-align:right;"><lightning-formatted-number value={totalRetLast3Mo} format-style="decimal" maximum-fraction-digits="1"></lightning-formatted-number> %</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+        </div>  
+        <br/>
+    </div>
+    <!--Non Adaptation Returns Last 12 Months-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="Non Adaptation Returns">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title">{custLabel.NonAdaptationRets12Mo}</h3></td>
+            </tr>
+        </table><br>
+        <template lwc:if ={isNonAdap12MoRetsExist}>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer nonAdap1" >
+                <thead>
+                    <tr style="background-color: #f8f8f8">
+                        <td style="width:35%;font-style:bold;"><div class="slds-truncate">Lens Design</div></td>
+                        <td style="width:32%;text-align:right;font-style:bold;"><div class="slds-truncate">Lens Qty L12Mo</div></td>
+                        <td style="width:33%;text-align:right;font-style:bold;"><div class="slds-truncate">% L12Mo</div></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={nonAdaptationRets12Mo} for:item="item">
+                        <tr key={item.lensType}>
+                            <td>{item.lensType}
+                            </td>
+                            <td style="text-align:right;"> <lightning-formatted-number value={item.qty} maximum-fraction-digits="0">
+                                </lightning-formatted-number>
+                            </td>
+                            <td style="text-align:right;"> <lightning-formatted-number value={item.qtyPerc} maximum-fraction-digits="0">
+                                </lightning-formatted-number>%
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div>
+        </template>
+    </div> 
+    <!--Non Adaptation Returns for Last 3 months-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="Non Adaptation Returns">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title">{custLabel.NonAdaptationRets3Mo}</h3></td>
+            </tr>
+        </table><br>
+        <template lwc:if ={isNonAdap3MoRetsExist}>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer nonAdap2">
+                <thead>
+                    <tr style="background-color: #f8f8f8"> 
+                        <td style="width:35%;font-style:bold;"><div class="slds-truncate">Lens Design</div></td>
+                        <td style="width:32%;text-align:right;font-style:bold;"><div class="slds-truncate">Lens Qty L3Mo</div></td>
+                        <td style="width:33%;text-align:right;font-style:bold;"><div class="slds-truncate">% L3Mo</div></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={nonAdaptationRets3Mo} for:item="item">
+                        <tr key={item.lensType}>
+                            <td>{item.lensType}
+                            </td>
+                            <td style="text-align:right;"> <lightning-formatted-number value={item.qty} maximum-fraction-digits="0">
+                                </lightning-formatted-number>
+                            </td>
+                            <td style="text-align:right;"> <lightning-formatted-number value={item.qtyPerc} maximum-fraction-digits="0">
+                                </lightning-formatted-number>%
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div>
+        </template>
+    </div>  
+</template>

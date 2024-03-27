@@ -1,0 +1,27 @@
+<aura:component   implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" 
+access="global"
+description="MVCVisitsComp">
+
+<lightning:tabset variant="scoped">
+    <lightning:tab label="{!$Label.c.Tacticom}">
+        <c:tabMVCVisitsTacticom receivedId = "{!v.recordId}"></c:tabMVCVisitsTacticom>
+    </lightning:tab>
+    <lightning:tab label="{!$Label.c.tabCampOpp}">
+        <c:tabMVCVisitsCampOpp receivedId = "{!v.recordId}"></c:tabMVCVisitsCampOpp>
+    </lightning:tab>
+    <lightning:tab label="{!$Label.c.tabAccountClinicVisitReport}">
+        <c:tabMVCVisitsReports receivedId = "{!v.recordId}"></c:tabMVCVisitsReports>
+    </lightning:tab>
+    <lightning:tab label="{!$Label.c.tabAccountClinicVisitTraining}">
+        <c:tabMVCVisitsTraining receivedId = "{!v.recordId}"></c:tabMVCVisitsTraining>
+    </lightning:tab>
+    <!--lightning:tab label="{!$Label.c.Account_label_Showpad}">
+        <c:tabMVCVisitsShowpadApp ></c:tabMVCVisitsShowpadApp>
+    </lightning:tab-->
+    <lightning:tab label="{!$Label.c.tabContactNearby}">
+        <c:tabMVCVisitsContactNearby receivedId = "{!v.recordId}"></c:tabMVCVisitsContactNearby>
+    </lightning:tab>
+</lightning:tabset>
+
+
+</aura:component>

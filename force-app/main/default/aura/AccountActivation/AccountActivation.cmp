@@ -1,0 +1,357 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+access="public" controller="AccountSalesTabComponentController">
+
+<aura:attribute name="recordId" type="String" />
+<aura:attribute name="seikoData" type="Seiko_Data__c"/>
+<aura:attribute name="accountFields" type="String[]" default="['Seiko_Network__c', 'SVS_sign_in__c', 'Onboarding_Customer__c', 'Onboarding_date__c', 'Net_Promoter_Score__c', 'NPS_Date_Last_Survey__c', 'Seiko_objective_ECP_agr__c']"/>
+<aura:attribute name="accountMiyoFields" type="String[]" default="['Myo_Smart_AuthorizeDealer__c','MiyoSmart_last_training__c']"/>"
+<aura:attribute name="seikoFields1" type="String[]" default="['SVS_Pricelist__c', 'SVS_Pricelist_activation__c', 'Seiko_objective_ECP_agr__c']"/>
+
+<aura:attribute name="seikoFields3" type="String[]" default="['Seiko_Vision_Academy_last_usage__c', 'Seiko_Vision_Academy_last_training__c']"/>
+<aura:attribute name="seikoFields4" type="String[]" default="['SVS_Starting_kit__c','Starting_kit_setting_up__c','SVS_Communication_kit__c', 'SVS_Communication_kit_setting_up__c', 'SEIKO_Catalogues__c', 'SEIKO_catalogues_training__c', 'SVS_Sample_boxes__c','SVS_Sample_boxes_setting_up__c']"/>
+<aura:attribute name="seikoFields5" type="String[]" default="['Local_initiative_1__c','data.Local_initiative_1__c','Local_initiative_1_activation__c','Local_initiative_2__c','Local_initiative_2_activation__c','Local_initiative_3__c','Local_initiative_3_activation__c','Local_initiative_4__c','Local_initiative_4_activation__c']"/>
+<aura:attribute name="accountFields7" type="String[]" default="['Actual_Classification__c', 'SEIKO_Customer_Classification__c','NumberOfEmployees', 'Number_of_sales_desk__c', 'Number_of_POS_packages__c', 'Block_Advertising_Material__c', 'Low_vision__c', 'departement__c']"/>
+<aura:attribute name="TotalLoyaltyPoints" type="String"/>
+<aura:attribute name="snxOrder" type="String"/>
+<aura:attribute name="measurements" type="String"/>
+<aura:attribute name="lensSelection" type="String"/>
+<aura:attribute name="frame" type="String"/>
+<aura:attribute name="visionTest" type="String"/>
+<aura:attribute name="ecolonneMeasurements" type="String"/>
+<aura:attribute name="ecolonneConsultation" type="String"/>
+<aura:attribute name="socialMedia" type="Boolean"/>
+<aura:attribute name="isSeikoXtranet" type="Boolean" />
+<aura:attribute name="SeikoXpIpad" type="Boolean" />
+<aura:attribute name="seikoPro" type="Boolean"/>
+<aura:attribute name="SeikoProduct1stTraining" type="Boolean" default="false"/>
+<aura:attribute name="dealerLocatorLastTraining" type="Date"/>
+<aura:attribute name="productRangeLastTraining" type="Date"/>
+<aura:attribute name="TrackAndTraceLastTraining" type="Date"/>
+<aura:attribute name="purchaseRegistrationLastTraining" type="Date"/>
+<aura:attribute name="loyaltyProgramLastTraining" type="Date"/>
+<aura:attribute name="visionAcademyLastTraining" type="Date"/>
+<aura:attribute name="socialManagerLastTraining" type="Date"/>
+<aura:attribute name="seikoProLastTraining" type="Date"/>
+<aura:attribute name="seikoCatalogueLastTraining" type="Date"/>
+<aura:attribute name="seikoXTranetLastTraining" type="Date"/>
+<aura:attribute name="seikoIPadLastTraining" type="Date"/>
+<aura:attribute name="seikoEColonneLastTraining" type="Date"/>
+<aura:attribute name="seikoTracerLastTraining" type="Date"/>
+<aura:attribute name="seikoXperienceCenterLastTraining" type="Date"/>
+<aura:attribute name="seikoMiyosmartLastTraining" type="Date"/>
+<aura:attribute name="loyaltyPointsModal" type="Boolean" default="false"/>
+
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+<c:loyaltyPointsStatement aura:id="loyaltyPointsStatement" accountId ="{!v.recordId}"/>
+
+<div class="container slds-theme_default slds-box" >
+    <!--Seiko Commericial Program Activation-->
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountActivationTabHeader}</span>
+        </button>
+    </h3>
+    <div class="slds-theme_default slds-box" >
+        <!--Commercial Agreement-->
+        <h2 class="slds-section__title  test-id__section-header-container" style="background-color:azure;" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" style="background-color:azure;" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountActivationTabCommercialAgreement}</span>
+            </button>
+        </h2>
+        <lightning:recordForm aura:id="accountRecordForm" recordId="{!v.recordId}" objectApiName="Account"
+            fields="{!v.accountFields}" columns="2" mode="view"
+            density="auto"/>
+        <lightning:recordForm aura:id="seikoRecordForm1" recordId="{!v.seikoData.Id}" objectApiName="Seiko_Data__c"
+            fields="{!v.seikoFields1}" columns="2" mode="view"
+            density="auto"/>
+    </div>
+    
+    <div class="slds-theme_default slds-box" >
+        <!--Services activated at the shop level-->
+        <h4 class="slds-section__title  test-id__section-header-container"  style="background-color:azure;" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" style="background-color:azure;" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountActivationTabServiceActivated}</span>
+            </button>
+        </h4>
+        <!--
+        <lightning:recordForm aura:id="seikoRecordForm2" recordId="{!v.seikoData.Id}" objectApiName="Seiko_Data__c"
+            fields="{!v.seikoFields2}" columns="2" mode="view"
+            density="auto"/>
+        <aura:attribute name="seikoFields2" type="String[]" default="['', 'SVS_Store_locator_activation__c', '', 'SEIKO_Products_1rst_training_date__c', '', 'Seiko_track_trace_email_activation__c','', 'Purchase_Registration_Last_Training__c', '', 'SVS_Purchase_Registration_activation__c']"/>
+        
+        -->
+        <lightning:recordEditForm aura:id="seikoRecordForm2" recordId="{!v.seikoData.Id}" objectApiName="Seiko_Data__c" onsuccess="{!c.handlSuccess}">
+
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SEIKO_Products_1rst_training__c" value="{!v.SeikoProduct1stTraining}"/></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationProductRangeTrainingDate}</label><br/>{!v.productRangeLastTraining}</span></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Seiko_track_trace_daily_email__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationTrackTraceTrainingDate}</label><br/>{!v.TrackAndTraceLastTraining}</span></div>
+            </div>
+            
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                    <aura:if isTrue="{!v.seikoPro==true}">
+                        <lightning:input type="checkbox" label="{!$Label.c.AccountActivationisSeikoPro}" name="seikoProBox" checked="true" disabled="true"></lightning:input>
+                        <aura:set attribute="else">
+                            <lightning:input type="checkbox" label="{!$Label.c.AccountActivationisSeikoPro}" name="seikoProBox"  disabled="true"></lightning:input>
+                        </aura:set>
+                    </aura:if>
+                </div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationSeikoProTrainingDate}</label><br/>{!v.seikoProLastTraining}</span></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Purchase_Registration_Email_Activation__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.purchaseRegistrationTrainingDate}</label><br/>{!v.purchaseRegistrationLastTraining}</span></div>
+            </div>
+            <!--
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SVS_Purchase_Registration__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.loyaltyProgramLastTraining}</label><br/>{!v.loyaltyProgramLastTraining}</span></div>
+            </div>
+        -->
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SVS_Store_locator__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationDealerLocatorTrainingDate}</label><br/>{!v.dealerLocatorLastTraining}</span></div>
+            </div>
+            <!--<div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                    <aura:if isTrue="{!v.socialMedia==true}">
+                        <lightning:input type="checkbox" label="{!$Label.c.AccountActivationisSocialMedia}" name="socialMediaBox" checked="true" disabled="true"></lightning:input>
+                        <aura:set attribute="else">
+                            <lightning:input type="checkbox" label="{!$Label.c.AccountActivationisSocialMedia}" name="socialMediaBox"  disabled="true"></lightning:input>
+                        </aura:set>
+                    </aura:if>
+                </div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationSocialManagerTrainingDate}</label><br/>{!v.socialManagerLastTraining}</span></div>
+            </div>-->
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><label class="slds-form-element__label">{!$Label.c.AccountActivationisSocialMedia}</label><lightning:inputField fieldName="SVS_Digital_communication_platform__c" variant="label-hidden" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationSocialManagerTrainingDate}</label><br/>{!v.socialManagerLastTraining}</span></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Loyalty_Program_Emails_Activation__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.loyaltyProgramLastTraining}</label><br/>{!v.loyaltyProgramLastTraining}</span></div>
+            </div>
+            <div class="slds-m-top_medium">
+                <lightning:button variant="brand" type="submit" label="Save" />
+            </div>
+        </lightning:recordEditForm>
+    </div>
+
+    <div class="slds-theme_default slds-box" >
+        <!--Services activated at the shop owner level-->
+        <h4 class="slds-section__title  test-id__section-header-container"  style="background-color:azure;" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" style="background-color:azure;" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountActivationShopOwnerLevel}</span>
+            </button>
+        </h4>
+        <lightning:recordForm aura:id="seikoRecordForm3" recordId="{!v.seikoData.Id}" objectApiName="Seiko_Data__c"
+            fields="{!v.seikoFields3}" columns="2" mode="view"
+            density="auto"/>
+    </div>
+    
+    <div class="slds-theme_default slds-box" >
+        <!--Seiko Tools & Technologies in place-->
+        <h4 class="slds-section__title  test-id__section-header-container"  style="background-color:azure;" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" style="background-color:azure;" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountActivationTechnologies}</span>
+            </button>
+        </h4>
+        <lightning:recordEditForm aura:id="seikoRecordForm5" recordId="{!v.seikoData.Id}" objectApiName="Seiko_Data__c" onsuccess="{!c.handlSuccess}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SVS_Starting_kit__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Starting_kit_setting_up__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SVS_Communication_kit__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SVS_Communication_kit_setting_up__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SEIKO_Catalogues__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationSeikoCatalogueTrainingDate}</label><br/>{!v.seikoCatalogueLastTraining}</span></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SVS_Sample_boxes__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SVS_Sample_boxes_setting_up__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationSnxOrder}</label><br/>{!v.snxOrder}</span></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationSeikoXTranetTrainingDate}</label><br/>{!v.seikoXTranetLastTraining}</span></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationMeasurements}</label><br/>{!v.measurements}</span></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationiPadTrainingDate}</label><br/>{!v.seikoIPadLastTraining}</span></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationFrame}</label><br/>{!v.frame}</span></div>
+                <!--div class="slds-col slds-size_1-of-2"><span>{!v.frame}</span></div-->
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationLensSelection}</label><br/>{!v.lensSelection}</span></div>
+                <!--div class="slds-col slds-size_1-of-2"><span>{!v.lensSelection}</span></div-->
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationVisionTest}</label><br/>{!v.visionTest}</span></div>
+                <!--div class="slds-col slds-size_1-of-2"><span>{!v.visionTest}</span></div-->
+            </div>
+            <div class="slds-grid" style="padding-top: 15px;">
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationecolonneMeasurements}</label><br/>{!v.ecolonneMeasurements}</span></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationEColonneTrainingDate}</label><br/>{!v.seikoEColonneLastTraining}</span></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationecolonneConsultation}</label><br/>{!v.ecolonneConsultation}</span></div>
+                <!--div class="slds-col slds-size_1-of-2"><span>{!v.ecolonneConsultation}</span></div-->
+            </div>
+            <div class="slds-grid" style="padding-top: 15px;">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="SEIKO_Tracer__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationTracerTrainingDate}</label><br/>{!v.seikoTracerLastTraining}</span></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><label class="slds-form-element__label">Remote Edging</label>
+                    <br/>
+                    <aura:if isTrue="{!or(v.seikoData.Remote_Edging__c==null, v.seikoData.Remote_Edging__c==0)}">
+                        {!$Label.c.nodata}
+                        <aura:set attribute="else">
+                            {!$Label.c.Yes} ({!v.seikoData.Remote_Edging__c})
+                        </aura:set>
+                    </aura:if>
+                </div>
+                <!--div class="slds-col slds-size_1-of-2">
+                    <aura:if isTrue="{!or(v.seikoData.Remote_Edging__c==null, v.seikoData.Remote_Edging__c==0)}">
+                        {!$Label.c.nodata}
+                        <aura:set attribute="else">
+                            {!$Label.c.Yes} ({!v.seikoData.Remote_Edging__c})
+                        </aura:set>
+                    </aura:if>
+                </div-->
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><label class="slds-form-element__label">Mounting</label>
+                    <br/>
+                    <aura:if isTrue="{!or(v.seikoData.Glazing_Level__c==null,v.seikoData.Glazing_Level__c==0)}">
+                        {!$Label.c.nodata}
+                        <aura:set attribute="else">
+                            {!$Label.c.Yes} ({!v.seikoData.Glazing_Level__c})
+                        </aura:set>
+                    </aura:if>
+                </div>
+                <!--div class="slds-col slds-size_1-of-2">
+                    <aura:if isTrue="{!or(v.seikoData.Glazing_Level__c==null,v.seikoData.Glazing_Level__c==0)}">
+                        {!$Label.c.nodata}
+                        <aura:set attribute="else">
+                            {!$Label.c.Yes} ({!v.seikoData.Glazing_Level__c})
+                        </aura:set>
+                    </aura:if>
+                </div-->
+            </div>
+            <div class="slds-grid" style="padding-top: 15px;">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Seiko_Shop_in_Shop__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationShopInShopTrainingDate}</label><br/>{!v.seikoShopInShopLastTraining}</span></div>
+            </div>
+            <div class="slds-grid" style="padding-top: 15px;">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Seiko_Shop_in_Shop__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationXperienceCenterTrainingDate}</label><br/>{!v.seikoXperienceCenterLastTraining}</span></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                    <aura:if isTrue="{!v.isSeikoXtranet==true}">
+                        <lightning:input type="checkbox" label="Seiko X-tra Net" aura:id="isSeikoXtraNet" name="isSeikoXtraNet" checked="true" disabled="true" />
+                    <aura:set attribute="else">
+                        <lightning:input type="checkbox" label="Seiko X-tra Net" aura:id="isSeikoXtraNet" name="isSeikoXtraNet" checked="false" disabled="true" />
+                    </aura:set>
+                    </aura:if>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <aura:if isTrue="{!v.SeikoXpIpad==true}">
+                        <lightning:input type="checkbox" label="Seiko Vision Xperience iPad" aura:id="isSeikoXperienceIpad" name="isSeikoXperienceIpad" checked="true" disabled="true" />
+                    <aura:set attribute="else">
+                        <lightning:input type="checkbox" label="Seiko Vision Xperience iPad" aura:id="isSeikoXperienceIpad" name="isSeikoXperienceIpad" checked="false" disabled="true" />
+                    </aura:set>
+                    </aura:if>
+                </div>
+            </div>
+            <div class="slds-m-top_medium">
+                <lightning:button variant="brand" type="submit" label="Save" />
+            </div>
+        </lightning:recordEditForm>
+    </div>
+    <div class="slds-theme_default slds-box" >
+        <!--MiyoSmart-->
+        <h4 class="slds-section__title  test-id__section-header-container"  style="background-color:azure;" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" style="background-color:azure;" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">MiyoSmart</span>
+            </button>
+        </h4>
+        <lightning:recordEditForm aura:id="accountRecordForm" recordId="{!v.recordId}" objectApiName="Account" onsuccess="{!c.handlSuccess}">
+            <div class="slds-grid" style="padding-top: 15px;">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Myo_Smart_AuthorizeDealer__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><span><label class="slds-form-element__label">{!$Label.c.AccountActivationMiyosmartrTrainingDate}</label><br/>{!v.seikoMiyosmartLastTraining}</span></div>
+            </div>
+            <div class="slds-grid" style="padding-top: 15px;">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Myo_Kids_Corner__c" /></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="MiyoSmart_Potential__c" /></div>
+            </div>
+            <div class="slds-grid" style="padding-top: 15px;">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Myo_NotesComments__c" /></div>
+            </div>
+            <div class="slds-m-top_medium">
+                <lightning:button variant="brand" type="submit" label="Save" />
+            </div>
+        </lightning:recordEditForm>
+    </div>
+    
+    <div class="slds-theme_default slds-box" >
+        <!--Other Local Services-->
+        <h4 class="slds-section__title  test-id__section-header-container"  style="background-color:azure;" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" style="background-color:azure;" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountActivationOtherService}</span>
+            </button>
+        </h4>
+        <lightning:recordForm aura:id="seikoRecordForm6" recordId="{!v.seikoData.Id}" objectApiName="Seiko_Data__c"
+            fields="{!v.seikoFields5}" columns="2" mode="view"
+            density="auto"/>
+    </div>
+    
+    <div class="slds-theme_default slds-box" >
+        <!--Other information-->
+        <h4 class="slds-section__title  test-id__section-header-container"  style="background-color:azure;" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" style="background-color:azure;" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountActivationOtherInformation}</span>
+            </button>
+        </h4>
+        <lightning:recordForm aura:id="seikoRecordForm7" recordId="{!v.recordId}" objectApiName="Account"
+            fields="{!v.accountFields7}" columns="2" mode="view"
+            density="auto"/>
+    </div>
+    <div class="slds-theme_default slds-box" >
+        <!--Loyalty Points Management-->
+        <h4 class="slds-section__title  test-id__section-header-container"  style="background-color:azure;" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" style="background-color:azure;" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountActivationLoyaltyPoints}</span>
+            </button>
+        </h4>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_10-of-12 slds-var-m-top_x-small">
+                <span>
+                    Loyalty Points Balance: {!v.TotalLoyaltyPoints}
+                </span>
+            </div>
+            <div class="slds-col slds-size_2-of-12 slds-var-m-top_x-small">
+                <span class="slds-col slds-text-align_right"><lightning:button label="STATEMENT" onclick="{!c.generateStatement}"/></span>
+            </div>
+        </div>
+    </div>
+</div>
+</aura:component>

@@ -1,0 +1,32 @@
+<!--
+ - Created by thomas.schnocklake on 22.12.17.
+ -->
+
+ <aura:component controller="VisitPlanningController">
+    <aura:attribute name="translations" type="Object"/>
+    <aura:attribute name="visit" type="Visits__c"/>
+    
+    <lightning:navigation aura:id="navService"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <aura:attribute name="url" type="String"/>
+
+    <aura:attribute name="events" type="Object[]"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <ltng:require styles="{!$Resource.fullcalendar + '/fullcalendar.min.css'}"
+                  scripts="{!join(',',
+                          $Resource.fullcalendar + '/moment.min.js',
+                          $Resource.fullcalendar + '/moment-timezone-with-data.min.js'
+                          )}"
+                  afterScriptsLoaded="{!c.jsLoaded}"/>
+
+
+    <c:FullCalendarMobile events="{!v.events}"
+                    viewChange="{!c.onViewChange}"
+                    openEvent="{!c.onOpenEvent}"
+    ></c:FullCalendarMobile>
+    <aura:if isTrue="{!not(empty(v.visit))}">
+        <c:VisitPlanningVisitEditMobileForm visit="{!v.visit}"
+        >
+        </c:VisitPlanningVisitEditMobileForm>
+    </aura:if>
+</aura:component>

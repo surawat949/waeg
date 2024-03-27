@@ -1,0 +1,97 @@
+.THIS .slds-form-element__control {
+   display: inline-grid !important;
+}
+.THIS .slds-modal__header{
+    background-color: #24242E !important;color: white !important;box-shadow: inset -5px -5px 9px rgba(255,255,255,0.45), inset 5px 5px 9px rgba(94,104,121,0.3) !important;
+}
+.THIS .box {
+    position: relative;
+    background: #EEE;
+}
+.THIS .ribbon {
+    position: absolute;
+    right: -5px; top: -5px;
+    z-index: 1;
+    overflow: hidden;
+    width: 75px; height: 75px;
+    text-align: right;
+}
+.THIS .ribbon span {
+    font-size: 10px;
+    font-weight: bold;
+    color: #FFF;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 20px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    width: 100px;
+    display: block;
+    background: #79A70A;
+    background: linear-gradient(#05EFF7 0%, #087F8F 100%);
+    box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+    position: absolute;
+    top: 19px; right: -21px;
+}
+.THIS .ribbon span::before {
+    content: "";
+    position: absolute; left: 0px; top: 100%;
+    z-index: -1;
+    border-left: 3px solid #087F8F;
+    border-right: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid #087F8F;
+}
+.THIS .ribbon span::after {
+    content: "";
+    position: absolute; right: 0px; top: 100%;
+    z-index: -1;
+    border-left: 3px solid transparent;
+    border-right: 3px solid #087F8F;
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid #087F8F;
+}
+.THIS .activeStep{
+    color: White;
+}
+.THIS .activeLabel{
+    color: #007584 !important;
+}
+.THIS .activeBackground{
+    background-color: #007584 !important;
+}
+.THIS .activeLine{
+    background-color: #007584 !important;
+}
+.THIS .montserratBold{
+    font-family: Montserrat-Bold!important;
+    color: black;
+}
+.THIS .montserratBolddahsboard{
+    font-family: Montserrat-Bold!important;
+}
+.THIS .montserratRegular{
+    font-family: Montserrat-Regular!important;
+    color: black;
+}
+.THIS .montserratRegulardashboard{
+    font-family: Montserrat-Regular!important;
+}
+.THIS .button:hover{
+    background:#3676D6;
+    border:#3676D6;
+    color: #fff;
+    text-align: center;
+}
+.THIS .button{
+    background:#0454cc;
+    border:#0454cc;
+    color: #fff;
+    border-radius: 7px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    -webkit-user-select: none;
+    height: 40px;
+    width: 120px !important;
+}

@@ -1,0 +1,47 @@
+<apex:page standardStylesheets="false" doctype="html-5.0" standardController="Account" extensions="pssCourseSummary">
+<html>
+<style>
+table, th, td {
+    border: 1px solid grey;
+     border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+}
+</style>
+<body>
+<form>
+<table style="width:100%; ">
+  <tr>
+    <th>ACTIVE USERS</th>
+    <th>AVERAGE COMPLETION PER USERS</th> 
+    <th>TOP 5 COURSES</th>
+  </tr>
+  <tr>
+    
+    <td>{!countContactWhoCompletedCourse}/{!countContact}</td>
+    <td>
+        <apex:outputText value="{0, number, 0.00}">
+        <apex:param value="{!AvgCourseCompleted}" />
+        </apex:outputText>/{!countCohortCourses}
+    
+    </td> 
+    <td>
+      <apex:outputPanel rendered="{!results.size!=0}">
+        <apex:pageBlock >
+        <apex:pageBlockTable value="{!results}" var="r" >
+            <apex:column value="{!r['Id']}"/>
+            <apex:column value="{!r['ContactCourse']}"/>
+        </apex:pageBlockTable> 
+        </apex:pageBlock>
+      </apex:outputPanel>
+    </td>
+  </tr>
+
+</table>
+
+</form>
+</body>
+</html>
+
+</apex:page>

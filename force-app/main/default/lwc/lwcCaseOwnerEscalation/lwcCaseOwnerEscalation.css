@@ -1,0 +1,12 @@
+.spinnerClass{
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.alertmsg{
+    color:red;
+    text-align:center;
+}
+.example-accordion{
+    background:gray;
+}

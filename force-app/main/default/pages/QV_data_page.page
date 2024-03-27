@@ -1,0 +1,168 @@
+<apex:page standardController="Account" extensions="QvQueryPageController"
+    docType="html-5.0" id="QvDataPAge" lightningStylesheets="true">
+<apex:variable value="{!0.00}" var="total1"/>
+<apex:variable value="{!0}" var="total2"/>
+
+   
+   <!--apex:pageBlock title="QV Data sample"-->
+   <!--
+   <div class="table-responsive">
+   <table class="list" width="60%">
+       <thead>
+           <tr><th></th><th>Current year</th><th>Last year</th></tr>
+       </thead>
+       <tbody>
+           <tr>
+               <th class="headerRow">Turnover</th>
+               <td class="dataCell">
+                   <apex:outputText value="{0,number,#,##0.00}"> 
+                    <apex:param value="{!turnover_CY}"/>
+                   </apex:outputText>
+               </td>
+               <td class="dataCell">
+                   <apex:outputText value="{0,number,#,##0.00}"> 
+                    <apex:param value="{!turnover_LY}"/>
+                   </apex:outputText>
+               </td>
+           </tr>
+           <tr>
+               <th class="headerRow">Credits notes</th>
+               <td class="dataCell">
+                   <apex:outputText value="{0,number,#,##0.00}"> 
+                    <apex:param value="{!credits_CY}"/>
+                   </apex:outputText>
+               </td>
+               <td class="dataCell">
+                   <apex:outputText value="{0,number,#,##0.00}"> 
+                    <apex:param value="{!credits_LY}"/>
+                   </apex:outputText>
+               </td>
+           </tr>
+           <tr>
+               <th class="headerRow">Quantity</th>
+               <td class="dataCell">
+                   <apex:outputText value="{0,number,#,##0}"> 
+                    <apex:param value="{!quantity_CY}"/>
+                   </apex:outputText>
+               </td>
+               <td class="dataCell">
+                   <apex:outputText value="{0,number,#,##0}"> 
+                    <apex:param value="{!quantity_LY}"/>
+                   </apex:outputText>
+               </td>
+           </tr>
+           <tr>
+               <th class="headerRow">Credits Quantity</th>
+               <td class="dataCell">
+                   <apex:outputText value="{0,number,#,##0}"> 
+                    <apex:param value="{!quantity_C_CY}"/>
+                   </apex:outputText>
+               </td>
+               <td class="dataCell">
+                   <apex:outputText value="{0,number,#,##0}"> 
+                    <apex:param value="{!quantity_C_LY}"/>
+                   </apex:outputText>
+               </td>
+           </tr>
+       </tbody>
+   </table>
+   </div>
+   
+   -->
+   
+   <div class="table-responsive">
+   <table class="list" width="90%">
+       <caption>Sales {!CurrFY} ({!OriginalConversionRate})</caption>
+       <thead>
+           <tr>
+                <th>Category</th>
+                <th>Sales CY</th>
+                <th>%Mix CY</th>
+                <th>Quantity CY</th>
+                <th>%Mix CY</th>
+                <th>ASP CY</th>
+            </tr>
+       </thead>
+       <apex:repeat var="sales" value="{!dataList}">
+           <tr>
+                <td>{!sales.design}</td>
+                <td>
+                    <apex:outputText value="{0,number,#,##0}"> 
+                        <apex:param value="{!sales.annualSales*OriginalConversionRate}"/>
+                    </apex:outputText>
+                </td>
+                <td><apex:outputText value="{!IF(ISNULL(turnover_CY)||turnover_CY==0,0,ROUND((sales.annualSales/turnover_CY)*100,1))}"/>%</td>
+                <td>{!sales.annualQty}</td>
+                <td><apex:outputText value="{!IF(ISNULL(quantity_CY)||quantity_CY==0,0,ROUND((sales.annualQty/quantity_CY)*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(sales.annualQty)||sales.annualQty==0,0,ROUND((sales.annualSales*OriginalConversionRate)/sales.annualQty,1))}"/></td>
+           </tr>
+       </apex:repeat>
+    </table>
+    </div>
+   
+<div class="table-responsive">
+   <table class="list" width="90%">
+        <caption>Sales {!PrevFY}</caption>
+       <thead>
+           <tr>
+                <th>Category</th>
+                <th>Sales LY</th>
+                <th>%Mix LY</th>
+                <th>Quantity LY</th>
+                <th>%Mix LY</th>
+                <th>ASP LY</th>
+            </tr>
+       </thead>
+       <apex:repeat var="sales" value="{!dataLYList}">
+           <tr>
+                <td>{!sales.design}</td>
+                <td>
+                    <apex:outputText value="{0,number,#,##0}"> 
+                        <apex:param value="{!sales.annualSales*OriginalConversionRate}"/>
+                    </apex:outputText>
+                </td>
+                <td><apex:outputText value="{!IF(ISNULL(turnover_LY)||turnover_LY==0,0,ROUND((sales.annualSales/turnover_LY)*100,1))}"/>%</td>
+                <td>{!sales.annualQty}</td>
+                <td><apex:outputText value="{!IF(ISNULL(quantity_LY)||quantity_LY==0,0,ROUND((sales.annualQty/quantity_LY)*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(sales.annualQty)||sales.annualQty==0,0,ROUND((sales.annualSales*OriginalConversionRate)/sales.annualQty,1))}"/></td>
+           </tr>
+       </apex:repeat>
+    </table>
+</div>
+    
+  <!--/apex:pageBlock-->
+  <!--
+  <apex:pageBlock title="QV Data sample {!CurrFY}">
+      <apex:pageBlockTable value="{!dataList}" var="data">
+          <apex:column > 
+              <apex:facet name="header">Design</apex:facet> 
+              <apex:outputText value="{!data.design}"/> 
+          </apex:column>
+          <apex:column > 
+              <apex:facet name="header">Annual Sales</apex:facet>
+              <apex:outputText value="{0,number,#,##0}"> 
+                <apex:param value="{!data.annualSales}"/>
+              </apex:outputText>
+              <apex:variable var="total1" value="{!total1 + data.annualSales}"/>
+              <apex:facet name="footer">
+                Total: <span class="t1"></span>
+              </apex:facet>
+          </apex:column>
+          <apex:column > 
+              <apex:facet name="header">Annual Qty</apex:facet> 
+              <apex:outputText value="{!data.annualQty}"/>
+              <apex:variable var="total2" value="{!total2 + data.annualQty}"/>
+              <apex:facet name="footer">
+                Total: <span class="t2"></span>
+              </apex:facet>
+          </apex:column> 
+      </apex:pageBlockTable>
+  </apex:pageBlock>
+  <script>
+    // Here we will set the generated subtotals to the footer cells
+    var t1 = {!total1};
+    document.getElementsByClassName('t1')[0].innerHTML = t1.toLocaleString('en-US', {minimumFractionDigits: 2});
+    document.getElementsByClassName('t2')[0].innerHTML = '{!total2}';
+  </script>
+  -->
+</apex:page>

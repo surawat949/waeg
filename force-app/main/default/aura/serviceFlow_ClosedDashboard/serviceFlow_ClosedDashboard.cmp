@@ -1,0 +1,4 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	<aura:attribute name="recordId" type="String" />
+    <c:serviceFlow_ServicesDashboardUtility recordId="{!v.recordId}" eventType="Closed"></c:serviceFlow_ServicesDashboardUtility>
+</aura:component>

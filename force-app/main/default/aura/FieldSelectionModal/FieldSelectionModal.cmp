@@ -1,0 +1,50 @@
+<!--
+ - Created by thomas.schnocklake on 16.02.18.
+ -->
+
+<aura:component description="FieldSelectionModal" controller="VisitPlanningController">
+    <aura:attribute name="accountFieldList" type="List"/>
+    <aura:attribute name="selectedAccountFieldList" type="List"/>
+
+    <aura:attribute name="message" type="String"/>
+
+    <aura:registerEvent name="decisionresult" type="c:DecisionResultEvent"/>
+
+<!--
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+-->
+    <aura:if isTrue="true">
+        <div class="mymodal" style="position: absolute; height: 640px;">
+            <section role="dialog" tabindex="-1"  class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!$Label.c.SelectFieldsToDisplay}</h2>
+                        <aura:if isTrue="{!v.message!= null}">
+                            <ui:message title="Error" severity="error" closable="true">
+                                    {!v.message}
+                            </ui:message>
+                        </aura:if>
+                    </header>
+                    <div class="slds-form slds-form_compound">
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <lightning:dualListbox aura:id="selectOptions"
+                                                   name="Select Options"
+                                                   label="{!$Label.c.SelectFieldsToDisplay}"
+                                                   sourceLabel="{!$Label.c.AvailableFields}"
+                                                   selectedLabel="{!$Label.c.VPMSelectedFields}"
+                                                   options="{! v.accountFieldList }"
+                                                   value="{! v.selectedAccountFieldList }"
+                                                   onchange="{! c.handleSelectedAccountFieldListChange }"/>
+                        </div>
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="brand" label="{!$Label.c.Cancel}" onclick="{! c.handleCancel }" />
+                        <lightning:button variant="brand" label="{!$Label.c.Save}" onclick="{! c.handleSave }" />
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,3 @@
+<apex:page standardController="Account" extensions="EndChatButtonController" standardstylesheets="false" showheader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+  
+</apex:page>

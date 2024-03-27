@@ -1,0 +1,15 @@
+<template>
+    <lightning-card title="Download PDF">
+        <lightning-layout>
+            <div class="slds-p-around_small" >
+                <lightning-button variant="brand" label="Generate PDF" onclick={generatePdf}></lightning-button>
+                <br/><br/>
+
+                <template if:true={boolShowSpinner}>
+                    <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+                </template>
+
+            </div>
+        </lightning-layout>
+    </lightning-card>
+</template>

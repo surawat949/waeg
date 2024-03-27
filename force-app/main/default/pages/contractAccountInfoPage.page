@@ -1,0 +1,19 @@
+<apex:page standardController="Contract" extensions="contractAccountInfoController" cache="true" expires="600" lightningStylesheets="true">
+    <apex:slds />
+
+    <div class="detailList">
+        <apex:pageBlock mode="maindetail">
+                <apex:pageBlockSection title="Account Informations" columns="2">
+                <apex:outputField value="{!account.AnnualRevenue}"/>
+                <apex:outputField value="{!account.Share_of_Wallet__c}"/>
+                    
+                <apex:outputText label="Classification" value="{!IF((account.Share_of_Wallet__c>=80),'VIP',
+                                            IF((account.Share_of_Wallet__c>=50), 'PREMIUM',
+                                            IF((account.Share_of_Wallet__c>=25), 'PLUS',
+                                            IF((account.Share_of_Wallet__c>=10), 'A3-B3', 'PROSPECT'))
+                                            ))}"></apex:outputText>
+                <apex:outputField value="{!account.Phone}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </div>
+</apex:page>

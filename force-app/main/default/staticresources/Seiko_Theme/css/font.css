@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "Drescher Grotesk";
+  font-weight: 600;
+  src: url("../fonts/dgdemibold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Drescher Grotesk";
+  font-weight: 500;
+  src: url("../fonts/dgsemibold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Drescher Grotesk";
+  font-weight: normal;
+  src: url("../fonts/dgroman.woff2") format("woff2");
+}

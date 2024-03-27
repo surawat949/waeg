@@ -1,0 +1,103 @@
+<aura:component controller="OpportunityStageLayoutController">
+    <aura:attribute name="accountId" type="Id"/>
+    <aura:attribute name="opportunityId" type="Id"/>
+    <aura:attribute name="today" type="Date" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <div class="slds-theme_default slds-box">      
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 3: SEIKO FREE TRIAL OFFER</span>
+            </button>
+        </h3>
+        <lightning:recordEditForm aura:id="orderEditForm"
+            objectApiName="SEIKO_Order__c"
+            onsuccess="{!c.handleSuccess}">
+            
+            <lightning:messages />
+            <lightning:inputField fieldName="Account__c" value="{!v.accountId}"/>
+            <lightning:inputField fieldName="Opportunity__c" value="{!v.opportunityId}"/>
+            <lightning:inputField fieldName="Date_of_demand__c" value="{!v.today}"/>
+            <lightning:inputField fieldName="Assigned_to__c"/>
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Wearer Information</span>
+                </button>
+            </h3>
+            <lightning:inputField fieldName="Wearer_name__c" />
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Right_SPH__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="Left_SPH__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Right_CYL__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Left_CYL__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Right_AXIS__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Left_AXIS__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Right_ADD__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Left_ADD__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Right_PRISM__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Left_PRISM__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Right_PRISM_BASIS__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Left_PRISM_BASIS__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Right_PD__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Left_PD__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="Right_fitting_height__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Left_fitting_height__c"/></div>
+            </div>
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Lens selection (solar equipement not recommanded for trial pairs)</span>
+                </button>
+            </h3>
+            
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="Design_name__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Usefull_diameter__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="Index__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Coating__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">&nbsp;</div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Corridor_Length__c"/></div>
+            </div>
+            
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Individualization</span>
+                </button>
+            </h3>
+            
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="Vertex_Distance__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Reading_distance__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="Pantoscopic_angle__c"/></div>
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Bow_angle__c"/></div>
+            </div>
+            <lightning:inputField fieldName="Special_comment__c" />
+
+            <lightning:button class="slds-m-top_small" type="submit" label="Create Order" />
+        </lightning:recordEditForm>
+    </div>
+</aura:component>

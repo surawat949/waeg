@@ -1,0 +1,38 @@
+public class DoorSalesPerformanceHoyaCtrl {
+	public final Door__c door{get;set;}
+    public List<DoorSalesPerformance> dataList {get;set;}
+
+    public DoorSalesPerformanceHoyaCtrl(ApexPages.StandardController stdController){
+        Door__c r = (Door__c)stdController.getRecord();
+        
+        this.door = [select Hoya_Segmentation_Box__c,Hoya_Actuals_April_Current_Year__c,Hoya_Actuals_May_Current_Year__c,Hoya_Actuals_June_Current_Year__c,
+Hoya_Actuals_July_Current_Year__c,Hoya_Actuals_August_Current_Year__c,Hoya_Actuals_September_Current_Year__c,Hoya_Actuals_October_Current_Year__c,
+Hoya_Actuals_November_Current_Year__c,Hoya_Actuals_December_Current_Year__c,Hoya_Actuals_January_Current_Year__c,Hoya_Actuals_February_Current_Year__c,
+Hoya_Actuals_March_Current_Year__c,Hoya_Annual_revenue__c,Seiko_Segmentation_Box__c,Seiko_Actuals_April_Current_Year__c,
+Seiko_Actuals_May_Current_Year__c,Seiko_Actuals_June_Current_Year__c,Seiko_Actuals_July_Current_Year__c,Seiko_Actuals_August_Current_Year__c,
+Seiko_Actuals_September_Current_Year__c,Seiko_Actuals_October_Current_Year__c,Seiko_Actuals_November_Current_Year__c,Seiko_Actuals_December_Current_Year__c,
+Seiko_Actuals_January_Current_Year__c,Seiko_Actuals_February_Current_Year__c,Seiko_Actuals_March_Current_Year__c,Seiko_Annual_revenue__c,
+Hoya_Actuals_April_Last_Year__c,Hoya_Actuals_May_Last_Year__c,Hoya_Actuals_June_Last_Year__c,
+Hoya_Actuals_July_Last_Year__c,Hoya_Actuals_August_Last_Year__c,Hoya_Actuals_September_Last_Year__c,Hoya_Actuals_October_Last_Year__c,
+Hoya_Actuals_November_Last_Year__c,Hoya_Actuals_December_Last_Year__c,Hoya_Actuals_January_Last_Year__c,Hoya_Actuals_February_Last_Year__c,
+Hoya_Actuals_March_Last_Year__c,Seiko_Actuals_April_Last_Year__c,
+Seiko_Actuals_May_Last_Year__c,Seiko_Actuals_June_Last_Year__c,Seiko_Actuals_July_Last_Year__c,Seiko_Actuals_August_Last_Year__c,
+Seiko_Actuals_September_Last_Year__c,Seiko_Actuals_October_Last_Year__c,Seiko_Actuals_November_Last_Year__c,Seiko_Actuals_December_Last_Year__c,
+Seiko_Actuals_January_Last_Year__c,Seiko_Actuals_February_Last_Year__c,Seiko_Actuals_March_Last_Year__c,
+Hoya_Budget_April_Current_Year__c,Hoya_Budget_May_Current_Year__c,Hoya_Budget_June_Current_Year__c,Hoya_Budget_July_Current_Year__c,Hoya_Budget_August_Current_Year__c,
+Hoya_Budget_September_Current_Year__c,Hoya_Budget_October_Current_Year__c,Hoya_Budget_November_Current_Year__c,Hoya_Budget_December_Current_Year__c,Hoya_Budget_January_Current_Year__c,
+Hoya_Budget_February_Current_Year__c,Hoya_Budget_March_Current_Year__c,Seiko_Budget_April_Current_Year__c,Seiko_Budget_May_Current_Year__c,Seiko_Budget_June_Current_Year__c,
+Seiko_Budget_July_Current_Year__c,Seiko_Budget_August_Current_Year__c,Seiko_Budget_September_Current_Year__c,Seiko_Budget_October_Current_Year__c,Seiko_Budget_November_Current_Year__c,
+Seiko_Budget_December_Current_Year__c,Seiko_Budget_January_Current_Year__c,Seiko_Budget_February_Current_Year__c,Seiko_Budget_March_Current_Year__c
+from Door__c where id=:r.Id];
+
+        //DoorSalesPerformanceEngine eng = new DoorSalesPerformanceEngine(EntityModeEnum.HOYA, this.door.id);
+        DoorSalesPerformanceEngine eng = new DoorSalesPerformanceEngine(EntityModeEnum.HOYASEIKO, this.door.id);
+        dataList = eng.getPerformance();
+    }
+
+    public List<DoorSalesPerformance> getPerformanceList(Id doorId){
+        DoorSalesPerformanceEngine eng = new DoorSalesPerformanceEngine(EntityModeEnum.HOYASEIKO, doorId);
+        return eng.getPerformance();
+    }
+}

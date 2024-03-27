@@ -1,0 +1,90 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+access="public"  controller="AccountSalesTabComponentController">
+
+<aura:attribute name="recordId" type="String" />
+<aura:attribute name="accountLensSupplierFields" type="String[]" default="['First_Competitor_global_name__c', 'Second_Competitor_global_name__c', 'First_Competitor_local_name__c', 'Second_Competitor_Local_Name__c', 'First_Competitor_SOW__c', 'Second_Competitor_SOW__c','Potential__c', 'Target_List__c']"/>
+<aura:attribute name="accountSegmentation1Fields" type="String[]" default="['Potential__c', 'Share_of_Wallet__c', 'Segmentation_Box__c', 'Manual_Segment__c']"/>
+<aura:attribute name="accountSegmentation2Fields" type="String[]" default="['Agreed_Visits__c', 'Agreed_No_of_Digital_Visits__c', 'Visit_Frequency_Status__c', 'Digital_Visits_Frequency__c', 'Last_Visit_date__c', 'Last_Digital_Visit_Date__c']"/>
+<aura:attribute name="accountTacticomSeikoFields" type="String[]" default="['TACTICOM_SOF__c', 'TACTICOM_Owner__c', 'Target_List__c']"/>
+<aura:attribute name="accountTacticomHoyaFields" type="String[]" default="['TACTICOM_HLFR__c', 'TACTICOM_Owner__c']"/>
+<aura:attribute name="seikoData" type="Seiko_Data__c"/>
+<aura:attribute name="account" type="Account"/>
+<aura:attribute name="relatedAccount" type="Account"/>
+
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+
+<div class="slds-theme_default slds-box" >
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountVisitTabTacticom}</span>
+        </button>
+    </h3>
+   <aura:if isTrue="{!v.account.Brand__c=='SEIKO'}">
+        <lightning:recordForm aura:id="accountTacticomSeikoForm" recordId="{!v.recordId}" objectApiName="Account"
+            fields="{!v.accountTacticomSeikoFields}" columns="3" mode="view"
+            density="auto"/>
+            <aura:set attribute="else">
+                <lightning:recordForm aura:id="accountTacticomHoyaForm" recordId="{!v.recordId}" objectApiName="Account"
+                fields="{!v.accountTacticomHoyaFields}" columns="2" mode="view"
+                density="auto"/>
+
+            </aura:set>
+    </aura:if>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer" >
+            <thead>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>{!v.relatedAccount.Brand__c}&nbsp;{!v.relatedAccount.Hoya_Account_ID__c}</td>
+                    <td>{!v.account.Brand__c}&nbsp;{!v.account.Hoya_Account_ID__c}</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="slds-text-title_caps">
+                    <td>{!$Label.c.AccountVisitTabTacticom}</td>
+                    <td>
+                        <aura:if isTrue="{!v.account.Brand__c=='SEIKO'}"> {!v.relatedAccount.TACTICOM_HLFR__c}</aura:if>
+                        <aura:if isTrue="{!v.account.Brand__c=='HOYA'}"> {!v.relatedAccount.TACTICOM_SOF__c}</aura:if>
+                    </td>
+                    <td>
+                        <aura:if isTrue="{!v.account.Brand__c=='SEIKO'}"> {!v.account.TACTICOM_SOF__c}</aura:if>
+                        <aura:if isTrue="{!v.account.Brand__c=='HOYA'}"> {!v.account.TACTICOM_HLFR__c}</aura:if>
+                    </td>
+                </tr>
+                <tr class="slds-text-title_caps">
+                    <td>{!$Label.c.AccountVisitTabSOW_Seiko_potential}</td>
+                    <td>
+                        <!--DEBUG: {!v.relatedAccount.AnnualRevenue} | {!v.relatedAccount.Potential__c} -->
+                        <lightning:formattedNumber value="{!(v.relatedAccount.AnnualRevenue/v.relatedAccount.Potential__c)*100}" maximumFractionDigits="0"/> %
+                    </td>
+                    <td>
+                        <!--DEBUG: {!v.account.AnnualRevenue} | {!v.account.Potential__c} -->
+                        <lightning:formattedNumber value="{!(v.account.AnnualRevenue/v.account.Potential__c)*100}" maximumFractionDigits="0"/> %
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+       <!-- {!v.relatedAccount.TACTICOM_Owner__c} - {!v.relatedAccount.TACTICOM_SOF__c} - {!v.relatedAccount.TACTICOM_HLFR__c} - {!v.relatedAccount.Hoya_Account_ID__c} -->
+</div>
+
+<!--div class="slds-theme_default slds-box" >
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountVisitTabSegmentation}</span>
+        </button>
+    </h3>
+    <lightning:recordForm aura:id="accountSegmentation1Form" recordId="{!v.recordId}" objectApiName="Account"
+    fields="{!v.accountSegmentation1Fields}" columns="2" mode="view"
+    density="auto"/>
+    <p style="padding-bottom: 15px;">&nbsp;</p>
+    <lightning:recordForm aura:id="accountSegmentation2Form" recordId="{!v.recordId}" objectApiName="Account"
+    fields="{!v.accountSegmentation2Fields}" columns="2" mode="view"
+    density="auto"/>
+</div-->
+
+
+
+</aura:component>

@@ -1,0 +1,91 @@
+<aura:component access="public"
+implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+controller="ContactNearAccountController">
+    <aura:attribute name="mapMarkers" type="Object[]"/>
+    <aura:attribute name="distance" type="Double" default="1"/>
+    <aura:attribute name="displayListView" type="String" default="hidden"/>
+    <aura:attribute name="selectedMarkerValue" type="String" default="SF1" />
+
+    <aura:attribute name="miyosmartAttitude" type="String"/>
+    <aura:attribute name="prescriptionPotential" type="String" />
+    <aura:attribute name="preferredMethod" type="String" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="slds-theme_default slds-box">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-4 slds-float_right slds-align_absolute-center">
+                <label class="slds-form-element__label">Miyosmart Attitude</label>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning:select value="{!v.miyosmartAttitude}" onchange="{!c.init}" name="select">
+                        <option value=""></option>
+                        <option value="Promoter">Promoter</option>
+                        <option value="Neutral">Neutral</option>
+                        <option value="Detractor">Detractor</option>
+                </lightning:select>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align_absolute-center">
+                <label class="slds-form-element__label">Preferred Contact Method</label>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-center">
+                <lightning:select value="{!v.preferredMethod}" onchange="{!c.init}" name="select">
+                    <option value=""></option>
+                    <option value="In presence without appointment">In presence without appointment</option>
+                    <option value="In presence on appointment">In presence on appointment</option>
+                    <option value="email">email</option>
+                    <option value="Phone call">Phone call</option>
+                    <option value="Digital devices">Digital devices</option>
+                </lightning:select>
+            </div>
+        </div>
+
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-4 slds-float_right slds-align_absolute-center">
+                <label class="slds-form-element__label">Distance(km)</label>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning:slider label="" value="{!v.distance}" min="1" max="30" onchange="{!c.init}"/>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align_absolute-center">
+                <label class="slds-form-element__label">Prescription Potential</label>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-center">
+                <lightning:select value="{!v.prescriptionPotential}" onchange="{!c.init}" name="select">
+                    <option value=""></option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </lightning:select>
+            </div>
+        </div>
+
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_5-of-6">
+                
+            </div>
+            <!--div class="slds-col slds-size_1-of-4">
+                
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+                
+            </div-->
+            <div class="slds-col slds-size_1-of-6 slds-float_right">
+                <br/>
+                <aura:if isTrue="{!v.displayListView=='hidden'}"><lightning:button label="Display list" variant="brand" onclick="{!c.displayList}"/></aura:if>
+                <aura:if isTrue="{!v.displayListView=='visible'}"><lightning:button label="Hide list" variant="brand" onclick="{!c.hideList}"/></aura:if>
+            </div>
+        </div>
+    </div>
+
+<lightning:map
+    mapMarkers="{!v.mapMarkers}"
+    markersTitle="Opticians"
+    
+    selectedMarkerValue="{!v.selectedMarkerValue}"
+    center="{!v.center}"
+    listView="{!v.displayListView}"
+    zoomLevel="13"/>
+
+</aura:component>

@@ -1,0 +1,280 @@
+.THIS .circle {
+    cursor: pointer;
+    height: 37px;
+    width: 36px;
+    border-radius: 50%;
+    border: 2px solid #007584 !important;
+    display: inline-block;
+    color: black;
+}
+.THIS .hrefcss{
+    text-decoration: none;
+}
+.THIS .dynamic-circle-class{
+    background-color: black !important;
+    color: #fff !important;
+    font-family: Montserrat-Bold!important;
+    
+}
+.THIS .cicrle-top-padding-step{
+    padding-top: 5px;
+}
+.THIS .line {
+    background-color: gray;
+    height: 1px;
+    width: 15%;
+    display: inline-block;
+    padding-bottom: 2px;
+}
+.THIS .circle-parent{
+    width: 35px;
+    display: inline-grid;
+    white-space: nowrap;
+}
+.THIS .stepLabel{
+    padding-top: 5px;
+    color: gray;
+}
+.THIS .content{
+    font-size: 25px;
+}
+.THIS .activeStep{
+    color: White;
+}
+.THIS .activeLabel{
+    color: #007584 !important;
+}
+.THIS .activeBackground{
+    background-color: #007584 !important;
+}
+.THIS .activeLine{
+    background-color: #007584 !important;
+}
+.THIS .montserratBold{
+    font-family: Montserrat-Bold!important;
+    color: black;
+}
+.THIS .montserratBolddahsboard{
+    font-family: Montserrat-Bold!important;
+}
+.THIS .montserratRegular{
+    font-family: Montserrat-Regular!important;
+    color: black;
+}
+.THIS .montserratRegulardashboard{
+    font-family: Montserrat-Regular!important;
+}
+.THIS .button:hover{
+    background:#39bbbb;
+    border:#39bbbb;
+}
+.THIS .slds-form-element__label{
+    font-weight:bolder;
+    font-family: Montserrat-Bold!important;
+    color: black;
+}
+.THIS .slds-form-element{
+    width: 557px !important;
+}
+.THIS .stickyFooter{
+    background :rgb(250, 247, 245);
+}
+.THIS .slds-modal__header{
+    background-color: rgb(250, 247, 245, 0.9)!important;;
+    border-bottom: 1px solid lightgray !important;
+}
+.THIS .Register-your-produc {
+    width: 358px;
+    height: 44px;
+    margin: 0 201px 32px 0;
+    font-family: Montserrat-Bold!important;
+    font-size: 32px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.38;
+    letter-spacing: normal;
+    color: #333;
+}
+.THIS .Review {
+    width: 88px;
+    height: 32px;
+    margin: 39px 242px 40px 0;
+    font-family: Montserrat-Regular!important;;
+    font-size: 24px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.33;
+    letter-spacing: normal;
+    color: #333;
+}
+.THIS .Product-Registration---Review---Desktop-2000px {
+    width: 1440px;
+    height: 1184px;
+    padding: 40px 0 0;
+    background-color: #fff;
+}
+.THIS .Rectangle-Copy-4 {
+    width: 803px;
+    height: 1px;
+    margin: 0 0 20px;
+    background-color: #bbb;
+}
+.THIS .Product {
+    height: 18px;
+    font-family: Montserrat-Regular!important;;
+    font-size: 14px;
+    font-weight: bold;;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.29;
+    letter-spacing: normal;
+    color: #333;
+}
+.THIS .The-Oracle-Touch {
+    width: 128px;
+    height: 18px;
+    margin: 16px 138px 16px 40px;
+    font-family: Montserrat-Regular!important;
+    font-size: 14px;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.29;
+    letter-spacing: normal;
+    color: #333;
+}
+.THIS .Review {
+    width: 88px;
+    height: 32px;
+    margin: 39px 242px 40px 0;
+    font-family: Montserrat-Regular!important;
+    font-size: 17px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.33;
+    letter-spacing: normal;
+    color: #333;
+}
+.THIS .cmp-teaser--hero .cmp-teaser--hero-boxed-content .cmp-teaser__content{
+    margin: 5rem auto;
+    padding: 1.875rem 3.125rem;
+    
+    float: none !important;
+    width: auto;
+    display: table;
+    min-height: 0;
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+}
+.THIS .cmp-teaser--hero .cmp-teaser__content{
+    top: 0;
+    /* width: 100%; */
+    height: 100%;
+    color: #fff;
+    text-align: center;
+    /* padding-bottom: 3.125rem; */
+    position: relative;
+    background-color: rgba(0,0,0,.65);
+}
+.THIS .Rectangle {
+    text-align: -webkit-center;
+    height: auto;
+    padding: 4px 77px 18px;
+    background-color: #252728;
+}
+.THIS .We-have-cancelled-yo {
+    width: 221px;
+    height: 56px;
+    margin: 16px 0 0;
+    font-family: Bitter;
+    font-size: 24px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #fff;
+}
+.THIS .Beanz---Discovery-Beanz---Partial-Order-Cancelled---Mobile {
+    height: 2675px;
+    background-color: #fff;
+}
+.THIS .padding-right {
+    padding-right: 20px;
+}
+.THIS .slds-table thead th span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 700;
+    color: black;
+    background-color: rgb(250, 247, 245);
+    text-align: left;
+}
+.THIS .slds-table {
+    text-align: left;
+    font-family: Montserrat-Regular!important;
+}
+.THIS .slds-button_neutral{
+    background:#007584;
+    border:#007584;
+    color: #f4f7f9;
+    border-radius: 3px;
+    text-align: center;
+    font-weight: bold;
+    -webkit-user-select: none;
+}
+.THIS .slds-button_neutral:hover{
+    background:#39bbbb;
+    border:#39bbbb;
+}
+.THIS .button{
+    background:#007584;
+    border:#007584;
+    color: #f4f7f9;
+    border-radius: 3px;
+    text-align: center;
+    /*padding: 0% 5% 0% 5%;*/
+    font-size: 14px;
+    font-weight: bold;
+    -webkit-user-select: none;
+    height: 40px;
+}
+.THIS .fontFamily {
+    font-family: Montserrat-Regular!important;
+}
+.THIS .button-gray{
+    border:#007584;
+    color: #f4f7f9;
+    border-radius: 3px;
+    text-align: center;
+    /*padding: 0% 5% 0% 5%;*/
+    font-size: 14px;
+    font-weight: bold;
+    -webkit-user-select: none;
+    height: 40px;         
+}
+.THIS .boxdynamiccss{
+    border-left-width: thick;
+    border-left-color: #5C5C5C;
+    background-color: #2b2b2d;
+    color: #fff !important;
+    font-family: Montserrat-Bold!important;
+    height: 75px !important;
+}
+.THIS .slds-modal__close{
+    border: 1px solid white !important;
+}
+.THIS .slds-form-element__label{
+    font-weight:bold !important;
+}
+.THIS .slds-th__action{
+    background: aliceblue !important;
+}
+.THIS .slds-page-css{
+     background: aliceblue !important;
+}

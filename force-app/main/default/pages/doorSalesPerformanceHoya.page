@@ -1,0 +1,342 @@
+<apex:page showHeader="false" sidebar="false" docType="html-5.0"
+standardController="Door__c" extensions="DoorSalesPerformanceHoyaCtrl"
+id="visitLocationPage" lightningStylesheets="true">
+<!--
+<div class="table-responsive">
+    <table class="list" width="100%">
+        <thead class="rich-table-thead">
+            <tr class="headerRow">
+                <th class="headerRow"><apex:outputLabel value="Account" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="Segmentation" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="ANNUAL" style="font-weight:bold"/></th>
+            </tr>
+        </thead>
+        <tbody>
+              <apex:repeat value="{!dataList}" var="data">
+                <tr>
+                  <td><apex:outputText value="{!data.hoyaAccountId}"/></td>
+                  <td><apex:outputText value="{!data.segmentationBox}"/></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.april,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.may,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.june,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.july,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.august,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.september,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.october,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.november,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.december,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.january,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.february,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.march,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.annual,0)}"/></apex:outputText></td>
+                </tr>
+              </apex:repeat>
+        </tbody>
+    </table>
+</div>
+-->
+<div class="table-responsive">
+  <table class="list" width="100%">
+      <thead class="rich-table-thead">
+          <tr class="headerRow">
+              <th class="headerRow"><apex:outputLabel value="Account" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="Segmentation" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="Potential" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="Share of Wallet" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="Annual Revenue" style="font-weight:bold"/></th>
+          </tr>
+        </thead>
+        <tbody>
+            <apex:repeat value="{!dataList}" var="data">
+              <tr>
+                <td><apex:outputText value="{!data.hoyaAccountId}"/></td>
+                <td><apex:outputText value="{!data.segmentationBox}"/></td>
+                <td><apex:outputText value="{!data.potential}"/></td>
+                <td><apex:outputText value="{!data.sow}"/>&nbsp;%</td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.annual,0)}"/></apex:outputText></td>
+               </tr>
+             </apex:repeat>
+        </tbody>
+    </table>
+</div>
+<br/>
+<div class="table-responsive">
+  <table class="list" width="100%">
+      <thead class="rich-table-thead">
+          <tr class="headerRow">
+              <th class="headerRow"><apex:outputLabel value="Hoya Monthly Trend" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="Total" style="font-weight:bold"/></th>
+          </tr>
+      </thead>
+      <tbody>
+              <tr>
+                <td>Last Year</td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_April_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_May_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_June_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_July_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_August_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_September_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_October_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_November_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_December_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_January_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_February_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_March_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_April_Last_Year__c+door.Hoya_Actuals_May_Last_Year__c+door.Hoya_Actuals_June_Last_Year__c+door.Hoya_Actuals_July_Last_Year__c+door.Hoya_Actuals_August_Last_Year__c+door.Hoya_Actuals_September_Last_Year__c+door.Hoya_Actuals_October_Last_Year__c+door.Hoya_Actuals_November_Last_Year__c+door.Hoya_Actuals_December_Last_Year__c+door.Hoya_Actuals_January_Last_Year__c+door.Hoya_Actuals_February_Last_Year__c+door.Hoya_Actuals_March_Last_Year__c,0)}"/></apex:outputText></td>
+              </tr>
+              <tr>
+                <td>Current Year</td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_April_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_May_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_June_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_July_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_August_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_September_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_October_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_November_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_December_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_January_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_February_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_March_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_April_Current_Year__c+door.Hoya_Actuals_May_Current_Year__c+door.Hoya_Actuals_June_Current_Year__c+door.Hoya_Actuals_July_Current_Year__c+door.Hoya_Actuals_August_Current_Year__c+door.Hoya_Actuals_September_Current_Year__c+door.Hoya_Actuals_October_Current_Year__c+door.Hoya_Actuals_November_Current_Year__c+door.Hoya_Actuals_December_Current_Year__c+door.Hoya_Actuals_January_Current_Year__c+door.Hoya_Actuals_February_Current_Year__c+door.Hoya_Actuals_March_Current_Year__c,0)}"/></apex:outputText></td>
+              </tr>
+              <tr>
+                <td>Forecast Year</td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_April_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_May_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_June_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_July_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_August_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_September_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_October_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_November_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_December_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_January_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_February_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_March_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_April_Current_Year__c+door.Hoya_Budget_May_Current_Year__c+door.Hoya_Budget_June_Current_Year__c+door.Hoya_Budget_July_Current_Year__c+door.Hoya_Budget_August_Current_Year__c+door.Hoya_Budget_September_Current_Year__c+door.Hoya_Budget_October_Current_Year__c+door.Hoya_Budget_November_Current_Year__c+door.Hoya_Budget_December_Current_Year__c+door.Hoya_Budget_January_Current_Year__c+door.Hoya_Budget_February_Current_Year__c+door.Hoya_Budget_March_Current_Year__c,0)}"/></apex:outputText></td>
+              </tr>
+              
+              <tr class="dataRow">
+                <td>CY/FY Performance</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_April_Current_Year__c)|| door.Hoya_Budget_April_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_April_Current_Year__c/ (door.Hoya_Budget_April_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_May_Current_Year__c)|| door.Hoya_Budget_May_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_May_Current_Year__c/ (door.Hoya_Budget_May_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_June_Current_Year__c)|| door.Hoya_Budget_June_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_June_Current_Year__c/ (door.Hoya_Budget_June_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_July_Current_Year__c)|| door.Hoya_Budget_July_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_July_Current_Year__c/ (door.Hoya_Budget_July_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_August_Current_Year__c)|| door.Hoya_Budget_August_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_August_Current_Year__c/ (door.Hoya_Budget_August_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_September_Current_Year__c)|| door.Hoya_Budget_September_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_September_Current_Year__c/ (door.Hoya_Budget_September_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_October_Current_Year__c)|| door.Hoya_Budget_October_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_October_Current_Year__c/ (door.Hoya_Budget_October_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_November_Current_Year__c)|| door.Hoya_Budget_November_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_November_Current_Year__c/ (door.Hoya_Budget_November_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_December_Current_Year__c)|| door.Hoya_Budget_December_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_December_Current_Year__c/ (door.Hoya_Budget_December_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_January_Current_Year__c)|| door.Hoya_Budget_January_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_January_Current_Year__c / (door.Hoya_Budget_January_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_February_Current_Year__c)|| door.Hoya_Budget_February_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_February_Current_Year__c/ (door.Hoya_Budget_February_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_March_Current_Year__c)|| door.Hoya_Budget_March_Current_Year__c<=0 , '', ROUND((door.Hoya_Actuals_March_Current_Year__c/ (door.Hoya_Budget_March_Current_Year__c))*100,1))}"/>%</td>
+                <td></td>
+            </tr>
+      </tbody>
+  </table>
+</div>
+<br/>
+<div class="table-responsive">
+  <table class="list" width="100%">
+      <thead class="rich-table-thead">
+          <tr class="headerRow">
+              <th class="headerRow"><apex:outputLabel value="Seiko Monthly Trend" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+              <th class="headerRow"><apex:outputLabel value="Total" style="font-weight:bold"/></th>
+          </tr>
+      </thead>
+      <tbody>
+              <tr>
+                <td>Last Year</td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_April_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_May_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_June_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_July_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_August_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_September_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_October_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_November_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_December_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_January_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_February_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_March_Last_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_April_Last_Year__c+door.Seiko_Actuals_May_Last_Year__c+door.Seiko_Actuals_June_Last_Year__c+door.Seiko_Actuals_July_Last_Year__c+door.Seiko_Actuals_August_Last_Year__c+door.Seiko_Actuals_September_Last_Year__c+door.Seiko_Actuals_October_Last_Year__c+door.Seiko_Actuals_November_Last_Year__c+door.Seiko_Actuals_December_Last_Year__c+door.Seiko_Actuals_January_Last_Year__c+door.Seiko_Actuals_February_Last_Year__c+door.Seiko_Actuals_March_Last_Year__c,0)}"/></apex:outputText></td>
+              </tr>
+              <tr>
+                <td>Current Year</td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_April_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_May_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_June_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_July_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_August_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_September_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_October_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_November_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_December_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_January_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_February_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_March_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Actuals_April_Current_Year__c+door.Seiko_Actuals_May_Current_Year__c+door.Seiko_Actuals_June_Current_Year__c+door.Seiko_Actuals_July_Current_Year__c+door.Seiko_Actuals_August_Current_Year__c+door.Seiko_Actuals_September_Current_Year__c+door.Seiko_Actuals_October_Current_Year__c+door.Seiko_Actuals_November_Current_Year__c+door.Seiko_Actuals_December_Current_Year__c+door.Seiko_Actuals_January_Current_Year__c+door.Seiko_Actuals_February_Current_Year__c+door.Seiko_Actuals_March_Current_Year__c,0)}"/></apex:outputText></td>
+              </tr>
+              <tr>
+                <td>Forecast Year</td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_April_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_May_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_June_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_July_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_August_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_September_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_October_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_November_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_December_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_January_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_February_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_March_Current_Year__c,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Seiko_Budget_April_Current_Year__c+door.Seiko_Budget_May_Current_Year__c+door.Seiko_Budget_June_Current_Year__c+door.Seiko_Budget_July_Current_Year__c+door.Seiko_Budget_August_Current_Year__c+door.Seiko_Budget_September_Current_Year__c+door.Seiko_Budget_October_Current_Year__c+door.Seiko_Budget_November_Current_Year__c+door.Seiko_Budget_December_Current_Year__c+door.Seiko_Budget_January_Current_Year__c+door.Seiko_Budget_February_Current_Year__c+door.Seiko_Budget_March_Current_Year__c,0)}"/></apex:outputText></td>
+              </tr>
+              <tr class="dataRow">
+                <td>CY/FY Performance</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_April_Current_Year__c)|| door.Seiko_Budget_April_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_April_Current_Year__c/ (door.Seiko_Budget_April_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_May_Current_Year__c)|| door.Seiko_Budget_May_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_May_Current_Year__c/ (door.Seiko_Budget_May_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_June_Current_Year__c)|| door.Seiko_Budget_June_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_June_Current_Year__c/ (door.Seiko_Budget_June_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_July_Current_Year__c)|| door.Seiko_Budget_July_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_July_Current_Year__c/ (door.Seiko_Budget_July_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_August_Current_Year__c)|| door.Seiko_Budget_August_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_August_Current_Year__c/ (door.Seiko_Budget_August_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_September_Current_Year__c)|| door.Seiko_Budget_September_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_September_Current_Year__c/ (door.Seiko_Budget_September_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_October_Current_Year__c)|| door.Seiko_Budget_October_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_October_Current_Year__c/ (door.Seiko_Budget_October_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_November_Current_Year__c)|| door.Seiko_Budget_November_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_November_Current_Year__c/ (door.Seiko_Budget_November_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_December_Current_Year__c)|| door.Seiko_Budget_December_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_December_Current_Year__c/ (door.Seiko_Budget_December_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_January_Current_Year__c)|| door.Seiko_Budget_January_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_January_Current_Year__c / (door.Seiko_Budget_January_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_February_Current_Year__c)|| door.Seiko_Budget_February_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_February_Current_Year__c/ (door.Seiko_Budget_February_Current_Year__c))*100,1))}"/>%</td>
+                <td><apex:outputText value="{!IF(ISNULL(door.Seiko_Budget_March_Current_Year__c)|| door.Seiko_Budget_March_Current_Year__c<=0 , '', ROUND((door.Seiko_Actuals_March_Current_Year__c/ (door.Seiko_Budget_March_Current_Year__c))*100,1))}"/>%</td>
+                <td></td>
+              </tr>
+      </tbody>
+  </table>
+</div>
+<br/>
+<div class="table-responsive">
+    <table class="list" width="100%">
+        <thead class="rich-table-thead">
+            <tr class="headerRow">
+                <th class="headerRow"><apex:outputLabel value="Total Monthly Trend" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="Total" style="font-weight:bold"/></th>
+            </tr>
+        </thead>
+        <tbody>
+                <tr>
+                  <td>Last Year</td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_April_Last_Year__c+door.Seiko_Actuals_April_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_May_Last_Year__c+door.Seiko_Actuals_May_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_June_Last_Year__c+door.Seiko_Actuals_June_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_July_Last_Year__c+door.Seiko_Actuals_July_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_August_Last_Year__c+door.Seiko_Actuals_August_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_September_Last_Year__c+door.Seiko_Actuals_September_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_October_Last_Year__c+door.Seiko_Actuals_October_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_November_Last_Year__c+door.Seiko_Actuals_November_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_December_Last_Year__c+door.Seiko_Actuals_December_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_January_Last_Year__c+door.Seiko_Actuals_January_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_February_Last_Year__c+door.Seiko_Actuals_February_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_March_Last_Year__c+door.Seiko_Actuals_March_Last_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_April_Last_Year__c+door.Hoya_Actuals_May_Last_Year__c+door.Hoya_Actuals_June_Last_Year__c+door.Hoya_Actuals_July_Last_Year__c+door.Hoya_Actuals_August_Last_Year__c+door.Hoya_Actuals_September_Last_Year__c+door.Hoya_Actuals_October_Last_Year__c+door.Hoya_Actuals_November_Last_Year__c+door.Hoya_Actuals_December_Last_Year__c+door.Hoya_Actuals_January_Last_Year__c+door.Hoya_Actuals_February_Last_Year__c+door.Hoya_Actuals_March_Last_Year__c+door.Seiko_Actuals_April_Last_Year__c+door.Seiko_Actuals_May_Last_Year__c+door.Seiko_Actuals_June_Last_Year__c+door.Seiko_Actuals_July_Last_Year__c+door.Seiko_Actuals_August_Last_Year__c+door.Seiko_Actuals_September_Last_Year__c+door.Seiko_Actuals_October_Last_Year__c+door.Seiko_Actuals_November_Last_Year__c+door.Seiko_Actuals_December_Last_Year__c+door.Seiko_Actuals_January_Last_Year__c+door.Seiko_Actuals_February_Last_Year__c+door.Seiko_Actuals_March_Last_Year__c,0)}"/></apex:outputText></td>
+                </tr>
+                <tr>
+                  <td>Current Year</td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_April_Current_Year__c+door.Seiko_Actuals_April_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_May_Current_Year__c+door.Seiko_Actuals_May_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_June_Current_Year__c+door.Seiko_Actuals_June_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_July_Current_Year__c+door.Seiko_Actuals_July_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_August_Current_Year__c+door.Seiko_Actuals_August_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_September_Current_Year__c+door.Seiko_Actuals_September_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_October_Current_Year__c+door.Seiko_Actuals_October_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_November_Current_Year__c+door.Seiko_Actuals_November_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_December_Current_Year__c+door.Seiko_Actuals_December_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_January_Current_Year__c+door.Seiko_Actuals_January_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_February_Current_Year__c+door.Seiko_Actuals_February_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_March_Current_Year__c+door.Seiko_Actuals_March_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Actuals_April_Current_Year__c+door.Hoya_Actuals_May_Current_Year__c+door.Hoya_Actuals_June_Current_Year__c+door.Hoya_Actuals_July_Current_Year__c+door.Hoya_Actuals_August_Current_Year__c+door.Hoya_Actuals_September_Current_Year__c+door.Hoya_Actuals_October_Current_Year__c+door.Hoya_Actuals_November_Current_Year__c+door.Hoya_Actuals_December_Current_Year__c+door.Hoya_Actuals_January_Current_Year__c+door.Hoya_Actuals_February_Current_Year__c+door.Hoya_Actuals_March_Current_Year__c+door.Seiko_Actuals_April_Current_Year__c+door.Seiko_Actuals_May_Current_Year__c+door.Seiko_Actuals_June_Current_Year__c+door.Seiko_Actuals_July_Current_Year__c+door.Seiko_Actuals_August_Current_Year__c+door.Seiko_Actuals_September_Current_Year__c+door.Seiko_Actuals_October_Current_Year__c+door.Seiko_Actuals_November_Current_Year__c+door.Seiko_Actuals_December_Current_Year__c+door.Seiko_Actuals_January_Current_Year__c+door.Seiko_Actuals_February_Current_Year__c+door.Seiko_Actuals_March_Current_Year__c,0)}"/></apex:outputText></td>
+                </tr>
+                <tr>
+                  <td>Forecast Year</td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_April_Current_Year__c+door.Seiko_Budget_April_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_May_Current_Year__c+door.Seiko_Budget_May_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_June_Current_Year__c+door.Seiko_Budget_June_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_July_Current_Year__c+door.Seiko_Budget_July_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_August_Current_Year__c+door.Seiko_Budget_August_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_September_Current_Year__c+door.Seiko_Budget_September_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_October_Current_Year__c+door.Seiko_Budget_October_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_November_Current_Year__c+door.Seiko_Budget_November_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_December_Current_Year__c+door.Seiko_Budget_December_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_January_Current_Year__c+door.Seiko_Budget_January_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_February_Current_Year__c+door.Seiko_Budget_February_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_March_Current_Year__c+door.Seiko_Budget_March_Current_Year__c,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(door.Hoya_Budget_April_Current_Year__c+door.Hoya_Budget_May_Current_Year__c+door.Hoya_Budget_June_Current_Year__c+door.Hoya_Budget_July_Current_Year__c+door.Hoya_Budget_August_Current_Year__c+door.Hoya_Budget_September_Current_Year__c+door.Hoya_Budget_October_Current_Year__c+door.Hoya_Budget_November_Current_Year__c+door.Hoya_Budget_December_Current_Year__c+door.Hoya_Budget_January_Current_Year__c+door.Hoya_Budget_February_Current_Year__c+door.Hoya_Budget_March_Current_Year__c+door.Seiko_Budget_April_Current_Year__c+door.Seiko_Budget_May_Current_Year__c+door.Seiko_Budget_June_Current_Year__c+door.Seiko_Budget_July_Current_Year__c+door.Seiko_Budget_August_Current_Year__c+door.Seiko_Budget_September_Current_Year__c+door.Seiko_Budget_October_Current_Year__c+door.Seiko_Budget_November_Current_Year__c+door.Seiko_Budget_December_Current_Year__c+door.Seiko_Budget_January_Current_Year__c+door.Seiko_Budget_February_Current_Year__c+door.Seiko_Budget_March_Current_Year__c,0)}"/></apex:outputText></td>
+                </tr>
+                <tr class="dataRow">
+                  <td>CY/FY Performance</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_April_Current_Year__c)||ISNULL(door.Seiko_Budget_April_Current_Year__c)|| door.Hoya_Budget_April_Current_Year__c+door.Seiko_Budget_April_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_April_Current_Year__c+door.Seiko_Actuals_April_Current_Year__c)/ (door.Hoya_Budget_April_Current_Year__c+door.Seiko_Budget_April_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_May_Current_Year__c)||ISNULL(door.Seiko_Budget_May_Current_Year__c)|| door.Hoya_Budget_May_Current_Year__c+door.Seiko_Budget_May_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_May_Current_Year__c+door.Seiko_Actuals_May_Current_Year__c)/ (door.Hoya_Budget_May_Current_Year__c+door.Seiko_Budget_May_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_June_Current_Year__c)||ISNULL(door.Seiko_Budget_June_Current_Year__c)|| door.Hoya_Budget_June_Current_Year__c+door.Seiko_Budget_June_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_June_Current_Year__c+door.Seiko_Actuals_June_Current_Year__c)/ (door.Hoya_Budget_June_Current_Year__c+door.Seiko_Budget_June_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_July_Current_Year__c)||ISNULL(door.Seiko_Budget_July_Current_Year__c)|| door.Hoya_Budget_July_Current_Year__c+door.Seiko_Budget_July_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_July_Current_Year__c+door.Seiko_Actuals_July_Current_Year__c)/ (door.Hoya_Budget_July_Current_Year__c+door.Seiko_Budget_July_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_August_Current_Year__c)||ISNULL(door.Seiko_Budget_August_Current_Year__c)|| door.Hoya_Budget_August_Current_Year__c+door.Seiko_Budget_August_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_August_Current_Year__c+door.Seiko_Actuals_August_Current_Year__c)/ (door.Hoya_Budget_August_Current_Year__c+door.Seiko_Budget_August_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_September_Current_Year__c)||ISNULL(door.Seiko_Budget_September_Current_Year__c)|| door.Hoya_Budget_September_Current_Year__c+door.Seiko_Budget_September_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_September_Current_Year__c+door.Seiko_Actuals_September_Current_Year__c)/ (door.Hoya_Budget_September_Current_Year__c+door.Seiko_Budget_September_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_October_Current_Year__c)||ISNULL(door.Seiko_Budget_October_Current_Year__c)|| door.Hoya_Budget_October_Current_Year__c+door.Seiko_Budget_October_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_October_Current_Year__c+door.Seiko_Actuals_October_Current_Year__c)/ (door.Hoya_Budget_October_Current_Year__c+door.Seiko_Budget_October_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_November_Current_Year__c)||ISNULL(door.Seiko_Budget_November_Current_Year__c)|| door.Hoya_Budget_November_Current_Year__c+door.Seiko_Budget_November_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_November_Current_Year__c+door.Seiko_Actuals_November_Current_Year__c)/ (door.Hoya_Budget_November_Current_Year__c+door.Seiko_Budget_November_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_December_Current_Year__c)||ISNULL(door.Seiko_Budget_December_Current_Year__c)|| door.Hoya_Budget_December_Current_Year__c+door.Seiko_Budget_December_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_December_Current_Year__c+door.Seiko_Actuals_December_Current_Year__c)/ (door.Hoya_Budget_December_Current_Year__c+door.Seiko_Budget_December_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_January_Current_Year__c)||ISNULL(door.Seiko_Budget_January_Current_Year__c)|| door.Hoya_Budget_January_Current_Year__c+door.Seiko_Budget_January_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_January_Current_Year__c+door.Seiko_Actuals_January_Current_Year__c)/ (door.Hoya_Budget_January_Current_Year__c+door.Seiko_Budget_January_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_February_Current_Year__c)||ISNULL(door.Seiko_Budget_February_Current_Year__c)|| door.Hoya_Budget_February_Current_Year__c+door.Seiko_Budget_February_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_February_Current_Year__c+door.Seiko_Actuals_February_Current_Year__c)/ (door.Hoya_Budget_February_Current_Year__c+door.Seiko_Budget_February_Current_Year__c))*100,1))}"/>%</td>
+                  <td><apex:outputText value="{!IF(ISNULL(door.Hoya_Budget_March_Current_Year__c)||ISNULL(door.Seiko_Budget_March_Current_Year__c)|| door.Hoya_Budget_March_Current_Year__c+door.Seiko_Budget_March_Current_Year__c<=0 , '', ROUND(((door.Hoya_Actuals_March_Current_Year__c+door.Seiko_Actuals_March_Current_Year__c)/ (door.Hoya_Budget_March_Current_Year__c+door.Seiko_Budget_March_Current_Year__c))*100,1))}"/>%</td>
+                  <td></td>
+                </tr>
+        </tbody>
+    </table>
+  </div>
+</apex:page>

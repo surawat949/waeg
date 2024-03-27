@@ -1,0 +1,69 @@
+<template>
+    <template lwc:if={showLoading}>
+     <lightning-spinner alternative-text="Loading" size="medium" class="spins"></lightning-spinner>
+    </template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{label.label_storeCharacter}
+                </h3></td>
+                <template if:true={isShowNewButton}>
+                     <td><p align="right"><lightning-button label={label.label_new} variant="brand-outline" onclick={navigateToNewCharPag}></lightning-button></p></td>
+                </template>
+                </tr>
+        </table><br>
+        <lightning-layout>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-record-form
+                    record-id={recordId}
+                    object-api-name={objectapiname}
+                    fields={storeCharFields}
+                    mode={isviewMode}
+                    columns="3"
+                    >
+                </lightning-record-form>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{label.label_storePerformance}</h3></td>
+                <td><p align="right"><lightning-button label={label.label_mirgrateLastYear}
+                    variant="brand-outline" onclick={handleStorePerformance}></lightning-button></p></td>
+            </tr>
+        </table><br>
+        <template if:true={isLoadAfterUpdate}>
+        <lightning-layout>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-record-form
+                    record-id={recordId}
+                    object-api-name={objectapiname}
+                    fields={storePerformanceFields}
+                    mode={isviewMode}
+                    columns="3"
+                    >
+                </lightning-record-form>
+            </lightning-layout-item>
+        </lightning-layout>
+    </template>
+    </div>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container">{label.label_storeRelatedPicture} ({pictureCount})</h3></td>
+
+                <td><p align="right"><lightning-button label={label.label_new} variant="brand-outline" onclick={navigateToNewPicturePage} ></lightning-button></p></td>
+            </tr>
+
+        </table><br>
+        <template if:true={isShowDataTable}>
+           <lightning-datatable data={pictureList} columns={columns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true" ></lightning-datatable>
+        </template>
+        </br>
+            <template if:true={isShowViewAll}>
+                <p align="center"><lightning-button label={label.label_viewall} onclick={navigateToRelatedList}></lightning-button></p><br>
+            </template>
+       
+    </div>
+</template>

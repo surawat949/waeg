@@ -1,0 +1,62 @@
+<aura:component controller="VisitCreationPageController"
+implements="flexipage:availableForAllPageTypes,lightning:isUrlAddressable" access="global">
+    <!--https://hoya-pcpy.lightning.force.com/lightning/cmp/c__VisitQuickCreation?c__ent=001b000003z4lNbAAI -->
+    <aura:attribute name="ent" type="String"/>
+    <aura:attribute name="visit" type="Visits__c"/>
+    <aura:attribute name="account" type="Account"/>
+    <!-- create 2 aura handler with waiting and donewaiting events--> 
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <lightning:spinner variant="brand" size="large" aura:id="mySpinner" class="slds-hide"/>
+
+
+    <div class="slds-box slds-theme--default slds-container--small">
+    <fieldset class="slds-box slds-theme--default slds-container--small">
+        <legend id="newexpenseform" class="slds-text-heading--small 
+            slds-p-vertical--medium">
+            Create visit for <lightning:formattedUrl value="{!'/'+v.visit.Account__c}" label="{!v.account.Name}" target="_blank"/>
+        </legend>
+        
+        <form class="slds-form--stacked"> 
+            <div class="slds-form-element__group">
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size_2-of-3">
+                        <ui:inputDateTime 
+                                label="Start Date/Time"
+                                class="slds-input"
+                                labelClass="slds-form-element__label"
+                                value="{!v.visit.Start_Time__c}"
+                                required="true"
+                                displayDatePicker="true"/>
+                    </div>
+                    <div class="slds-form-element slds-size_2-of-3">
+                        <ui:inputDateTime
+                                label = "End date/Time"
+                                class="slds-input"
+                                labelClass="slds-form-element__label"
+                                value="{!v.visit.End_Time__c}"
+                                required="true"
+                                displayDatePicker="true" />
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters slds-p-top_medium">
+                <!-- div class="slds-col">
+                    <lightning:button variant="brand" label="{!$Label.c.Cancel}" onclick="{!c.closeFocusedTab}"/>
+                </div -->
+                <div class="slds-col">
+                    <aura:if isTrue="{!empty(v.visit.Id)}">
+                        <lightning:button variant="brand" label="{!$Label.c.Save}" onclick="{!c.handleSave}" />
+                        <aura:set attribute="else">
+                            <lightning:button variant="brand" label="Edit Visit" onclick="{!c.gotoVisit}" />
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </div>
+        </form>
+    </fieldset>
+    <p class="slds-show">Visit debug information: {!v.account.Name} id={!v.account.Id}, user id: {!v.visit.Assigned_to__c}, visit id: {!v.visit.Id}</p>
+    </div>
+
+</aura:component>

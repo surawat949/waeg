@@ -1,0 +1,108 @@
+<aura:component description="AdvancedTableMobile">
+    <ltng:require scripts="{!join(',',
+            $Resource.fullcalendar + '/jquery.min.js',
+            $Resource.fullcalendar + '/jquery-ui.min.js')}"/>
+
+    <lightning:navigation aura:id="navService"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <aura:attribute name="url" type="String"/>
+
+    <aura:attribute name="objectList" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="quickFilter" type="String" default="ne"/>
+
+    <aura:attribute name="dataArrayInternal" type="List"/>
+
+    <aura:attribute name="sortField" type="String" default="Name"/>
+    <aura:attribute name="sortDir" type="String" default="asc"/>
+    <aura:attribute name="fromIndex" type="Integer" default="0"/>
+    <aura:attribute name="pageSize" type="Integer" default="15"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="change" value="{!v.columns}" action="{!c.colsChange}"/>
+    <aura:handler name="change" value="{!v.objectList}" action="{!c.objectListChange}"/>
+    <aura:handler name="change" value="{!v.quickFilter}" action="{!c.objectListChange}"/>
+    <!--
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.onPageReferenceChanged}" />
+    -->
+    <aura:attribute name="rowsToLoad" type="Integer" default="10"/>
+    <aura:attribute name="loadMoreOffset" type="Integer" default="10"/>
+    
+    <div class="slds-scrollable--x scrolledtable" style="overflow-x: hidden;" id="idScrolledTable">
+<!--
+        <div style="height: 300px">
+            <lightning:datatable
+                data="{!v.objectList}"
+                columns="{!v.columns}"
+                keyField="Id"
+                hideCheckboxColumn="true"
+                showRowNumberColumn="true"
+                onrowaction="{!c.onRowAction}"
+                enableInfiniteLoading="{! v.enableInfiniteLoading }"
+                loadMoreOffset="{! v.loadMoreOffset }"
+                onloadmore="{! c.loadMoreData }"/>
+        </div>
+    -->
+    <aura:if isTrue="{!not(empty(v.dataArrayInternal))}">
+        <lightning:button onclick="{!c.toggleSection}" variant="brand" label="Expand/hide all"/>
+    </aura:if>
+
+    <ul aura:id="accListID">
+    <aura:iteration items="{!v.dataArrayInternal}" var="row" indexVar="rowIdx" >
+            <li class="slds-item">
+                <div class="slds-section" >
+                    <h3 class="slds-section__title">
+                        <button  class="slds-button slds-section__title-action">
+                            <span onclick="{!c.toggleSection}" data-auraId="{!rowIdx}">
+                                <lightning:icon iconName="standard:contact_list"
+                                        size="medium"
+                                        alternativeText="view details"
+                                        />
+                            </span>
+                            <span class="slds-form-element" title="{!row.dataObject.Name}" style="width:100%;">
+                                <div class="slds-grid slds-grid_align-spread">
+                                    <!--<div class="slds-col"><lightning:formattedUrl value="{!'/'+row.dataObject.Id}" label="{!row.dataObject.Hoya_Account_ID__c}" target="_blank"/></div>-->
+                                    <div class="slds-col">&nbsp;<lightning:formattedUrl value="{!'/'+row.dataObject.Id}" label="{!row.dataObject.Hoya_Account_ID__c+' '+row.dataObject.Name}" target="_blank"/></div>
+                                    <div class="slds-col"><button  onclick="{!c.editVisit}" id="{!row.dataObject.Id}" class="slds-button">
+                                        <lightning:icon iconName="standard:visits"
+                                        size="medium"
+                                        alternativeText="New Visit"
+                                        />
+                                    </button></div>
+                                </div>
+                            </span>
+                        </button>
+                    </h3>
+                    <aura:if isTrue="{!and($Browser.isIOS==false,  $Browser.formFactor=='PHONE')}">
+                        <div aura:id="item_div" style="display:block;" class="slds-section__title">
+                            <aura:iteration items="{!row.dataList}" var="data" indexVar="colIndex">
+                                <p>
+                                    <aura:iteration items="{!v.columns}" var="col" indexVar="idx">
+                                        <aura:if isTrue="{!colIndex==idx}">
+                                        <label class="slds-form-element__label" style="width:30%;">{!col.label}</label>
+                                        </aura:if>
+                                    </aura:iteration>
+                                    <aura:unescapedHtml value="{!data}"/></p>
+                            </aura:iteration>
+                        </div>
+                        <aura:set attribute="else">
+                            <div aura:id="item_div" style="display:none;" class="slds-section__title">
+                            <aura:iteration items="{!row.dataList}" var="data" indexVar="colIndex">
+                                <p>
+                                    <aura:iteration items="{!v.columns}" var="col" indexVar="idx">
+                                        <aura:if isTrue="{!colIndex==idx}">
+                                        <label class="slds-form-element__label" style="width:30%;">{!col.label}</label>
+                                        </aura:if>
+                                    </aura:iteration>
+                                    <aura:unescapedHtml value="{!data}"/></p>
+                            </aura:iteration>
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </li>
+        </aura:iteration>
+    </ul>
+ </div>
+
+</aura:component>

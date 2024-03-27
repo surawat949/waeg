@@ -1,0 +1,65 @@
+<template>
+    <template if:true={isSameStage} for:index="index">
+        <div class="slds-p-around_none slds-m-horizontal_none">
+            <lightning-layout multiple-rows>
+                <lightning-layout-item key={record.Id} size="12" small-device-size="6" medium-device-size="4" large-device-size="3" padding="around-small">
+                    <div class="zoom negativeClass">
+                        <a href="#" data-id={record.Id} onclick={navigateAccHandler}>
+                            <span class="slds-p-around_none" data-id={record.Id}>
+                                {record.Account__r.Name}
+                            </span>
+                        </a>
+                        <p class="slds-p-around_none">{record.Account__r.Owner.Name}</p>
+                        <p class="slds-p-around_none">{record.Lenses_Net_Sales_Last_12Mo__c} {record.Account__r.CurrencyIsoCode} (SV)</p>
+                        <p class="slds-p-around_none">{record.Account__r.AMT_gross_sales__c} {record.Account__r.CurrencyIsoCode} (L12Mo)</p>
+                        <p class="slds-p-around_none">{record.Segmentation__c} (SOW : {record.Current_SOW_L3Mo__c})</p>
+                            <!--lightning-button class="custom-button slds-button_neutral" icon-name="utility:opportunity" alternative-text="Search"></lightning-button>
+                            <lightning-button class="custom-button slds-button_neutral" icon-name="action:info" alternative-text="Add"></lightning-button>
+                            <lightning-button class="custom-button slds-button_neutral" icon-name="utility:arrowdown" alternative-text="Settings"></lightning-button>
+                            <lightning-butto n class="custom-button slds-button_neutral" icon-name="action:following" alternative-text="Settings"></lightning-button>
+                            <lightning-button class="custom-button slds-button_neutral" icon-name="action:follow" alternative-text="Settings"></lightning-button>
+                            <lightning-icon icon-name="utility:opportunity"></lightning-icon-->
+
+                        <lightning-icon icon-name="utility:opportunity" class="iconMargin" size="small" title="Visionary Alliance"></lightning-icon>
+                        <lightning-icon icon-name="utility:filter" class="iconMargin" size="small" title="Decreasin Sales"></lightning-icon>
+                        <lightning-icon icon-name="utility:jump_to_bottom" class="iconMargin" size="small" title="Follow up rate < 80%"></lightning-icon>
+                        <lightning-icon icon-name="utility:jump_to_top" class="iconMargin" size="small" title="Follow up rate > 120%"></lightning-icon>
+                        <lightning-icon icon-name="utility:problem" class="iconMargin" size="small" title="Issue"></lightning-icon>
+                    </div>
+                    
+                    <!--div class="flip-card">
+                        <div  class="flip-card-inner" key={record.Id} data-row-index={record.Id} data-id={record.Id} onmouseover={addClass} onmouseout={removeClass}>
+                            <div class="flip-card-front">
+                                <li class="slds-item slds-var-m-around_small" draggable="true">
+                                    <h3 class="slds-truncate" title={record.Name}>
+                                        <a href="#" data-id={record.Id} onclick={navigateTALCHandler}>
+                                            <span class="slds-truncate" data-id={record.Id}>
+                                            {record.Name}
+                                            </span>
+                                        </a>
+                                    </h3>   
+                                    <p class="slds-p-around_none">Account Owner: {record.Account__r.Owner.Name}</p>
+                                </li>
+                            </div>
+                                <div class="flip-card-back innerLink">
+                                    <a href="#" data-id={record.Id} onclick={navigateTALCHandler}>
+                                        <span class="slds-p-around_none" data-id={record.Id}>
+                                        {record.Name}
+                                        </span>
+                                    </a>
+                                    <p class="slds-p-around_none"> </p>
+                                    <a href="#" data-id={record.Id} onclick={navigateAccHandler}>
+                                        <span class="slds-p-around_none" data-id={record.Account__c}>
+                                            Account Name: {record.Account__r.Name}
+                                        </span>
+                                    </a>
+                                    <p class="slds-p-around_none">Net Sales L12Mo: {record.Lenses_Net_Sales_Last_12Mo__c}</p>
+                                    <p class="slds-p-around_none negativeClass">L12Mo vs LFY(%): {record.Account__r.AMT_gross_sales__c}</p>
+                                </div>
+                        </div>
+                    </div--> 
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </template>
+</template>

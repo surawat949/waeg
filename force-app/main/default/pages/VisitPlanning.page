@@ -1,0 +1,24 @@
+<apex:page sidebar="false" lightningStylesheets="true" showHeader="true" standardStylesheets="false">
+    <apex:includeScript value="{!URLFOR($Resource.fullcalendar, '/jquery.min.js')}"  />
+
+    <apex:includeLightning />
+    <div class="slds">
+        <div id="lightning" />
+    </div>
+    <script>
+        $Lightning.use("c:VisitPlanningOutApp", function() {
+          $Lightning.createComponent("c:VisitPlanning",
+          { label : "Press Me!" },
+          "lightning",
+          function(cmp) {
+            // do some stuff
+          });
+        });
+        $(document).ready(function() {
+            console.log(
+                    $( window ).width()
+            );
+            $( '#lightning' ).width($( window ).width()-50)
+        });
+    </script>
+</apex:page>

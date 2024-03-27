@@ -1,0 +1,74 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="Sales Targets">
+            <tr data-id="header1" class="row" style="background-color: #aacbff;">
+                <template lwc:if={isTypeNet}>  
+                     <td><h3 class="slds-section__title">{custLabel.LocalKeyNet}</h3></td>
+                </template>
+                <template lwc:else>
+                    <td><h3 class="slds-section__title">{custLabel.LocalKeyGross}</h3></td>
+                </template>
+            </tr>
+        </table><br>  
+        <lightning-record-edit-form  object-api-name={ObjectApiName} record-id={receivedId} onsuccess={doRefresh}>
+            <div class="slds-grid">
+                <div class="slds-form-element__static slds-size_4-of-12"><lightning-input-field field-name={field} ></lightning-input-field>&nbsp; </div>
+                <div class="slds-col slds-size_1-of-12 slds-align_absolute-center">
+                    <lightning-button name="save" variant="brand-outline" type="submit" label={custLabel.Save} ></lightning-button>  
+                </div>
+            </div>
+        </lightning-record-edit-form>
+        <br/>       
+        <div class="slds-scrollable_x" style="width:100%">
+            <template lwc:if ={isDataExists}>
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr>
+                        <th class="fixColumn"><div class="slds-truncate">{custLabel.AccountLensesOnly}</div></th>
+                        <template lwc:if={isTypeNet}>
+                            <template for:each={NetColumns} for:item="column">
+                                <th key={column} style="text-align:right;"><div class="slds-truncate">{column}</div></th>
+                            </template>
+                        </template>
+                        <template lwc:else>
+                            <template for:each={GrossColumns} for:item="column">
+                                <th key={column} style="text-align:right;"><div class="slds-truncate">{column}</div></th>
+                            </template>
+                        </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={relatedSales} for:item="acc">
+                        <tr key={acc.HoyaAccountId}>
+                            <td class="fixColumn"><lightning-formatted-url value={acc.accountLink} tooltip={acc.AccountId} label={acc.HoyaAccountId} target="_top"></lightning-formatted-url></td>
+                            <td style="text-align:right;"> <lightning-formatted-number value={acc.salesCFY} maximum-fraction-digits="0">
+                                                            </lightning-formatted-number>
+                            </td>
+                            <td style="text-align:right;"><lightning-formatted-number value={acc.salesLFYYTD} maximum-fraction-digits="0">
+                                                        </lightning-formatted-number>
+                            </td>
+                            <td style="text-align:right;"><lightning-formatted-number value={acc.variationSales} maximum-fraction-digits="0">
+                                                        </lightning-formatted-number>%</td>
+                            <td style="text-align:right;"><lightning-formatted-number value={acc.volumesCFY} maximum-fraction-digits="0">
+                                                        </lightning-formatted-number></td>
+                            <td style="text-align:right;"><lightning-formatted-number value={acc.volumesLFYYTD} maximum-fraction-digits="0">
+                                                        </lightning-formatted-number></td>
+                            <td style="text-align:right;"><lightning-formatted-number value={acc.variationVolumes} maximum-fraction-digits="0">
+                                                        </lightning-formatted-number>%</td>
+                        </tr>
+                    </template>
+                </tbody>
+                </table>
+            </template>
+            <template lwc:else>
+                <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                    <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                    <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                        <b>No Data Available at the moment</b>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+    
+</template>

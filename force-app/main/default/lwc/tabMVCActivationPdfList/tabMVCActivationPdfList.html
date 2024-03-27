@@ -1,0 +1,15 @@
+<template>
+    <lightning-modal-header label={LabelEditListPdf}></lightning-modal-header>
+    <lightning-modal-body>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <iframe src={siteUrl} height="650px" width="800px"></iframe>
+            </div>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-m-top_small slds-align_absolute-right">
+            <lightning-button variant="brand" label={LabelClosed} class="slds-m-left_x-small" onclick={handleClose}></lightning-button>
+        </div>
+    </lightning-modal-footer>
+</template>

@@ -1,0 +1,7 @@
+<!--
+ - Created by thomas.schnocklake on 16.02.18.
+ -->
+
+<aura:event type="COMPONENT" description="FullCalendarMoveEvent">
+    <aura:attribute name="event" type="Object"/>
+</aura:event>

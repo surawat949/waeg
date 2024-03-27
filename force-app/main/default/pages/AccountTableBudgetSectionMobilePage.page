@@ -1,0 +1,103 @@
+<apex:page showHeader="false"  docType="html-5.0" standardController="Account" extensions="QvQueryPageController">
+
+<div class="table-responsive" style="font-size:10pt">
+<table class="list" width="100%">
+    <thead class="rich-table-thead">
+        <tr class="headerRow">
+            <th class="headerRow"><apex:outputLabel value="Monthly Trend" style="font-weight:bold"/></th>
+            <th class="headerRow" align="right"><apex:outputLabel value="Last Year" style="font-weight:bold"/></th>
+            <th class="headerRow" align="right"><apex:outputLabel value="Current Year" style="font-weight:bold"/></th>
+            <th class="headerRow" align="right"><apex:outputLabel value="Forecast Year" style="font-weight:bold"/></th>
+            <th class="headerRow" align="right"><apex:outputLabel value="CY/FY Performance" style="font-weight:bold"/></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(AprSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(AprSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_April_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_April_Current_Year__c)|| account.Budget_April_Current_Year__c<=0 , '', ROUND((AprSales / (account.Budget_April_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(MaySalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(MaySales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_May_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_May_Current_Year__c)|| account.Budget_May_Current_Year__c<=0 , '', ROUND((MaySales / (account.Budget_May_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(JunSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(JunSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_June_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_June_Current_Year__c)|| account.Budget_June_Current_Year__c<=0 , '', ROUND((JunSales / (account.Budget_June_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(JulSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(JulSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_July_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_July_Current_Year__c)|| account.Budget_July_Current_Year__c<=0 , '', ROUND((JulSales / (account.Budget_July_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(AugSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(AugSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_August_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_August_Current_Year__c)|| account.Budget_August_Current_Year__c<=0 , '', ROUND((AugSales / (account.Budget_August_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(SepSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(SepSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_September_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_September_Current_Year__c)|| account.Budget_September_Current_Year__c<=0 , '', ROUND((SepSales / (account.Budget_September_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(OctSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(OctSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_October_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_October_Current_Year__c)|| account.Budget_October_Current_Year__c<=0 , '', ROUND((OctSales / (account.Budget_October_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(NovSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(NovSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_November_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_November_Current_Year__c)|| account.Budget_November_Current_Year__c<=0 , '', ROUND((NovSales / (account.Budget_November_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(DecSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(DecSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_December_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_December_Current_Year__c)|| account.Budget_December_Current_Year__c<=0 , '', ROUND((DecSales / (account.Budget_December_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(JanSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(JanSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_January_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_January_Current_Year__c)|| account.Budget_January_Current_Year__c<=0 , '', ROUND((JanSales / (account.Budget_January_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(FebSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(FebSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_February_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_February_Current_Year__c)|| account.Budget_February_Current_Year__c<=0 , '', ROUND((FebSales / (account.Budget_February_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+        <tr class="dataRow">
+            <th class="headerRow"><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(MarSalesLY,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(MarSales,0)}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!account.Budget_March_Current_Year__c/AccountConversionRate}"/></apex:outputText></td>
+            <td class="dataCell" align="right"><apex:outputText value="{!IF(ISNULL(account.Budget_March_Current_Year__c)|| account.Budget_March_Current_Year__c<=0 , '', ROUND((MarSales / (account.Budget_March_Current_Year__c/AccountConversionRate))*100,1))}"/>%</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</apex:page>

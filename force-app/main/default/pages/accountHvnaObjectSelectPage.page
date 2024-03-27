@@ -1,0 +1,9 @@
+<apex:page standardController="Account" lightningStylesheets="false">
+<apex:outputPanel rendered="{! $User.UIThemeDisplayed == 'Theme3' || $User.UIThemeDisplayed == 'Theme4d' }">
+    <apex:include pageName="accountHvnaObjectPage"/>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{! $User.UIThemeDisplayed == 'Theme4t' }">
+    <apex:include pageName="accountHvnaObjectMobilePage"/>
+</apex:outputPanel>
+</apex:page>

@@ -1,0 +1,44 @@
+<template>
+    <lightning-card  variant="Narrow"  title="Quality Return Escalations" icon-name="standard:case">
+        <template if:true={isLoading}>
+            <div class="spinnerClass">
+                <lightning-spinner alternative-text="Loading..."></lightning-spinner>
+            </div>
+        </template>
+        <div class="slds-p-horizontal_small">
+        <div class="slds-path slds-card">
+            <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                    <div class="slds-path__scroller">
+                        <div class="slds-path__scroller_inner">
+                            <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                                <li class="slds-path__item slds-is-current slds-is-active" role="presentation" id="pat-1" onclick={pathHandler}>
+                                    <a aria-selected="true" class="slds-path__link" id="path-1" role="option" tabindex="0">
+                                        <span class="slds-path__stage">
+                                            <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Current Stage:</span>
+                                        </span>
+                                        <span class="slds-path__title">Team 2</span>
+                                    </a>
+                                </li>
+                                <li class="slds-path__item slds-is-incomplete" role="presentation" id="pat-2" onclick={pathHandler}>
+                                    <a aria-selected="false" class="slds-path__link" id="path-2" role="option" tabindex="-1">
+                                        <span class="slds-path__stage">
+                                            <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
+                                            </svg>
+                                        </span>
+                                        <span class="slds-path__title">Team 3</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
+         </div>
+    </lightning-card>    
+</template>

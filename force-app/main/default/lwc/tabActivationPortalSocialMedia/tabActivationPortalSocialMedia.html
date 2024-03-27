@@ -1,0 +1,99 @@
+<template>
+
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Social Media Manager">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.SocialManager}</h3></td>
+                <!--Commenting button for time being along with below codes-->
+                <td><p align="right">
+                    <lightning-button variant="brand-outline" label="Enroll in Program" onclick={doEnroll} ></lightning-button>&nbsp;
+                    </p>
+                </td>
+            </tr>     	        
+        </table>
+       <lightning-layout>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-record-form
+                    record-id={seikoDataId}
+                    object-api-name={seikoObjName}
+                    fields={seikoFields}
+                    mode="view"  
+                    columns="3"               
+                    >
+                </lightning-record-form>
+            </lightning-layout-item>
+        </lightning-layout>
+       
+        <div class="slds-grid slds-m-left_medium ">
+            <div style="width:30%;">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto">
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={objectApiName}
+                            fields={accountFields}
+                            mode="view"   
+                            columns="1"           
+                            >
+                        </lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            <!--<div style="width:38%;">
+             &nbsp; &nbsp;  &nbsp;  &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
+            </div>
+            <div style="width:28%;">
+                <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label ">{custLabel.TrainingDate}</span><br/>
+                    <div class="slds-form-element__static"><lightning-formatted-date-time value={lastTrainingDate} month="2-digit" day="2-digit" year="numeric"></lightning-formatted-date-time></div> 
+                </div>
+            </div>-->            
+        </div>
+        <br/>
+    </div>     
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Monthly Posts">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.MonthlyPosts}</h3></td>
+            </tr>            
+        </table>
+        <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+            <canvas class="chartSocialPosts" height="250"></canvas>
+        </div>   
+    </div>
+    
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Monthly Consumer Views">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.MonthlyConsumerViews}</h3></td>
+            </tr>
+        </table>
+        <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+            <canvas class="chartSocialViews" height="250"></canvas>
+        </div>   
+    </div>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Unique Consumers">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.UniqueConsumers}</h3></td>
+            </tr>
+        </table>
+        <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+            <canvas class="chartConsumers" height="250"></canvas>
+        </div>  
+        <br/>
+        <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+            <canvas class="chartAvg" height="250"></canvas>
+        </div>
+    </div>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Monthly Consumer Clicks">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.MonthlyConsumerClicks}</h3></td>
+            </tr>
+        </table>
+        <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+            <canvas class="chartClicks" height="250"></canvas>
+        </div>     
+    </div>
+</template>

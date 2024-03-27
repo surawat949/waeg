@@ -1,0 +1,80 @@
+.card_Design{
+    padding: .5rem;
+    display: flex;
+    justify-content: center;
+    background: #fff;
+    overflow: auto;
+}
+.column_heading{
+    padding: 0.25rem 0.25rem;
+    font-size: 16px;
+    background: #0176D3;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+.stageContainer{
+    float:left;
+    border: 2px solid #d8dde6;
+    margin: 0.05rem;
+    border-radius: .25rem;
+}
+.slds-text-heading--small{
+    font-size: 8 px;
+    text-align: left;
+    align-items:left ;
+}
+.slds-tabs--path__title{
+    text-align: left;
+}
+.stage-info {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    text-align: center;
+}
+.spacing{
+    padding-top: 0.5rem;
+}
+.stage-name {
+    font-size: 13 px;
+    line-height: 1.25rem;
+}
+.record-count {
+    font-size: 13 px;
+    line-height: 16px;
+    align-items: center;
+}
+.full-width {
+    width: 100%;
+}
+.thirty-width {
+    width: 25%;
+}
+.seventy-width {
+    width: 75%;
+}
+.container {
+    display: flex;
+}
+.right-end {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+.borderLine{
+    border-right: var(--lwc-colorBorder, rgb(229, 229, 229)) var(--lwc-borderWidthThin, 1px) solid;
+}
+.filterSection{
+    border-bottom: 0.5rem;
+    padding-bottom: 4rem;
+    border:1px solid #C9C9C9;
+    background: #F3F3F3;
+}
+.bgcolor{
+    background: #0176D3;
+    padding: 0.25rem;
+}
+.slds-button__icon{
+    margin-left: 2px;
+    margin-right: 2px;
+}

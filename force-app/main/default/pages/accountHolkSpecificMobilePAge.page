@@ -1,0 +1,18 @@
+<apex:page standardController="Account" extensions="AccountHolkSpecificController" lightningStylesheets="true">
+    <apex:slds />
+    <div class="detailList" style="font-size:small;">
+        <apex:pageBlock mode="maindetail">
+            <apex:pageBlockSection columns="1">
+                <apex:outputField label="Keyman" value="{!account.HOLK_account_data__r.AR_Over90_AMT__c}"/>
+                <apex:outputField value="{!account.HOLK_account_data__r.Keyman_Name__c}"/>
+                <apex:outputField value="{!account.HOLK_account_data__r.Keyman_Position_Str__c}"/>
+                <apex:outputField value="{!account.HOLK_account_data__r.Keyman_Gender_Str__c}"/>
+                <apex:outputField value="{!account.HOLK_account_data__r.Keyman_Phone__c}"/>
+                <apex:outputField value="{!account.HOLK_account_data__r.Keyman_Loyalty_Str__c}"/>
+                <apex:outputField value="{!account.HOLK_account_data__r.Preferable_Materiel__c}"/>
+                <apex:outputField value="{!account.HOLK_account_data__r.Sms__c}"/>
+                <apex:outputField value="{!account.HOLK_account_data__r.Keyman_Note__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </div>
+</apex:page>

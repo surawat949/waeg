@@ -1,0 +1,122 @@
+<apex:page standardController="Campaign" sidebar="false" showHeader="false" extensions="ExtContentWorkspace" >
+    <script>
+        function onComplete() {
+            top.location.href = '/' + '{!Campaign.Id}';
+        }
+    </script>
+
+    <apex:form id="theform">
+        <apex:pageMessages id="theMsg" />
+        <apex:actionFunction action="{!saveCampaign}" name="saveWorkspace" oncomplete="onComplete()" rerender="theform" />
+        
+        <apex:outputText value="Select Workspace first then you can select pictures in the workspace." style="font-weight: bold;display:block;padding-top:5px; padding-left:20px;padding-right:20px;" rendered="{!mode=='edit'}"></apex:outputText>
+
+        <!-- for view begin -->
+        <br />
+        <apex:outputPanel layout="block" rendered="{!mode=='view'}" style="padding-left:10px;">
+            <a href="/apex/ExtContentWorkspace?id={!campaign.Id}&mode=edit"
+                class="btn" style="text-decoration: none" >{!$Label.EditButton}</a>
+        </apex:outputPanel>
+
+        <apex:outputPanel layout="block" rendered="{!mode=='view'}"
+            style="margin-top:10px;margin-left: 10px;" >
+            <table>
+                <tr>
+                    <td style="text-align: right; font-weight: bold;"><apex:outputLabel value="Content WorkSpace:" /></td>
+                    <td style="padding-left: 5px;"><apex:outputText value="{!workspaceName}" /></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; font-weight: bold;"><apex:outputLabel value="Cover Flow Picture:" /></td>
+                    <td style="padding-left: 5px;"><apex:outputLink value="/{!coverflowpictureId}" target="_blank">{!coverflowpictureTitle}</apex:outputLink></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; font-weight: bold;"><apex:outputLabel value="Small Campaign Picture:" /></td>
+                    <td style="padding-left: 5px;"><apex:outputLink value="/{!backgroundpictureId}" target="_blank">{!backgroundpictureTitle}</apex:outputLink></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; font-weight: bold;"><apex:outputLabel value="URL Scheme Link:" /></td>
+                    <td style="padding-left: 5px;"><apex:outputLink value="/{!urlSchemeLinkId}" target="_blank">{!urlSchemeLinkTitle}</apex:outputLink></td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <!-- for view end -->
+
+
+        <!-- for edit begin -->
+        <apex:outputPanel rendered="{!mode=='edit'}" style="margin-left:10px;">
+            <apex:outputPanel id="parentOption" layout="block" style="margin-left:10px;">
+                <table>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;">
+                            <apex:outputLabel value="Content WorkSpace: " />
+                        </td>
+                        <td>
+                            <apex:selectList size="1" value="{!workspaceId}" onchange="refresh()">
+                                <apex:selectOptions value="{!list_workspaceOptions}" />
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:actionFunction name="refresh" action="{!refreshContentDocOptions}" rerender="childOption" status="theStatus" />
+                            <apex:actionStatus id="theStatus">
+                                <apex:facet name="start">
+                                    <img src="/img/loading.gif" />
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </td>
+                    </tr>
+                </table>
+            </apex:outputPanel>
+
+            <apex:outputPanel id="childOption" layout="block" style="margin-left:10px;">
+                <table>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;" ><apex:outputLabel value="Cover Flow Picture: " /></td>
+                        <td>
+                            <apex:selectList size="1" value="{!coverflowpictureId}">
+                                <apex:selectOptions value="{!list_contentdocumentOptions}" />
+                            </apex:selectList>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;"><apex:outputLabel value="Small Campaign Picture: " /></td>
+                        <td>
+                            <apex:selectList size="1" value="{!backgroundpictureId}">
+                                <apex:selectOptions value="{!list_contentdocumentOptions}" />
+                            </apex:selectList>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;"><apex:outputLabel value="URL Scheme Link: " /></td>
+                        <td>
+                            <apex:selectList size="1" value="{!urlSchemeLinkId}">
+                                <apex:selectOptions value="{!list_contentdocumentOptions}" />
+                            </apex:selectList>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="block" style="margin-left:10px;" >
+                <table>
+                    <tr>
+                        <td>
+                            <apex:outputLink value="/{!workspaceId}" styleClass="btn" target="_blank" style="text-decoration:none;" >{!$Label.UploadNewPicture}</apex:outputLink>
+                        </td>
+                        <td>
+                            <apex:commandButton action="{!saveCampaign}" value="{!$Label.SaveButton}" />
+                            <!-- <input type="button" class="btn" onclick="saveWorkspace();" value="{!$Label.SaveButton}" /> -->                    
+                        </td>
+                        <td><apex:commandButton action="{!cancel}" value="{!$Label.CancelButton}" /></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- for edit end -->
+
+    </apex:form>
+    
+</apex:page>

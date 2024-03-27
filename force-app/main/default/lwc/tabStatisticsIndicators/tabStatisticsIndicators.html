@@ -1,0 +1,39 @@
+<template>
+     <!--Customer Satisfaction Indicator Section-->
+     <div class="slds-box slds-grid">
+        <div class="slds-col slds-size_1-of-6">
+            {custLabel.strategicValue}
+            <br>
+            <img style="height: 40px; width: 40px;" src={strategicIndicator} title={strategicValFlagMeaning}>
+        </div>
+        <div class="slds-col slds-size_1-of-6">
+            {custLabel.competitors}
+            <br>
+            <img style="height: 40px; width: 40px;" src={competitorIndicator} title={competitorFlagMeaning}>
+        </div>
+        <div class="slds-col slds-size_1-of-6">
+            {custLabel.sales}
+            <br>
+            <div>
+                <img style="height: 40px; width: 40px;" src={salesIndicator} title={salesFlagMeaning}>
+            </div>
+        </div>
+       <div class="slds-col slds-size_1-of-6">
+            {custLabel.commitments}
+            <br>
+            <div>
+                <img style="height: 40px; width: 40px;" src={commitmentsIndicator} title={commitmentsFlagMeaning}>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-6">
+            {custLabel.deliveries}
+            <br>
+            <img style="height: 40px; width: 40px;" src={deliveryIndicator} title={deliveriesFlagMeaning}>
+        </div>
+        <div class="slds-col slds-size_1-of-6">
+            {custLabel.returns}
+            <br>
+            <img style="height: 40px; width: 40px;" src={returnsIndicator} title={returnsFlagMeaning}>
+        </div>
+    </div>
+</template>

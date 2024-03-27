@@ -1,0 +1,86 @@
+<template>
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+	<!-- -->
+    <div class="slds-box slds-p-around_none slds-m-horizontal_none">
+        <div class="slds-grid slds-gutters slds-m-left_small slds-m-top_small slds-m-right_small">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-combobox
+                    id="Segmentation"
+                    data-my-id="Segmentation"
+                    name="Segmentation"
+                    value={optValues}
+                    options={optSegment}
+                    label={custlbl.lblSegmentation}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <c-custom-lookup-visit-ecp-nearby icon-name="standard:picklist_choice" s-object-api-name="account" label="Main Lens Supplier"
+                    placeholder="Search" id="form-search-competitor" name="form-search-compeitor" data-my-id="form-search-competitor" onlookupupdate={handleSearchCompetitorChange}>
+                </c-custom-lookup-visit-ecp-nearby>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters slds-m-left_small slds-m-right_small">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input type="number" label={custlbl.lblMinPotential} id="PotentialMin" data-my-id="PotentialMin" name="PotentialMin" onchange={handleKeyChange}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-combobox
+                   id="SVSNetwork" 
+                   data-my-id="SVSNetwork"
+                   name="SVSNetwork"
+                   value={CompetitorVal}
+                   options={optSeikoNetwork}
+                   label={custlbl.lblHVCRoyaltyProgram}
+                   onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters slds-m-left_small slds-m-right_small slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input type="number" label={custlbl.lblMaxPotential} id="PotentialMax" data-my-id="PotentialMax" name="PotentialMax" onchange={handleKeyChange}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-combobox
+                    id="distanceVal"
+                    data-my-id="distanceVal"
+                    name="distanceVal"
+                    value={distance}
+                    options={optDistance}
+                    label={custlbl.lblDistance}
+                    onchange={handleKeyChange}
+                >
+                </lightning-combobox>
+            </div>
+        </div>
+        <div class="slds-grid slds-hide">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-input type="text" name="CompSearch" id="CompSearch" data-my-id="CompSearch" value={firstCompetitorSearch} onchange={handleKeyChange}></lightning-input>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters slds-m-top_small slds-m-left_small slds-m-right_small">
+            <div class="slds-col slds-size_6-of-7"></div>
+            <div class="slds-col slds-size_1-of-7">
+                <template if:true={isDisplayList}>
+                    <lightning-button label={custlbl.lblDisplay} onclick={handleListViewShow} variant="brand"></lightning-button>
+                </template>
+                <template if:false={isDisplayList}>
+                    <lightning-button label={custlbl.lblHideDisplay} onclick={handleListViewHide} variant="brand"></lightning-button>
+                </template>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters slds-m-left_small slds-m-top_small slds-m-right_small slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-map
+                    map-markers={mapMaker}
+                    markers-title={markerTitle}
+                    zoom-level={zoomLevel}
+                    center={vCenter}
+                    list-view={displayListView}
+            ></lightning-map>
+            </div>
+        </div>
+    </div>
+</template>

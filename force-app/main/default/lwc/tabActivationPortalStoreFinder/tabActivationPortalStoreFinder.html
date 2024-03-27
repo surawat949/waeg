@@ -1,0 +1,93 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container">{CustLabel.Store_Finder}</h3></td>
+            </tr></table>
+          <lightning-record-edit-form record-id={receivedId}  object-api-name={objectapiname}>       
+         <div class="slds-grid slds-gutters_medium">
+            <div class="slds-col slds-size_1-of-3 slds-var-m-top_x-small" style="padding-left:25px;" >
+
+                <label for="Optician_Finder_Force_Activation__c">{CustLabel.Forced_Store_Finder}</label>
+                <lightning-helptext content={CustLabel.HelpText} style="padding-left:2px; padding: bottom 5px;"></lightning-helptext>
+                <lightning-input-field field-name="Optician_Finder_Force_Activation__c" variant="label-hidden"></lightning-input-field>
+            </div>
+            <div class="slds-col">
+                <div style="line-height:13px;">
+                    <br></br>
+                </div>
+                <lightning-button label="Save" type="submit" variant="brand"></lightning-button>
+            </div>
+        </div>
+        
+    </lightning-record-edit-form>
+    <!--<div class="slds-grid slds-m-left_medium slds-m-top_medium">-->
+    <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label">{CustLabel.Channel}</span>
+                <div class="slds-form-element__static">{ChannelVal}</div>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label">{CustLabel.SAP_Chain_Code}</span>
+                <div class="slds-form-element__static" >{ChainCodeVal}</div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label">{CustLabel.Channel_Master_Setup}</span>
+                <div class="slds-form-element__static">{OptiFinderChannel}</div>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label">{CustLabel.Last_3_Months_Total_Sales}</span>
+                <div class="slds-form-element__static" >{lastSale}</div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label">{CustLabel.Customer_Preference}</span>
+                <lightning-input  class="slds-var-p-left" type="checkbox" checked={OptiFinderOption} disabled></lightning-input>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label">{CustLabel.Eligible_for_Optician_Finder}</span>
+                <lightning-input  class="slds-var-p-left" type="checkbox" checked={OptiFinder} disabled ></lightning-input>
+            </div>
+        </div>
+    </div>
+    <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element slds-form-element_readonly">
+                <span class="slds-form-element__label">{CustLabel.Seiko_Dealer_Locator_Last_Training}</span>
+                <div class="slds-form-element__static" >{LastTraningDate}</div>            
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+                <template lwc:if={isShowVisiableMsg}>
+                    <span style="color:green; font-size:100%;">
+                        <div style="line-height:59px;">
+                        <b>VISIBLE ON STORE FINDER</b></div>
+                    </span>
+                </template>  
+                <template lwc:else>
+                    <span style="color:red; font-size:100%;">
+                        <div style="line-height:59px;">
+                        <b>NOT VISIBLE ON STORE FINDER</b></div>
+                    </span>
+                </template>
+        </div>
+    </div>
+
+</br>
+</div>
+
+</template>

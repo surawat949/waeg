@@ -1,0 +1,21 @@
+<apex:page controller="QvQueryPageController">
+  <!--apex:pageBlock title="QV Data sample"-->
+  <!--1:{!annualSales}<br/>-->
+  <!--/apex:pageBlock-->
+  <apex:pageBlock title="QV Data sample">
+      <apex:pageBlockTable value="{!dataList}" var="data">
+          <apex:column > 
+              <apex:facet name="header">Design</apex:facet> 
+              <apex:outputText value="{!data.design}"/> 
+          </apex:column>
+          <apex:column > 
+              <apex:facet name="header">Annual Sales</apex:facet> 
+              <apex:outputText value="{!data.annualSales}"/> 
+          </apex:column>
+          <apex:column > 
+              <apex:facet name="header">Annual Qty</apex:facet> 
+              <apex:outputText value="{!data.annualQty}"/> 
+          </apex:column> 
+      </apex:pageBlockTable>
+  </apex:pageBlock>
+</apex:page>

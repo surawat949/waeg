@@ -1,0 +1,170 @@
+<aura:component  implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+access="public" controller="TabMVCVisitsController">
+    <aura:attribute name="receivedId" type="String" />
+    <aura:attribute name="lastVisit" type="Visits__c"/>
+    <aura:attribute name="nextVisit" type="Visits__c"/>
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="visitLists" type="Visits__c[]"/>
+    <aura:attribute name="isDataExists" type="Boolean" default="false"/>
+    <aura:attribute name="visitCount" type="String" default="0" />
+    <aura:attribute name="isLastVisitsExists" type="Boolean" default="false"/>
+    <aura:attribute name="last3VisitsColumns" type="List"/>
+    <aura:attribute name="last3Visits" type="Visits__c[]"/>
+
+    <aura:handler   name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!--Last_Visit_Completed-->
+    <!--
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+       <table class="slds-table slds-table_bordered" aria-label="MVCVisitCompleted">
+           <tr class="row" style="background-color: #aacbff;">
+               <td><h3 class="slds-section__title  test-id__section-header-container">{!$Label.c.Last_Visit_Completed}</h3></td>
+           </tr>     	        
+       </table>
+   
+       <div class="slds-grid slds-var-m-left_medium">
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+            <label class="slds-form-element__label"> {!$Label.c.Report_Visit_Id} </label><br/>
+            <div class="slds-form-element__control">
+                <lightning:formattedUrl value="{!v.lastVisit.nameLink}" tooltip="{!v.lastVisit.name}" label="{!v.lastVisit.name}" target="_top"></lightning:formattedUrl>
+            </div>
+        </div>
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+            <label class="slds-form-element__label">{!$Label.c.Report_Visit_Type}</label><br/>
+            <div class="slds-form-element__control">{!v.lastVisit.visitType}</div>                    
+        </div> 
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+          <label class="slds-form-element__label">{!$Label.c.Assigned_To}</label><br/>
+          <div class="slds-form-element__control">
+            <lightning:formattedUrl value="{!v.lastVisit.assignedLink}" tooltip="{!v.lastVisit.assignee}" label="{!v.lastVisit.assignee}" target="_top"></lightning:formattedUrl>
+        </div>    
+      </div> 
+    </div>     
+
+    
+      <div class="slds-grid slds-var-m-left_medium">
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+            <label class="slds-form-element__label"> {!$Label.c.Report_Start} </label><br/>
+            <div class="slds-form-element__control">{!v.lastVisit.startDate}</div>
+        </div>
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+            <label class="slds-form-element__label">{!$Label.c.Report_Visit_Objective}</label><br/>
+            <div class="slds-form-element__control">{!v.lastVisit.objective}</div>  
+        </div> 
+  
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+          <label class="slds-form-element__label">{!$Label.c.Report_Contact}</label><br/>
+          <div class="slds-form-element__control">
+          <lightning:formattedUrl value="{!v.lastVisit.contactLink}" tooltip="{!v.lastVisit.contactName}" label="{!v.lastVisit.contactName}" target="_top"></lightning:formattedUrl>   
+          </div> 
+        </div> 
+    </div>
+        
+    <div class="slds-grid slds-var-m-left_medium">
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-1">
+            <label class="slds-form-element__label">{!$Label.c.Report_Visit_Notes} </label><br/>
+            <div class="slds-form-element__control">{!v.lastVisit.notes}</div>
+        </div>
+    </div>
+
+    <div class="slds-grid slds-var-m-left_medium">
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-1">
+            <label class="slds-form-element__label">{!$Label.c.Report_Call_To_Action_Notes}</label><br/>
+            <div class="slds-form-element__control">{!v.lastVisit.action}</div>
+        </div>
+    </div>
+</div>  
+-->
+   
+<!--Section 1 - Last 3 Visits Completed-->
+
+<div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+ 
+    <table class="slds-table slds-table_bordered" aria-label="MVCVisitsReportCompleted" style="background-color: #215ca0;">
+       <tr class="row" style="background-color: #aacbff;">
+           <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{!$Label.c.Last_Three_Visit_Completed}</p></h3></td>
+       </tr>
+    </table><br></br>
+    <aura:if isTrue="{!v.isLastVisitsExists}"> 
+        <lightning:datatable data="{!v.last3Visits}"
+                             columns="{!v.last3VisitsColumns}"
+                             keyField="id"
+                             hideCheckboxColumn="true"/>
+   	 </aura:if> <br></br>
+ </div>
+<!--Section1 End-->
+    
+  <!--Next Visit Planned-->  
+    
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+   
+       <table class="slds-table slds-table_bordered" aria-label="MVCNextVisitPlanned">
+           <tr class="row" style="background-color: #aacbff;">
+               <td><h3 class="slds-section__title  test-id__section-header-container">{!$Label.c.Next_Visit_Planned}</h3></td>
+           </tr>     	        
+       </table>
+
+       <div class="slds-grid slds-var-m-left_medium">
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+            <label class="slds-form-element__label"> {!$Label.c.Report_Visit_Id} </label><br/>
+            <div class="slds-form-element__control">
+                <lightning:formattedUrl value="{!v.nextVisit.nameLink}" tooltip="{!v.nextVisit.name}" label="{!v.nextVisit.name}" target="_top"></lightning:formattedUrl>
+            </div>
+        </div>
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+            <label class="slds-form-element__label">{!$Label.c.Report_Visit_Type}</label><br/>
+            <div class="slds-form-element__control">{!v.nextVisit.visitType}</div>                    
+        </div> 
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+          <label class="slds-form-element__label">{!$Label.c.Assigned_To}</label><br/>
+          <div class="slds-form-element__control">
+            <lightning:formattedUrl value="{!v.nextVisit.assignedLink}" tooltip="{!v.nextVisit.assignee}" label="{!v.nextVisit.assignee}" target="_top"></lightning:formattedUrl>
+        </div>    
+      </div> 
+    </div> 
+    
+    <div class="slds-grid slds-var-m-left_medium">
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+            <label class="slds-form-element__label"> {!$Label.c.Report_Start} </label><br/>
+            <div class="slds-form-element__control">{!v.nextVisit.startDate}</div>
+        </div>
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+            <label class="slds-form-element__label">{!$Label.c.Report_Visit_Objective}</label><br/>
+            <div class="slds-form-element__control">{!v.nextVisit.objective}</div>  
+        </div> 
+  
+        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+          <label class="slds-form-element__label">{!$Label.c.Report_Contact}</label><br/>
+          <div class="slds-form-element__control">
+          <lightning:formattedUrl value="{!v.nextVisit.contactLink}" tooltip="{!v.nextVisit.contactName}" label="{!v.nextVisit.contactName}" target="_top"></lightning:formattedUrl>   
+          </div> 
+        </div> 
+    </div>
+</div>
+
+<!--Visit form -->
+ <c:QuickVisitContactForm recordId="{!v.receivedId}"></c:QuickVisitContactForm>
+    
+<!--Section 3 - Visits-->
+
+<div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+ 
+    <table class="slds-table slds-table_bordered" aria-label="MVCVisitsReport" style="background-color: #215ca0;">
+       <tr class="row" style="background-color: #aacbff;">
+           <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{!$Label.c.Report_Visits} ({!v.visitCount}) </p></h3></td>
+       </tr>
+    </table><br></br>
+    <aura:if isTrue="{!v.isDataExists}"> 
+        <lightning:datatable data="{!v.visitLists}"
+                             columns="{!v.mycolumns}"
+                             keyField="id"
+                             hideCheckboxColumn="true"/>
+    		<br></br>
+            <p align="center"> 
+            <lightning:button label="{!$Label.c.ViewAllRelatedList}" variant="brand-outline" onclick="{!c.navigateToRelatedTab}"></lightning:button> &nbsp;
+            </p> 
+   	 </aura:if> <br></br>
+ </div>
+<!--Section3 End-->
+    
+</aura:component>

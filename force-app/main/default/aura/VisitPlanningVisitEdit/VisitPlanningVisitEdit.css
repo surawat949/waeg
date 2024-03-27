@@ -1,0 +1,16 @@
+/**
+ * Created by thomas.schnocklake on 10.11.17.
+ */
+.THIS .mymodal {
+    position: absoluteX;
+}
+
+
+.THIS a.timePicker-openIcon, .THIS a.datePicker-openIcon
+{
+    display: none !important;
+}
+
+.THIS .slds-modal__container {
+    padding-top: 10em !important;
+}

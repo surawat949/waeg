@@ -1,0 +1,35 @@
+<apex:page controller="pss_SSOTab" sidebar="false" showHeader="true">
+
+ <!--   <div>
+                <apex:outputlink value="#" onclick="window.open('{!JSENCODE(URL)}','_top','width=810,height=610,toolbar=0,status=1,scrollbars=1,resizable=yes',!1);">
+                <font color="#00c7fc"><u>Click here to navigate to the Training Portal</u></font>
+            </apex:outputlink>
+        </div>
+        <apex:form >
+    <apex:commandButton value="Go!" action="{!getURL}" rerender="url"/>
+    <apex:outputPanel id="url"><apex:outputPanel rendered="{!goFlag}">
+    </apex:outputPanel></apex:outputPanel>
+    </apex:form>-->
+    <form action="{!JSENCODE(URL)}" method="post" target="theIframe" id="frm1" name="frm1">
+        <input type="hidden" name="timestamp" value="{!timestamp}" />
+        <input type="hidden" name="fn" value="{!fn}" />
+        <input type="hidden" name="user" value="{!user}" />
+        <input type="hidden" name="email" value="{!email}" />
+        <input type="hidden" name="ln" value="{!ln}" />
+        <input type="hidden" name="city" value="" />
+        <input type="hidden" name="token" value="{!token}" />
+        <!--<input type="submit" name="Training" value="Training" />-->
+
+    </form>
+
+    <iframe height="1000px" id="theIframe" name="theIframe" src="{!JSENCODE(URL)}" width="100%" frameBorder="0"></iframe>
+    
+    <body onload="init()"/>
+<script type="text/javascript">
+window.onload = new function() { init(); };
+        function init() {
+                document.frm1.submit();
+            }
+</script>
+
+</apex:page>

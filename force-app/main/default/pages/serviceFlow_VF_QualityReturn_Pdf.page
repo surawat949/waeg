@@ -1,0 +1,206 @@
+<apex:page readOnly="true"
+           standardController="Case"   
+           applyHtmlTag="false"    
+           sidebar="false"    
+           showHeader="false"    
+           cache="true"    
+           renderAs="advanced_pdf"
+           docType="html-5.0"
+           extensions="serviceFlow_Vf_QualityReturn_Pfd_Ctrl">
+    <html>
+        <head>
+            <style>
+                @page{
+                size: A4 landscape;
+                }
+            </style>               
+        </head>
+        
+        <img align="left" style="padding:10px;width: 90px;height: 40px;" src="https://hoya--scqa--c.visualforce.com/resource/Hoya_brand"/><br/><br/><br/>
+        <table style="width:100%;padding:10px;">
+            <tr>
+                <td colspan="4" style="padding:10px;border: 1px solid #cbcbcb;">
+                    <center>
+                        <h1 style="font-size:10px;font-weight:bold;margin-left:10px;">
+                            Quality Return
+                        </h1>
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="padding:10px;border: 1px solid #cbcbcb;">
+                    <center>
+                        <h1 style="font-size:8px;margin-left:10px;">
+                            Template print
+                        </h1>
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Customer Code
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    {!caseRecordDetails.serviceFlow_Customer_code__c}
+                </td >
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Customer / account name
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    {!caseRecordDetails.Customer_Name__c}
+                </td >
+            </tr>
+            <tr>
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Hoya Delivery note
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    {!caseRecordDetails.serviceFlow_Hoya_Delivery_note__c}
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"></td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"></td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Date of the complaint
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                        <apex:param value="{!caseRecordDetails.Date_of_the_complaint__c}" /> 
+                    </apex:outputText>
+
+                </td >
+                
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Date of Hoya delivery note
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                        <apex:param value="{!caseRecordDetails.Date_of_Hoya_delivery_note__c}" /> 
+                    </apex:outputText>
+                </td >
+            </tr>
+            <tr>
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Report Number
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    {!caseRecordDetails.serviceFlow_Report_numnber__c}
+                </td>
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Box Number
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    {!caseRecordDetails.serviceFlow_Box_Number__c}
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Notes
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    {!caseRecordDetails.serviceFlow_Notes__c}
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"></td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"></td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Lenstype
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"> 
+                     {!caseRecordDetails.Lenstype__c}     
+                </td>
+                
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                     Defect (yes or no)
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"> 
+                     {!caseRecordDetails.serviceFlow_Defect__c}     
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                     Parameters checked
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"> 
+                    <apex:repeat value="{!parametersSelected}" var="item">                        
+                        <img style="height: 12px;" src="/img/checkbox_checked.gif"/> &nbsp;{!item}<br/> 
+                    </apex:repeat>      
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"></td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"></td> 
+            </tr>
+            <tr>
+                <td style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    Free Text for notes
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">
+                    {!caseRecordDetails.serviceFlow_Free_Text_for_notes__c}
+                </td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"></td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;"></td>
+            </tr>
+            
+        </table>
+        <apex:outputPanel layout="block" rendered="{!isSalesReturnsExist}">
+        <table style="width:100%;padding:10px;">
+            <tr>
+                <td colspan="4" style="padding:10px;border: 1px solid #cbcbcb;">
+                    <center>
+                        <h1 style="font-size:10px;font-weight:bold;margin-left:10px;">
+                            Sales Returns
+                        </h1>
+                    </center>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;border: 1px solid #cbcbcb;">         
+        <tr>             
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Receive N°</th>   
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Tray N°</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">AA Receive</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">MM Receive</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">DD Receive</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Customer</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Lens Type</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Colour</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Coat</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Sph</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Sph Value</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Cyl</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Cyl Value</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Axis</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Addition</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">AA Deliveri</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Depo Delivery</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Mag Delivery</th>
+            <th style="font-weight:bold;font-size:8px;padding:10px;border: 1px solid #cbcbcb;background-color: #ddedfd;">Delivery N°</th>              
+        </tr>   
+        <apex:repeat value="{!as400DataList}" var="salesReturnRec">             
+            <tr>                 
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.RCVNO__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.TRAYNO__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.YEARRCV__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.MONTHRCV__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.DAYRCV__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.CUSTOMER__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.LENSTYPE__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.COLOR__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.COAT__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.SPHSIGN__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.SPHVAL__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.CILSIGN__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.CILVAL__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.AXIS__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.ADD__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.YEARDLVRY__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.DEPODLVRY__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.MAGADLVRY__c}</td>
+                <td style="font-size:8px;padding:10px;border: 1px solid #cbcbcb;">{!salesReturnRec.NUMDLVRY__c}</td>                                      
+            </tr>                 
+        </apex:repeat>            
+    </table>  
+    </apex:outputPanel>     
+    </html>
+</apex:page>

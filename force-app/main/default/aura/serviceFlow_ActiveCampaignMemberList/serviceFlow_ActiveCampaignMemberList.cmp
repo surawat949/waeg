@@ -1,0 +1,39 @@
+<aura:component controller="serviceFlowActiveCampaignMemberControler"
+                implements="force:hasRecordId,force:hasSObjectName,flexipage:availableForAllPageTypes,force:appHostable"
+                access="public">
+    
+    <aura:attribute name="memberList" type="List" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="presented" type="Boolean" />
+    <aura:attribute name="cmId" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <div class="slds-scrollable" style="height:15rem">
+        <div class="slds-page-header" role="banner">
+            <h1 class="slds-page-header__title slds-m-right_small slds-truncate slds-align-left">Active campaigns</h1>
+        </div>
+        <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+            <thead>
+                <tr class="slds-text-heading_label">
+                    <th scope="col"><div class="slds-truncate" >&nbsp;</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Member Name">Member Name</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Start">Start</div></th>
+                    <th scope="col"><div class="slds-truncate" title="End">End</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.memberList}" var="member">
+                    <tr>
+                        <td colspan="4"><div class="slds-text-title_bold">{!member.Campaign_Name__c}</div></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td><div class="slds-truncate"><lightning:formattedUrl value="{!'/lightning/r/Account_Campaing_Member__c/'+member.Id+'/view'}" label="{!member.Name}" target="_blank"/></div></td>
+                        <td><div class="slds-truncate"><lightning:formattedDateTime value="{!member.Campaign_Start_Date_t__c}"/></div></td>
+                        <td><div class="slds-truncate"><lightning:formattedDateTime value="{!member.Campaign_End_Date_t__c}"/></div></td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+    </div>
+</aura:component>
