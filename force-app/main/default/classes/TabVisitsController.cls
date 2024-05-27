@@ -68,83 +68,96 @@ public class TabVisitsController {
       //Wrapper class to store Related Parent and child Account details 
         public class AccountRelatedSales{
             public AccountRelatedSales(){}
-            @AuraEnabled public double totalAnualRevenue{get;set;}  //'Parent & Child Total Sales'
-            @AuraEnabled public double totalPotential{get;set;}  //'Parent & Child Total Potential'
-            @AuraEnabled public decimal parentAccountSOW{get;set;}  //'Parent & Child SOW'
-            @AuraEnabled public String parentAccountSegmentation{get;set;}
-            @AuraEnabled public String parentHOYAAccount{get;set;}
+            @AuraEnabled public double consolidationKeyStrategicValue{get;set;}  
+            @AuraEnabled public decimal consolidationKeyShareOfWallet{get;set;}  
+            @AuraEnabled public String consolidationKeySegmentation{get;set;}
         } 
   
+ 
+
     @AuraEnabled(cacheable=true)    
-    public static AccountRelatedSales Aggregate(String parentId){
+    public static AccountRelatedSales Aggregate(String parentId,String key){
         
         AccountRelatedSales sales = new AccountRelatedSales();
-        Double parentChildTotalPotential = 0;
-        Double parentChildTotalSales = 0;
-        decimal parentChildSOW = 0;
+        Double consolidationKeyTotalStrategic = 0;
+        Double consolidationKeyTotalSales = 0;
+        decimal consolidationKeySOW = 0;
         
-        if(parentId!=null){
+        if(key!=null){
             try{                
-                //calculating parentChildTotalPotential               
-                List<AccountDetail> accList = getAllAccountRecordsInHierarchy(parentId);
-                
-                Set<Id> allAccIds = new Set<Id>();
-                for(AccountDetail EA: accList){
-                    if(EA.netSales!=null){
-                        allAccIds.add(EA.accountId);
-                        parentChildTotalPotential = parentChildTotalPotential + EA.netSales;
+                List<Account> accList;
+                List<Account> currAcctList=new List<Account>();
+                accList = [select Id, hoya_account_id__c, name, Strategic_Value_Net_Sales__c,parent.Hoya_account_id__c, parentId, Owner.Segment_C_Potential_Less_Than__c,
+                Owner.Segment_A_Potential_Higher_Than__c, Owner.Segment_C3_SOW_Less_Than__c, Owner.Segment_A1_SOW_HigherThan__c, Local_Consolidation_Key__c,Lenses_Net_Sales_Last_12Mo__c 
+                from Account where Local_Consolidation_Key__c =:key and recordTypeId != :EC_ACCOUNT_RT]; 
+                //calculating TotalPotential based on Local Consolodation Key  
+                Set<Id> allAccIds = new Set<Id>();          
+                for(Account acc: accList){
+                    if(acc.Id == parentId)
+                    {
+                     currAcctList.add(acc);
+                     System.debug('check current account list'+currAcctList);
+                    }
+                    if(acc.Strategic_Value_Net_Sales__c!=null){
+                        allAccIds.add(acc.Id);
+                        consolidationKeyTotalStrategic = consolidationKeyTotalStrategic + acc.Strategic_Value_Net_Sales__c;
                     } 
-                }
-                
-                //calculating  Parent & Child Total Sales
-                List<Last_Sales_Statistics__c> lastSales = [Select Id, Lenses_Net_Sales_Last_12Mo__c, Account__c from Last_Sales_Statistics__c where Account__c IN :allAccIds  AND Account__r.recordTypeId != :EC_ACCOUNT_RT];
-                for(Last_Sales_Statistics__c ES: lastSales){
-                    if(ES.Lenses_Net_Sales_Last_12Mo__c!= null){
-                        parentChildTotalSales = parentChildTotalSales + ES.Lenses_Net_Sales_Last_12Mo__c;
+                    if(acc.Lenses_Net_Sales_Last_12Mo__c!=null){
+                       consolidationKeyTotalSales = consolidationKeyTotalSales + acc.Lenses_Net_Sales_Last_12Mo__c;
                     }
                 }
+               System.debug('check current account strategic'+consolidationKeyTotalStrategic);
+              System.debug('check current account sales'+consolidationKeyTotalSales);
+
+
+              /*  List<Last_Sales_Statistics__c> lastSales = [Select Id, Lenses_Net_Sales_Last_12Mo__c, Account__c from Last_Sales_Statistics__c where Account__c IN :allAccIds  AND Account__r.recordTypeId != :EC_ACCOUNT_RT];
+                for(Last_Sales_Statistics__c ls: lastSales){
+                    if(ls.Lenses_Net_Sales_Last_12Mo__c!= null){
+                        consolidationKeyTotalSales = consolidationKeyTotalSales + ls.Lenses_Net_Sales_Last_12Mo__c;
+                    }
+                }*/
                 
-                //calculating Parent & Child SOW
-                if(parentChildTotalSales!=0 && parentChildTotalPotential!=0){
-                    decimal sowData = parentChildTotalSales/parentChildTotalPotential;
+                if(consolidationKeyTotalSales!=0 && consolidationKeyTotalStrategic!=0){
+                    decimal sowData = consolidationKeyTotalSales/consolidationKeyTotalStrategic;
                     //if percenatge is greater than 100 then round of to 100
-                    parentChildSOW  = sowData.setScale(2) > 1.0 ? 1.0 : sowData.setScale(2);
+                    consolidationKeySOW  = sowData.setScale(2) > 1.0 ? 1.0 : sowData.setScale(2);
                 }
-                
-                //calculating parentAccountSegmentation
-                String parentAccountSegmentationTemp = ''; 
-                if(parentChildTotalPotential<2){
-                    parentAccountSegmentationTemp='UNCATEGORIZED';
+                System.debug('check current account SOW'+consolidationKeySOW);
+
+                //calculating ConsolidationAccountSegmentation
+                String consolidationKeyAccountSegmentationTemp = ''; 
+                if(consolidationKeyTotalStrategic<2){
+                    consolidationKeyAccountSegmentationTemp='UNCATEGORIZED';
                 }
                 else {
-                    if(parentChildTotalPotential< accList[0].ownerSegmentC){
-                        parentAccountSegmentationTemp='C';
+                    if(consolidationKeyTotalStrategic< currAcctList[0].Owner.Segment_C_Potential_Less_Than__c){
+                        consolidationKeyAccountSegmentationTemp='C';
                     }
-                    else if(parentChildTotalPotential< accList[0].ownerSegmentA){
-                        parentAccountSegmentationTemp='B';
+                    else if(consolidationKeyTotalStrategic< currAcctList[0].Owner.Segment_A_Potential_Higher_Than__c){
+                        consolidationKeyAccountSegmentationTemp='B';
                     }
                     else{
-                        parentAccountSegmentationTemp='A';
+                        consolidationKeyAccountSegmentationTemp='A';
                     }
                 }
                 
-                if(parentChildTotalPotential >2 && parentChildSOW < accList[0].ownerSegmentC3){
-                    parentAccountSegmentationTemp = parentAccountSegmentationTemp + '3';
+                if(consolidationKeyTotalStrategic >2 && consolidationKeySOW < currAcctList[0].Owner.Segment_C3_SOW_Less_Than__c){
+                    consolidationKeyAccountSegmentationTemp = consolidationKeyAccountSegmentationTemp + '3';
                 }
-                else if(parentChildTotalPotential >2 && parentChildSOW < accList[0].ownerSegmentA1){
-                    parentAccountSegmentationTemp = parentAccountSegmentationTemp + '2';
+                else if(consolidationKeyTotalStrategic >2 && consolidationKeySOW < currAcctList[0].Owner.Segment_A1_SOW_HigherThan__c){
+                    consolidationKeyAccountSegmentationTemp = consolidationKeyAccountSegmentationTemp + '2';
                 }        
-                else if(parentChildTotalPotential >2){
-                    parentAccountSegmentationTemp = parentAccountSegmentationTemp + '1';
+                else if(consolidationKeyTotalStrategic >2){
+                    consolidationKeyAccountSegmentationTemp = consolidationKeyAccountSegmentationTemp + '1';
                 }
                 //HOYA account Id of parent account
                 //Passing as a wrapper to pass to LWC
-                sales.totalAnualRevenue = parentChildTotalSales ;
-                sales.totalPotential = parentChildTotalPotential;  
-                sales.parentAccountSOW = parentChildSOW;
-                sales.parentHOYAAccount = accList[0].parentHoyaId !=null ? accList[0].parentHoyaId : ''; //BUG 1014 fix
-                sales.parentAccountSegmentation = parentAccountSegmentationTemp;
-                
+             
+                sales.consolidationKeyStrategicValue = consolidationKeyTotalStrategic;  
+                sales.consolidationKeyShareOfWallet = consolidationKeySOW;
+                sales.consolidationKeySegmentation = consolidationKeyAccountSegmentationTemp;
+                System.debug('check current ACCOUNT KEY SEGMENTATION'+sales.consolidationKeySegmentation);
+
             }
             catch(Exception ex){
             }
@@ -187,81 +200,5 @@ public class TabVisitsController {
         @AuraEnabled public double recommendedVisitPerSubArea{get;set;}
         
     } 
-    
-    
-    public static List<AccountDetail> getAllAccountRecordsInHierarchy( String accId){
        
-        List<AccountDetail> resultList = new List<AccountDetail>();
-        List<Account> item;
-        //BUG 1014 fix - added parent.Hoya_account_id__c in the query
-        item = [select Id, hoya_account_id__c, name, Strategic_Value_Net_Sales__c,parent.Hoya_account_id__c, parentId, Owner.Segment_C_Potential_Less_Than__c,
-                Owner.Segment_A_Potential_Higher_Than__c, Owner.Segment_C3_SOW_Less_Than__c, Owner.Segment_A1_SOW_HigherThan__c 
-                from Account where id=:accId AND recordTypeId != :EC_ACCOUNT_RT];   
-        
-        if (!item.isEmpty()) {
-            AccountDetail detail = new AccountDetail();
-            detail.accountId = item[0].Id;
-            detail.hoya_account_id = item[0].hoya_account_id__c;
-            detail.name = item[0].name;
-            detail.parentId = item[0].parentId;
-            detail.netSales = item[0].Strategic_Value_Net_Sales__c;
-            detail.ownerSegmentC = item[0].Owner.Segment_C_Potential_Less_Than__c;
-            detail.ownerSegmentA = item[0].Owner.Segment_A_Potential_Higher_Than__c;
-            detail.ownerSegmentC3 = item[0].Owner.Segment_C3_SOW_Less_Than__c;
-            detail.ownerSegmentA1 = item[0].Owner.Segment_A1_SOW_HigherThan__c;
-            //BUG 1014 fix
-            if(item[0].parentId != null && item[0].parent.Hoya_account_id__c != null){
-                detail.parentHoyaId = item[0].parent.Hoya_account_id__c;
-            }
-            //adding current account details to the list
-            resultList.add(detail);
-            Set<Id> accIdSet = new Set<Id>();
-            accIdSet.add(item[0].Id);
-            //will return all the child accounts and adds to the list
-            resultList.addAll(getRecursiveAccountList(accIdSet));
-        } 
-        return resultList != Null ? resultList : Null;
-    }
-    
-     private class AccountDetail {
-         public Id accountId{get;set;}
-         public String hoya_account_id{get;set;}
-         public String name{get;set;}
-         public String parentHoyaId{get;set;}
-         public Id parentId{get;set;}
-         public Decimal netSales{get;set;}
-         public Decimal ownerSegmentC{get;set;}
-         public Decimal ownerSegmentA{get;set;}
-         public Decimal ownerSegmentC3{get;set;}
-         public Decimal ownerSegmentA1{get;set;}
-     }
-    
-    private static List<AccountDetail> getRecursiveAccountList(Set<Id> accIdSet){
-         List<Account> temp = [select Id, hoya_account_id__c, name,Strategic_Value_Net_Sales__c, parentId,Owner.Segment_C_Potential_Less_Than__c, 
-                               Owner.Segment_A_Potential_Higher_Than__c, Owner.Segment_C3_SOW_Less_Than__c, Owner.Segment_A1_SOW_HigherThan__c
-                               from Account where parentId IN :accIdSet  AND recordTypeId != :EC_ACCOUNT_RT];
-         List<AccountDetail> result = new List<AccountDetail>();
-         if (temp != null && temp.size() > 0) {
-             Set<Id> accIds = new Set<Id>();
-             for (Account item : temp) {
- 
-                 AccountDetail detail = new AccountDetail();
-                 detail.accountId = item.Id;
-                 detail.hoya_account_id = item.hoya_account_id__c;
-                 detail.name = item.name;
-                 detail.parentId = item.parentId;
-                 detail.netSales = item.Strategic_Value_Net_Sales__c;
-                 detail.ownerSegmentC = item.Owner.Segment_C_Potential_Less_Than__c;
-                 detail.ownerSegmentA = item.Owner.Segment_A_Potential_Higher_Than__c;
-                 detail.ownerSegmentC3 = item.Owner.Segment_C3_SOW_Less_Than__c;
-                 detail.ownerSegmentA1 = item.Owner.Segment_A1_SOW_HigherThan__c;
-                 
-                 result.add(detail);
-                 accIds.add(item.Id);
-             }
-             result.addAll(getRecursiveAccountList(accIds));
-         }
-         return result;
-     }
-    
 }

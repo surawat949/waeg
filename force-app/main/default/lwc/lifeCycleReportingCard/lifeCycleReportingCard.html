@@ -3,61 +3,44 @@
         <div class="slds-p-around_none slds-m-horizontal_none">
             <lightning-layout multiple-rows>
                 <lightning-layout-item key={record.Id} size="12" small-device-size="6" medium-device-size="4" large-device-size="3" padding="around-small">
-                    <div class="zoom negativeClass">
-                        <a href="#" data-id={record.Id} onclick={navigateAccHandler}>
+                    <div class ={negativeClass}>
+                        <a href="#" data-id={record.Id} onclick={navigateAccHandler} class={linkClass}>
                             <span class="slds-p-around_none" data-id={record.Id}>
                                 {record.Account__r.Name}
                             </span>
                         </a>
                         <p class="slds-p-around_none">{record.Account__r.Owner.Name}</p>
-                        <p class="slds-p-around_none">{record.Lenses_Net_Sales_Last_12Mo__c} {record.Account__r.CurrencyIsoCode} (SV)</p>
-                        <p class="slds-p-around_none">{record.Account__r.AMT_gross_sales__c} {record.Account__r.CurrencyIsoCode} (L12Mo)</p>
-                        <p class="slds-p-around_none">{record.Segmentation__c} (SOW : {record.Current_SOW_L3Mo__c})</p>
-                            <!--lightning-button class="custom-button slds-button_neutral" icon-name="utility:opportunity" alternative-text="Search"></lightning-button>
-                            <lightning-button class="custom-button slds-button_neutral" icon-name="action:info" alternative-text="Add"></lightning-button>
-                            <lightning-button class="custom-button slds-button_neutral" icon-name="utility:arrowdown" alternative-text="Settings"></lightning-button>
-                            <lightning-butto n class="custom-button slds-button_neutral" icon-name="action:following" alternative-text="Settings"></lightning-button>
-                            <lightning-button class="custom-button slds-button_neutral" icon-name="action:follow" alternative-text="Settings"></lightning-button>
-                            <lightning-icon icon-name="utility:opportunity"></lightning-icon-->
-
-                        <lightning-icon icon-name="utility:opportunity" class="iconMargin" size="small" title="Visionary Alliance"></lightning-icon>
-                        <lightning-icon icon-name="utility:filter" class="iconMargin" size="small" title="Decreasin Sales"></lightning-icon>
-                        <lightning-icon icon-name="utility:jump_to_bottom" class="iconMargin" size="small" title="Follow up rate < 80%"></lightning-icon>
-                        <lightning-icon icon-name="utility:jump_to_top" class="iconMargin" size="small" title="Follow up rate > 120%"></lightning-icon>
-                        <lightning-icon icon-name="utility:problem" class="iconMargin" size="small" title="Issue"></lightning-icon>
+                        <p class="slds-p-around_none">{strategicValue} {record.Account__r.CurrencyIsoCode} (SV)</p>
+                        <p class="slds-p-around_none">{lensesNetSales} {record.Account__r.CurrencyIsoCode} (L12Mo)</p>
+                        <p class="slds-p-around_none">{record.Segmentation__c} (SOW : {record.Current_SOW_L3Mo__c}%)</p>
+                        <template if:true={showVisionaryFlag}>
+                            <lightning-icon icon-name="utility:opportunity" class="iconMargin Hoya-utility-icon" size="x-small" title={record.Account__r.Seiko_Network__c}></lightning-icon>
+                        </template>
+                        <template if:true={addNew}>
+                            <lightning-icon icon-name="utility:new" class="iconMargin Hoya-utility-icon" size="x-small" title="On-boarding Customer"></lightning-icon>
+                        </template>
+                        <template if:true={showDecreasingSalesFlag}>
+                            <lightning-icon icon-name="utility:cart" class="iconMargin red-utility-icon" size="x-small" title="Decreasing Sales"></lightning-icon>
+                        </template>
+                        <template if:true={isFollowUpRatelessthan80}>
+                            <lightning-icon icon-name="utility:travel_and_places" class="iconMargin red-utility-icon" size="x-small" title="Follow up rate < 80%"></lightning-icon>
+                        </template>
+                        <template if:true={isFollowUpRatemorethan120}>
+                            <lightning-icon icon-name="utility:travel_and_places" class="iconMargin red-utility-icon" size="x-small" title="Follow up rate > 120%"></lightning-icon>
+                        </template>
+                        <template if:true={isAlert}>
+                            <lightning-icon icon-name="utility:alert" class="iconMargin red-utility-icon" size="x-small" title="Issue"></lightning-icon>
+                        </template>
+                        <template if:true={isTaskOverDue}>
+                            <lightning-icon icon-name="utility:expired" class="iconMargin red-utility-icon" size="x-small" title={taskStatus}></lightning-icon>
+                        </template>
+                        <template if:true={isSVDisplay}>
+                            <lightning-icon icon-name="utility:moneybag" class="iconMargin red-utility-icon" size="x-small" title={svStatus}></lightning-icon>
+                        </template>
+                        <template if:true={banFlag}>
+                            <lightning-icon icon-name="utility:ban" class="iconMargin red-utility-icon" size="x-small" title="No sub-area selected in TACTICOM"></lightning-icon>
+                        </template>
                     </div>
-                    
-                    <!--div class="flip-card">
-                        <div  class="flip-card-inner" key={record.Id} data-row-index={record.Id} data-id={record.Id} onmouseover={addClass} onmouseout={removeClass}>
-                            <div class="flip-card-front">
-                                <li class="slds-item slds-var-m-around_small" draggable="true">
-                                    <h3 class="slds-truncate" title={record.Name}>
-                                        <a href="#" data-id={record.Id} onclick={navigateTALCHandler}>
-                                            <span class="slds-truncate" data-id={record.Id}>
-                                            {record.Name}
-                                            </span>
-                                        </a>
-                                    </h3>   
-                                    <p class="slds-p-around_none">Account Owner: {record.Account__r.Owner.Name}</p>
-                                </li>
-                            </div>
-                                <div class="flip-card-back innerLink">
-                                    <a href="#" data-id={record.Id} onclick={navigateTALCHandler}>
-                                        <span class="slds-p-around_none" data-id={record.Id}>
-                                        {record.Name}
-                                        </span>
-                                    </a>
-                                    <p class="slds-p-around_none"> </p>
-                                    <a href="#" data-id={record.Id} onclick={navigateAccHandler}>
-                                        <span class="slds-p-around_none" data-id={record.Account__c}>
-                                            Account Name: {record.Account__r.Name}
-                                        </span>
-                                    </a>
-                                    <p class="slds-p-around_none">Net Sales L12Mo: {record.Lenses_Net_Sales_Last_12Mo__c}</p>
-                                    <p class="slds-p-around_none negativeClass">L12Mo vs LFY(%): {record.Account__r.AMT_gross_sales__c}</p>
-                                </div>
-                        </div>
-                    </div--> 
                 </lightning-layout-item>
             </lightning-layout>
         </div>

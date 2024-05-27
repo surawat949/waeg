@@ -5,8 +5,8 @@ public with sharing class ContactTriggerHelper {
     private static final String CONTACT_SHOP_OWNER_RT = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Shop_Owner').getRecordTypeId();
     private static final String CONTACT_SUBSCRIPTION_RT = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Subscription').getRecordTypeId();
     private static final String CONTACT_ENDCONSUMER_RT = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('End_Consumer').getRecordTypeId();
-    private static final String CONTACT_Technician_RT = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Technician').getRecordTypeId();
-    private static final String CONTACT_Opthalmologist_RT = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Opthalmologist').getRecordTypeId();
+    private static final String CONTACT_OPTHO_RT = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Opthalmologist').getRecordTypeId();
+	private static final String CONTACT_Technician_RT = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Technician').getRecordTypeId();
 
     public static void entry(
         System.TriggerOperation triggerEvent,
@@ -22,9 +22,10 @@ public with sharing class ContactTriggerHelper {
                 populateHashes(newList);
                 populateLanguageDefault(newList);
                 populateHoyaContactId(newList);
-                UpdateSyncFlag(newList,'BEFORE_INSERT',oldMap);
+                modifyOneKeyRecords(newList);
+				UpdateSyncFlag(newList,'BEFORE_INSERT',oldMap);
             }
-            when BEFORE_UPDATE {
+			when BEFORE_UPDATE {
                 // populate hash field
                 UpdateSyncFlag(newList,'BEFORE_UPDATE',oldMap);
             }
@@ -124,7 +125,7 @@ public with sharing class ContactTriggerHelper {
         for (Authorization__c master : [SELECT Id, Claim_Formatted__c, Authorization_Name__c FROM Authorization__c WHERE RecordTypeId = :AUTHORIZATION_MASTER_RT]) {
             allmasters.put(master.Claim_Formatted__c, master);
         }
-        for (Contact c : contacts) {
+            for (Contact c : contacts) {
             // create Authorizations for Employees with permission sent through REST request
             for (String eachPermission : activePermsList) {
                 if (allmasters.get(eachPermission) != null) {
@@ -140,7 +141,7 @@ public with sharing class ContactTriggerHelper {
                     newAuths.add(auth);
                 }
             }
-        
+
             // Creating country specific Auth OR portal Specific Auth like demoportalUser etc.
             String claimFormatted = mapPortalToClaimString.get(c.Account_Portal__c);
             if (String.isNotBlank(claimFormatted) && allmasters.get(claimFormatted) != null) {
@@ -176,24 +177,24 @@ public with sharing class ContactTriggerHelper {
             if (c.Account_Brand__c == 'SEIKO' && String.isNotBlank(defaultSeikoPermission) && allmasters.get(defaultSeikoPermission) != null) {
                 Authorization__c master = allmasters.get(defaultSeikoPermission);
                 Authorization__c auth = new Authorization__c(
-                RecordTypeId = AUTHORIZATION_COPY_RT,
-                Copy_From__c = master.Id,
-                Contact__c = c.Id,
-                Claim_Formatted__c = master.Claim_Formatted__c,
+                    RecordTypeId = AUTHORIZATION_COPY_RT,
+                    Copy_From__c = master.Id,
+                    Contact__c = c.Id,
+                    Claim_Formatted__c = master.Claim_Formatted__c,
                 DupCheck__c = master.Id+'-'+c.Id,
                 Active_Authorization__c = true
                 );
                 newAuths.add(auth);
-            }
+                }
 
             if(String.isNotBlank(c.Account_Template__c)) {
-                newAssignmentContacts.add(c.Id);
+                    newAssignmentContacts.add(c.Id);
+                }
+                else if(c.RecordTypeId == CONTACT_SHOP_OWNER_RT) {
+                    acctTemplateEmptyList.add(c);
+                }
             }
-            else if(c.RecordTypeId == CONTACT_SHOP_OWNER_RT) {
-                acctTemplateEmptyList.add(c);
-            }
-        }
-        
+
         try {
             upsert newAuths DupCheck__c;
             if (!newAssignmentContacts.isEmpty()) {
@@ -348,6 +349,47 @@ public with sharing class ContactTriggerHelper {
         }
     }
 
+
+    private static void modifyOneKeyRecords (List<Contact> lstContacts) {
+        Set<Id> oneKeyAccIds = new Set<Id>();
+        List<Contact> lstOnekeyCon = new List<Contact>();
+        Map<String, Owner_Assignmet_Rules_IQVIA__mdt> allMetadadata = Owner_Assignmet_Rules_IQVIA__mdt.getAll();
+        for (Contact eachCon : lstContacts) {
+            if (eachCon.OnekeyId__c != null && eachCon.OnekeyId__c != '') {
+                eachCon.recordTypeId = CONTACT_OPTHO_RT;
+                oneKeyAccIds.add(eachCon.AccountId);
+                lstOnekeyCon.add(eachCon);
+
+                // Set the country specific pre-defined owners for newly inserted iqvia records
+                if (eachCon.OwnerId == '005b0000000EOhtAAG') { // record downloaded using automated process
+                    for (Owner_Assignmet_Rules_IQVIA__mdt eachCountry : allMetadadata.values()) {
+                        if (eachCon.OnekeyId__c.startsWith(eachCountry.Country_Code__c) && !String.isEmpty(eachCountry.Default_Owner_Id__c)) {
+                            eachCon.OwnerId = eachCountry.Default_Owner_Id__c;
+                        }
+                    }   
+                }
+            }
+
+        }
+        Map<Id, Account> mapAccount;
+        if (!oneKeyAccIds.isEmpty()) {
+            mapAccount = new Map<Id,Account>([Select Id, shippingCity, shippingCountry, shippingpostalCode,shippingStreet, shippingState FROM Account Where Id IN: oneKeyAccIds]);
+        }
+        if (mapAccount != null && !mapAccount.isEmpty()) {
+            for (Contact eachCon : lstOnekeyCon) {
+                if (eachCon.AccountId != null && mapAccount.get(eachCon.AccountId) != null) {
+                    Account parentAcc = mapAccount.get(eachCon.AccountId);
+                    eachCon.MailingCity = parentAcc.ShippingCity;
+                    eachCon.MailingCountry = parentAcc.ShippingCountry;
+                    eachCon.MailingPostalCode = parentAcc.ShippingPostalCode;
+                    eachCon.MailingState = parentAcc.ShippingState;
+                    eachCon.MailingStreet = parentAcc.ShippingStreet;
+                }
+            }
+        }
+
+    }
+
     // set the default owner when created by integration user
     private static void setContactOwner(Set<Id> contactsId) {
         List<Contact> contacts = [SELECT Id, Name,Owner.Profile.Name,OwnerId,Account.OwnerId,recordTypeId FROM Contact Where Id =: contactsId];
@@ -388,11 +430,11 @@ public with sharing class ContactTriggerHelper {
             LogException.log(e);
         }
     }
-    
-    public static void UpdateSyncFlag(List<Contact> newContacts, String type,Map < Id, Contact > oldMap){
-        Set<String> allowedCountries = new Set<String>{'US','CA','PL','RO','BE','NO','DE','FR','NL'};
+	
+	public static void UpdateSyncFlag(List<Contact> newContacts, String type,Map < Id, Contact > oldMap){
+		Set<String> settings = Countries_With_MC_Sync_Activation__c.getAll().keySet();
         List<Contact> contactlist = new List<Contact>();
-        Set<String> allowedRecordTypes = new Set<String>{CONTACT_Opthalmologist_RT, CONTACT_Technician_RT, CONTACT_SUBSCRIPTION_RT, CONTACT_ENDCONSUMER_RT};
+        Set<String> allowedRecordTypes = new Set<String>{CONTACT_OPTHO_RT, CONTACT_Technician_RT, CONTACT_SUBSCRIPTION_RT, CONTACT_ENDCONSUMER_RT};
         Map<Id, String> accountCountries = new Map<Id, String>();
         List<Id> accountIds = new List<Id>();
         for (Contact con : newContacts) {
@@ -400,22 +442,19 @@ public with sharing class ContactTriggerHelper {
 				accountIds.add(con.AccountId);
         	}
     	}
-        List<Account> relatedAccounts = [SELECT Id, BillingCountry,Shop_Country__c FROM Account WHERE Id IN :accountIds];
-        for (Account acc : relatedAccounts) {
-			accountCountries.put(acc.Id, acc.Shop_Country__c);
-		}
+        Map<Id, Account> accountMap = new Map<Id, Account>([SELECT Id,Shop_Country__c FROM Account WHERE Id IN :accountIds]);
 		for(Contact newContact : newContacts) {
-        	if (!allowedRecordTypes.contains(newContact.RecordTypeId) && allowedCountries.contains(accountCountries.get(newContact.AccountId))) {//Email has to be changed
-            	if(type == 'BEFORE_INSERT' && newContact.Email != ''){
-                	newContact.sync_marketing_cloud__c = true;
-        		}else if(type == 'BEFORE_Update' && newContact.Email != '' && newContact.Email != null && newContact.Email != oldMap.get(newContact.Id).Email){
-                	newContact.sync_marketing_cloud__c = true;
-                }else if(newContact.Email == '' || newContact.Email == null){
-                    newContact.sync_marketing_cloud__c = false;
+            if((accountMap.get(newContact.AccountId)) != null){
+                if (!allowedRecordTypes.contains(newContact.RecordTypeId) && settings.contains((accountMap.get(newContact.AccountId)).Shop_Country__c)) {//Email has to be changed
+                    if(type == 'BEFORE_INSERT' && newContact.Email != ''){
+                        newContact.sync_marketing_cloud__c = true;
+                    }else if(type == 'BEFORE_Update' && String.isNotBlank(newContact.Email) && newContact.Email != oldMap.get(newContact.Id).Email){
+                        newContact.sync_marketing_cloud__c = true;
+                    }else if(String.isBlank(newContact.Email)){
+                        newContact.sync_marketing_cloud__c = false;
+                    }
                 }
-                contactlist.add(newContact);
            	}
         }
-        //if(contactlist.size()>0){update contactlist;}
     }
 }

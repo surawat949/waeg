@@ -1,36 +1,94 @@
 <template>
-    <div class="slds-grid slds-grid_vertical">
-        <div class="filterSection slds-col">
-            <lightning-button onclick={toggleChartsVisibility} class="right-end slds-m-left_xx-small" icon-name="utility:chart" icon-position="right"></lightning-button>
+    <template if:true={showSpinner}>
+        <div class="backdrop">
+            <lightning-spinner class="spinshow" size="medium" variant="brand" alternative-text="Loading">
+            </lightning-spinner>
         </div>
-        <div class="slds-col">
+    </template>
+    <div class="slds-grid slds-grid_vertical maxheight">
+        <div class="filterSection slds-col flex-container">
+            <!--div class="marquee-container marquee-text">Warning: Only accounts belonging to Tacticom are visible on this page. Must be attached to each Tacticom: All Clients and a maximum of 20 prospects per ASM.</div-->         
+            <div class="slds-grid slds-gutters heightsize">
+                <div class="slds-col slds-size_1-of-12">
+                    <button class="toggle-btn slds-button slds-button_outline-brand left-end" onclick={toggleSlide}>Filter</button>
+                </div>
+                <div class="slds-col slds-size_10-of-12">
+                    <div class={buttonContainerClass}>
+                        <div class="slds-grid slds-gutters">
+                            <template if:true={isCompanyFilterVisible}>
+                                <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label="Company" value={selectedCompanyValue} options={accountCompanyList} onchange={handleCommpanyChange}> </lightning-combobox>
+                            </template>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label="Sales Manager" value={selectedManagerValue} options={SalesManagerList} onchange={handleSalesManagerChange}> </lightning-combobox>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label="Representative" value={selectedOwnerValue} options={OwnerList} onchange={handleAOChange}> </lightning-combobox>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label="Channel" value={selectedChannelValue} options={ChannelList} onchange={handleChannelChange}> </lightning-combobox>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label="Segmentation" value={selectedSegmentationValue} options={SegmentationList} onchange={handleSegmentationChange}> </lightning-combobox>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label="Visit Zone (Tacticom)" value={selectedTacticomValue} options={TacticomList} onchange={handleTacticomChange}> </lightning-combobox>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-12">
+                    <template if:true={isCurrencyCodeSame}>
+                        <lightning-icon icon-name='custom:custom102' onclick={toggleChartsVisibility} class="right-end" alternative-text='Charts' size='medium' title='Charts' icon-position="right"></lightning-icon>
+                    </template>
+                    <template if:false={isCurrencyCodeSame}>
+                        <lightning-icon icon-name='custom:custom102' class="right-end-dash" alternative-text='Charts' size='medium' title='Records have multiple currencies. Please use Company filter to see graph based on country' icon-position="right"></lightning-icon>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <template if:true={isShowModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                   <header class="slds-modal__header boxLine">
+                      <button class="slds-button slds-button_icon slds-modal__close" title="Close" onclick={hideModalBox}>
+                         <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            size="small" ></lightning-icon>
+                         <span class="slds-assistive-text">Close</span>
+                      </button>
+                      <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Note</h2>
+                   </header>
+                   <div class="slds-modal__content slds-p-around_medium boxLine" id="modal-content-id-1">
+                         <p>Only accounts belonging to Tacticom are visible on this page. Must be attached to each Tacticom: All Clients and a maximum of 20 prospects per ASM.</p>
+                   </div>
+                   <footer class="slds-modal__footer boxLine">
+                      <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Okay</button>
+                   </footer>
+                </div>
+            </section>
+        </template>
+
+        <div class="slds-col fullcontainer">
             <div class={containerClass}>
                 <div class={firstComponentClass}>
                     <div class="card_Design">
                         <template for:each={pickVals} for:item="item">
                             <div class="slds-tabs--path borderLine"  role="application" key={item}  style = {equalwidthHorizontalAndVertical}>
-                                <ul class="slds-tabs--path__nav" role="tablist">
-                                <li class="slds-tabs--path__item slds-is-incomplete  slds-path__item slds-is-current bgcolor"  role="presentation">
-                                    <a class="slds-tabs--path__link slds-button_brand " tabindex="-1" role="tab" >
-                                        <span class="slds-tabs--path__title" >
-                                            <div class="stage-info">
-                                                <span class="stage-name">{item.stage} ({item.noOfRecords})</span>
-                                            </div>
-                                        </span>
-                                    </a>
-                                </li>
-                                </ul>
-                                <div class="stage-info spacing">
-                                    Lenses Net Sales Last 12Mo
-                                    <span class="record-count">{item.summation} {item.accountCurrency}</span>
+                                <div role="tablist">
+                                    <div class="stage-info stage-name slds-button_brand bgcolor slds-is-incomplete slds-is-current">
+                                        <span class="stage-name">{item.stage} ({item.noOfRecords})</span>
+                                    </div>
                                 </div>
-                                <c-life-cycle-Reporting-List records={records} stage={item.stage}></c-life-cycle-Reporting-List>
+                                <template if:true={isCurrencyCodeSame}>
+                                    <div class="stage-info spacing">
+                                        <span class ="smallHeading">Lenses Net Sales Last 12Mo</span>
+                                        <span class ="record-count slds-text-title_bold">{item.summation} {item.accountCurrency}</span>
+                                    </div>
+                                </template>
+                                <div class="listHidden">
+                                    <c-life-cycle-Reporting-List visitaddflag={visitflagMap} lensesnetsalesl12mo={lensesnetsalesl12mo} taskstats={taskstats} accountstats={accountStats} records={records} stage={item.stage}></c-life-cycle-Reporting-List>
+                                </div>
                             </div>
                         </template>
                     </div> 
                 </div>
                 <div class={secondComponentClass}>
-                    
+                    <template if:true={isCurrencyCodeSame}>
+                        <template if:true={isBarChartDataReceived}>
+                            <c-life-cycle-Reporting-Charts netsaleslast12mosum={netsaleslast12mosum} netsaleslfysum={netsaleslfysum} class={chartContainerClass}></c-life-cycle-Reporting-Charts>
+                        </template>
+                    </template>
                 </div>
             </div>
         </div>  

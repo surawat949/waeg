@@ -23,18 +23,20 @@
     <!--Section 1 End-->
    
    <!--Section 2 Start-->
-    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
-        <table class="slds-table slds-table_bordered" aria-label="eLearning" style="background-color: #215ca0;">
-            <tr class="row" style="background-color: #aacbff;">
-                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.e_learnings} ({eLearningCount})</p></h3></td>
-            </tr> 
-        </table><br>
-            <lightning-datatable data={elarningRecords} columns={elarningColumns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
-            <template if:true={displayElearningViewAllButton}>
-                <br><p align="center">
-                    <lightning-button label={label.label_viewall} onclick={navigateToELearningRelatedList}></lightning-button></p></br>
-            </template>     
-    </div>
+    <template if:true={showAllTab}>
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
+            <table class="slds-table slds-table_bordered" aria-label="eLearning" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.e_learnings} ({eLearningCount})</p></h3></td>
+                </tr> 
+            </table><br>
+                <lightning-datatable data={elarningRecords} columns={elarningColumns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+                <template if:true={displayElearningViewAllButton}>
+                    <br><p align="center">
+                        <lightning-button label={label.label_viewall} onclick={navigateToELearningRelatedList}></lightning-button></p></br>
+                </template>     
+        </div>
+    </template>
 
     <!--Section 2 End-->
     <!--Modal pop-up start here-->

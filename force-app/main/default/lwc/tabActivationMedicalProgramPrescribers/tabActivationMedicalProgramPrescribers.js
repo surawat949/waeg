@@ -15,11 +15,13 @@ import Total_Prescribing_Segmentation from '@salesforce/label/c.SFDC_V_2_Prescri
 import Miyosmart_Segmentation from '@salesforce/label/c.SFDC_V_2_Prescribers_Miyosmart_Segmentation';
 import Contact_Near_By from '@salesforce/label/c.SFDC_V_2_Prescribers_Contact_Near_By';
 import {refreshApex} from '@salesforce/apex';
+import getUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
 
 export default class TabActivationMedicalProgramPrescribers extends LightningElement {
     @api receivedId;
     wiredResults;
     data = [];
+    showAllTab=false;
     error;
     isLoading = false;
     isDataExists = false;
@@ -449,6 +451,15 @@ export default class TabActivationMedicalProgramPrescribers extends LightningEle
 
 
         });
+    }
+    @wire(getUserDetail)
+    allStages({data }) {
+        if (data) {
+            this.showAllTab = data;
+        } 
+        else{
+            this.showAllTab = false;
+        }
     }
 
 }

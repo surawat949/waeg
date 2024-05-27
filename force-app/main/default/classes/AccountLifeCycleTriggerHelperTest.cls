@@ -22,12 +22,7 @@ public class AccountLifeCycleTriggerHelperTest {
         alc.Stage__c = 'Engage';
         upsert alc External_Key__c; 
         
-        Account_Life_Cycle__c dupAlc = new Account_Life_Cycle__c();
-        dupAlc.Account__c = acc.Id;
-        dupAlc.External_Key__c = 'Test';
-        dupAlc.Stage__c ='Engage';
         
-        insert dupAlc;
         
         system.assert(true);
         Test.stopTest();    

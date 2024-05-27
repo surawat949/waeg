@@ -8,10 +8,11 @@ global class BatchCls_OpticianFinderEligibility implements Database.Batchable<SO
     }
 
     global Database.QueryLocator start(Database.BatchableContext context){ 
-        String brand = 'SEIKO';
-            String query = 'select Id, Turnover_Amount__c, Optician_Finder_Channel_Decision__c, Optician_Finder_Force_Activation__c, Optician_Finder__c, Optician_finder_optin__c from Account Where Brand__c =: brand';
-            System.debug('+++query' + query);
-            return Database.getQueryLocator(query);
+        list<String> listOfRecordType = new list<String>{'Chain','Chain_Seiko','Independents','Independent_Seiko','Buying_Group','Buying_Group_Seiko','HVNA_Prospect','HVNA_Rep_Journal','HVNA_Active_Customer','HOLK_Account_Page_Layout'};
+        String query = 'select Id, Turnover_Amount__c, Optician_Finder_Channel_Decision__c,Optician_Finder_Force_Activation__c, Optician_Finder__c, Optician_finder_optin__c'
+        + ' from Account Where RecordType.DeveloperName IN : listOfRecordType';
+        System.debug('+++query' + query);
+        return Database.getQueryLocator(query);
     } 
     
     global void execute(Database.BatchableContext context, List<Account> lstAccounts){   

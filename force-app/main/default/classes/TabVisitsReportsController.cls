@@ -18,7 +18,7 @@ public With Sharing class TabVisitsReportsController {
     //Method to get Last 3 Visits Completed
     @AuraEnabled(cacheable=true)
     public static List<Visits__c> getVisitCompleted(String accountId){
-        List<Visits__c> visits=[select Id,Name,Visit_Notes__c,Visit_completed_date__c, Call_To_Action_Notes__c, Visit_assigned_to__c,Start_Day__c,Start_Date_Time__c from Visits__c
+        List<Visits__c> visits=[select Id,Name,Visit_Reason__c,Visit_Notes__c,Visit_completed_date__c,Call_To_Action__c, Call_To_Action_Notes__c, Visit_assigned_to__c,Start_Day__c,Start_Date_Time__c from Visits__c
                                 where Account__c=:accountId AND Visit_Status__c ='Complete' Order By Visit_completed_date__c Desc nulls last limit 3];
         return visits;
     } 

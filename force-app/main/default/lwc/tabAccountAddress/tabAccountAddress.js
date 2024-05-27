@@ -66,6 +66,7 @@ import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
 import TabAccountAddressToCreateNewTaskModal from 'c/tabAccountAddressToCreateNewTaskModal';
 import TabAccountContactDeployment from 'c/tabAccountContactDeployment';
 import AI_Indicators from '@salesforce/resourceUrl/SFDC_V2_AI_Indicators';
+import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
 /**======================================================================== **/
 
 export default class TabAccountAddress extends NavigationMixin(LightningElement) {
@@ -73,6 +74,7 @@ export default class TabAccountAddress extends NavigationMixin(LightningElement)
     @track isLoading = false;
     @api receivedId;
     contactData;
+    showAllTab=false;
     contactCount;
     labelContactName = label_ContactName;
     labelContactRecType = label_ContRecType;
@@ -309,6 +311,15 @@ export default class TabAccountAddress extends NavigationMixin(LightningElement)
         });
         this.dispatchEvent(evt);
     }
+    @wire(getChatterUserDetail)
+        allStages({data }) {
+			if (data) {
+				this.showAllTab = data;
+			} 
+			else{
+				this.showAllTab = false;
+			}
+        }
 
     label = {label_Address, 
             label_Contact, label_SpecificEmail, 

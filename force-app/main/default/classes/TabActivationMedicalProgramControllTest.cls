@@ -15,7 +15,7 @@ public  class TabActivationMedicalProgramControllTest {
             Lenses_Net_Sales_Last_12Mo__c = 2,
             Brand_Visibility__c='HOYA',
             CHCUSTCLASSIFICATIONID__c='Ind',
-            Seiko_Network__c = 'Hoya Vision Center',
+            Seiko_Network__c = 'Hoya Center',
             Visionary_Alliance__c = 'Insider',
             ShippingPostalCode = '12345',
             ShippingLatitude=1.2,

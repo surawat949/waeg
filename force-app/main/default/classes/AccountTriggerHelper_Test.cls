@@ -46,7 +46,43 @@ public with sharing class AccountTriggerHelper_Test {
         IQVIA.Name = 'NO NAME';
         IQVIA.QIDC__OneKeyId_IMS__c = 'WDS12345';
         insert IQVIA;
-
+    }
+    @isTest
+    Static void testAlC() {
+        Test.StartTest();
+        String ACCOUNT_Chain_RT = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('Chain').getRecordTypeId();
+        Account AlcAccount = new Account();
+        AlcAccount.Hoya_Account_ID__c = 'SO1234514';
+        AlcAccount.CurrencyIsoCode = 'EUR';
+        AlcAccount.Name = 'SEIKO1 Test';
+        AlcAccount.CHCUSTCLASSIFICATIONID__c = 'Ind';
+        AlcAccount.RecordTypeId = ACCOUNT_Chain_RT;
+        AlcAccount.TACTICOM_SOF__c = 'Sub-area 1';
+        insert AlcAccount;
+        
+        Account AlcAccount1 = new Account();
+        AlcAccount1.Hoya_Account_ID__c = 'SO1234515';
+        AlcAccount1.CurrencyIsoCode = 'EUR';
+        AlcAccount1.Name = 'SEIKO1 Test';
+        AlcAccount1.CHCUSTCLASSIFICATIONID__c = 'Dis';
+        AlcAccount1.RecordTypeId = ACCOUNT_Chain_RT;
+        AlcAccount1.TACTICOM_SOF__c = 'Sub-area 1';
+        insert AlcAccount1;
+        
+        AlcAccount1.CHCUSTCLASSIFICATIONID__c = 'Ind';
+        update AlcAccount1;
+        
+        Visits__c visit1 = new Visits__c();
+        visit1.Account__c = AlcAccount1.Id;
+        visit1.Visit_Type__c = 'Visit';
+        visit1.Visit_Status__c = 'Complete';
+        visit1.Visit_Reason__c = 'Retain';
+        visit1.Start_Time__c = date.today()-1;
+        visit1.End_Time__c = visit1.Start_Time__c.addMinutes(60);
+        visit1.Assigned_to__c = UserInfo.getUserId();
+        insert visit1;
+        System.assert(true);
+        Test.StopTest();
     }
     @isTest
     Static void testLastSalesUpdate() {

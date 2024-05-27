@@ -105,7 +105,8 @@
         let countryName = component.find("Country").get("v.value");
         let configObject = component.get("v.configObject");
         let recordTypeId = ((countryName === "South Africa") && (subject === "Quality Returns")) ? configObject.recordTypeLenseReturnsId : configObject.recordTypeRegularId;
-        if(defaultFieldValues.Status === "Closed" || defaultFieldValues.Status === "Waiting on Customer"){
+        
+        //if(defaultFieldValues.Status === "Closed" || defaultFieldValues.Status === "Waiting on Customer"){
             defaultFieldValues.sobjectType = "Case";
             defaultFieldValues.RecordTypeId = recordTypeId;
             component.set("v.isLoading",true);
@@ -147,7 +148,26 @@
                 }
             });
             $A.enqueueAction(action);  
-        }else{
+            var workspaceAPI = component.find("workspace");
+            workspaceAPI.isConsoleNavigation().then(function(isConsoleTab) {
+                if(isConsoleTab){
+                    workspaceAPI.getFocusedTabInfo().then(function(response) {
+                        var focusedTabId = response.tabId;
+                        workspaceAPI.closeTab({tabId: focusedTabId});
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+                }
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+            helper.blankUtility(component,event,helper);
+            window.location.href = "/lightning/page/home";
+            window.history.back();
+            component.set("v.isLoading",false);
+        /*}else{
             var navService = component.find("navService");
             var pageRef = {
                 type: "standard__objectPage",
@@ -164,7 +184,7 @@
             helper.blankUtility(component,event,helper);
             event.preventDefault();
             navService.navigate(pageRef);
-        }
+        }*/
     },
     blankUtility : function(component,event,helper){
         component.find("accountLookupValue").set("v.selectRecordName","");

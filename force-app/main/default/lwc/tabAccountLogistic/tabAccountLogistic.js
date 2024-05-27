@@ -13,6 +13,7 @@ import getShippingAddress from '@salesforce/apex/TabAccountLogisticController.ge
 //end
 
 import shippingComment from '@salesforce/schema/Account.Shipping_Special_Comment__c';
+import defaultWarehouse from '@salesforce/schema/Account.Default_Warehouse__c';
 import ACC_SHIPPING_ACC from '@salesforce/schema/Account.Shipping_Account__c';
 import ACC_SHIPPING_ACC_NAME from '@salesforce/schema/Account.Shipping_Account_Name__c';
 import ACC_SHIPPING_PHONE from '@salesforce/schema/Account.Shipping_Phone_Number__c';
@@ -35,7 +36,7 @@ export default class TabAccountLogistic extends LightningElement {
     AccObj = AccountObj;
     specificCommentField = [shippingComment];
     ACC_SHIPPINGS = [ACC_SHIPPING_ACC, ACC_SHIPPING_ACC_NAME, ACC_SHIPPING_PHONE, ACC_SHIPPING_EMAIL];
-    ACC_COURIER = [ACC_LOCAL_COURIER, ACC_BOX];
+    ACC_COURIER = [ACC_LOCAL_COURIER, ACC_BOX,defaultWarehouse];
 
     constructor() {
         super();

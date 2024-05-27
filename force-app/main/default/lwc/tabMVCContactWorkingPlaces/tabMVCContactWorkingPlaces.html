@@ -77,6 +77,21 @@
         </template>
         <template lwc:if={isDataExists}>
             <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_medium slds-m-top_medium">
+                <div class="slds-col slds-size_1-of-2">&nbsp;</div>
+                <div class="slds-col slds-size_1-of-2">
+                    <template if:true={IsdisplayList}>
+                        <p align="right">
+                            <lightning-button label="Display List" onclick={handleListViewShow} variant="brand"></lightning-button>
+                        </p>
+                    </template>
+                    <template if:false={IsdisplayList}>
+                        <p align="right">
+                            <lightning-button label="Hide List" onclick={handleListViewHide} variant="brand"></lightning-button>
+                        </p>
+                    </template>
+                </div>
+            </div>
+            <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_medium slds-m-top_medium">
                 <div class="slds-col slds-size_1-of-1">
                     <lightning-map
                         map-markers={mapMakers}
@@ -85,17 +100,6 @@
                         center={vCenter}
                         list-view={displayListView}
                     ></lightning-map>
-                </div>
-            </div>
-            <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_medium">
-                <div class="slds-col slds-size_6-of-7"></div>
-                <div class="slds-col slds-size_1-of-7">
-                    <template if:true={IsdisplayList}>
-                        <lightning-button label="Display List" onclick={handleListViewShow} variant="brand"></lightning-button>
-                    </template>
-                    <template if:false={IsdisplayList}>
-                        <lightning-button label="Hide List" onclick={handleListViewHide} variant="brand"></lightning-button>
-                    </template>
                 </div>
             </div>
         </template>

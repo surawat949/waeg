@@ -62,12 +62,14 @@ import lblErrorAssignTo from '@salesforce/label/c.SFDC_V_2_AccountMembership_Ass
 import lblErrorSubject from '@salesforce/label/c.SFDC_V_2_AccountMembership_SubjectErrBody';
 import lblAccount from '@salesforce/label/c.tabTaskModalAccContact';
 import lblAccountError from '@salesforce/label/c.SFDC_V_2_AccountMembership_RelateErrBody';
+import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
 
 import { RefreshEvent } from 'lightning/refresh';
 
 export default class TabStatisticsPotential extends LightningElement {
     @api receivedId;    
-	@api isGermanAccount; 						
+	@api isGermanAccount; 
+    showAllTab=false;						
 	
     lastSalesId;
     FirstCompLocalName;
@@ -429,4 +431,13 @@ export default class TabStatisticsPotential extends LightningElement {
         this.whomid = undefined;
         this.whatid = undefined;
     }
+    @wire(getChatterUserDetail)
+        allStages({data }) {
+			if (data) {
+				this.showAllTab = data;
+			} 
+			else{
+				this.showAllTab = false;
+			}
+        }
 }

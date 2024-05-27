@@ -223,30 +223,32 @@ public class TabVisitsIndicatorControllerTest {
     
      @IsTest
     static void testmultipleClass1(){
-        Test.StartTest();
-         Account acc4 = [SELECT Id, Hoya_Account_ID__c,Strategic_Value_Net_Sales__c, Name,Strategic_Value_Gross_Sales__c, Shop_Name__c, CurrencyIsoCode, OwnerId, 
-                        ShippingStreet, ShippingCity, ShippingState, ShippingPostalCode, ShippingCountry,
-                        Shop_email_address__c, Surveys_Email__c, Email__c,
-                        Confidential_Email_Address__c FROM Account
-                        WHERE Hoya_Account_ID__c = 'test1' LIMIT 1];
+        Test.StartTest();       
         Account acc3 = [SELECT Id, Hoya_Account_ID__c,Strategic_Value_Net_Sales__c,Strategic_Value_Gross_Sales__c, Name, Shop_Name__c, CurrencyIsoCode, OwnerId, 
                         ShippingStreet, ShippingCity, ShippingState, ShippingPostalCode, ShippingCountry,
                         Shop_email_address__c, Surveys_Email__c, Email__c,
                         Confidential_Email_Address__c FROM Account
                         WHERE Hoya_Account_ID__c = 'SO4900tcy' LIMIT 1];
-        date dt1= system.today();
         Visits__c visitObj=[SELECT ID,Start_Time__c from Visits__c where Start_Time__c<:system.today() and Visit_Status__c ='Complete' limit 1];
         Account acc1 = [SELECT Id,Account_Status__c FROM Account Where Name = 'Test AccTESR'];
-
-         List<Last_Sales_Statistics__c> statsList2 = [Select Id, Lenses_Net_Sales_Last_12Mo__c, Lenses_Gross_Sales_Last_12Mo__c,
-                                                    Lenses_Net_Sales_LFY__c,Lenses_Gross_Sales_LFY__c
-                                                    From Last_Sales_Statistics__c Where  Account__c = :acc4.Id];
-
         TabVisitsIndicatorController.getAIIndicators(acc1.Id);
         TabVisitsIndicatorController.getAIIndicators(acc3.Id);
+        TabVisitsIndicatorController.tecticomIndicators(acc3.id,'A','Test','English');       
+        Test.StopTest();
+    }
+    @IsTest
+    static void testmultipleClass1_2(){
+        Test.StartTest();
+        Account acc4 = [SELECT Id, Hoya_Account_ID__c,Strategic_Value_Net_Sales__c, Name,Strategic_Value_Gross_Sales__c, Shop_Name__c, CurrencyIsoCode, OwnerId, 
+                        ShippingStreet, ShippingCity, ShippingState, ShippingPostalCode, ShippingCountry,
+                        Shop_email_address__c, Surveys_Email__c, Email__c,
+                        Confidential_Email_Address__c FROM Account
+                        WHERE Hoya_Account_ID__c = 'test1' LIMIT 1];
+        List<Last_Sales_Statistics__c> statsList2 = [Select Id, Lenses_Net_Sales_Last_12Mo__c, Lenses_Gross_Sales_Last_12Mo__c,
+                                                    Lenses_Net_Sales_LFY__c,Lenses_Gross_Sales_LFY__c
+                                                    From Last_Sales_Statistics__c Where  Account__c = :acc4.Id];
+        Visits__c visitObj=[SELECT ID,Start_Time__c from Visits__c where Start_Time__c<:system.today() and Visit_Status__c ='Complete' limit 1];
         TabVisitsIndicatorController.getAIIndicators(acc4.Id);
-        TabVisitsIndicatorController.tecticomIndicators(acc3.id,'A','Test','English');
-
         acc4.Strategic_Value_Net_Sales__c=1;
         update acc4;
         statsList2[0].Lenses_Net_Sales_LFY__c=2;
@@ -257,7 +259,7 @@ public class TabVisitsIndicatorControllerTest {
 		visitObj.End_Time__c = null;
         visitObj.Visit_Status__c = 'Complete';
         update visitObj;
-        TabVisitsIndicatorController.tecticomIndicators(acc4.id,'A','Test','English');
+         TabVisitsIndicatorController.tecticomIndicators(acc4.id,'A','Test','English');
         visitObj.Account__c = acc4.id;
         visitObj.Start_Time__c = system.today()+3;
         visitObj.End_Time__c = system.today()+5;
@@ -266,7 +268,6 @@ public class TabVisitsIndicatorControllerTest {
         TabVisitsIndicatorController.tecticomIndicators(acc4.id,'A','Test','English');
         Test.StopTest();
     }
-    
     @IsTest
     static void testmultipleClass5(){
         Test.StartTest();
@@ -288,37 +289,35 @@ public class TabVisitsIndicatorControllerTest {
     @IsTest
     static void testmultipleClass2(){
         Test.StartTest();
+        Account acc1 = [SELECT Id,Account_Status__c FROM Account Where Name = 'Test AccTESR'];
+        Visits__c visitObj=[SELECT ID,Start_Time__c,Visitfreqchk_c__c from Visits__c where Visit_Status__c ='Complete' limit 1];
+        Account_Campaing_Member__c accountCam = [SELECT ID,campaign_active__c,Campaign_Presented__c,Campaign_End_Date_t__c From
+                                                 Account_Campaing_Member__c
+                                                 WHERE campaign_active__c = false and Campaign_Presented__c=false];
+        TabVisitsIndicatorController.tecticomIndicators(acc1.id,'A','Test','English');
+        acc1.TACTICOM_SOF__c ='Sub-area 1';
+        update acc1;
+        TabVisitsIndicatorController.getAIIndicators(acc1.Id);        
+        visitObj.Visitfreqchk_c__c = '2';
+        update visitObj;
+        Test.StopTest();
+    } 
+    @IsTest
+    static void testmultipleClass2_2(){
+        Test.StartTest();
         Account acc = [SELECT Id, Hoya_Account_ID__c, Name, Shop_Name__c, CurrencyIsoCode, OwnerId,
                         ShippingStreet, ShippingCity, ShippingState, ShippingPostalCode, ShippingCountry,
                         Shop_email_address__c, Surveys_Email__c, Email__c,
                         Confidential_Email_Address__c FROM Account
                           LIMIT 1];
-        Account acc1 = [SELECT Id,Account_Status__c FROM Account Where Name = 'Test AccTESR'];
-        
-        Visits__c visitObj=[SELECT ID,Start_Time__c,Visitfreqchk_c__c from Visits__c where Visit_Status__c ='Complete' limit 1];
-
+        acc.Agreed_Visits__c = 1;
+        acc.Agreed_No_of_Digital_Visits__c=1;
+        update acc;
+        TabVisitsIndicatorController.getAIIndicators(acc.Id);
+        TabVisitsIndicatorController.tecticomIndicators(acc.id,'A','Test','English');
         List<Last_Sales_Statistics__c> statsList = [Select Id, Lenses_Net_Sales_Last_12Mo__c, Lenses_Gross_Sales_Last_12Mo__c,
                                                     Lenses_Net_Sales_LFY__c,Lenses_Gross_Sales_LFY__c
                                                     From Last_Sales_Statistics__c Where  Account__c = :acc.Id AND Lenses_Net_Sales_Last_12Mo__c<0];
-        Account_Campaing_Member__c accountCam = [SELECT ID,campaign_active__c,Campaign_Presented__c,Campaign_End_Date_t__c From
-                                                 Account_Campaing_Member__c
-                                                 WHERE campaign_active__c = false and Campaign_Presented__c=false]; 
-		
-        
-        TabVisitsIndicatorController.getAIIndicators(acc.Id);
-        
-        TabVisitsIndicatorController.tecticomIndicators(acc.id,'A','Test','English');
-        
-        TabVisitsIndicatorController.tecticomIndicators(acc1.id,'A','Test','English');
-        
-        acc1.TACTICOM_SOF__c ='Sub-area 1';
-        update acc1;
-        TabVisitsIndicatorController.getAIIndicators(acc1.Id);
-        acc.Agreed_Visits__c = 1;
-        acc.Agreed_No_of_Digital_Visits__c=1;
-        visitObj.Visitfreqchk_c__c = '2';
-        update acc;
-        update visitObj;
         TabVisitsIndicatorController.getAIIndicators(acc.id);
         acc.Strategic_Value_Gross_Sales__c=1;
         update acc;
@@ -330,10 +329,8 @@ public class TabVisitsIndicatorControllerTest {
         statsList[0].Lenses_Net_Sales_LFY__c=2;
         update statsList[0];
         TabVisitsIndicatorController.getAIIndicators(acc.id);
-        
-       Test.StopTest();
-    } 
-    
+        Test.StopTest();
+    }
      @IsTest
     static void testmultipleClass4(){
         Test.StartTest();

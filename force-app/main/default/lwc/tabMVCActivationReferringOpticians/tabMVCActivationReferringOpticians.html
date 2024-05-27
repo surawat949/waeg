@@ -9,7 +9,9 @@
                 <td><h3 class="slds-section__title  test-id__section-header-container"><p align="left"><lightning-icon icon-name="custom:custom86" alternative-text="doctore" size="small"></lightning-icon> &nbsp;{custLabel.ReferringOpticians}</p></h3></td>
                 <td>
                     <p align="right">
-                        <lightning-button label={custLabel.Add} variant="brand-outline" onclick={showPopUp}></lightning-button>&NonBreakingSpace;&NonBreakingSpace;
+                        <template if:true={showAllTab}>
+                            <lightning-button label={custLabel.Add} variant="brand-outline" onclick={showPopUp}></lightning-button>&NonBreakingSpace;&NonBreakingSpace;
+                        </template>
                         <lightning-button label={custLabel.pdfList} onclick={openModal} variant="brand-outline"></lightning-button>
                     </p>
                 </td>
@@ -17,8 +19,15 @@
         </table><br>
         <c-tab-contact-create-reffering-optician-modal received-id={receivedId} onsavesuccess={performRefresh}></c-tab-contact-create-reffering-optician-modal>
         <template lwc:if ={isDataExists}>
+            <template lwc:if={showAllTab}>
             <template if:true={data}>
                 <lightning-datatable data={data} columns={Columns} key-field="id" hide-checkbox-column="true" onrowaction={handleRowAction}> </lightning-datatable>           
+            </template>
+            </template>
+            <template lwc:else>
+                <template if:true={data}>
+                    <lightning-datatable data={data} columns={ColumnsChatter} key-field="id" hide-checkbox-column="true" onrowaction={handleRowAction}> </lightning-datatable>           
+                </template>   
             </template>
         </template>
         <template lwc:else>

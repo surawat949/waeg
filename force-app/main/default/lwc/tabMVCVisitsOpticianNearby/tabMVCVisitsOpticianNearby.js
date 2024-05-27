@@ -28,7 +28,7 @@ export default class TabMVCVisitsOpticianNearby extends LightningElement {
     @track mapMarker = [];
     @track vCenter;
     @track markersTitle = 'Optician Nearby';
-    @track zoomLevel = 8;
+    @track zoomLevel = 13;
     @track isDisplayList = true;        //true means display list view on map = hidden
     @track error;
 
@@ -197,6 +197,24 @@ export default class TabMVCVisitsOpticianNearby extends LightningElement {
 
         if(event.target.name === 'distance'){
             this.distanceValue = event.target.value;
+
+            if(this.distanceValue == 1){
+                this.zoomLevel = 15;
+            }else if(this.distanceValue == 2){
+                this.zoomLevel = 14;
+
+            }else if(this.distanceValue == 5){
+                this.zoomLevel = 13;
+
+            }else if(this.distanceValue == 10){
+                this.zoomLevel = 11.8;
+            }else if(this.distanceValue == 25){
+                this.zoomLevel = 10;
+            }else if(this.distanceValue == 50){
+                this.zoomLevel = 9
+            }else{
+                this.zoomLevel = 13;
+            }
             this.handleKeyChangeMap();
         }
 

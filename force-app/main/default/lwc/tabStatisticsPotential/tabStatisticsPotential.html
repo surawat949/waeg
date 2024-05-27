@@ -11,7 +11,9 @@
                 <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.CompetitorLensSuppliers}</h3></td>
                 <td><p align="right">
                         <lightning-button variant="brand-outline" label="Change Competitors" onclick={openModal}></lightning-button>&nbsp;
-                        <lightning-button variant="brand-outline" label="Request New Competitor" onclick={newTaskOpenModal}></lightning-button>
+                        <template if:true={showAllTab}>
+                            <lightning-button variant="brand-outline" label="Request New Competitor" onclick={newTaskOpenModal}></lightning-button>
+                        </template>
                     </p>
                 </td>
             </tr>            
@@ -34,38 +36,34 @@
                 </template>
             </div>
             <div class="slds-col slds-size_1-of-3">
-                <template lwc:if={isRender}>
-                    <lightning-layout>
-                        <lightning-layout-item flexibility="auto" padding="around-small">
-                            <lightning-record-form
-                                record-id={lastSalesId}
-                                object-api-name={LastSalesObjectName}
-                                fields={FirstCompetitorSOWField}
-                                mode="readonly"
-                                columns="2"                 
-                            >
-                            </lightning-record-form>
-                        </lightning-layout-item>
-                    </lightning-layout>
-                </template>
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={lastSalesId}
+                            object-api-name={LastSalesObjectName}
+                            fields={FirstCompetitorSOWField}
+                            mode="readonly"
+                            columns="2"                 
+                        ></lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout>
+                
             </div>
         </div>
         <div class="slds-grid">
             <div class="slds-col slds-size_2-of-3">
-                <template lwc:if={isRender}>
-                    <lightning-layout>
-                        <lightning-layout-item flexibility="auto" padding="around-small">
-                            <lightning-record-form
-                                record-id={receivedId}
-                                object-api-name={objectApiName}
-                                fields={FirstCompetitorWeakness}
-                                mode="view"
-                                columns="2"
-                                onsubmit={handleSubmit}
-                            ></lightning-record-form>
-                        </lightning-layout-item>
-                    </lightning-layout>
-                </template>
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={objectApiName}
+                            fields={FirstCompetitorWeakness}
+                            mode="view"
+                            columns="2"
+                            onsubmit={handleSubmit}
+                        ></lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout>
             </div>
         </div>
         <div class="slds-grid">
@@ -104,20 +102,18 @@
         </div>
         <div class="slds-grid">
             <div class="slds-col slds-size_2-of-3">
-                <template lwc:if={isRender}>
-                    <lightning-layout>
-                        <lightning-layout-item flexibility="auto" padding="around-small">
-                            <lightning-record-form
-                                record-id={receivedId}
-                                object-api-name={objectApiName}
-                                fields={SecondCompetitorWeakness}
-                                mode="view"
-                                columns="2"
-                                onsubmit={handleSubmit}
-                            ></lightning-record-form>
-                        </lightning-layout-item>
-                    </lightning-layout>
-                </template>
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={objectApiName}
+                            fields={SecondCompetitorWeakness}
+                            mode="view"
+                            columns="2"
+                            onsubmit={handleSubmit}
+                        ></lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout>
             </div>
         </div>
     </div>   

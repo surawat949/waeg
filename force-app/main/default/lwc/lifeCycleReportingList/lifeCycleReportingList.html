@@ -1,8 +1,8 @@
 <template>
-    <ul class="slds-has-dividers_around-space dropZone" style="height:70vh; overflow-y:auto;">
+    <ul>
         <template for:each={records} for:item="recordItem">
-            <c-life-cycle-reporting-card stage={stage} record={recordItem} 
-            key={recordItem.Id}>
+            <c-life-cycle-reporting-card stage={stage} record={recordItem} accountstats={accountstats} taskstats={taskstats}
+            lensesnetsalesl12mo={lensesnetsalesl12mo} key={recordItem.Id} addnewiconflag={visitaddflag}> 
             </c-life-cycle-reporting-card> 
        </template>
    </ul> 

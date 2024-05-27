@@ -37,7 +37,8 @@ import Contact_obj from '@salesforce/schema/Contact';
 import getLastTrainingDate from '@salesforce/apex/TabMVCActivationController.getLastTrainingDate';
 import getOrderMiyoRelatedList from '@salesforce/apex/TabMVCActivationController.getOrdersMiyoSmartRelatedList';
 import getRefOptsList from '@salesforce/apex/TabMVCActivationController.getRefferingOptsLst';
-
+import { subscribe, MessageContext } from 'lightning/messageService';
+import UPDATE_DATA_CHANNEL from '@salesforce/messageChannel/refreshContact__c';
 export default class TabMVCActivationMiyosmart extends NavigationMixin(LightningElement){ 
     @api receivedId;
     isLoading = true;
@@ -46,8 +47,10 @@ export default class TabMVCActivationMiyosmart extends NavigationMixin(Lightning
     columns;
     RefOptsColumns;
     data;
+    subscription =null;
     isRefOptDataExist =false;
     isDataExist = false;
+    messageData;
     orderMiyoSmartRelatedList;
     recCount = 0;
     PotentialFields = [MyopicChildPatients,MyopiaPrescriptions,MiyosmartPrescriptions,MyopiaTreatment,MyopiaFirstCompetitor,MiyoSOWVsMyopiaPrescriptions];
@@ -67,6 +70,20 @@ export default class TabMVCActivationMiyosmart extends NavigationMixin(Lightning
     createNewOrderMiyoSmart(event){
         this.navigateToNewPage('Order_MiyoSmart__c');
     }
+    @wire(MessageContext)
+    messageContext;
+    SubscribeToMessageChannel(){
+        this.subscription = subscribe(
+            this.messageContext,UPDATE_DATA_CHANNEL,
+            (message) => this.handleMessage(message)
+        );
+       }
+    
+       handleMessage(message){
+        alert("message.recordId "+JSON.stringify(message));
+        this.messageData = message.data;
+       
+        }
     navigateToNewPage(objectName){
         const defaultValues = encodeDefaultFieldValues({
             Contact__c : this.receivedId
@@ -100,11 +117,13 @@ export default class TabMVCActivationMiyosmart extends NavigationMixin(Lightning
         {label: MiyoQtyLast12Mo, fieldName: 'MiyoQtyL12Mo', type: 'numeric'},
         {label: MiyoQtyLastMo, fieldName: 'MiyoQtylastMo', type: 'numeric'}
     ];
-    @wire(getRefOptsList, {contactId: '$receivedId',isMiyoSmart : true})
-    RefOpts(result){       
-        if(result.data){
+    getTableData() {
+        console.log('>>>data');
+        this.isDataExists = false;
+        getRefOptsList({contactId: this.receivedId,isMiyoSmart : false}).then((result) => {  
+        if(result){
             this.isLoading = false;
-            this.data = JSON.parse(JSON.stringify(result.data));
+            this.data = JSON.parse(JSON.stringify(result));
             if( this.data.length > 0)
                 this.isRefOptDataExist = true;
             this.data.forEach(res=>{
@@ -118,12 +137,16 @@ export default class TabMVCActivationMiyosmart extends NavigationMixin(Lightning
                 res.MiyoQtylastMo = res.miyoLastMoQty;
             });
             this.error = undefined;
-        }else if(result.error){
-            this.error = result.error;
+        } 		
+        }).catch((error) => {
+            this.error = error;
             this.data = undefined;
-        }
+        });
     }
     connectedCallback() {
+        console.log('>>>tester');
+	    this.getTableData();
+        this.SubscribeToMessageChannel();
         getLastTrainingDate({contactId : this.receivedId})
         .then(response => {
             response = JSON.parse(JSON.stringify(response)); 

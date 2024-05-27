@@ -30,4 +30,47 @@ public with sharing class Utility_Test {
         Map<String, Community_Setting__mdt> map2 = Utility.getCommunitiesSettings();
         Test.stopTest();
     }
+    
+    public static testMethod void testStatisticsConsolidation(){
+        User u = new User();
+        u.Firstname = 'test';
+        u.Lastname = 'testtest';
+        u.Username = 'testtest@hoya.com.test';
+        u.Email = 'testtest@hoya.com.invalid';
+        u.CompanyName = 'HVC';
+        u.ProfileId = '00eb0000000lainAAA';
+        u.CurrencyIsoCode = 'USD';
+        u.Alias = 'STest';
+        u.TimeZoneSidKey = 'Asia/Bangkok';
+        u.LocaleSidKey = 'en_US';
+        u.EmailEncodingKey = 'UTF-8';
+        u.LanguageLocaleKey = 'en_US';
+        insert u;
+        
+        Account acc1 = new Account();
+        acc1.Name='sales test Germany account';
+        acc1.hoya_account_id__c='SO4900999xx';
+        acc1.Local_Consolidation_Key__c='123';
+        acc1.OwnerId = u.Id;
+        insert acc1;
+        
+        Account acc2 = new Account();
+        acc2.Name='sales test account1';
+        acc2.hoya_account_id__c='SO3299999xx';
+        acc2.Local_Consolidation_Key__c='123';    
+        acc2.OwnerId = u.Id;
+        insert acc2;
+        
+        Last_Sales_Statistics__c sales = new Last_Sales_Statistics__c();
+        sales.Account__c =acc1.Id;
+        sales.Lenses_Net_Sales_CFY__c =100;
+        insert sales;
+        
+        Test.startTest();
+        System.assert(true);
+        Utility.getConsolidatedAccountsList(acc1.Local_Consolidation_Key__c,'HVC','Net');
+        Utility.getConsolidatedAccountsList(acc1.Local_Consolidation_Key__c,'HVC','Gross');
+        Utility.getConsolidatedAccountsList(acc1.Local_Consolidation_Key__c,'HVC','Net');
+        Test.stopTest();
+    }
 }

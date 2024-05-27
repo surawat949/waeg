@@ -68,12 +68,14 @@
         <div if:true={isLoading}>
             <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
         </div>
-        <template lwc:if ={isRefOptDataExist}>
-            <template if:true={data}>
-            <lightning-datatable data={data}
-                columns={RefOptsColumns}
-                key-field="id" hide-checkbox-column="true">
-            </lightning-datatable>            <br>
+        <template lwc:if ={isDataExists}>
+            <template lwc:if ={isRefOptDataExist}>
+                <template if:true={data}>
+                    <lightning-datatable data={data}
+                        columns={RefOptsColumns}
+                        key-field="id" hide-checkbox-column="true">
+                    </lightning-datatable>            <br>
+                </template>
             </template>
         </template>
         <template lwc:else>

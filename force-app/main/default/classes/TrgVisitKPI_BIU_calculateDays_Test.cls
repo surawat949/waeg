@@ -67,17 +67,32 @@ private class TrgVisitKPI_BIU_calculateDays_Test {
 
     @isTest
     static void UnitTest1(){
+        Map<Id,VISIT_KPI__c> mapOfUserIdKpiRecords=new Map<Id,VISIT_KPI__c>();
         User u = [select Id, Username from User where username='data@hoya.com.invalid' limit 1];
         Account acc = [SELECT Id, Name, Hoya_Account_ID__c FROM Account WHERE Hoya_Account_ID__c='TE-001' limit 1];
         Visits__c visit = [SELECT Id, Account__c from Visits__c WHERE Account__c =:acc.Id];
         Time_off_Territory__c timesOff = [SELECT Id FROM Time_off_Territory__c WHERE Name ='Test time-off' limit 1];
-
+        
         VISIT_KPI__c visitKPI = new VISIT_KPI__c();
         visitKPI.Area_Sales_Manager__c = u.Id;
         visitKPI.Date__c = System.today();
 
         Test.StartTest();
         insert visitKPI;
+        
+        visitKPI.Date__c = System.today().addMonths(-3);
+        update visitKPI;
+        
+        visitKPI.Date__c = System.today().addMonths(-6);
+        update visitKPI;
+        
+        visitKPI.Date__c = System.today().addMonths(-12);
+        update visitKPI;
+      
+        VISIT_KPI__c vi = [SELECT Id,Area_Sales_Manager__c,Digital_Visits_completed__c,Visits_completed__c,Individual_Digital_Days_in_Field__c,Individual_Days_in_Field__c,Sum_of_Visits_Days_in_Field__c FROM VISIT_KPI__c WHERE Area_Sales_Manager__c=:u.Id LIMIT 1];
+        mapOfUserIdKpiRecords.put(vi.Area_Sales_Manager__c,vi);
+        VisitKPILastMonthCalculation.calculateAndStoreKPI(mapOfUserIdKpiRecords,true,false,null);
+
         Test.StopTest();
     }
 }

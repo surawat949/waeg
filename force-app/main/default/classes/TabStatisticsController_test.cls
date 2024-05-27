@@ -1,11 +1,15 @@
 @isTest
 public class TabStatisticsController_test {
+
     @IsTest
-    static void runTestCtrl(){  
+    static void runTestCtrl(){
+
+        String AccountRecordType = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('Independents').getRecordTypeId();
+
         Account acc = new Account();
         acc.Name='sales test account';
         acc.hoya_account_id__c='SO3399999xx';
-        acc.RecordTypeId='012b00000000P38';
+        acc.RecordTypeId = AccountRecordType;
         acc.Local_Consolidation_Key__c='123';
         
         insert acc;
@@ -13,21 +17,21 @@ public class TabStatisticsController_test {
         Account acc1 = new Account();
         acc1.Name='sales test Germany account';
         acc1.hoya_account_id__c='SO4900999xx';
-        acc1.RecordTypeId='012b00000000P38';
+        acc1.RecordTypeId = AccountRecordType;
         acc1.Local_Consolidation_Key__c='123';        
         insert acc1;
         
         Account acc2 = new Account();
         acc2.Name='sales test account1';
         acc2.hoya_account_id__c='SO3299999xx';
-        acc2.RecordTypeId='012b00000000P38';
+        acc2.RecordTypeId = AccountRecordType;
         acc2.Local_Consolidation_Key__c='1234';        
         insert acc2;
         
         Account Childacc = new Account();
         Childacc.Name='sales test child account';
         Childacc.hoya_account_id__c='SO3399998xx';
-        Childacc.RecordTypeId='012b00000000P38';
+        Childacc.RecordTypeId= AccountRecordType;
 		Childacc.parentId=acc.Id;            
         insert Childacc; 
         
@@ -269,6 +273,18 @@ public class TabStatisticsController_test {
         Last_Sales_Statistics__c lastSales1 = new Last_Sales_Statistics__c();
         lastSales1.Account__c = acc.Id;
         insert lastSales1;
+
+        String UserId = UserInfo.getUserId();
+        Date DateDue = System.today();
+
+        TabStatisticsController.LensSales sales = new TabStatisticsController.LensSales();
+        sales.lensGrossSales = 10;
+        sales.lensNetSales = 10;
+        sales.lensQty = 2;
+
+        Map<Integer, TabStatisticsController.LensSales> newLensSalesMap = new Map<Integer, TabStatisticsController.LensSales>();
+        newLensSalesMap.put(10, sales);
+
         
         Test.startTest();
         System.assert(true);   
@@ -281,17 +297,42 @@ public class TabStatisticsController_test {
         TabStatisticsController.getAverageSalesList(acc.Id);
         TabStatisticsController.getLensReturns(acc.Id);
         TabStatisticsController.getLastSalesStatisticsId(acc.Id);
-        TabStatisticsController.getLensesAnnualRevenue(acc1.Id,'Net');
-        TabStatisticsController.getLensesAnnualRevenue(acc1.Id,'Gross');
-        TabStatisticsController.getCurrency(acc.Id);
-        TabStatisticsController.getConsolidatedAccountsList(acc1.Id,'Net');
-        TabStatisticsController.getConsolidatedAccountsList(acc1.Id,'Gross');
-        TabStatisticsController.getConsolidatedAccountsList(acc2.Id,'Net');
+        TabStatisticsController.getLensesAnnualRevenue(Childacc.Id,'Net');
+        TabStatisticsController.getLensesAnnualRevenue(Childacc.Id,'Gross');
+        TabStatisticsController.getCurrency(acc.Id);      
         TabStatisticsController.getLensesSales(acc1.Id,true,true);
+        TabStatisticsController.getLensValue(newLensSalesMap, 4, 'Net');
         TabStatisticsController.getRelatedSalesList(Childacc.Id,'Net');
         TabStatisticsController.getRelatedSalesList(Childacc.Id,'Gross');
         TabStatisticsController.getRelatedSalesList(acc2.Id,'Gross');
         TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=12;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=11;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=9;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=8;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=7;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=6;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=5;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=4;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=3;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=2;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        TabStatisticsController.testMonth=1;
+        TabStatisticsController.getNonAdaptationReturns(acc1.Id);
+        String lensRetsJson='{"ProdRet":"0","CutRet":"0","MountRet":"0", "SalesRet":"0","OrderMisRet":"0","NonAdapRet":"0","DeliveryRet":"0","OtherRet":"0"}';
+        TabStatisticsController.parseLensRetsJson(lensRetsJson);
+        TabStatisticsController.parseLensRetsSalesJson(lensRetsJson);
+        TabStatisticsController.CreateSFDCV2Task('This is a test', acc.Id, 'This is a instruction', UserId, DateDue, 'New');
+        TabStatisticsController.getAccountDataPillList('%', 'Account');
         Test.stopTest();
     }
 }

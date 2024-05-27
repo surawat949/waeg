@@ -87,5 +87,93 @@ public without sharing class Utility {
         String Task_Status_SFDC = Task_Status_SFDC_V2;
         return Task_Status_SFDC;
     }
+    @AuraEnabled(cacheable=true)
+    public static List<AccountRelatedSales> getConsolidatedAccountsList(String localConsolidationKey,String ownerCompany,String type){
+        List<AccountRelatedSales> relatedAccountList =new List<AccountRelatedSales>(); 
+        Map<Id,String> hoyaAccIdMap = new Map<Id,String>();
+        if(localConsolidationKey != null){
+            List<Id> accountIdList =new List<Id>();
+            List<Account> accs = [select Id,Hoya_Account_ID__c from Account where Local_Consolidation_Key__c=:localConsolidationKey and Account_Owner_Company__c =:ownerCompany];
+            System.debug(accs);
+            for(Account acc:accs){
+                accountIdList.add(acc.Id);
+                hoyaAccIdMap.put(acc.Id,acc.Hoya_Account_ID__c);
+            }
+            Map<Id,Last_Sales_Statistics__c> accountSalesMap = new Map<Id,Last_Sales_Statistics__c>();
+            List<Last_Sales_Statistics__c> lastSalesLst = [select Account__c,Hoya_Account_Id__c,Lenses_Net_Sales_CFY__c,Lenses_Gross_Sales_CFY__c,Lenses_Net_Sales_LFY_YTD__c,Lenses_Gross_Sales_LFY_YTD__c,Lenses_Net_Sales_CFY_vs_LFY_YTD__c,Lenses_Gross_Sales_CFY_vs_LFY_YTD__c,Lenses_Qty_CFY__c,Lenses_Qty_LFY_YTD__c,Lenses_Qty_CFY_vs_LFY_YTD__c from Last_Sales_Statistics__c where Account__c in :accountIdList];
+            if(lastSalesLst.size() > 0){  
+                for(Last_Sales_Statistics__c sale:lastSalesLst){
+                    accountSalesMap.put(sale.Account__c,sale);
+                }
+            }
+            AccountRelatedSales totalSales = new AccountRelatedSales();
+            totalSales.salesCFY = 0;
+            totalSales.salesLFYYTD = 0;
+            totalSales.volumesCFY = 0;
+            totalSales.volumesLFYYTD = 0;
+            for(Id account:accountIdList){
+                AccountRelatedSales relatedSales=new AccountRelatedSales();
+                relatedSales.AccountId = account ;
+                relatedSales.hoyaAccountId = hoyaAccIdMap.get(account);
+                if(accountSalesMap.size() > 0 && accountSalesMap.containskey(account)){
+                    relatedSales.volumesLFYYTD =  accountSalesMap.get(account).Lenses_Qty_LFY_YTD__c;                  
+                    relatedSales.volumesCFY =  accountSalesMap.get(account).Lenses_Qty_CFY__c;
+                    relatedSales.variationVolumes = accountSalesMap.get(account).Lenses_Qty_CFY_vs_LFY_YTD__c;
+                    if(type == 'Net'){
+                        relatedSales.salesCFY = accountSalesMap.get(account).Lenses_Net_Sales_CFY__c;
+                        relatedSales.salesLFYYTD = accountSalesMap.get(account).Lenses_Net_Sales_LFY_YTD__c;
+                        relatedSales.variationSales = accountSalesMap.get(account).Lenses_Net_Sales_CFY_vs_LFY_YTD__c;
+                        totalSales.salesCFY +=  accountSalesMap.get(account).Lenses_Net_Sales_CFY__c;
+                        totalSales.salesLFYYTD += accountSalesMap.get(account).Lenses_Net_Sales_LFY_YTD__c;
+                    }
+                    else{
+                        relatedSales.salesCFY = accountSalesMap.get(account).Lenses_Gross_Sales_CFY__c;
+                        relatedSales.salesLFYYTD = accountSalesMap.get(account).Lenses_Gross_Sales_LFY_YTD__c;
+                        relatedSales.variationSales = accountSalesMap.get(account).Lenses_Gross_Sales_CFY_vs_LFY_YTD__c;
+                        totalSales.salesCFY +=  accountSalesMap.get(account).Lenses_Gross_Sales_CFY__c;
+                        totalSales.salesLFYYTD += accountSalesMap.get(account).Lenses_Gross_Sales_LFY_YTD__c;
+                    }               
+                    totalSales.volumesCFY += accountSalesMap.get(account).Lenses_Qty_CFY__c;
+                    totalSales.volumesLFYYTD += accountSalesMap.get(account).Lenses_Qty_LFY_YTD__c;                    
+                }
+                else{
+                    relatedSales.salesCFY = 0;
+                    relatedSales.salesLFYYTD = 0;
+                    relatedSales.variationSales = 0;
+                    relatedSales.volumesLFYYTD  = 0;                 
+                    relatedSales.volumesCFY  = 0;
+                    relatedSales.variationVolumes  = 0;                        
+                }
+                relatedAccountList.add(relatedSales);                                    
+            }
+            if(totalSales.salesLFYYTD != 0 )
+                totalSales.variationSales=(( totalSales.salesCFY- totalSales.salesLFYYTD)/ totalSales.salesLFYYTD)*100;
+            else
+                totalSales.variationSales=0;
+            
+            if(totalSales.volumesLFYYTD != 0){
+                totalSales.variationVolumes =((totalSales.volumesCFY-totalSales.volumesLFYYTD)/totalSales.volumesLFYYTD)*100;
+            }
+            else
+                totalSales.variationVolumes = 0;
+            totalSales.AccountId = null;
+            totalSales.hoyaAccountId = null;
+            relatedAccountList.add(totalSales);
+        }  
+        return relatedAccountList;
+    }
+      //Wrapper class to store Related Account details 
+    public class AccountRelatedSales{
+        public AccountRelatedSales(){}
+        @AuraEnabled public double salesCFY{get;set;}
+        @AuraEnabled public double salesLFYYTD{get;set;}
+        @AuraEnabled public double variationSales{get;set;}
+        @AuraEnabled public double volumesCFY{get;set;}        
+        @AuraEnabled public double volumesLFYYTD{get;set;}
+        @AuraEnabled public double variationVolumes{get;set;}
+        @AuraEnabled public Id AccountId{get;set;}
+        @AuraEnabled public String hoyaAccountId{get;set;}
+    }
+    
 
 }

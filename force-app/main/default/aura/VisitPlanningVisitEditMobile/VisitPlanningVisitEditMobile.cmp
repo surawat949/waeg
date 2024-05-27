@@ -21,6 +21,8 @@
     <aura:attribute name="message" type="String"/>
     <aura:attribute name="companyName" type="String"/>
     <aura:attribute name="profileName" type="String"/>
+    <aura:attribute name="campaignId" type="String" />
+    <aura:attribute name="campaignName" type="String" />
     <aura:attribute name="specificMkgSection" type="Boolean" default="false"/>
     <aura:attribute name="contactSelectOptions" type="Object"/>
     <aura:attribute name="objectiveSelectOptions" type="String[]"/>
@@ -135,9 +137,21 @@
             </div>
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size_1-of-1">
-                    <aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH'|| v.companyName=='HLSI'}">
-                        <!-- CHINA SOC SPECIFIC FIELDS -->
-                        <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}"><!--SOC VCC Manager ASM TSM-->
+                    <aura:if isTrue="{!and(v.companyName!='HOLA',v.companyName!='HLCA')}">
+                        <!-- STANDARD GLOBAL FIELD -->
+                        <lightning:select disabled="{!v.isdisabled}"
+                                label="{!v.translations.Visits__c_Visit_Reason__c}"
+                                required="true" aura:id="field"
+                                value="{!v.visit.Visit_Reason__c}" 
+                                            >
+                            <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Reason__c}" var="option">
+                                <option value="{!option.value}" text="{!option.label}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </aura:if>
+                    <!--aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH'|| v.companyName=='HLSI'}">
+                       
+                        <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}">
                             <lightning:select disabled="{!v.isdisabled}"
                                     label="{!v.translations.Visits__c_SOC_VCC_Visit_Reason__c}"
                                     required="true" aura:id="field"
@@ -161,7 +175,7 @@
                             </lightning:select>
                         </aura:if>
                         
-                        <aura:if isTrue="{!v.profileName=='China Area Sales Manager ASM TSM' || v.profileName=='China Local System Administrator'}"><!--China Area Sales Manager ASM TSM-->
+                        <aura:if isTrue="{!v.profileName=='China Area Sales Manager ASM TSM' || v.profileName=='China Local System Administrator'}">
                             <lightning:select disabled="{!v.isdisabled}"
                                     label="{!v.translations.Visits__c_HLSH_Visit_Reason__c}"
                                     required="true" aura:id="field"
@@ -174,7 +188,7 @@
                         </aura:if>
                         
                         <aura:if isTrue="{!v.companyName=='HLSI'}">
-                        <!-- HLSI Singapore FIELDS -->
+                        
                             <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
                                     label="{!v.translations.Visits__c_HLSI_Visit_Objective2__c}"
                                     aura:id="multiSelectId"
@@ -188,7 +202,7 @@
                         
                         <aura:set attribute="else">
                             <aura:if isTrue="{!and(v.companyName!='HOLA',v.companyName!='HLCA')}">
-                                <!-- STANDARD GLOBAL FIELD -->
+                               
                                 <lightning:select disabled="{!v.isdisabled}"
                                         label="{!v.translations.Visits__c_Visit_Reason__c}"
                                         required="true" aura:id="field"
@@ -200,7 +214,7 @@
                                 </lightning:select>
                             </aura:if>
                         </aura:set>
-                    </aura:if>
+                    </aura:if-->
                     <aura:if isTrue="{!or(v.companyName=='HOLA',v.companyName=='HLCA')}">
                         <!-- specific hvna section -->
                         <div class="slds-form-element__row">
@@ -216,7 +230,7 @@
                             <div class="slds-form-element slds-size_1-of-1">
                                 <lightning:select disabled="{!v.isdisabled}"
                                     label="Visit Objective"
-                                    required="true" aura:id="field"
+                                     aura:id="field"
                                     value="{!v.visit.HVNA_Visit_Objectives__c}" >
                                     <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_HVNA_Visit_Objectives__c}" var="option">
                                         <option value="{!option.value}" text="{!option.label}"></option>
@@ -229,7 +243,7 @@
                             <div class="slds-form-element slds-size_1-of-1">
                                 <lightning:select disabled="{!v.isdisabled}"
 												label="Customer Goal"
-												required="true" aura:id="field"
+												 aura:id="field"
 												value="{!v.visit.HVNA_Customer_Goal__c}" >
 												<aura:iteration items="{!v.translations.picklists.Visits__c_Visit_HVNA_Customer_Goal__c}" var="option">
 													<option value="{!option.value}" text="{!option.label}"></option>
@@ -242,7 +256,7 @@
                             <div class="slds-form-element slds-size_1-of-1">
 								<lightning:select disabled="{!v.isdisabled}"
                                     label="Appointment"
-                                    required="true" aura:id="field"
+                                     aura:id="field"
                                     value="{!v.visit.HVNA_Appointment__c}" >
                                     <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_HVNA_Appointment__c}" var="option">
                                         <option value="{!option.value}" text="{!option.label}"></option>
@@ -263,9 +277,18 @@
             </div>
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size_1-of-1">
-                    <aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH' || v.companyName=='HLSI'}">
-                        <!-- CHINA SOC SPECIFIC FIELDS -->
-                        <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}"><!--SOC VCC Manager ASM TSM-->
+                    <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+                            label="{!v.translations.Visits__c_Actions_executed__c}"
+                            aura:id="multiSelectId"
+                            value="{!v.visit.Actions_executed__c}" 
+                                        >
+                        <aura:iteration items="{!v.translations.picklists.Visits__c_Actions_executed__c}" var="option">
+                            <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+                        </aura:iteration>
+                    </ui:inputSelect>
+                    <!--aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH' || v.companyName=='HLSI'}">
+                        
+                        <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}">
                             <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
                                     label="{!v.translations.Visits__c_SOC_VCC_Action_Exectued__c}"
                                     aura:id="multiSelectId"
@@ -289,7 +312,7 @@
                             </ui:inputSelect>
                         </aura:if>
                         
-                        <aura:if isTrue="{!v.profileName=='China Area Sales Manager ASM TSM'|| v.profileName=='China Local System Administrator'|| v.profileName=='System Administrator'}"><!--China Area Sales Manager ASM TSM-->
+                        <aura:if isTrue="{!v.profileName=='China Area Sales Manager ASM TSM'|| v.profileName=='China Local System Administrator'|| v.profileName=='System Administrator'}">
                             <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
                                     label="{!v.translations.Visits__c_HLSH_Action_Excecuted__c}"
                                     aura:id="multiSelectId"
@@ -302,7 +325,7 @@
                         </aura:if>
                         
                         <aura:if isTrue="{!v.companyName=='HLSI'}">
-                        <!-- HLSI Singapore FIELDS -->
+                        
                             <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
                                     label="{!v.translations.Visits__c_HLSI_action_executed__c}"
                                     aura:id="multiSelectId"
@@ -325,16 +348,23 @@
                                 </aura:iteration>
                             </ui:inputSelect>
                         </aura:set>
-                    </aura:if>
+                    </aura:if-->
                 </div>
             </div>
             
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size_1-of-1">
-
-                    <aura:if isTrue="{!v.companyName=='SOC' || v.companyName == 'HLSI'}">
-                        <!-- CHINA SOC SPECIFIC FIELDS -->
-                        <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}"><!--SOC VCC Manager ASM TSM-->
+                    <lightning:select disabled="{!v.isdisabled}"
+                            label="{!v.translations.Visits__c_Call_To_Action__c}"
+                            required="false" aura:id="field"
+                                        value="{!v.visit.Call_To_Action__c}" >
+                        <aura:iteration items="{!v.translations.picklists.Visits__c_Call_To_Action__c}" var="option">
+                            <option value="{!option.value}" text="{!option.label}"></option>
+                        </aura:iteration>
+                    </lightning:select>
+                    <!--aura:if isTrue="{!v.companyName=='SOC' || v.companyName == 'HLSI'}">
+                        
+                        <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}">
                             <lightning:select disabled="{!v.isdisabled}"
                                     label="{!v.translations.Visits__c_SOC_VCC_Call_To_Action__c}"
                                     required="false" aura:id="field"
@@ -357,7 +387,7 @@
                         </aura:if>
                         
                         <aura:if isTrue="{!v.companyName=='HLSI'}">
-                        <!-- HLSI Singapore FIELDS -->
+                        
                             <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
                                     label="{!v.translations.Visits__c_HLSI_Call_to_action__c}"
                                     aura:id="multiSelectId"
@@ -370,7 +400,7 @@
                         </aura:if>
                         
                         <aura:set attribute="else">
-                            <!-- STANDARD GLOBAL FIELD -->
+                            
                             <lightning:select disabled="{!v.isdisabled}"
                                     label="{!v.translations.Visits__c_Call_To_Action__c}"
                                     required="false" aura:id="field"
@@ -380,7 +410,7 @@
                                 </aura:iteration>
                             </lightning:select>
                         </aura:set>
-                    </aura:if>
+                    </aura:if-->
 
                 </div>
             </div>

@@ -11,10 +11,10 @@ import Report_Start from '@salesforce/label/c.Report_Start';
 import Report_Visit_Objective from '@salesforce/label/c.Report_Visit_Objective';
 import Report_Contact from '@salesforce/label/c.Report_Contact';
 import Report_Call_To_Action_Notes from '@salesforce/label/c.Report_Call_To_Action_Notes';
+import Call_To_Action from '@salesforce/label/c.Visit_Main_Outcome';
 
 import Last_Three_Visit_Completed from '@salesforce/label/c.Last_Three_Visit_Completed';
 import Reports_Date from '@salesforce/label/c.Reports_Date';
-import Call_To_Action from '@salesforce/label/c.Call_To_Action';
 import Visit_Notes from '@salesforce/label/c.Visit_Notes';
 import Last_Three_Tasks from '@salesforce/label/c.Last_Three_Tasks';
 import Reports_Created_By from '@salesforce/label/c.Reports_Created_By';
@@ -56,28 +56,32 @@ export default class TabMVCVisitsReports extends NavigationMixin(LightningElemen
               label: this.label.Reports_Date,
               fieldName: 'Start_Day__c',
               type: 'date',
-              sortable: true
+              sortable: true,
+              initialWidth: 140,
             },
             {
               label: this.label.Assigned_To,
               fieldName: 'Visit_assigned_to__c',
               type: 'text',
-              sortable: true
+              sortable: true,
+              initialWidth: 150,
             },
             {
               label: this.label.Visit_Notes,
               fieldName: 'Visit_Notes__c',
               type: 'text',
               sortable: true ,
-              wrapText: true
+              wrapText: true,
+              initialWidth: 400,
             },
             {
               label: this.label.Call_To_Action,
-              fieldName: 'Call_To_Action_Notes__c',
+              fieldName: 'Call_To_Action__c',
               type: 'text',
               sortable: true,
-              wrapText: true
-            }
+              wrapText: true,
+              initialWidth: 300,
+          }
         ];
 
         @track taskColumns = [

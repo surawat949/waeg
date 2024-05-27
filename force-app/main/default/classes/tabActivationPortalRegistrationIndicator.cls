@@ -11,7 +11,7 @@ public class tabActivationPortalRegistrationIndicator {
         ID accountEndConsumerRecId = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('End_Consumer_Account').getRecordTypeId();
         ID subscriptionRecId = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Subscription').getRecordTypeId();
 		ID shopOwnerRecId = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Shop_Owner').getRecordTypeId();
-	    ID cusumerContactRecId = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('End_Consumer').getRecordTypeId();
+	    ID consumerContactRecId = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('End_Consumer').getRecordTypeId();
 
 		Boolean PurchaseReg_Email_Flag = false; //for Purchase Registration Email Flag
         Boolean loyalty_Email_Flag = false;//for Loyalty Program Emails Activation Flag
@@ -25,7 +25,7 @@ public class tabActivationPortalRegistrationIndicator {
         list<Contact> childContact = new list<Contact>();
         if(childAcc.size()>0){
           childContact  =[SELECT ID,CreatedDate
-                                      FROM Contact WHERE AccountId=: childAcc[0].Id AND recordTypeId=:cusumerContactRecId];
+                                      FROM Contact WHERE AccountId=: childAcc[0].Id AND recordTypeId=:consumerContactRecId];
         }
         System.debug('>>>'+childContact);
 		list<New_Media_Usage__c> listOfNewMedia= [SELECT Id,Tool__c,Transaction_date_field__c 
@@ -71,7 +71,7 @@ public class tabActivationPortalRegistrationIndicator {
 			
 			//Purchase Registration Flag
             Boolean NewMediaPurchaseReg = false;
-
+            system.debug('>>>>listNewMedia_PurchaseReg'+listNewMedia_PurchaseReg);
             if(listNewMedia_PurchaseReg.size() > 0){
                 NewMediaPurchaseReg = true;
             }
@@ -79,6 +79,7 @@ public class tabActivationPortalRegistrationIndicator {
             if(currAcc.Brand__c == 'SEIKO'){
                 if(currAcc.Seiko_Network__c == 'Seiko Vision Specialist'){
                     if(PurchaseReg_Email_Flag == true){
+                        system.debug('>>>NewMediaPurchaseReg'+NewMediaPurchaseReg);
                         if(NewMediaPurchaseReg == true){
                             //flag for Three months record if found
                             Boolean IsThreeMonths = false;
@@ -267,53 +268,62 @@ public class tabActivationPortalRegistrationIndicator {
                 }
             }
             //Loyalty Program
-            if(currAcc.Seiko_Network__c =='Seiko Vision Specialist'){
-              	if(loyalty_Email_Flag){
-                    system.debug('>>>'+childContact);
-                    if(childContact.size()>0){
-                        for(Contact con : childContact){
-                           if(con.CreatedDate >= oneMontsAgo){
-                           	   wrapper.loyaltyFlag = 'GREEN';   
-                               wrapper.loyaltyFlagMeaning=System.Label.get('', 'Loyalty02', userLanguage);
-                               break;    
-                           }
-                           else{
-                            	if(con.CreatedDate >= threeMontsAgo){
-                                   wrapper.loyaltyFlag = 'GREENALERT';   
-                                   wrapper.loyaltyFlagMeaning=System.Label.get('', 'Loyalty03', userLanguage);
-                                   break;    
+            boolean threemonthsAgo=false;
+            if(currAcc.Brand__c == 'SEIKO'){
+                if(currAcc.Seiko_Network__c =='Seiko Vision Specialist'){
+                    if(loyalty_Email_Flag){
+                        system.debug('>>>'+childContact);
+                        if(childContact.size()>0){
+                            for(Contact con : childContact){
+                                if(con.CreatedDate >= oneMontsAgo){
+                                    wrapper.loyaltyFlag = 'GREEN'; 
+                                    threemonthsAgo=true;
+                                    wrapper.loyaltyFlagMeaning=System.Label.get('', 'Loyalty02', userLanguage);
+                                    break;    
                                 }
-                               else{
-                                   wrapper.loyaltyFlag = 'REDALERT';   
-                                   wrapper.loyaltyFlagMeaning=System.Label.get('', 'Loyalty04', userLanguage);
-                                   break;     
-                               }
-                           }
-                                      
+                            }  
+                            if(!threemonthsAgo){
+							    for(Contact con : childContact){
+                                   if(con.CreatedDate >= threeMontsAgo){
+										wrapper.loyaltyFlag = 'GREENALERT';   
+										wrapper.loyaltyFlagMeaning=System.Label.get('', 'Loyalty03', userLanguage);
+										break;    
+                                    }
+                                    else{
+                                        wrapper.loyaltyFlag = 'REDALERT';   
+                                        wrapper.loyaltyFlagMeaning=System.Label.get('', 'Loyalty04', userLanguage);
+                                        break;     
+                                    }
+						        }			
+                            }
+                                        
+                        }
+						else{
+							wrapper.loyaltyFlag = 'REDALERT';
+							wrapper.loyaltyFlagMeaning = System.Label.get('', 'Loyalty05', userLanguage);  
                         }
                     }
                     else{
-                     	wrapper.loyaltyFlag = 'REDALERT';
-                        wrapper.loyaltyFlagMeaning = System.Label.get('', 'Loyalty05', userLanguage);  
+						wrapper.loyaltyFlag = 'RED';
+						wrapper.loyaltyFlagMeaning = System.Label.get('', 'Loyalty06', userLanguage); 
                     }
-                   		 
-                }  
+                }
                 else{
-                  	    wrapper.loyaltyFlag = 'RED';
-                        wrapper.loyaltyFlagMeaning = System.Label.get('', 'Loyalty06', userLanguage); 
+                    if(loyalty_Email_Flag){
+                        wrapper.loyaltyFlag = 'REDALERT';
+                        wrapper.loyaltyFlagMeaning = System.Label.get('', 'Loyalty07', userLanguage); 
                     }
-            }
+                    else{
+                        wrapper.loyaltyFlag = 'GREEN';
+                        wrapper.loyaltyFlagMeaning = System.Label.get('', 'Loyalty08', userLanguage);
+                    }
+                }
+            }   
             else{
-                if(loyalty_Email_Flag){
-                    wrapper.loyaltyFlag = 'REDALERT';
-                    wrapper.loyaltyFlagMeaning = System.Label.get('', 'Loyalty07', userLanguage); 
-                }
-                else{
-                    wrapper.loyaltyFlag = 'GREEN';
-                    wrapper.loyaltyFlagMeaning = System.Label.get('', 'Loyalty08', userLanguage);
-                }
+                wrapper.loyaltyFlag = 'GREY';
+                wrapper.loyaltyFlagMeaning = System.Label.get('', 'Purchase_Reg09', userLanguage);
             }
-        }  
+        }			
         system.debug(wrapper);
          return wrapper;
     }

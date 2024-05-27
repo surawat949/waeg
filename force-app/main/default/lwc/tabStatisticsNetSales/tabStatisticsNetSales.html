@@ -20,17 +20,25 @@
                 </lightning-record-form>
             </lightning-layout-item>
             </lightning-layout>
-            </div>                
-            <div class="slds-grid slds-gutters slds-m-left_medium">
-            <div class="slds-size_1-of-2">
-                    <label >{custLabel.MonthlyObjective}</label>
-                    <div ><lightning-formatted-number value={MonthlyObjective} maximum-fraction-digits ="0" format-style='currency' currency-code={CurrencyCode}></lightning-formatted-number></div> 
-            </div>
-            <div class="slds-form-element slds-form-element_stacked slds-size_1-of-2">    
-                    <label >{custLabel.Last12MoVsObjective}</label>
-                    <div ><lightning-formatted-number value={Last12MoVsObjective} maximum-fraction-digits ="0"></lightning-formatted-number>%</div> 
-            </div>
-        </div>        
+            </div>     
+            <div class="slds-grid slds-gutters" style="margin-left:2px;">
+                <div class="slds-col slds-size_1-of-2" >
+                  <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{custLabel.MonthlyObjective}</span>
+                    <div class="slds-form-element__control">
+                      <div class="slds-form-element__static"><lightning-formatted-number value={MonthlyObjective} maximum-fraction-digits ="0" format-style='currency' currency-code={CurrencyCode}></lightning-formatted-number></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="slds-col slds-size_1-of-2 " style="width:47%">
+                  <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{custLabel.Last12MoVsObjective}</span>
+                    <div class="slds-form-element__control">
+                      <div class="slds-form-element__static"><lightning-formatted-number value={Last12MoVsObjective} maximum-fraction-digits ="0"></lightning-formatted-number>%</div>
+                    </div>
+                  </div>
+                </div> 
+            </div>   
         <br/>        
     </div>
     
@@ -375,9 +383,8 @@
     </div>      
 
     <!-- Parent Account Net Sales trends-->
-    <c-tab-statistics-related-net-sales received-id={receivedId} type="Net"></c-tab-statistics-related-net-sales>
+    <!--<c-tab-statistics-related-net-sales received-id={receivedId} type="Net"></c-tab-statistics-related-net-sales>-->
 
     <!--Local Consolidation key sales trends-->
-    <c-tab-statistics-local-consolidation-sales received-id={receivedId} type="Net"></c-tab-statistics-local-consolidation-sales>
-
+        <c-tab-statistics-local-consolidation-sales received-id={receivedId} type="Net"></c-tab-statistics-local-consolidation-sales>
 </template>

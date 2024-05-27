@@ -35,7 +35,7 @@ public class TabActivationMPMiyosmartTest {
             Lenses_Net_Sales_Last_12Mo__c = 2,
             Brand_Visibility__c='HOYA',
             CHCUSTCLASSIFICATIONID__c='Ind',
-            Seiko_Network__c = 'Hoya Vision Center',
+            Seiko_Network__c = 'Hoya Center',
             Visionary_Alliance__c = 'Insider',
             Myo_Main_Comp_Myopia_Control__c = 'Altra Ophtalmic Lense',
 			ownerId = u.Id

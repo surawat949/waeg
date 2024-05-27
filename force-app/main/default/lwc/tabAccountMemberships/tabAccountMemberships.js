@@ -29,6 +29,8 @@ import Acc_PrimaryBuyingGrp from '@salesforce/schema/Account.Primary_Buying_Grou
 import Acc_BuyingGrpName from '@salesforce/schema/Account.Buying_Group_Name__c';
 import Acc_HVC_InterCode from '@salesforce/schema/Account.CHINTERNATIONALGROUP__c';
 import Acc_Membership from '@salesforce/schema/Account.Buying_Group_Membership_Code__c';
+import Acc_Door from '@salesforce/schema/Account.Door__c';
+import Acc_DoorId from '@salesforce/schema/Account.Door_ID__c';
 
 //end
 
@@ -64,6 +66,8 @@ import lblTaskCreated from '@salesforce/label/c.SFDC_V_2_AccountMembership_TaskC
 import lblTaskCreatedBody from '@salesforce/label/c.SFDC_V_2_AccountMembership_TaskCreateBody';
 import lblNumChild from '@salesforce/label/c.SFDC_V_2_AccountMembership_NumsChild';
 import lblInstruction from '@salesforce/label/c.SFDC_V_2_Account_Membership_Instruction';
+import lblCustomerChannel from '@salesforce/label/c.SFDC_V_2_Account_Sales_Channel';
+import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
 //end
 
 //lightning api importing
@@ -81,6 +85,7 @@ export default class TabAccountMemberships extends LightningElement {
     @track defaultSubjectValue = 'Request To Change Parent Account Value';
     @track defaultComment;
     @track value='In Progress';
+    showAllTab=false;
 
     Subject = this.defaultSubjectValue;
     Status = this.value;
@@ -102,8 +107,9 @@ export default class TabAccountMemberships extends LightningElement {
     duedate;
     CopyTo = this.copiedtoId;
 
-    buyingGrpFields = [Acc_PrimaryBuyingGrp, Acc_BuyingGrpName];
-    byuingGrpFields2 = [Acc_HVC_InterCode, Acc_Membership];
+    buyingGrpFields = [Acc_PrimaryBuyingGrp, Acc_BuyingGrpName, Acc_HVC_InterCode, Acc_Membership];
+    DoorFields = [Acc_Door, Acc_DoorId];
+    //byuingGrpFields2 = [Acc_HVC_InterCode, Acc_Membership];
 	
 	@track StatusOptions;
     TaskStatusRecordTypeId;
@@ -378,5 +384,15 @@ export default class TabAccountMemberships extends LightningElement {
         lblAddParent,
         lblCreateTask,
         lblNumChild,
-        lblInstruction};
+        lblInstruction,
+        lblCustomerChannel};
+    @wire(getChatterUserDetail)
+        allStages({data }) {
+            if (data) {
+                this.showAllTab = data;
+            } 
+            else{
+                this.showAllTab = false;
+            }
+    }    
 }

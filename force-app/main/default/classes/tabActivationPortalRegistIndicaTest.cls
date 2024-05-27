@@ -102,7 +102,7 @@ public class tabActivationPortalRegistIndicaTest {
         insert n2;
 
         Seiko_Data__c seiko = new Seiko_Data__c();
-        seiko.Account__c = a1.Id;
+        seiko.Account__c = acc3.Id;
         seiko.Hoya_Account_ID__c = 'SO4900TES1001';
         seiko.Purchase_Registration_Email_Activation__c = true;
         seiko.Loyalty_Program_Emails_Activation__c = true;
@@ -184,7 +184,9 @@ public class tabActivationPortalRegistIndicaTest {
             List<Seiko_Data__c> seiko = [SELECT Id, Account__c, Purchase_Registration_Email_Activation__c FROM Seiko_Data__c WHERE Account__c=:a1.Id];
             List<New_Media_Usage__c> newMedia = [SELECT Id, Hoya_Account_ID__c, Tool__c, Transaction_date_field__c, Transaction_Date__c FROM New_Media_Usage__c WHERE Hoya_Account_ID__c=:a1.Id];
             tabActivationPortalRegistrationIndicator.getAIIndicators(a1.Id);
-            
+            seiko[0].Purchase_Registration_Email_Activation__c = true;
+            update seiko;
+            tabActivationPortalRegistrationIndicator.getAIIndicators(a1.Id);
             newMedia[0].Transaction_Date__c = '202401';
             update newMedia;
             tabActivationPortalRegistrationIndicator.getAIIndicators(a1.Id);
@@ -200,14 +202,15 @@ public class tabActivationPortalRegistIndicaTest {
     @IsTest
     static void testmultipleClass1(){
          Test.StartTest();
+        
             Account a1 = [SELECT Id, Hoya_Account_ID__c, Brand__c, Seiko_Network__c FROM Account WHERE Hoya_Account_ID__c='SO4900TEST001'];
             List<Seiko_Data__c> seiko = [SELECT Id, Account__c, Purchase_Registration_Email_Activation__c FROM Seiko_Data__c WHERE Account__c=:a1.Id];
             seiko[0].Purchase_Registration_Email_Activation__c = true;
             seiko[0].Loyalty_Program_Emails_Activation__c = true;
             update seiko; 
+           
            tabActivationPortalRegistrationIndicator.getAIIndicators(a1.Id);
-           seiko[0].Purchase_Registration_Email_Activation__c = false;
-            update seiko; 
+          
            tabActivationPortalRegistrationIndicator.getAIIndicators(a1.Id);
  
         Test.StopTest();

@@ -36,8 +36,11 @@ import getStatisticsSales from '@salesforce/apex/TabStatisticsController.getStat
 import getLensesAnnualRevenue from '@salesforce/apex/TabStatisticsController.getLensesAnnualRevenue';
 import getCurrency from '@salesforce/apex/TabStatisticsController.getCurrency';
 import getMonthWithSales from '@salesforce/apex/TabStatisticsController.getMonthWithSales';
+import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
+
 export default class TabStatisticsNetSales extends LightningElement {
     @api receivedId;
+    showAllTab=false;
     LensesCFYMap=[];
     FramesCFYMap=[];
     InstrumentsCFYMap = [];
@@ -638,4 +641,13 @@ export default class TabStatisticsNetSales extends LightningElement {
     doRefresh() {
         refreshApex(this.AccountRec);  
     }
+    @wire(getChatterUserDetail)
+        allStages({data }) {
+			if (data) {
+				this.showAllTab = data;
+			} 
+			else{
+				this.showAllTab = false;
+			}
+        }
 }

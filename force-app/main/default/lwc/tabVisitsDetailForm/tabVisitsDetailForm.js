@@ -27,7 +27,10 @@ import Visit_CreationDate_Tracker__c from '@salesforce/schema/Visits__c.Visit_Cr
 import Visit_Start_Day_Tracker__c from '@salesforce/schema/Visits__c.Visit_Start_Day_Tracker__c';
 import Visit_Home_Office_Tracker from '@salesforce/schema/Visits__c.Visit_Home_Office_Tracker__c';
 import Visit_Reporting_Day_Tracker__c from '@salesforce/schema/Visits__c.Visit_Reporting_Day_Tracker__c';
-
+import Visit_Bus_Opp_Tracker__c from '@salesforce/schema/Visits__c.Visit_Business_Opportunities_Tracker__c';
+import Visit_Presc_Tracker__c from '@salesforce/schema/Visits__c.Visit_Prescribers_Tracker__c';
+import Visit_Contacts_Tracker__c from '@salesforce/schema/Visits__c.Visit_Contacts_Tracker__c';
+import Visit_Prospection_Tracker__c from '@salesforce/schema/Visits__c.Visit_Prospection_Tracker__c';
 
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -99,7 +102,9 @@ export default class TabVisitsDetailForm extends LightningElement {
     fields3 = [Call_To_Action,Call_To_Action_Notes,Visit_Status];
     fields4 = [Actions_executed];
     fields5 = [Visit_Notes];
-    fields6 = [Visit_Planning_Tracker__c,Visit_Preparation_Tracker__c,Visit_Planned_Tracker__c,Visit_Tacticom_Tracker__c,Visit_CreationDate_Tracker__c,Visit_Start_Day_Tracker__c,Visit_Home_Office_Tracker,Visit_Reporting_Day_Tracker__c];
+    fields6 = [Visit_Planning_Tracker__c,Visit_Preparation_Tracker__c,Visit_Planned_Tracker__c,Visit_Tacticom_Tracker__c,Visit_CreationDate_Tracker__c,
+              Visit_Start_Day_Tracker__c,Visit_Home_Office_Tracker,Visit_Reporting_Day_Tracker__c,
+              Visit_Bus_Opp_Tracker__c,Visit_Presc_Tracker__c,Visit_Contacts_Tracker__c,Visit_Prospection_Tracker__c];
 
     //Identified business opportunity Creation  - Start
     get categoryOptions(){
@@ -194,7 +199,7 @@ showToast(title,message,variant) {
         return [
             { label : 'Not Started', value : 'Not Started'},
             { label : 'In progress', value : 'In progress'},
-            { label : 'Posponed', value : 'Posponed'},
+            { label : 'Postponed', value : 'Postponed'},
             { label : 'Abandoned', value : 'Abandoned'},
             { label : 'Delivered', value : 'Delivered'}
         ];

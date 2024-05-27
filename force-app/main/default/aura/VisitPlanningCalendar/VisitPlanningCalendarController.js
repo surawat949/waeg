@@ -60,7 +60,7 @@
     },
     onDropEvent : function(component, event, helper) {
         var droppedData = event.getParam("droppedData");
-        //console.log(droppedData);
+        console.log('droppedd'+JSON.stringify(droppedData));
         var date = event.getParam("date");
         //console.log(date);
 

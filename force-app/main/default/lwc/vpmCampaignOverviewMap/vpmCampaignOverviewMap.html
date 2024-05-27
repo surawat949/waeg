@@ -1,0 +1,93 @@
+<template>
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+    <div class="slds-box">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-combobox
+                    id="picklistCampaing"
+                    name="picklistCampaing"
+                    label="Campaign List"
+                    value={picklistValue}
+                    options={picklistCampaignValuesList}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>   
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-combobox
+                    id="picklistOptDistance"
+                    name="picklistOptDistance"
+                    label={custLbl.lblDistance}
+                    value={distanceValue}
+                    options={optDistanceValue}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <p align="right">
+                <template if:true={isDisplayList}>
+                    <div class="slds-p-top_large">
+                        <lightning-button label={custLbl.lblDisplay} onclick={handleListViewShow} variant="brand"></lightning-button>
+                    </div>
+                </template>
+                <template if:false={isDisplayList}>
+                    <div class="slds-p-top_large">
+                        <lightning-button label={custLbl.lblHideDisplay} onclick={handleListViewHide} variant="brand"></lightning-button>
+                    </div>
+                </template>
+                </p>
+            </div>
+        </div>
+        <br>
+        <div class="slds-box">
+            <div class="slds-grid slds-m_top_medium slds-m_bottom_large">
+                <div class="slds-col slds-size_1-of-1">
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:green;stroke:none;stroke-width:3"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">Campaign Presented, Visit planned</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="25" y="25" xmlns="http://www.w3.org/2000/svg">
+                            <path d=" M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                            style="fill:green;stroke:none;stroke-width:3"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">Campaign Presented, Visit not planned</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span style="vertical-align: middle;display: inline-block;">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:red;stroke:none;stroke-width:3"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle; display: inline-block">Campaign not presented, Visit planned</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span style="vertical-align: middle; display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="25" y="25" xmlns="http://www.w3.org/2000/svg">
+                            <path d=" M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                            style="fill:red;stroke:none;stroke-width:3"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle; display: inline-block">Campaign not presented, Visit not planned</span>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-map
+                    map-markers={mapMarker}
+                    markers-title={mapMarkerTitle}
+                    zoom-level={zoomLevel}
+                    center={vCenter}
+                    list-view={displayListView}
+                ></lightning-map>
+            </div>
+        </div>
+    </div>
+</template>

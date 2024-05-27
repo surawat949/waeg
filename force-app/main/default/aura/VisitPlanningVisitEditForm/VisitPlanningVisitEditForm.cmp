@@ -138,9 +138,7 @@
                             </div> 
                           
 
-                            
-              -->
-                            <div class="slds-grid">
+                              <div class="slds-grid">
                                         <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Visit_Objective_follow_up_notes__c"/></div>
                                     </div>
                             <div class="slds-grid">

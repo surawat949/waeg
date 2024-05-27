@@ -1,0 +1,211 @@
+<template>
+    <lightning-tabset variant="scoped">
+        <lightning-tab label={custLabel.accountList}>
+            <div class="slds slds-grid fit">
+                <div class="slds-col slds-size--1-of-2 heightset">
+                    <div class="slds slds-grid">
+                        <!--Visit Planning List-->
+                        <!-- Filters & List-->
+                        <lightning-button variant="brand" label={toggleButtonText} onclick={toggleFilterVisibility}></lightning-button>&nbsp;&nbsp;&nbsp;
+                        <lightning-button variant="brand" label={custLabel.removeFilters} onclick={handleRemoveFilters}></lightning-button>&nbsp;&nbsp;&nbsp;
+                        <lightning-button variant="brand" label={custLabel.viewCalender}></lightning-button>
+                    </div>
+                    <br/>
+                    <template if:false={showFilters}>
+                        <lightning-tabset variant="scoped">
+                            <template if:true={isLoading}>
+                                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                            </template>
+                            <lightning-tab label={custLabel.listView}>
+                                <lightning-input label={custLabel.Select_List_View} type="search" onfocus={showPicklistOptions} 
+                                    onchange={search} value={selectedValue} onblur={handleBlur}>
+                                </lightning-input>
+                                <div if:true={showDropDown}>
+                                    <div if:true={searchResults} class="slds-dropdown slds-dropdown_length-5 dropdown"
+                                        role="listbox">
+                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                            <template for:each={searchResults} for:item="searchResult">
+                                                <li key={searchResult.value} data-value={searchResult.value} role="presentation"
+                                                    onclick={selectSearchResult} class="slds-listbox__item">
+                                                    <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small "
+                                                        role="option">
+                                                        <span class="slds-media__body">
+                                                            <span class="slds-truncate" title={searchResult.label}>
+                                                                {searchResult.label}
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </lightning-tab>
+                            <lightning-tab label={custLabel.location}>
+                                <div class="slds-grid slds-gutters">
+                                    <lightning-combobox name="dropdown" class="slds-col" label={custLabel.Tacticom} value={selectedTacticomValue} options={TacticomList} onchange={handleStatusChange}> </lightning-combobox>
+                                    <lightning-input label={custLabel.city} class="slds-col" type="text" value={cityFilter} onchange={handleCityChange}></lightning-input>
+                                    <lightning-input label={custLabel.ZIP} class="slds-col" type="text" value={zipFilter} onchange={handleZipChange}></lightning-input>
+                                </div>
+                            </lightning-tab>
+                            <lightning-tab label={custLabel.lifeCycle}>
+                                <div class="slds-grid slds-gutters">
+                                    <lightning-combobox name="dropdown" class="slds-col" label={custLabel.HVC_Loyalty_Program} value={selectedChannelValue} options={ChannelList} onchange={handleChannelChange}> </lightning-combobox>
+                                    <lightning-combobox name="dropdown" class="slds-col" label={custLabel.AccountVisitTabSegmentation} value={selectedSegmentationValue} options={SegmentationList} onchange={handleSegmentationChange}> </lightning-combobox>
+                                    <lightning-combobox name="dropdown" class="slds-col" label={custLabel.Customer_Review_Stage} value={selectedAlcStageValue} options={ALCStageList} onchange={handleStageChange}> </lightning-combobox>
+                                </div>
+                            </lightning-tab>
+                            <lightning-tab label={custLabel.campaigns}>
+                                <div class="slds-grid slds-gutters">
+                                    <lightning-combobox label={custLabel.Select_Campaign} class="slds-col" options={campaignOptions} value={selectedCampaignId} onchange={handleCampaignChange}></lightning-combobox>
+                                    <lightning-input type="checkbox" label={custLabel.Exclude_Presented_Campaigns} class="slds-col middle" checked={excludePresented} onchange={handleExcludePresentedChange}></lightning-input>
+                                    <lightning-input type="checkbox" label={custLabel.Campaign_Priority_Only} class="slds-col middle" checked={campaignPriorityOnly} onchange={handleCampaignPriorityChange}></lightning-input>
+                                </div>
+                            </lightning-tab>
+                        </lightning-tabset>
+                    </template>
+                    <div class="pagination">
+                        <lightning-button icon-name="utility:chevronleft"  onclick={previousPage} disabled={isFirstPage}></lightning-button>
+                        <span class="keepMiddle">{custLabel.page} {currentPage} {custLabel.of} {totalPages}</span>
+                        <lightning-button icon-name="utility:chevronright" class="keepRight" onclick={nextPage} disabled={isLastPage}></lightning-button>
+                    </div>
+                    <div class="table-container">
+                        <table class="custom-table slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead>
+                                <tr class="slds-line-height_reset fixed-header-container">
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Name">
+                                            {custLabel.Name}
+                                        </a>
+                                        
+                                        <!--span class={upIconClass} onclick={sortRecs}></span>
+                                        <lightning-icon class="upicon" icon-name="utility:arrowup" size="x-small" onclick={sortRecs}></lightning-icon>
+                                        <span class={downIconClass} onclick={sortRecs}></span-->
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Shop_Postal_Code__c">
+                                            {custLabel.ZIP}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Shop_City__c">
+                                            {custLabel.city}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Shop_State__c">
+                                            {custLabel.State}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Last_Visit_date__c">
+                                            {custLabel.Last_Visit_S_D}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Total_Visits_Achieved__c">
+                                            {custLabel.Total_visits_achieved}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="TACTICOM_SOF__c">
+                                            {custLabel.Tacticom}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Segmentation_Box__c">
+                                            {custLabel.AccountVisitTabSegmentation}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Visionary_Alliance__c">
+                                            {custLabel.VisionaryAlliance}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Seiko_Network__c">
+                                            {custLabel.HVC_Loyalty_Program}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Myo_Smart_AuthorizeDealer__c">
+                                            {custLabel.Miyo_Smart_AuthorizeDealer}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Lenses_Net_Sales_Last_12Mo__c">
+                                            {custLabel.Lens_Net_Sales_L12Mo}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Share_of_Wallet__c">
+                                            {custLabel.AccountShareofWallet3Mo}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="First_Competitor_local_name__c">
+                                            {custLabel.Local_competitor}
+                                        </a>
+                                    </th>
+                                    <th style="position: sticky; top: 0;">
+                                        <a class="slds-th__action sortable" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="First_Competitor_local_name__c">
+                                            {custLabel.Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY__c}
+                                        </a>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="accheadersection">
+                                <template for:each={displayedRecords} for:item="record" for:index="index">
+                                    <tr class="slds-hint-parent" key={record.Id} 
+                                    onchange={Change} data-record-id={record.Id} data-index={index}>                                    
+                                        <td class="sticky-column">
+                                            <div class="slds-col">
+                                                <div class="draggable-row" data-id={record.Id} data-name={record.Name}>
+                                                    <a href="#" data-record-id={record.Id} onclick={handleRowAction}>
+                                                        <span class="slds-p-around_none" data-id={record.Id}>
+                                                            {record.Name}
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{record.Shop_Postal_Code__c}</td>
+                                        <td>{record.Shop_City__c}</td>
+                                        <td>{record.Shop_State__c}</td>
+                                        <td>{record.Last_Visit_date__c}</td>
+                                        <td>{record.Total_Visits_Achieved__c}</td>
+                                        <td>{record.TACTICOM_SOF__c}</td>
+                                        <td>{record.Segmentation_Box__c}</td>
+                                        <td>{record.Visionary_Alliance__c}</td>
+                                        <td>{record.Seiko_Network__c}</td>
+                                        <td>{record.Myo_Smart_AuthorizeDealer__c}</td>
+                                        <td>{record.Lenses_Net_Sales_Last_12Mo__c}</td>
+                                        <td>{record.Share_of_Wallet__c}</td>
+                                        <td>{record.First_Competitor_local_name__c}</td>
+                                        <td>
+                                            <template for:each={record.Last_Sales_Statistics__r} for:item="stat">
+                                                {stat.Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY__c}
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                
+                </div>&nbsp;&nbsp;
+                <div class="slds-box slds-size--1-of-2">
+                    <c-calendarv6-test></c-calendarv6-test>
+                </div>
+            </div>
+        </lightning-tab>
+        <lightning-tab label={custLabel.accountMap}>
+        </lightning-tab>
+        <lightning-tab label={custLabel.campaignOverview}>
+           <c-vpm-campaign-overview-map></c-vpm-campaign-overview-map>
+        </lightning-tab>
+        <lightning-tab label={custLabel.plannedVisitsMap}>
+            <c-vpm-planned-visits-map></c-vpm-planned-visits-map>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

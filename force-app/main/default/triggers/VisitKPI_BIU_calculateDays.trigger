@@ -18,7 +18,12 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
     Map<Id, User> map_visitKPIId_user = new Map<Id, User>();
     Map<Id, decimal> map_visitKPIId_daysOff = new Map<Id, decimal>();
     Map<Id, list<Visits__c>> map_visitKPIId_visits = new Map<Id, list<Visits__c>>();
-	Map<Id, User> map_users = new Map<Id, User>();
+    Map<Id, VISIT_KPI__c> mapOfUserIdVisitKpi = new Map<Id, VISIT_KPI__c>();
+    Boolean isKpiInsert;
+    Boolean isKpiUpdate;
+    Map<Id, VISIT_KPI__c> mapOfUserIdOldVisitKpi = new Map<Id, VISIT_KPI__c>();
+
+    Map<Id, User> map_users = new Map<Id, User>();
     String currentYear = '';
     String currentMonth = '';
     Date currentDate;
@@ -54,7 +59,7 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
         }
         set_country.add(user.Country__c);
         set_region.add(user.Sales_District_Area__c);
-		map_users.put(user.id, user);
+        map_users.put(user.id, user);
     }
             
     String queryTimeOff = 'select Id, Days_Off__c, Country__c, Sales_District_Area__c from Time_off_Territory__c where Year__c =: currentYear and Month__c =: currentMonth and Country__c in: set_country and Sales_District_Area__c in: set_region';   
@@ -110,6 +115,10 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
     map<Id, set<Integer>> map_user_workdayVisits = new map<Id, set<Integer>>();
     //CDU 23/06/2020 Add digital visit counter
     map<Id, set<Integer>> map_user_workdayDigitalVisits = new map<Id, set<Integer>>();
+   //Stores both digital and direct visits without the duplication
+    map<Id, set<date>> map_user_workdayTotalVisits = new map<Id, set<date>>();
+    //Stores visits with assigned user and visit
+    Map<Id, Set<Date>> map_user_visits = new Map<Id, Set<Date>>(); 
 
     for(Visits__c visit : [select Id, End_Time__c, Assigned_to__c, Visit_Type__c  from Visits__c where Assigned_to__c IN :set_userId and Visit_Status__c = 'Complete' and End_Time__c >=: startDateInMonth and  End_Time__c <=: endDateInMonth and Visit_Type__c in ('Visit', 'Digital Visit')]) {
         if(!map_user_info.containsKey(visit.Assigned_to__c)) {
@@ -126,6 +135,9 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
         if(!map_user_workdayDigitalVisits.containsKey(visit.Assigned_to__c)) {
             map_user_workdayDigitalVisits.put(visit.Assigned_to__c, new set<Integer>());
         }
+        if(!map_user_workdayTotalVisits.containsKey(visit.Assigned_to__c)) {
+            map_user_workdayTotalVisits.put(visit.Assigned_to__c, new set<date>());
+        }
         map<String, Integer> map_key_info = map_user_info.get(visit.Assigned_to__c);
         Integer weekendVisits = map_key_info.get('weekendVisits');
         Integer workdayVisits = map_key_info.get('workdayVisits');
@@ -134,6 +146,7 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
 
         set<Integer> set_workdayVisits = map_user_workdayVisits.get(visit.Assigned_to__c);
         set<Integer> set_workdayDigitalVisits = map_user_workdayDigitalVisits.get(visit.Assigned_to__c);
+        set<date> set_totalworkdayVisits = map_user_workdayTotalVisits.get(visit.Assigned_to__c);
         if(ClsVisitUtil.isWeekend(visit.End_Time__c)){
             if(visit.Visit_Type__c == 'Digital Visit'){
                 weekendDigitalVisits++;
@@ -150,6 +163,19 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
                 set_workdayDigitalVisits.add(visit.End_Time__c.day());
                 workdayDigitalVisits++;
             }
+            
+            if(!map_user_visits.containsKey(visit.Assigned_to__c)) {
+            map_user_visits.put(visit.Assigned_to__c, new set<Date>());
+            } else {
+            // If the map already contains end times for the assigned user, check if the current visit's end time is already in the set
+             Set<Date> endDate = map_user_visits.get(visit.Assigned_to__c);
+             if (!endDate.contains(visit.End_Time__c.date())) {
+            // If the end date is not in the set, add it and increment the counter
+            endDate.add(visit.End_Time__c.date());
+            map_user_visits.put(visit.Assigned_to__c, endDate);
+            set_totalworkdayVisits.add(visit.End_Time__c.date());
+            }
+          }
         }
         map_key_info.put('weekendVisits', weekendVisits);
         map_key_info.put('workdayVisits', workdayVisits);
@@ -159,6 +185,7 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
 
         map_user_workdayVisits.put(visit.Assigned_to__c, set_workdayVisits);
         map_user_workdayDigitalVisits.put(visit.Assigned_to__c, set_workdayDigitalVisits);
+        map_user_workdayTotalVisits.put(visit.Assigned_to__c,set_totalworkdayVisits);
     }
 
     /*
@@ -190,7 +217,8 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
         decimal workdayDigitalVisits = 0;
         set<Integer> set_workdayVisits = new set<Integer>();
         set<Integer> set_workdayDigitalVisits = new set<Integer>();
-        
+        set<date> set_totalworkdayTotalVisits = new set<date>();
+       
         if(map_user_info.containsKey(visitKPI.Area_Sales_Manager__c)) {
             map<String, Integer> map_key_info = map_user_info.get(visitKPI.Area_Sales_Manager__c);
             weekendVisits = map_key_info.get('weekendVisits');
@@ -199,15 +227,17 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
             workdayDigitalVisits = map_key_info.get('workdayDigitalVisits');
             set_workdayVisits = map_user_workdayVisits.get(visitKPI.Area_Sales_Manager__c);
             set_workdayDigitalVisits = map_user_workdayDigitalVisits.get(visitKPI.Area_Sales_Manager__c);
+            set_totalworkdayTotalVisits = map_user_workdayTotalVisits.get(visitKPI.Area_Sales_Manager__c);
         }
         //set coaching call counter
-    	if(map_user_coachingVisit.containsKey(visitKPI.Area_Sales_Manager__c)) {
+        if(map_user_coachingVisit.containsKey(visitKPI.Area_Sales_Manager__c)) {
             visitKPI.coaching_visit__c = map_user_coachingVisit.get(visitKPI.Area_Sales_Manager__c);
         }
         //set digital visit counter 
-    	if(map_user_digitalVisit.containsKey(visitKPI.Area_Sales_Manager__c)) {
+        if(map_user_digitalVisit.containsKey(visitKPI.Area_Sales_Manager__c)) {
             visitKPI.digital_visit__c = map_user_digitalVisit.get(visitKPI.Area_Sales_Manager__c);
         }
+      
         //set current date
         visitKPI.Date__c = currentDate;
         //set Total days of current Month
@@ -257,10 +287,12 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
         //set Visits completed
         visitKPI.Visits_completed__c = workdayVisits + weekendVisits;
         visitKPI.Digital_Visits_completed__c = workdayDigitalVisits + weekendDigitalVisits;
+        //Total visit days for both direct and digital visits without duplicate days
+        visitKPI.Sum_of_Visits_Days_in_Field__c = set_totalworkdayTotalVisits.size();
         //set Vist KPI name with „User_Country__c“, „Year__c“, „Month__c“, „Area_Sales_Manager__c“
         String uCountry = map_users.get(visitKPI.Area_Sales_Manager__c).Country__c;
         String uName = map_users.get(visitKPI.Area_Sales_Manager__c).Name;
-		//CDU 07/01/2019 disable 
+        //CDU 07/01/2019 disable 
         /*if(map_visitKPIId_user != null && map_visitKPIId_user.get(visitKPI.Id) != null){
             if(map_visitKPIId_user.get(visitKPI.Id).get('Country__c') != null){
                 uCountry = String.valueOf(map_visitKPIId_user.get(visitKPI.Id).get('Country__c'));
@@ -269,9 +301,24 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
                 uName = String.valueOf(map_visitKPIId_user.get(visitKPI.Id).get('Name'));
             }
         }*/
-		//CDU 07/01/2019 disable end
+        //CDU 07/01/2019 disable end
         visitKPI.Name = uCountry + ',' + currentYear + ',' + currentMonth + ',' + uName;
-		visitKPI.Unique_Identifier__c = uCountry + '_' + currentYear + '_' + currentMonth + '_' + uName;
+        visitKPI.Unique_Identifier__c = uCountry + '_' + currentYear + '_' + currentMonth + '_' + uName;
         visitKPI.ownerId = visitKPI.Area_Sales_Manager__c;
+    
+    mapOfUserIdVisitKpi.put(visitKPI.Area_Sales_Manager__c,visitKPI); 
+    if(trigger.isUpdate) {
+        mapOfUserIdOldVisitKpi.put(Trigger.oldMap.get(visitKPI.Id).Area_Sales_Manager__c,trigger.oldMap.get(visitKPI.Id));
+    }    
+    }
+     //Call a method to calculate 3 month,6 month and 12 month fields calculation
+    if(Trigger.IsInsert && Trigger.isBefore){
+        isKpiInsert = true;
+        VisitKPILastMonthCalculation.calculateAndStoreKPI(mapOfUserIdVisitKpi,isKpiInsert,false,null);
+    }
+    
+    if(Trigger.IsUpdate && Trigger.isBefore) {
+        isKpiUpdate =true;
+        VisitKPILastMonthCalculation.calculateAndStoreKPI(mapOfUserIdVisitKpi,false,isKpiUpdate,mapOfUserIdOldVisitKpi);
     }
 }

@@ -10,7 +10,7 @@ public with sharing class TabMVCActivationController {
         @AuraEnabled public String shopCity{get;set;}
         @AuraEnabled public String shopPhone{get;set;}
         @AuraEnabled public Decimal miyo12MoQty{get;set;}
-        @AuraEnabled public Decimal miyoLastMoQty{get;set;} 
+        @AuraEnabled public Decimal miyoLastMoQty{get;set;}     
         @AuraEnabled public Id recordId{get;set;}      
     }
     @AuraEnabled(cacheable=true)
@@ -54,8 +54,7 @@ public with sharing class TabMVCActivationController {
     public static List<Order_MiyoSmart__c> getOrdersMiyoSmartRelatedList(Id contactId){       
        List<Order_MiyoSmart__c> ordersLst = [SELECT Id,Name,Account__c,Account__r.Name,Order_Date__c,Quantity__c,receive_number__c
                                                  FROM Order_MiyoSmart__c
-                                                 WHERE Contact__c=:contactId 
-                                                 AND In_Store_Prescriber__c = true];
+                                                 WHERE Contact__c=:contactId];
        return ordersLst;
     }
     //get Referring Opticians selling Miyosmart

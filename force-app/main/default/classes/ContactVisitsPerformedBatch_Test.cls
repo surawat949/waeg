@@ -34,6 +34,8 @@ public class ContactVisitsPerformedBatch_Test {
         con1.accountId = acc.Id;
         con1.recordTypeId = CONTACT_OPTHO_RT;
         Insert Con1;
+		
+		List<Visits__c> visitLst = new List<Visits__c>();
    
         Visits__c visit11 = new Visits__c();
         visit11.Account__c = acc.Id;
@@ -47,7 +49,8 @@ public class ContactVisitsPerformedBatch_Test {
         visit11.Visitfreqchk_c__c = '1';
         visit11.contact__c = con.Id;
         visit11.MKT_No_campaign_presented__c=true;
-        insert visit11;
+        //insert visit11;
+		visitLst.add(visit11);
         
         Visits__c visit12 = new Visits__c();
         visit12.Account__c = acc.Id;
@@ -61,7 +64,8 @@ public class ContactVisitsPerformedBatch_Test {
         visit12.Visitfreqchk_c__c = '1';
         visit12.contact__c = con.Id;
         visit12.MKT_No_campaign_presented__c=true;
-        insert visit12;
+        //insert visit12;
+		visitLst.add(visit12);
         
         Visits__c visit13 = new Visits__c();
         visit13.Account__c = acc.Id;
@@ -75,7 +79,9 @@ public class ContactVisitsPerformedBatch_Test {
         visit13.Visitfreqchk_c__c = '1';
         visit13.contact__c = con.Id;
         visit13.MKT_No_campaign_presented__c =true;
-        insert visit13;    
+        //insert visit13; 
+		visitLst.add(visit13);
+		insert visitLst;
     }
 
     @isTest

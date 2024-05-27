@@ -3,11 +3,10 @@
  */
 
  global without sharing class VisitPlanningController {
-    @AuraEnabled
+    @AuraEnabled(Cacheable = true)
     public static List<Visits__c> getVisits (Datetime periodStart, Datetime periodEnd) {
         System.debug('periodStart: ' + periodStart);
         System.debug('periodEnd: ' + periodEnd);
-
         List<Visits__c> visits = [
                 SELECT Id, Name, Start_Time__c, End_Time__c, Duration_Minutes__c, Is_All_Day_Event__c, Visit_Notes__c, Visit_Type__c, Visit_Reason__c, Actions_executed__c, Private__c, View__c, Assigned_to__c, Show_time_as__c, Visit_Status__c,
                         Visit_Objective_follow_up_notes__c, Call_To_Action__c, Cold_call__c, Visited_but_not_seen__c, Call_To_Action_Notes__c, Account__r.Shop_City__c, Account__r.Hoya_Account_ID__c,
@@ -27,6 +26,7 @@
                 AND Start_Time__c < :periodEnd
 
         ];
+        system.debug(visits);
         return visits;
     }
 
@@ -41,7 +41,7 @@
             AND EndDateTime > :periodStart
             AND StartDateTime < :periodEnd
             AND Visit_Id__c = null
-        ];
+        ];	
         System.debug('Nb userEvent=' + events.size());
         return events;
     }
@@ -667,8 +667,8 @@
     public static List<ListView> getListViews() {
         /* CDU 11/06/2018 add auto-filter on user id, user should see only his own listview */
         /* SS 23/02/2021 for user should can see in target customer (Opportunity Account List) by their Account, Request from Yung & Samson */
-        return [SELECT Id, Name, DeveloperName, NamespacePrefix, SobjectType, IsSoqlCompatible, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate FROM ListView where (SobjectType = :'Account') and (createdbyid =:UserInfo.getUserId() or DeveloperName = 'Your Opportunities Accounts')];
-        //return [SELECT Id, Name, DeveloperName, NamespacePrefix, SobjectType, IsSoqlCompatible, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate FROM ListView where SobjectType = :'Account' ];
+        //return [SELECT Id, Name, DeveloperName, NamespacePrefix, SobjectType, IsSoqlCompatible, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate FROM ListView where (SobjectType = :'Account') and (createdbyid =:UserInfo.getUserId() or DeveloperName = 'Your Opportunities Accounts')];
+        return [SELECT Id, Name, DeveloperName, NamespacePrefix, SobjectType, IsSoqlCompatible, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate FROM ListView where SobjectType = :'Account' ];
     }
 
     @AuraEnabled
@@ -908,7 +908,6 @@
         Map<String, Object> theMap = new Map<String,Object>();
 
         theMap.put('Visits__c_Visit_Status__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Status__c.getDescribe()),false));
-        
         if(!isSRX){
             theMap.put('Visits__c_Visit_Reason__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Reason__c.getDescribe()),true));//objective
             theMap.put('Visits__c_Call_To_Action__c', toOptionList(getOptionsForDescribe(Visits__c.Call_To_Action__c.getDescribe()),true));//outcome
@@ -931,6 +930,7 @@
             theMap.put('Visits__c_Call_To_Action__c', getSRX_OutcomeOptionList());//outcome
             theMap.put('Visits__c_Actions_executed__c', getSRX_ActionExecutedOptionList());
         }
+        system.debug('>>>>>'+theMap);
         //SOC specific picklist
         theMap.put('Visits__c_SOC_Sales_Actions_executed__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_Sales_Actions_executed__c.getDescribe()),true));
         theMap.put('Visits__c_SOC_Sales_Call_To_Action__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_Sales_Call_To_Action__c.getDescribe()),true));
@@ -955,6 +955,7 @@
         theMap.put('Visits__c_Visit_Campaign_Interested_2__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Campaign_Interested_2__c.getDescribe()), true));
         theMap.put('Visits__c_Visit_Campaign_Interested_3__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Campaign_Interested_3__c.getDescribe()), true));
         ret.put('picklists' , theMap);
+        System.debug(ret);
         return ret;
     }
 

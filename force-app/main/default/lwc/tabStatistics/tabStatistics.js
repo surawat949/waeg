@@ -1,6 +1,9 @@
 import { LightningElement, api ,wire } from 'lwc';
 import { getRecord } from "lightning/uiRecordApi";
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import Id from '@salesforce/user/Id';
+import RoleName from '@salesforce/schema/User.Sales_Role__c';
+import ProfileName from '@salesforce/schema/User.Profile.Name';
 //labels
 import potentialTab from '@salesforce/label/c.PotentialTab';
 import netSales from '@salesforce/label/c.Net_Sales';
@@ -10,16 +13,36 @@ import shipments from '@salesforce/label/c.Shipments';
 import pdf from '@salesforce/label/c.Product_Mix_PDF';
 //fields
 import accCountry from '@salesforce/schema/Account.Shop_Country__c';
-
+import getUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
 export default class TabStatistics extends LightningElement {
     @api recordId;
     isGermanyAccount;
     accountCountry;
+    userId = Id;
+    showAllTab=false;
+    userRoleName;
+    userProfileName;
+    showSalesChannelTab= false;
     constructor() {
         super();
         // record Id not generated yet here
     }
-
+    @wire(getRecord, { recordId: Id, fields: [ RoleName, ProfileName] })
+    userDetails({ error, data }) {
+        if (error) {
+            this.error = error;
+        } else if (data) {
+           console.log('>>>data',data);
+            if (data.fields.Sales_Role__c.value != null) {
+                this.userRoleName = data.fields.Sales_Role__c.value;
+                console.log('>>>data',this.userRoleName);
+            }
+            if (data.fields.Profile.value != null) {
+                this.userProfileName = data.fields.Profile.value.fields.Name.value;
+            }
+           
+        }
+    }
     custLabel = {
         potentialTab,netSales,grossSales,returns,shipments,pdf
     }
@@ -36,7 +59,10 @@ export default class TabStatistics extends LightningElement {
             this.showToast('Error', 'Error',error);
         }
     }
-    connectedCallback() {       
+    connectedCallback() { 
+        if((this.userRoleName == 'KAM' && this.userProfileName == 'SALES & MARKETING') || this.userProfileName == 'SFDC LOCAL ADMIN' || this.userProfileName == 'System Administrator'){
+            this.showSalesChannelTab=true;
+        }         
         //console.log('parent connected callback call' + this.recordId);        
     }
 
@@ -50,5 +76,14 @@ export default class TabStatistics extends LightningElement {
                 variant: variant,
             }),
         );
+    }
+    @wire(getUserDetail)
+    allStages({data }) {
+        if (data) {
+            this.showAllTab = data;
+        } 
+        else{
+            this.showAllTab = false;
+        }
     }
 }

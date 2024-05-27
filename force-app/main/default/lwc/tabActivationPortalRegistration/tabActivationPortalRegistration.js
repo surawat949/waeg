@@ -24,12 +24,13 @@ import label_LastLogin from '@salesforce/label/c.LastLogin';
 import label_PortalLogin from '@salesforce/label/c.PortalLogin';
 import lblNumChild from '@salesforce/label/c.SFDC_V_2_AccountMembership_NumsChild';
 import getIndicators from '@salesforce/apex/tabActivationPortalRegistrationIndicator.getAIIndicators';
-
+import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
 import AI_Indicators from '@salesforce/resourceUrl/SFDC_V2_AI_Indicators';
 
 export default class TabActivationPortalRegistration extends NavigationMixin(LightningElement) {
     @api receivedId;
     conCount='0';
+    showAllTab=false;
     nonRegContactCount='0';
     objectapiname = ACCOUNT_OBJ;
     labelLastLogin = label_LastLogin;
@@ -252,5 +253,12 @@ export default class TabActivationPortalRegistration extends NavigationMixin(Lig
     }
     custLabel = {label_viewall,label_PortalName,label_ParentAccount,
                  label_PortalLogin,label_NonRegContact,label_PortalRegContact,lblNumChild};
+    @wire(getChatterUserDetail)
+        allStages({data }) {
+            if (data) {
+                this.showAllTab = data;} 
+            else{
+                this.showAllTab = false;}
+            }             
 
 }

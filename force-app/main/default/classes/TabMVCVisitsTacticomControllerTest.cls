@@ -23,7 +23,7 @@ public class TabMVCVisitsTacticomControllerTest {
         con.recordTypeId = CONTACT_OPTHO_RT;
         
         insert con;
-    
+    	List<Visits__c> insertLst = new List<Visits__c>();
         Visits__c visit11 = new Visits__c();
         visit11.Account__c = acc.Id;
         visit11.Visit_Type__c = 'Visit';
@@ -36,7 +36,8 @@ public class TabMVCVisitsTacticomControllerTest {
         visit11.Visitfreqchk_c__c = '1';
         visit11.contact__c = con.Id;
         visit11.MKT_No_campaign_presented__c=true;
-        insert visit11;
+        //insert visit11;
+        insertLst.add(visit11);
         
         Visits__c visit2 = new Visits__c();
         visit2.Account__c = acc.Id;
@@ -50,8 +51,8 @@ public class TabMVCVisitsTacticomControllerTest {
         visit2.Visitfreqchk_c__c = '1';
         visit2.contact__c = con.Id;
         visit2.MKT_No_campaign_presented__c=true;
-        insert visit2;
-        
+        //insert visit2;
+        insertLst.add(visit2);
         Visits__c visit12 = new Visits__c();
         visit12.Account__c = acc.Id;
         visit12.Visit_Type__c = 'Visit';
@@ -64,8 +65,9 @@ public class TabMVCVisitsTacticomControllerTest {
         visit12.Visitfreqchk_c__c = '1';
         visit12.contact__c = con.Id;
         visit12.MKT_No_campaign_presented__c=true;
-        insert visit12;
-        
+        //insert visit12;   
+        insertLst.add(visit12);    
+         
         Visits__c visit13 = new Visits__c();
         visit13.Account__c = acc.Id;
         visit13.Visit_Type__c = 'Digital Visit';
@@ -78,7 +80,11 @@ public class TabMVCVisitsTacticomControllerTest {
         visit13.Visitfreqchk_c__c = '1';
         visit13.contact__c = con.Id;
         visit13.MKT_No_campaign_presented__c =true;
-        insert visit13;    
+        //insert visit13;
+        insertLst.add(visit13);
+        
+        insert insertLst;
+        
     }
 
     @isTest

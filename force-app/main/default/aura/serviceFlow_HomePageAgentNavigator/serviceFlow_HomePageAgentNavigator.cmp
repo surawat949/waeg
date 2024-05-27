@@ -33,7 +33,7 @@
     <aura:attribute name="subSubjectRequired" type="boolean" default="false" />
     <aura:attribute name="originRequired" type="boolean" default="false" />
     <aura:attribute name="isAccountRecordIdRequired" type="boolean" default="false" />
-    
+    <lightning:workspaceAPI aura:id="workspace" />
     <aura:attribute name="boundOptions" type="List" default="[
                                                              {'label': 'Outbound', 'value': 'Outbound'},
                                                              {'label': 'Inbound', 'value': 'Inbound'},

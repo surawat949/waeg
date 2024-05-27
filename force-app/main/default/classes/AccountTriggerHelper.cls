@@ -95,11 +95,15 @@ public with sharing class AccountTriggerHelper {
                         }  
                     } 
                     //if Hvc International channel is changed from other to Ind or Chain
+                    
                     if(isConsiderableRecTypeForALC && newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c != oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c && (oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c !='Ind' && oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c != 'Chain') && (newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Ind' || newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain') ){
                         if(newMap.get(a.Id).TACTICOM_SOF__c != null && newMap.get(a.Id).TACTICOM_SOF__c != 'none'){
+                            system.debug('>>>here');
                             accLifeCycleList.add(a.Id);
                             somethingToDo = true;
                             alcActiveMap.put(a.Id,true);
+                            system.debug('>>>accLifeCycleList'+accLifeCycleList);
+                            system.debug('>>>alcActiveMap'+alcActiveMap);
                         }
                     }
                     if(isConsiderableRecTypeForALC && newMap.get(a.Id).TACTICOM_SOF__c != oldMap.get(a.Id).TACTICOM_SOF__c && (newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Ind' || newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Chain')){
@@ -115,6 +119,29 @@ public with sharing class AccountTriggerHelper {
                             alcActiveMap.put(a.Id,false);
                         }//If Tacticom is changed to null or none from not null or not none
                     }
+                    //if recordType is changed 
+                    if(newMap.get(a.Id).RecordTypeId != oldMap.get(a.Id).RecordTypeId){
+                        Boolean newOneisConsiderable = isConsiderableRecTypeForALC(newMap.get(a.Id).RecordTypeId);
+                        Boolean oldOneisConsiderable = isConsiderableRecTypeForALC(oldMap.get(a.Id).RecordTypeId);
+                        System.debug(newOneisConsiderable+''+oldOneisConsiderable);
+                        //other to considerable rectype for alc
+                        if(newOneisConsiderable && !oldOneisConsiderable){
+                            if(newMap.get(a.Id).TACTICOM_SOF__c != null  && newMap.get(a.Id).TACTICOM_SOF__c != 'none' && (newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Ind' || newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain')){
+                                System.debug('Considerable');
+                                accLifeCycleList.add(a.Id);
+                                somethingToDo = true;
+                                alcActiveMap.put(a.Id,true);
+                            }
+                        }
+                        else if(oldOneisConsiderable && !newOneisConsiderable){//considerable to other deactivate alc if exists
+                            if(oldMap.get(a.Id).TACTICOM_SOF__c != null  && oldMap.get(a.Id).TACTICOM_SOF__c != 'none' && (oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Ind' || oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain')){
+                                System.debug('Not Considerable');
+                                accLifeCycleList.add(a.Id);
+                                somethingToDo = true;
+                                alcActiveMap.put(a.Id,false);       
+                            }
+                        }    
+                    }                    
                 }
                 //For Statistics Potential
                 //only for before Update
@@ -1297,14 +1324,13 @@ public with sharing class AccountTriggerHelper {
         
     }
     //Account Life Cycle Upsert
-    public static void doALCUpsert(Set<Id> accList,String operation,Map<Id,Boolean> alcAccMap){
+    public static void doALCUpsert(Set<Id> accList,String operation,Map<Id,Boolean> alcActiveMap){
         List<Account_Life_Cycle__c> alcList = new List<Account_Life_Cycle__c>();
-        if(accList.size() > 0 && alcAccMap.size() > 0){            
+        if(accList.size() > 0 && alcActiveMap.size() > 0){            
             if(operation == 'Insert'){
                 for(Id accId:accList){
                     Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
-                    if(alcAccMap.containsKey(accId))
-                        alc.Status_Active__c = alcAccMap.get(accId);
+                    alc.Active__c = false;
                     alc.Stage__c = 'Discover';
                     alc.External_Key__c = accId;    
                     alc.Account__c = accId;   
@@ -1312,44 +1338,62 @@ public with sharing class AccountTriggerHelper {
                 }
             }
             else{//If it is update
-                //get the latest Visit date 
+                //get the latest Visit
                 Map<Id,Visits__c> latestVisit=getLatestVisit(accList);
-                System.debug(latestVisit);
                 //get the account stage
                 Map<Id,String> accountStageMap = new Map<Id,String>();
-                 System.debug(accountStageMap);
+                Map<Id,Boolean> accountRetainStageMap = new Map<Id,Boolean>();
                 if(latestVisit.size() > 0){
                    accountStageMap = getStage(latestVisit);
+                   accountRetainStageMap = getRetainStage(latestVisit);
                 }
+                Set<Id> alcExistAccounts = new Set<Id>();
+                alcExistAccounts = VisitTriggerHelper.isAlcRecordExists(accList);
                 for(Id accId:accList){
-                    if(accountStageMap.size() > 0){                   
-                        Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
-                        if(alcAccMap.containsKey(accId))
-                            alc.Status_Active__c = alcAccMap.get(accId);
-                        if(accountStageMap.get(accId) != 'Retain'){
+                    if(accountStageMap.size() > 0){                                    
+                        if(alcActiveMap.containsKey(accId) && alcActiveMap.get(accId)){//ALC Active
+                            Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
+                            alc.Active__c = true;
                             alc.Stage__c = accountStageMap.get(accId);
-                            alc.Stage_Retained__c = false;
-                        }   
-                        else                            
-                            alc.Stage_Retained__c = true;
-                        alc.External_Key__c = accId;
-                        alc.Account__c = accId;
-                        alc.Latest_Visit__c = latestVisit.get(accId).Id+'-'+latestVisit.get(accId).Name;
-                        alcList.add(alc);
-                        System.debug(alc);
+                            alc.Retain_Stage__c = accountRetainStageMap.get(accId);
+                            alc.External_Key__c = accId;
+                            alc.Account__c = accId;
+                            alc.Latest_Visit_Considered__c = latestVisit.get(accId).Id+'-'+latestVisit.get(accId).Name;
+                            alcList.add(alc);
+                            System.debug(alc);
+                        }    
+                        else{ //make alc deactive if exists as account is not considerable           
+                            if(alcExistAccounts.contains(accId)){
+                                Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
+                                alc.Active__c = false;
+                                alc.External_Key__c = accId;
+                                alc.Account__c = accId;
+                                alcList.add(alc);                         
+                            }
+                        }
                     }
-                    else{//is there is no visits and to make the alc inactive
-                        Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
-                        if(alcAccMap.containsKey(accId))
-                            alc.Status_Active__c = alcAccMap.get(accId);
-                        alc.External_Key__c = accId;
-                        alc.Account__c = accId;
-                        alcList.add(alc);
+                    else{//if there is no considerable visits or no valid stage
+                        if(alcActiveMap.containsKey(accId) && alcActiveMap.get(accId)){//Account is considerable create alc rec
+                            Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
+                            alc.Active__c = false;//As there is no visits
+                            alc.Stage__c = 'Discover';
+                            alc.External_Key__c = accId;    
+                            alc.Account__c = accId;   
+                            alcList.add(alc);
+                        }
+                        else{//active is false(Account is not considerable) make the alc inactive
+                            if(alcExistAccounts.contains(accId)){
+                                Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
+                                alc.Active__c = false;
+                                alc.External_Key__c = accId;
+                                alc.Account__c = accId;
+                                alcList.add(alc);
+                            }
+                        }
                     }
                 }               
             }
-        }
-       
+        }       
         if(alcList.size() > 0){
             upsert alcList External_Key__c;
         }
@@ -1371,12 +1415,12 @@ public with sharing class AccountTriggerHelper {
             }
         }
         System.debug(accDateMap);
-        List<Visits__c> visits = [SELECT Id,Name,Account__c,Account__r.Tacticom_SOF__c,Account__r.Segmentation_Net__c, Account__r.Last_Visit_date__c, Visit_Status__c, Visit_Reason__c, Start_Time__c 
+        List<Visits__c> visits = [SELECT Id,Name,Account__r.Lenses_Net_Sales_Last_12Mo__c,Account__c,Account__r.Tacticom_SOF__c,Account__r.Segmentation_Net__c, Account__r.Last_Visit_date__c, Visit_Status__c, Visit_Reason__c, Start_Time__c 
                                   FROM Visits__c
                                   WHERE Account__c in :accsWithVisitsLst AND Start_Time__c in :startDateLst];
         if(visits.size() > 0){
             for(Visits__c visit : visits){
-                if(accDateMap.size() > 0 && accDateMap.containsKey(visit.Account__c)){
+                if(accDateMap.size() > 0 && accDateMap.containsKey(visit.Account__c) && VisitTriggerHelper.isConsiderableStage(visit.Visit_Reason__c)){
                     if(visit.Start_Time__c == accDateMap.get(visit.Account__c)){
                         LatestVisitMap.put(visit.Account__c,visit);
                     }
@@ -1391,27 +1435,46 @@ public with sharing class AccountTriggerHelper {
         Map<Id,String> accStageMap = new Map<Id,String>();
          for(Id accId:latestVisitMap.keySet()){  
              Visits__c visit = latestVisitMap.get(accId);
-             If(visit.Visit_Reason__c == 'Hunt 1 – Account Discovery'){     
+             if(visit.Visit_Reason__c != null && (visit.Account__r.Segmentation_Net__c == 'A3' || visit.Account__r.Segmentation_Net__c == 'B3'
+                || visit.Account__r.Segmentation_Net__c == 'C3' || visit.Account__r.Segmentation_Net__c == 'UNCATEGORIZED') 
+                 && (visit.Visit_Reason__c.startsWith('Grow') || visit.Visit_Reason__c.startsWith('On-board')|| visit.Visit_Reason__c.startsWith('Retain')) 
+                 && visit.Account__r.Lenses_Net_Sales_Last_12Mo__c <=0) {
+					accStageMap.put(visit.Account__c,'Start Business');
+
+		    } else if (visit.Visit_Reason__c != null && (visit.Account__r.Segmentation_Net__c == 'A3' || visit.Account__r.Segmentation_Net__c == 'B3'
+                || visit.Account__r.Segmentation_Net__c == 'C3' || visit.Account__r.Segmentation_Net__c == 'UNCATEGORIZED') 
+                && (visit.Visit_Reason__c.startsWith('Grow') || visit.Visit_Reason__c.startsWith('On-board')
+                || visit.Visit_Reason__c.startsWith('Retain') || visit.Visit_Reason__c.startsWith('Hunt')) 
+                && visit.Account__r.Lenses_Net_Sales_Last_12Mo__c >0) {
+                    accStageMap.put(visit.Account__c,'Start Business');
+
+            } else if(visit.Visit_Reason__c != null && visit.Account__r.TACTICOM_SOF__c != ''
+                  && (visit.Account__r.Segmentation_Net__c == 'A2' || 
+                    visit.Account__r.Segmentation_Net__c == 'B2'|| visit.Account__r.Segmentation_Net__c == 'C2') &&
+                 (visit.Visit_Reason__c.startsWith('Grow') 
+                 || visit.Visit_Reason__c.startsWith('On-board') || visit.Visit_Reason__c.startsWith('Hunt') 
+                 || visit.Visit_Reason__c.startsWith('Retain'))){
+                     accStageMap.put(visit.Account__c,'Develop');
+            }
+            else if(visit.Visit_Reason__c != null && visit.Account__r.TACTICOM_SOF__c != ''
+                  && (visit.Account__r.Segmentation_Net__c == 'A1' 
+                  || visit.Account__r.Segmentation_Net__c == 'B1'|| visit.Account__r.Segmentation_Net__c == 'C1') 
+                  &&(visit.Visit_Reason__c.startsWith('Grow') 
+                  || visit.Visit_Reason__c.startsWith('On-board') || visit.Visit_Reason__c.startsWith('Hunt') 
+                  || visit.Visit_Reason__c.startsWith('Retain'))){
+                    accStageMap.put(visit.Account__c,'Build Loyalty');
+            }
+            else if(visit.Visit_Reason__c == 'Hunt 1 – Account Discovery'){     
                  accStageMap.put(visit.Account__c,'Discover');
              }
+             
              else if(visit.Visit_Reason__c == 'Hunt 2 – Value Proposition' || visit.Visit_Reason__c =='Hunt 3 – Products and Prices'  || visit.Visit_Reason__c ==  'Hunt 6 – Other'){
                 accStageMap.put(visit.Account__c,'Engage');
              }
              else if(visit.Visit_Reason__c == 'Hunt 4 – Support to Investment' || visit.Visit_Reason__c =='Hunt 5 – Contract Signature' ){
                 accStageMap.put(visit.Account__c,'Negotiate');
              }
-             else if(visit.Visit_Reason__c != null && visit.Visit_Reason__c.startsWith('On board')){
-                accStageMap.put(visit.Account__c,'On-board');
-             }
-             else if(visit.Visit_Reason__c != null && visit.Visit_Reason__c.startsWith('Grow')){
-                 If(visit.Account__r.Segmentation_Net__c == 'A2' || visit.Account__r.Segmentation_Net__c == 'A3'|| visit.Account__r.Segmentation_Net__c == 'B2'|| visit.Account__r.Segmentation_Net__c == 'B3' || visit.Account__r.Segmentation_Net__c == 'C2'|| visit.Account__r.Segmentation_Net__c == 'C3')
-                    accStageMap.put(visit.Account__c,'Develop');
-                 if(visit.Account__r.Segmentation_Net__c == 'A1' || visit.Account__r.Segmentation_Net__c == 'B1'|| visit.Account__r.Segmentation_Net__c == 'C1')
-                    accStageMap.put(visit.Account__c,'Built Loyalty');
-             }
-             else if(visit.Visit_Reason__c != null && visit.Visit_Reason__c.startsWith('Retain')){
-                accStageMap.put(visit.Account__c,'Retain');
-             }
+              
          }
         return accStageMap;
     }
@@ -1430,4 +1493,20 @@ public with sharing class AccountTriggerHelper {
          accRecId = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get(rtName).getRecordTypeId();
          return accRecId;
     }
+    //Method to get the Retain Stage from latest visit for the Account
+    public static Map<Id,Boolean> getRetainStage(Map<Id,Visits__c> latestVisitMap){
+        Map<Id,Boolean> accRetainStageMap = new Map<Id,Boolean>();
+        boolean retainStageFlag;
+         for(Id accId:latestVisitMap.keySet()){  
+             Visits__c visit = latestVisitMap.get(accId);
+             if(visit.Visit_Reason__c != null && visit.Visit_Reason__c.startsWith('Retain')){
+                retainStageFlag = true;
+             }
+             else{
+              	retainStageFlag = false;   
+             }
+              accRetainStageMap.put(visit.Account__c,retainStageFlag);
+         }  
+        return accRetainStageMap;
+     }
 }

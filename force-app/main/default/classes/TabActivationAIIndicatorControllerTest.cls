@@ -12,7 +12,7 @@ public class TabActivationAIIndicatorControllerTest {
             Lenses_Net_Sales_Last_12Mo__c = 2,
             Brand_Visibility__c='HOYA',
             CHCUSTCLASSIFICATIONID__c='Ind',
-            Seiko_Network__c = 'Hoya Vision Center',
+            Seiko_Network__c = 'Hoya Center',
             Visionary_Alliance__c = 'Insider'
         );
         insert acc;
@@ -102,7 +102,7 @@ public class TabActivationAIIndicatorControllerTest {
             TabActivationAIIndicatorController.getAIIndicators(actId.Id);
             actId.Visionary_Alliance__c = '';
             actId.Hoya_Account_ID__c = '12';
-            actId.Seiko_Network__c = 'Hoya Vision Center';
+            actId.Seiko_Network__c = 'Hoya Center';
             update actId;
             TabActivationAIIndicatorController.getAIIndicators(actId.Id);
             actId.CHCUSTCLASSIFICATIONID__c = 'Ind';

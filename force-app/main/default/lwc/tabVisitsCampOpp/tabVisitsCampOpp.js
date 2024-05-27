@@ -56,11 +56,14 @@ import createBusinessOpportunity from '@salesforce/apex/TabVisitsCampOppControll
 import getIdentifiedBusinesssOpp from '@salesforce/apex/TabVisitsCampOppController.getBusinessOpportunityRelatedAccount';
 import getCampaignMembership from '@salesforce/apex/TabVisitsCampOppController.getCampaignMembership';
 import getOpp from '@salesforce/apex/TabVisitsCampOppController.getOpportunity';
+import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
+
 
 export default class TabVisitsCampOpp extends NavigationMixin(LightningElement) {
     @api receivedId;
     @track OppRecord;
     oppData;
+    showAllTab=false;
     oppCount = 0;
     displayCampaignViewAllButton = false;
     displayIdentifiedOppViewAllButton = false;
@@ -471,7 +474,7 @@ export default class TabVisitsCampOpp extends NavigationMixin(LightningElement) 
         return [
             { label : 'Not Started', value : 'Not Started'},
             { label : 'In progress', value : 'In progress'},
-            { label : 'Posponed', value : 'Posponed'},
+            { label : 'Postponed', value : 'Postponed'},
             { label : 'Abandoned', value : 'Abandoned'},
             { label : 'Delivered', value : 'Delivered'}
         ];
@@ -553,7 +556,15 @@ export default class TabVisitsCampOpp extends NavigationMixin(LightningElement) 
     async performRefresh() {
         await refreshApex(this.IdentifiedBusinessOppData);  
     }
-
+    @wire(getChatterUserDetail)
+    allStages({data }) {
+        if (data) {
+            this.showAllTab = data;
+        } 
+        else{
+            this.showAllTab = false;
+        }
+    }
     //Identified business opportunity Creation  - End
 
 }

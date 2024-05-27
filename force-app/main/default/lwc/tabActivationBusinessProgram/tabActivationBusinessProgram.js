@@ -1,8 +1,10 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api,wire } from 'lwc';
 
 import TabRegistration from '@salesforce/label/c.TabRegistration';
 import TabLoyaltyPoints from '@salesforce/label/c.TabLoyaltyPoints';
 import TabStoreInfo from '@salesforce/label/c.TabStoreInfo';
+import getUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
+
 
 export default class TabActivationBusinessProgram extends LightningElement {
     @api receivedId;
@@ -10,7 +12,8 @@ export default class TabActivationBusinessProgram extends LightningElement {
     @api brand;
     @api channel;
     @api loyaltyPoints;
-    
+    showAllTab=false;
+
     custLabel = {
         TabRegistration,
         TabLoyaltyPoints,
@@ -23,4 +26,13 @@ export default class TabActivationBusinessProgram extends LightningElement {
     }
     connectedCallback() {
     }
+    @wire(getUserDetail)
+    allStages({data }) {
+         if (data) {
+             this.showAllTab = data;
+         } 
+         else{
+             this.showAllTab = false;
+         }
+     }
 }

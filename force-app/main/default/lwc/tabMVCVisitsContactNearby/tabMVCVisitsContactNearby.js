@@ -52,7 +52,7 @@ export default class TabMVCVisitsContactNearby extends LightningElement {
     @track mapMarkers = [];
     @track markersTitle = 'Contact Nearby';
     @track vcenter;
-    @track zoomlevel = 9;
+    @track zoomlevel = 13;
     @track isDisplayList = true;
 
     workTime = '';
@@ -72,59 +72,66 @@ export default class TabMVCVisitsContactNearby extends LightningElement {
             this.mapMarkers = [];
 			if(result.length > 0){
 				for(var i=0;i<result.length;i++){
+
+                    let ContactName = '';
+					let MiyoSmartAttitude = '';
+					let lastvisiteddate = '';
+					let preferContactMethod = '';
+					let mailingCity = '';
+					let mailingStreet = '';
+					let mailingPostalcode = '';
+                    let ClinicName = '';
+                    let lastname = '';
+                    let firstname = '';
+
+                    if(result[i].MiyoSmart_Attitude__c != null && result[i].MiyoSmart_Attitude__c!=''){
+                        MiyoSmartAttitude = result[i].MiyoSmart_Attitude__c;
+                    }
+
+                    if(result[i].Last_contact_visit_date__c!=null && result[i].Last_contact_visit_date__c!=''){
+                        lastvisiteddate = result[i].Last_contact_visit_date__c;
+                    }
+
+                    if(result[i].Preferred_contact_method__c!=null && result[i].Preferred_contact_method__c!=''){
+                        preferContactMethod = result[i].Preferred_contact_method__c;
+                    }
+
+                    if(result[i].MailingStreet!=null && result[i].MailingStreet!=''){
+                        mailingStreet = result[i].MailingStreet;
+                    }
+
+                    if(result[i].MailingCity !=null && result[i].MailingCity!=''){
+                        mailingCity = result[i].MailingCity;
+                    }
+
+                    if(result[i].MailingPostalCode !=null && result[i].MailingPostalCode !=''){
+                        mailingPostalcode = result[i].MailingPostalCode;
+                    }
+
+                    if(result[i].LastName != null && result[i].LastName!=''){
+                        lastname = result[i].LastName;
+                    }
+
+                    if(result[i].FirstName != null && result[i].FirstName!=''){
+                        firstname = result[i].FirstName;
+                    }
+
+                    if(result[i].Account.Clinic_Name__c != null && result[i].Account.Clinic_Name__c!=''){
+                        ClinicName = result[i].Account.Clinic_Name__c;
+                    }
+
+                    if(MiyoSmartAttitude==undefined){MiyoSmartAttitude='';}
+                    if(lastvisiteddate==undefined){lastvisiteddate='';}
+                    if(preferContactMethod==undefined){preferContactMethod='';}
+                    if(mailingCity==undefined){mailingCity=='';}
+                    if(mailingStreet==undefined){mailingStreet='';}
+                    if(mailingPostalcode==undefined){mailingPostalcode='';}
+                    if(ClinicName==undefined){ClinicName='';}
+                    if(firstname==undefined){firstname='';}
+                    if(lastname==undefined){lastname='';}
+                    ContactName = lastname+', '+firstname;
+
 					if(i==0){
-						let AccountName = '';
-						let ContactName = '';
-						let MiyoSmartAttitude = '';
-						let lastvisiteddate = '';
-						let preferContactMethod = '';
-						let mailingCity = '';
-						let mailingStreet = '';
-						let mailingPostalcode = '';
-                        let ClinicName = '';
-                        let lastname = '';
-                        let firstname = '';
-
-						if(result[i].MiyoSmart_Attitude__c!=undefined){
-							MiyoSmartAttitude = result[i].MiyoSmart_Attitude__c;
-						}
-
-						if(result[i].Last_contact_visit_date__c!=undefined){
-							lastvisiteddate = result[i].Last_contact_visit_date__c;
-						}
-
-						if(result[i].Preferred_contact_method__c!=undefined){
-							preferContactMethod = result[i].Preferred_contact_method__c;
-						}
-						if(result[i].MailingStreet!=undefined){
-							mailingStreet = result[i].MailingStreet;
-						}
-						if(result[i].MailingCity!=undefined){
-							mailingCity = result[i].MailingCity;
-						}
-						if(result[i].MailingPostalCode!=undefined){
-							mailingPostalcode = result[i].MailingPostalCode;
-						}
-
-						if(result[i].Account.Name != undefined){
-							AccountName = result[i].Account.Name;
-						}
-
-                        if(result[i].LastName != undefined){
-                            lastname = result[i].LastName;
-                        }
-
-                        if(result[i].FirstName != undefined){
-                            firstname = result[i].FirstName;
-                        }
-
-						ContactName = lastname+', '+firstname;
-
-                        if(result[i].Account.Clinic_Name__c != undefined){
-                            ClinicName = result[i].Account.Clinic_Name__c;
-                        }
-
-
 						this.mapMarkers = [...this.mapMarkers,
                         {
                             location : {
@@ -154,59 +161,6 @@ export default class TabMVCVisitsContactNearby extends LightningElement {
 							}
 						];
 					}else{
-						let AccountName = '';
-						let ContactName = '';
-						let MiyoSmartAttitude = '';
-						let lastvisiteddate = '';
-						let preferContactMethod = '';
-						let mailingCity = '';
-						let mailingStreet = '';
-						let mailingPostalcode = '';
-                        let ClinicName = '';
-                        let lastname = '';
-                        let firstname = '';
-
-						if(result[i].MiyoSmart_Attitude__c!=undefined){
-							MiyoSmartAttitude = result[i].MiyoSmart_Attitude__c;
-						}
-
-						if(result[i].Last_contact_visit_date__c!=undefined){
-							lastvisiteddate = result[i].Last_contact_visit_date__c;
-						}
-
-						if(result[i].Preferred_contact_method__c!=undefined){
-							preferContactMethod = result[i].Preferred_contact_method__c;
-						}
-						if(result[i].MailingStreet!=undefined){
-							mailingStreet = result[i].MailingStreet;
-						}
-						if(result[i].MailingCity!=undefined){
-							mailingCity = result[i].MailingCity;
-						}
-						if(result[i].MailingPostalCode!=undefined){
-							mailingPostalcode = result[i].MailingPostalCode;
-						}
-
-                        if(result[i].LastName != undefined){
-                            lastname = result[i].LastName;
-                        }
-
-                        if(result[i].FirstName != undefined){
-                            firstname = result[i].FirstName;
-                        }
-
-						if(result[i].Account.Name != undefined){
-							AccountName = result[i].Account.Name;
-						}
-
-                        ContactName = lastname+', '+firstname;
-						
-
-                        if(result[i].Account.Clinic_Name__c != undefined){
-                            ClinicName = result[i].Account.Clinic_Name__c;
-                        }
-
-
 						this.mapMarkers = [...this.mapMarkers,
                         {
                             location : {
@@ -277,6 +231,29 @@ export default class TabMVCVisitsContactNearby extends LightningElement {
 
         if(event.target.name === 'distance'){
             this.distanceSlider = event.target.value;
+            this.zoomlevel = 13;
+            for(var i=1;i<=this.distanceSlider;i++){
+                if(i<=5){
+                    this.zoomlevel = 15;
+                }
+
+                if(i>5 && i<=10){
+                    this.zoomlevel = 11.8;
+                }
+
+                if(i>10 && i<=15){
+                    this.zoomlevel = 10;
+                }
+                if(i>15 && i<=20){
+                    this.zoomlevel = 9;
+                }
+                if(i>20 && i<=25){
+                    this.zoomlevel = 8;
+                }
+                if(i>25){
+                    this.zoomlevel = 7;
+                }
+            }
             //console.log('XXX Distance Value =>'+JSON.stringify(this.distanceSlider));
 
             this.handleKeyMapChange();

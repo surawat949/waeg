@@ -165,7 +165,7 @@ export default class TabMVCVisitsCampOpp extends NavigationMixin(LightningElemen
             return [
                 { label : 'Not Started', value : 'Not Started'},
                 { label : 'In progress', value : 'In progress'},
-                { label : 'Posponed', value : 'Posponed'},
+                { label : 'Postponed', value : 'Postponed'},
                 { label : 'Abandoned', value : 'Abandoned'},
                 { label : 'Delivered', value : 'Delivered'}
             ];

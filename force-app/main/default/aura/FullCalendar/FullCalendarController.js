@@ -132,7 +132,7 @@
                     drop: function(date,jsEvent,ui,resourceId) {
                         //console.log('an event has been dropped!',date,jsEvent,ui,resourceId);
                         //console.log(jsEvent.target.dataset.name);
-
+console.log('Full Calendar'+date);
                         var dropEvent = cmp.getEvent("dropEvent");
                         dropEvent.setParams({
                             "droppedData" : jsEvent.target.dataset,

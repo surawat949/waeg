@@ -13,8 +13,10 @@ import ShopPhone from '@salesforce/label/c.ShopPhone';
 import Add from '@salesforce/label/c.AddRelation';
 import pdfList from '@salesforce/label/c.SFDC_V_2_tabMVCContact_ReferringOptician_PDFList';
 import deleteRelationShip from '@salesforce/apex/TabMVCActivationController.deleteRelationShip';
+import getUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
 
-
+import { publish, MessageContext } from 'lightning/messageService';
+import UPDATE_DATA_CHANNEL from '@salesforce/messageChannel/refreshContact__c';
 //Apex
 import getRefOptsList from '@salesforce/apex/TabMVCActivationController.getRefferingOptsLst';
 
@@ -26,6 +28,7 @@ export default class TabMVCActivationReferringOpticians extends LightningElement
     Columns;
     wiredResults;
     data;
+    showAllTab=false;
     showSpinner=false;
     isDataExists = false;
     isLoading = true;
@@ -37,7 +40,9 @@ export default class TabMVCActivationReferringOpticians extends LightningElement
     constructor() {
         super();
         // passed parameters are not yet received here
-    }    
+    }  
+    @wire(MessageContext)
+    messageContext;  
     async showPopUp() {
         this.template.querySelector('c-tab-contact-create-reffering-optician-modal').displayModal();
     }
@@ -57,48 +62,52 @@ export default class TabMVCActivationReferringOpticians extends LightningElement
             }
         }
     ];
+    ColumnsChatter = [
+        {label: Brand, fieldName: 'Brand', type: 'text'},
+        {label: Account, fieldName: 'AccountId', type: 'url', typeAttributes: {label:{fieldName: 'AccountName'}, target:'_top'}},
+        {label: ShopStreet, fieldName: 'ShopStreet', type: 'text'},
+        {label: PostalCode, fieldName: 'PostalCode', type: 'text'},
+        {label: ShopCity, fieldName: 'City', type: 'text'},
+        {label: ShopPhone, fieldName: 'ShopPhone', type: 'text'},
+    ];
     
     getTableData() {
-        console.log('>>>');
         this.isDataExists = false;
         getRefOptsList({contactId: this.receivedId,isMiyoSmart : false}).then((result) => {
-            this.data = result;
+        this.data = result;
             
-            console.log('>>>1',result);
-            if(result){
-                console.log('>>>1');
-                this.data = JSON.parse(JSON.stringify(result));
-                this.isLoading = false;
-                if(this.data.length > 0 )
-                this.isDataExists = true;
-                this.data.forEach(res=>{
-                    res.Brand = res.brand;
-                    res.AccountId = '/' + res.accountId;
-                    res.AccountName = res.accountName;
-                    res.ShopStreet = res.shopStreet;
-                    res.PostalCode = res.postalCode;
-                    res.City = res.shopCity;
-                    res.ShopPhone = res.shopPhone;
-                    res.recordId = res.recordId;
-                })
-                this.error = undefined;
-            } 		
-            }).catch((error) => {
+        if(result){
+            this.data = JSON.parse(JSON.stringify(result));
+            this.isLoading = false;
+            if(this.data.length > 0 )
+             this.isDataExists = true;
+            this.data.forEach(res=>{
+                res.Brand = res.brand;
+                res.AccountId = '/' + res.accountId;
+                res.AccountName = res.accountName;
+                res.ShopStreet = res.shopStreet;
+                res.PostalCode = res.postalCode;
+                res.City = res.shopCity;
+                res.ShopPhone = res.shopPhone;
+                 res.recordId = res.recordId;
+            })
+            this.error = undefined;
+                }
+        }).catch((error) => {
                 this.error = error;
                 this.data = undefined;
             });
     }
     connectedCallback() {
-        this.getTableData();
-        console.log('>>>here');
+     this.getTableData();
         //console.log('child connected call-' + this.receivedId);
     }
     async showSuccessToast() {
-
+        
         this.showToast('Success Message', 'New Referring Optician added', 'success', 'dismissible');
 
     }
-async performRefresh() {
+    async performRefresh() {
         this.getTableData();
         await refreshApex(this.data);  
     }
@@ -118,12 +127,12 @@ async performRefresh() {
             this.isLoading = false;
             this.isDataExists=true;
             this.getTableData();
-            this.showToast('Success Message', 'Record deleted successfully ', 'success', 'dismissible');
-            refreshApex(this.data);
-            refreshApex(this.wiredResults);
+            this.showToast('Success', 'Record deleted successfully ', 'success', 'dismissible');
+            publish(this.messageContext, UPDATE_DATA_CHANNEL, 'this.isDataExists');
 
         }).catch(error => {
             this.error = error;
+            console.log('>>erroe',this.error);
             this.showToast('Error', this.error, 'error', 'dismissible');
         });
 
@@ -135,6 +144,15 @@ async performRefresh() {
 
         this.dispatchEvent(evt);
 
+    }
+    @wire(getUserDetail)
+    allStages({data }) {
+         if (data) {
+             this.showAllTab = data;
+         } 
+         else{
+             this.showAllTab = false;
+         }
     }
       
 }

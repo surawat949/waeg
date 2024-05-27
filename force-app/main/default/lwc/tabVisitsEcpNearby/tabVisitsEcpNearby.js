@@ -11,7 +11,7 @@ import getSeikoNetworkPicklist from '@salesforce/apex/TabVisitsEcpNearby.getSVSN
 import lblSegmentation from '@salesforce/label/c.SFDC_V_2_MVC_ContactRef_Segment';
 import lblMainCompetitor from '@salesforce/label/c.SFDC_V2_Account_ECP_Nearby_MainCompetitor';
 import lblMinPotential from '@salesforce/label/c.SFDC_V2_Account_ECP_Nearby_MinPotential';
-import lblHVCRoyaltyProgram from '@salesforce/label/c.SFDC_V2_Account_ECP_Nearby_HVC';
+import lblHVCRoyaltyProgram from '@salesforce/label/c.HVC_Loyalty_Program';
 import lblMaxPotential from '@salesforce/label/c.SFDC_V2_Account_ECP_Nearby_MaxPotential';
 import lblDistance from '@salesforce/label/c.SFDC_V2_MVC_Visits_ContactNearby_Distance';
 import lblDisplay from '@salesforce/label/c.SFDC_V_2_tabMVAVisitsClinicNearBy_Display';

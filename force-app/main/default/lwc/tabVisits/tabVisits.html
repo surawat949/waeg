@@ -3,17 +3,19 @@
         <lightning-tab label={custLabel.tacticomTab}>
             <c-tab-visits-tacticom received-id = {recordId}> </c-tab-visits-tacticom>
         </lightning-tab>
-        <lightning-tab label={custLabel.Camp_Opp}>
-            <c-tab-visits-camp-opp received-id = {recordId}> </c-tab-visits-camp-opp>
-        </lightning-tab>
+            <lightning-tab label={custLabel.Camp_Opp}>
+                <c-tab-visits-camp-opp received-id = {recordId}> </c-tab-visits-camp-opp>
+            </lightning-tab>
         <lightning-tab label={custLabel.Reports}>
         <c-tab-visits-reports received-id = {recordId}></c-tab-visits-reports> 
         </lightning-tab>
         <lightning-tab label={custLabel.Trainings}>
          <c-tab-visits-trainings received-id = {recordId}></c-tab-visits-trainings >   
         </lightning-tab>
-        <lightning-tab label={custLabel.ECP_Nearby}>
-        <c-tab-visits-ecp-nearby received-id= {recordId}></c-tab-visits-ecp-nearby>
-        </lightning-tab>
+        <template if:true={showAllTab}>
+            <lightning-tab label={custLabel.ECP_Nearby}>
+                <c-tab-visits-ecp-nearby received-id= {recordId}></c-tab-visits-ecp-nearby>
+            </lightning-tab>
+        </template>
     </lightning-tabset>
 </template>

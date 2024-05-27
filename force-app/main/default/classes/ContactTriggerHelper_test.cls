@@ -131,6 +131,7 @@ public class ContactTriggerHelper_test {
         con4.FirstName = 'Con4';
         con4.AccountId = acc.Id;
         con4.OnekeyId__c = 'WD1234';
+        con4.email = 'Test@test.com';
         con.RecordTypeId = CONTACT_SHOP_OWNER_RT;
         insert con4;
         List<String> claims = new List<String>();

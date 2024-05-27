@@ -1,14 +1,15 @@
 <template>
-     <!--loader-->
-     <div if:true={isLoading}>
+    <!--loader-->
+    <div if:true={isLoading}>
         <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
     </div>
+
     <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
         <table class="slds-table slds-table_bordered" aria-label="tabAccountInvoice" style="background-color: #215ca0;">
             <tr class="row" style="background-color: #aacbff;">
                 <td>
                     <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
-                        <p align="left">{custLbl.lblParent}</p>
+                        <p align="left">{custLbl.lblCustomerChannel}</p>
                     </h3>
                 </td>
                 <td>
@@ -23,78 +24,54 @@
                     object-api-name={Account_Obj}
                     fields={fields1}
                     mode="readonly"
-                    columns="1"
+                    columns="2"
                 ></lightning-record-form>
             </div>
             <div class="slds-col slds-size_1-of-2 slds-m-right_medium">
-                <div class="slds-form-element slds-form-element_readonly">
+                <div class="slds-form-element slds-form-element_readonly slds-m-right_xx-large">
                     <span class="slds-form-element__label">{custLbl.lblNumChild}</span>
                     <div class="slds-form-element__static">{NumberOfChild}</div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
-        <table class="slds-table slds-table_bordered" aria-label="tabAccountInvoice" style="background-color: #215ca0;">
-            <tr class="row" style="background-color: #aacbff;">
-                <td>
-                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
-                        <p align="left">{custLbl.lblBuyingGroup}</p>
-                    </h3>
-                </td>
-            </tr>
-        </table>
-        <div class="sld-gris slds-m-left_medium slds-m-right_medium">
+        <div class="slds-grid slds-m-left_medium slds-m-top_xx-small slds-m-right_medium slds-m-bottom_small">
             <div class="slds-col slds-size_1-of-1">
-                <lightning-record-form record-id={receivedId} 
-                    object-api-name="Account" 
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name="Account"
                     fields={buyingGrpFields}
                     mode="readonly"
-                    columns="2">
-                </lightning-record-form>
-            </div>
-        </div>
-        <div class="slds-grid slds-m-left_medium slds-m-right_medium">
-            <div class="slds-col slds-size_1-of-1">
-                <lightning-record-form record-id={receivedId} 
-                    object-api-name="Account" 
-                    fields={byuingGrpFields2}
-                    mode="readonly"
-                    columns="2">
-                </lightning-record-form>
+                    columns="2"
+                    density="comfy"
+                ></lightning-record-form>
             </div>
         </div>
     </div>
-    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
-        <table class="slds-table slds-table_bordered" aria-label="tabAccountInvoice" style="background-color: #215ca0;">
-            <tr class="row" style="background-color: #aacbff;">
-                <td>
-                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
-                        <p align="left">{custLbl.lblDoor}</p>
-                    </h3>
-                </td>
-            </tr>
-        </table>
-        <div class="slds-grid slds-m-left_medium">
-            <div class="slds-col slds-size_1-of-2">
-                <lightning-record-form
-                    record-id={receivedId} 
-                    object-api-name="Account" 
-                    fields="Door_ID__c"
-                    mode="readonly"
-                    columns="2">
-                </lightning-record-form>
-            </div>
-            <div class="slds-col slds-size_1-of-2">
-                <lightning-record-form record-id={receivedId} 
-                object-api-name="Account" 
-                fields="Door__c"
-                mode="view"
-                columns="2">
-                </lightning-record-form>
+    <template if:true={showAllTab}>
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+            <table class="slds-table slds-table_bordered" aria-label="tabAccountInvoice" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td>
+                        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                            <p align="left">{custLbl.lblDoor}</p>
+                        </h3>
+                    </td>
+                </tr>
+            </table>
+            <div class="slds-grid slds-m-left_medium slds-m-top_medium slds-m-right_medium slds-m-bottom_small">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name="Account"
+                        fields={DoorFields}
+                        mode="view"
+                        columns="2"
+                        density="comfy"
+                    ></lightning-record-form>
+                </div>
             </div>
         </div>
-    </div>
+    </template>
     <!--This is for modal pop-up content -->
     <template if:true={isModalOpen}>
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-01" class="slds-modal slds-fade-in-open">

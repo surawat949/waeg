@@ -35,12 +35,14 @@ import getAttendees from '@salesforce/apex/TrainingCertificateController.getAtte
 import processCertificate from '@salesforce/apex/TrainingCertificateController.generateCertificate';
 import attendeeNums from '@salesforce/apex/TrainingCertificateController.getNumAttendee';
 import getAccBrand from '@salesforce/apex/TrainingCertificateController.getAccountBrand';
+import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
 
 export default class TabVisitsTrainings extends NavigationMixin(LightningElement) {
     @api receivedId;
     @api showAttendees = false;
     @api showMissingError = false;
     trainingRecords;
+    showAllTab=false;
     elarningRecords;
     trainingCount = 0;
     eLearningCount = 0;
@@ -434,5 +436,14 @@ export default class TabVisitsTrainings extends NavigationMixin(LightningElement
       this.showAttendees = false;
       this.selectAttendees = [];
     }
+    @wire(getChatterUserDetail)
+        allStages({data }) {
+			if (data) {
+				this.showAllTab = data;
+			} 
+			else{
+				this.showAllTab = false;
+			}
+        }
 
 }
