@@ -68,6 +68,7 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     @track selectedChannelValue = '';
     @track selectedAlcStageValue = '';
     @track displayedRecords = []; // Records displayed on the current page
+    @track recordCount = 0; //Total number of records
     @track pageSize = 20; // Number of records per page
     @track currentPage = 1; // Current page number
     @track tacticomFilter = '';
@@ -324,6 +325,8 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     updateDisplayedRecords() {
         const startIndex = (this.currentPage - 1) * this.pageSize;
         this.displayedRecords = this.records.slice(startIndex, startIndex + this.pageSize);
+        this.recordCount = this.records.length
+        console.log(this.records.length);
     }
     handleDragStart(event) {
         const $ = jQuery.noConflict();

@@ -69,7 +69,7 @@
                         </template>
                         <div class="pagination">
                             <lightning-button icon-name="utility:chevronleft"  onclick={previousPage} disabled={isFirstPage}></lightning-button>
-                            <span class="keepMiddle">{custLabel.page} {currentPage} {custLabel.of} {totalPages}</span>
+                            <span class="keepMiddle">{custLabel.page} {currentPage} {custLabel.of} {totalPages} ( {recordCount} records)</span>
                             <lightning-button icon-name="utility:chevronright" class="keepRight" onclick={nextPage} disabled={isLastPage}></lightning-button>
                         </div>
                         <div class="table-container">
@@ -210,7 +210,7 @@
                             </table>
                         </div>
                     </div>&nbsp;&nbsp;
-                </div>&nbsp;
+                </div>
                 <div class={secondComponentClass}>
                     <template if:true={showCalender}>
                         <div class="slds-box"><c-full-calenderv2></c-full-calenderv2></div>

@@ -23,6 +23,8 @@ public class TabVisitsIndicatorController {
                                                                WHERE Account__c = :receivedId AND Project_Status__c ='In progress'];
         List<Visits__c> listOfVisit = [SELECT ID,Visit_Type__c,Visit_Status__c FROM Visits__c 
                                        WHERE Account__c = :receivedId AND Visit_Type__c ='Visit'];
+        list<Account_Life_Cycle__c> listOfALC = [SELECT ID, Account__c,Active__c FROM Account_Life_Cycle__c 
+                                                 WHERE Account__c =: receivedId AND Active__c = true];
         IndicatorWrapper wrapper = new IndicatorWrapper();
         String userLanguage = UserInfo.getLanguage();
         if(currAcc !=null){
@@ -50,7 +52,7 @@ public class TabVisitsIndicatorController {
             else{
                 //total visit flag                
                  wrapper.tacticomFlag = 'GREY';
-                wrapper.lifeCycleFlag='GREY';
+                //wrapper.lifeCycleFlag='GREY';
                 if(currAcc.Total_Visits_Planned__c>0){
                     if(currAcc.Visits_performed__c+currAcc.Digital_Visits_Performed__c>0){
                         
@@ -210,6 +212,13 @@ public class TabVisitsIndicatorController {
                 Map<String,String> tacticomFlag = tecticomIndicators(receivedId,currAcc.Segmentation_Net__c,currAcc.TACTICOM_SOF__c,userLanguage);
                 wrapper.tacticomFlag = tacticomFlag.get('flagColor');
                 wrapper.tacticomFlagHelpText = tacticomFlag.get('tacticomFlagHelpText'); 
+              //LIFECYCLE flag
+               if(listOfALC.size()>0){
+                 	wrapper.lifeCycleFlag='GREEN';   
+                } 
+                else{
+                 	wrapper.lifeCycleFlag='RED';      
+                }
             }
         }
         return wrapper;

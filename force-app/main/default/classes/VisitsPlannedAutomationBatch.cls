@@ -1,9 +1,16 @@
+/*
+  @Author : Fazurulla Ganganapalli (Encora)
+  @Date : 27/07/2024
+  @Description : The VisitsPlannedAutomationBatch class automates the update of account records by querying accounts with null 
+  Agreed Visits or Agreed No of Digital Visits, retrieving configuration data based on segmentation from SFDC_V2_Configurations__c, and updating the accounts with the corresponding planned visit values, then logs the completion of the batch job.
+*/
 global class VisitsPlannedAutomationBatch implements Database.Batchable<SObject>, Database.Stateful {
 
     //@Query to get all accounts
     global Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator([
             SELECT Id, Segmentation_Net__c, Agreed_Visits__c, Agreed_No_of_Digital_Visits__c,Shop_Country__c FROM Account
+            WHERE (Agreed_Visits__c = null OR Agreed_No_of_Digital_Visits__c = null)
         ]);
     }
 
@@ -39,6 +46,6 @@ global class VisitsPlannedAutomationBatch implements Database.Batchable<SObject>
 
     //@Finish method called after all batches are processed
     global void finish(Database.BatchableContext BC) {
-        System.debug('Batch job completed');
+        
     }
 }
