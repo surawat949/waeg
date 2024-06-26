@@ -1,79 +1,73 @@
-/**
- *  - Test class for BatchCls_UpdateVisitKPI
- *  - Surawat Sakulmontreechai <<surawat.sakulmontreechai@hoya.com>>
- *  - Created date : 2023-11-17
- *  - Since api : v.55.0
- */
-@isTest(SeeAllData=true)
+@isTest
 public class BatchCls_UpdateVisitKPI_Test {
 
+   
     @isTest
-    static void UnitTest01(){
-        List<Account> acc = new List<Account>();
-        List<Visits__c> visitList = new List<Visits__c>();
-        List<User> usrList = new List<User>();
-        List<VISIT_KPI__c> vkpiList = new List<VISIT_KPI__c>();
-        List<VisitKPI_Settings__c> vSetting = new List<VisitKPI_Settings__c>();
-        String profileId = [SELECT Id FROM Profile WHERE Name ='System Administrator'].Id;
-        for(Integer i=0;i<50;i++){
+    static void UnitTest01() {
+        Test.startTest();
+        
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            // Setup User
+            String profileId = [SELECT Id FROM Profile WHERE Name ='System Administrator'].Id;
+            
             User u = new User();
             u.FirstName = 'This';
-            u.LastName = 'Test'+String.valueOf(i);
-            u.Username = 'test@hoya.com.wage.invalid'+String.valueOf(i);
-            u.Email = 'test@hoya.com.waeg.invalid'+String.valueOf(i);
+            u.LastName = 'Test';
+            u.Username = 'test@hoya.com.wage.invalid';
+            u.Email = 'test@hoya.com.waeg.invalid';
             u.Visit_counter__c = true;
             u.CompanyName = 'HAPL';
             u.TimeZoneSidKey = 'Asia/Bangkok';
             u.LocaleSidKey = 'en_US';
             u.EmailEncodingKey = 'UTF-8';
             u.LanguageLocaleKey = 'en_US';
-            u.Alias = 'VTest'+String.valueOf(i);
+            u.Alias = 'VTest';
             u.ProfileId = profileId;
-            usrList.add(u);
+            insert u;
+        }
 
-        }
-        insert usrList;
-        for(Integer i=0;i<50;i++){
-            Account a = new Account();
-            a.Name = 'Test'+string.valueOf(i);
-            a.Hoya_Account_ID__c = 'TE-001-'+string.valueOf(i);
-            a.OwnerId = usrList[i].Id;
-            acc.add(a);
-        }
-        insert acc;
-         
-        for(Integer i=0;i<50;i++){
-            Visits__c visits = new Visits__c();
-            visits.Account__c = acc[i].Id;
-            visits.Assigned_to__c = usrList[i].Id;
-            visits.Start_Time__c = System.today()-2;
-            visits.End_Time__c = System.today()-1;
-            visits.Visit_Status__c = 'Complete';
-            visitList.add(visits);
-        }
-        insert visitList;
+        // Using the created user to insert other records
+        // Create and insert a single account
+        Account a = new Account();
+        a.Name = 'Test';
+        a.Hoya_Account_ID__c = 'TE-001-1';
+        insert a;
 
-        for(Integer i=0;i<50;i++){
-            VISIT_KPI__c v = new VISIT_KPI__c();
-            v.Area_Sales_Manager__c = usrList[i].Id;
-            v.Name = 'test'+String.valueOf(i);
-            v.Date__c = Date.today();
-            vkpiList.add(v);
-        }
-        insert vkpiList;
+        // Create and insert a single visit
+        Visits__c visits = new Visits__c();
+        visits.Account__c = a.Id;
+        visits.Assigned_to__c = UserInfo.getUserId();
+        visits.Start_Time__c = System.today()-2;
+        visits.End_Time__c = System.today()-1;
+        visits.Visit_Status__c = 'Complete';
+        insert visits;
 
-        for(Integer i=0;i<50;i++){
-            VisitKPI_Settings__c ss = new VisitKPI_Settings__c();
-            ss.Name = 'Test'+string.valueOf(i);
-            ss.isActive__c = true;
-            vSetting.add(ss);
-        }
-        insert vSetting;
+        // Create and insert a single VISIT_KPI__c record
+        VISIT_KPI__c v = new VISIT_KPI__c();
+        v.Area_Sales_Manager__c = UserInfo.getUserId();
+        v.Name = 'test';
+        v.Date__c = Date.today();
+        insert v;
 
-        Test.StartTest();
-        BatchCls_UpdateVisitKPI obj = new BatchCls_UpdateVisitKPI(System.today(), System.now());
-        DataBase.executeBatch(obj);
-        Test.StopTest();
+        // Create and insert a single VisitKPI_Settings__c record
+        VisitKPI_Settings__c ss = new VisitKPI_Settings__c();
+        ss.Name = 'Test';
+        ss.isActive__c = false; // Set to false to avoid triggering another batch job
+        insert ss;
+
         
+        // Execute the batch
+        BatchCls_UpdateVisitKPI obj = new BatchCls_UpdateVisitKPI(System.today(), null);
+        Database.executeBatch(obj); 
+        Test.stopTest();
     }
+    
+    @isTest
+    public static void testRunVisitKPIBatch() {
+        Test.startTest();
+        CtrlRunVisitKPIBatch ctrl = new CtrlRunVisitKPIBatch();
+        ctrl.runVisitKPIBatch();
+        Test.stopTest();
+    }
+
 }

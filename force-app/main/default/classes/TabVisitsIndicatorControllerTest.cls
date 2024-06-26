@@ -23,6 +23,8 @@ public class TabVisitsIndicatorControllerTest {
         //insert a1;
         accList.add(a1);
 
+        
+          
         Account a4 = new Account();
         a4.Hoya_Account_ID__c = 'test1';
         a4.Name = 'Test Account';
@@ -218,6 +220,10 @@ public class TabVisitsIndicatorControllerTest {
         //insert visit4;   
         visitList.add(visit4);
         insert visitList;
+        Account_Life_Cycle__c listOfALC = new Account_Life_Cycle__c();
+        listOfALC.Account__c = accList[0].id;
+        listOfALC.Active__c = true;
+        insert listOfALC;
         
     }
     

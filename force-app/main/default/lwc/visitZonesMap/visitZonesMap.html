@@ -1,0 +1,147 @@
+<template>
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." size="medium" class="spinshow" variant="brand"></lightning-spinner>
+    </div>
+    <div class="slds-box slds-m-top_medium slds-m_bottom_medium slds-m-right_medium">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-6 slds-m-right_small">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Sub-area" style="width: 100%;">
+                    <!--<thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Icon">Icon</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Sub-area">Sub-area</div>
+                            </th>
+                        </tr>
+                    </thead>-->
+                    <tbody>
+                        <tr class="slds-line-height_reset" onclick={handleClickSubarea1} data-id="sub_area_1">
+                            <td data-label="Sub-area 1">
+                                <div class="slds-truncate" title="Sub-area 1">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:yellow;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 1">
+                                <div class="slds-truncate" title="Sub-area 1">Sub-area 1</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" onclick={handleClickSubarea2} data-id="sub_area_2">
+                            <td data-label="Sub-area 2">
+                                <div class="slds-truncate" title="Sub-area 2">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#fcb207;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 2">
+                                <div class="slds-truncate" title="Sub-area 2">Sub-area 2</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" onclick={handleClickSubarea3} data-id="sub_area_3">
+                            <td data-label="Sub-area 3">
+                                <div class="slds-truncate" title="Sub-area 3">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#ec1717;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 3">
+                                <div class="slds-truncate" title="Sub-area 3">Sub-area 3</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" onclick={handleClickSubarea4} data-id="sub_area_4">
+                            <td data-label="Sub-area 4" title="Sub-area 4">
+                                <div class="slds-truncate" title="Sub-area 4">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#13cddc;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 4" title="Sub-area 4">
+                                <div class="slds-truncate" title="Sub-area 4">Sub-area 4</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" onclick={handleClickSubarea5} data-id="sub_area_5">
+                            <td data-label="Sub-area 5" title="Sub-area 5">
+                                <div class="slds-truncate" title="Sub-area 5">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#58bd08;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 5" title="Sub-area 5">
+                                <div class="slds-truncate" title="Sub-area 5">Sub-area 5</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" onclick={handleClickSubarea6} data-id="sub_area_6"><!--This is Not Selected tacticom -->
+                            <td data-label="Not Selected" title="Not Selected">
+                                <div class="slds-truncate" title="Not Selected">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#000F2E;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Not Selected" title="Not Selected">
+                                <div class="slds-truncate" title="Not Selected">Not Selected</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset">
+                            <td data-label="Last 7 days visits" title="Last 7 days visits">
+                                <div class="slds-truncate" title="Last 7 days visits">
+                                    <span style="vertical-align: middle;display: inline-block;">
+                                        &nbsp;                     
+                                        <svg version="1.1" baseProfile="full" viewBox="0 0 100 100" width="13" y="30" xmlns="http://www.w3.org/2000/svg">
+                                            <circle r="45" cx="50" cy="50" fill="white" stroke="black" stroke-width="5px" />
+                                        </svg>
+                                        <br>&nbsp;
+                                    </span>
+                                </div>
+                            </td>
+                            <td data-label="Last 7 days visits" title="Last 7 days visits">
+                                <div class="slds-truncate" title="Last 7 days visits">
+                                    <span style="vertical-align: middle;display: inline-block;">Last 7 days visits<br>&nbsp;</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_header-hidden" style="width: 100%;">
+                    <tbody>
+                        <tr class="slds-line-height_reset">
+                            <td>
+                                <lightning-button name="refreshData" variant="brand" label="Refresh" icon-name="utility:refresh" icon-position="left" onclick={handleRefreshData} title="Refresh Visit Zone Data"></lightning-button>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slds-col slds-size_5-of-6 slds-m-right_medium">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto">
+                        <template lwc:if={showMap}>
+                            <lightning-map
+                                map-markers={mapMaker}
+                                markers-title={mapMakerTitle}
+                                zoom-level={zoomLevel}
+                                center={vCenter}
+                                list-view={displayListView}
+                            ></lightning-map>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </div>
+    </div>
+</template>

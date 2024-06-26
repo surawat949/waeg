@@ -38,6 +38,8 @@ public class TabVisitsIndicatorController {
                 wrapper.campaignsIndicatorHelpText = System.Label.get('', 'CAMPAIGNS_01', userLanguage);
                 wrapper.showpadIndicator='GREY';
                 wrapper.lifeCycleFlag='GREY';
+                wrapper.lifeCycleFlagHelpText=System.Label.get('', 'VISITS_01', userLanguage);
+                
                 if(currAcc.TACTICOM_SOF__c == '' || currAcc.TACTICOM_SOF__c == null){
                         wrapper.tacticomFlag = 'GREY';
                         wrapper.tacticomFlagHelpText = System.Label.get('', 'Tacticom_01', userLanguage);
@@ -215,9 +217,11 @@ public class TabVisitsIndicatorController {
               //LIFECYCLE flag
                if(listOfALC.size()>0){
                  	wrapper.lifeCycleFlag='GREEN';   
+                    wrapper.lifeCycleFlagHelpText=System.Label.get('', 'CustomerReview01', userLanguage);
                 } 
                 else{
-                 	wrapper.lifeCycleFlag='RED';      
+                 	wrapper.lifeCycleFlag='RED'; 
+                    wrapper.lifeCycleFlagHelpText=System.Label.get('', 'CustomerReview02', userLanguage);
                 }
             }
         }
@@ -243,7 +247,7 @@ public class TabVisitsIndicatorController {
         @AuraEnabled public String tacticomFlagHelpText{get;set;}
         
         @AuraEnabled public String lifeCycleFlag{get;set;} 
-        // @AuraEnabled public String lifeCycleFlagHelpText{get;set;} 
+        @AuraEnabled public String lifeCycleFlagHelpText{get;set;} 
     }
     public static Map<String,String> tecticomIndicators(Id receivedId,String Segment,String subArea,String userLanguage) {
         list<Visits__c> listOfVisit60days = [SELECT ID,Visit_Type__c,Visit_Status__c FROM Visits__c 

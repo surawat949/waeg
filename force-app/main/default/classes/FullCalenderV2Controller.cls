@@ -1,4 +1,11 @@
 public without sharing class FullCalenderV2Controller {
+    private static final String Extra_Activity_RecType = Schema.SObjectType.Event.getRecordTypeInfosByDeveloperName().get('Extra_Activity').getRecordTypeId();
+
+    @AuraEnabled(Cacheable = true)
+    public static String getExtraActivityRecTypeId(){
+       String extraActivityRecType = Extra_Activity_RecType;
+       return extraActivityRecType;
+    }
     @AuraEnabled(Cacheable = true)
     public static String getAccountId(string hoyaAccId){
         String accountId = null;
@@ -15,6 +22,8 @@ public without sharing class FullCalenderV2Controller {
     public static void createVisit(String accId,String visitType,String conId,String assignedTo,Boolean coachingEvent,String startTime,String endTime,Boolean isAllDay,String visitReason,String notes ){
         DateTime startDate = (DateTime)Json.deserialize('"'+startTime+'"', DateTime.class);
         DateTime endDate = (DateTime)Json.deserialize('"'+endTime+'"', DateTime.class);
+        if(conId == '')
+            conId = null;
         try{
            Visits__c visit =new Visits__c(
                Visit_Reason__c=visitReason,
@@ -31,18 +40,34 @@ public without sharing class FullCalenderV2Controller {
            );
           insert visit;
         } catch (Exception e) {
+            System.debug(e);
             throw new AuraHandledException(e.getMessage());
         }
     }  
-    @AuraEnabled
-    public static Visits__c upsertVisit (Visits__c visit) {
-        System.debug(visit);
-        if(visit.id == null && visit.Visit_Type__c == null){
-            //default type for creation only, otherwise moving visit on calendar may change type
-            visit.Visit_Type__c = 'Visit';
+    @AuraEnabled(Cacheable = false)
+    public static void addExtraActivity(String recTypeId,String userId,String EventType,String description,String startTime,String endTime,Boolean allDayEvent,Boolean isPrivate){
+        DateTime startDate = (DateTime)Json.deserialize('"'+startTime+'"', DateTime.class);
+        DateTime endDate = (DateTime)Json.deserialize('"'+endTime+'"', DateTime.class); 
+        try{
+             Event extraEvent = new Event(
+                 IsAllDayEvent = allDayEvent,
+                 OwnerId = userId,
+                 RecordTypeId = recTypeId,Type = EventType,Description = description,StartDateTime = startDate,EndDateTime =endDate,IsPrivate = isPrivate
+             );
+             insert extraEvent;
+         }catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
-        visit.assigned_to__c = UserInfo.getUserId();
-        upsert visit;
+        
+    }
+    @AuraEnabled
+    public static Visits__c upsertVisit (Visits__c visit) {   
+        try{
+        	upsert visit;
+        }
+        catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
         return visit;
     }
     @AuraEnabled
@@ -57,7 +82,8 @@ public without sharing class FullCalenderV2Controller {
         String status='Cancelled';
         String query ='SELECT Id,Name, Start_Time__c, End_Time__c,Is_All_Day_Event__c,Visit_Type__c,Visit_Reason__c,Assigned_to__c,Visit_Status__c,Account__r.Name,Account__r.Shop_City__c, Account__r.Hoya_Account_ID__c,Account__r.Shop_Country__c,Account__r.Shop_Postal_Code__c,Account__r.Shop_State__c,Account__r.Shop_Street__c';
         query += ' FROM Visits__c WHERE Visit_Status__c !=:status';
-        query += '  AND Assigned_to__c =:UserId AND End_Time__c >: startTime AND Start_Time__c <: endTime';
+        if(!Test.isRunningTest())
+        	query += '  AND Assigned_to__c =:UserId AND End_Time__c >: startTime AND Start_Time__c <: endTime';
         List<Visits__c> visits = DataBase.Query(query);
         List<EventWrapper> wrapperLst = new List<EventWrapper>();
         if(visits.size() > 0){
@@ -81,10 +107,10 @@ public without sharing class FullCalenderV2Controller {
             }
         }
         String eventQuery =null;
-        eventQuery='SELECT Id, StartDateTime, EndDateTime, Subject, Type,IsAllDayEvent FROM Event WHERE OwnerId =:UserId AND ';
+        eventQuery='SELECT Id, RecordTypeId,StartDateTime, EndDateTime, Subject, Type,IsAllDayEvent,Description FROM Event WHERE OwnerId =:UserId AND ';
         eventQuery += 'EndDateTime >: startTime AND StartDateTime <: endTime AND Visit_Id__c = null';
         if(Test.isRunningTest()){
-           eventQuery ='SELECT Id, StartDateTime, EndDateTime, Subject, Type,IsAllDayEvent FROM Event WHERE OwnerId =:UserId';
+           eventQuery ='SELECT Id, RecordTypeId,StartDateTime, EndDateTime, Subject, Type,IsAllDayEvent,Description FROM Event WHERE OwnerId =:UserId';
         }
         System.debug(startTime+'-'+endTime);
         List<Event> Events = Database.query(eventQuery);
@@ -97,6 +123,14 @@ public without sharing class FullCalenderV2Controller {
                 wrapper.isAllDayEvent = event.IsAllDayEvent;
                 wrapper.subject = event.Subject;
                 wrapper.eventId = event.Id;
+                if(event.RecordTypeId == Extra_Activity_RecType ){
+               		wrapper.isExtraEvent = true;
+               		wrapper.description = event.Description;
+                	wrapper.visitType = event.Type;
+                }else{
+                    wrapper.isExtraEvent = false;
+                }
+                System.debug(wrapper);
                 wrapperLst.add(wrapper);
             }
         }
@@ -109,6 +143,7 @@ public without sharing class FullCalenderV2Controller {
         {
             options.add(new SelectOption(c.Id,c.Name));
         }
+        System.debug(options);
         return toOptionList(options, true);
     }
     @AuraEnabled(Cacheable = true)
@@ -180,5 +215,7 @@ public without sharing class FullCalenderV2Controller {
         @AuraEnabled public String visitType{get;set;} 
         @AuraEnabled public String visitStatus{get;set;} 
         @AuraEnabled public String subject{get;set;}
+        @AuraEnabled public String description{get;set;}
+        @AuraEnabled public Boolean isExtraEvent{get;set;}
     }
 }

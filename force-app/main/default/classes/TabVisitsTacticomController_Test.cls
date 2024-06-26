@@ -53,6 +53,7 @@ public class TabVisitsTacticomController_Test {
 
         TabVisitsTacticomController.searchLookUpUser('Test', 'User');
         TabVisitsTacticomController.CreateNewTaskRequestNewVisits('New', 'Test', a.Id, u.Id, 'This is a test', System.today(), 1, 1);
+        TabVisitsTacticomController.getSupportVisitsInfo(a.Id);
         Test.StopTest();
 
     }

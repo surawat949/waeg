@@ -1,4 +1,5 @@
 import { LightningElement ,api, wire} from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import { getRecord } from 'lightning/uiRecordApi';
 import FullCalendarJS from '@salesforce/resourceUrl/fullcalendar';
 import FullCalendarJS_5 from '@salesforce/resourceUrl/FullCalendar5';
@@ -9,6 +10,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import TimeZone from '@salesforce/i18n/timeZone';
 import LangLocale from "@salesforce/i18n/lang";
 import visitCreatePopup from 'c/visitCreatePopup';
+
 //Custom Labels
 import Today from '@salesforce/label/c.Today';
 import Month from '@salesforce/label/c.Month';
@@ -19,7 +21,7 @@ import getEvents from '@salesforce/apex/FullCalenderV2Controller.getEvents';
 import getTranslations from '@salesforce/apex/FullCalenderV2Controller.getTranslations';
 import getAccountId from '@salesforce/apex/FullCalenderV2Controller.getAccountId';
 import upsertVisit from '@salesforce/apex/FullCalenderV2Controller.upsertVisit';
-export default class VisitPlanningCalenderLWC extends LightningElement {
+export default class VisitPlanningCalenderLWC extends NavigationMixin(LightningElement) {   
     translations;
     visit;
     @api top;
@@ -38,6 +40,9 @@ export default class VisitPlanningCalenderLWC extends LightningElement {
     headerDate;
     custLabel = {
         Today,Month,Week,Day
+    }
+    @api refresh(){
+        this.updateCalenderEvents();
     }
     constructor(){
         super();
@@ -68,7 +73,7 @@ export default class VisitPlanningCalenderLWC extends LightningElement {
              this.showToast('Error', 'error', error.message);
         })
     }
-    async renderedCallback() {
+    async renderedCallback() {       
         // Performs this operation only on first render
         if (this.jsInitialised) {
           return;
@@ -115,20 +120,17 @@ export default class VisitPlanningCalenderLWC extends LightningElement {
             eventMouseLeave :this.handleMouseLeave.bind(this),
             eventReceive: this.handleExternalDrop.bind(this),
             eventDrop:this.handleEventDrop.bind(this),
-            eventResize:this.handleEventDrop.bind(this)
+            eventResize:this.handleEventDrop.bind(this)           
         });
         this.calendar.render();  
     }
-
+    
     handleHover(info){
         let nubbinpos = 'slds-nubbin_left-top';
-        let top = '0%';
+        let top = '-5%';
         let left = '116%';
         let posRect = info.el.getBoundingClientRect();
         let remSpace = Math.floor(screen.width - posRect.left);
-        console.log('remSpace',remSpace);
-        console.log('posRect',posRect);
-        console.log('screen width',screen.width);
         if(remSpace <= 350){
             left = '-446%';
             if($(info.el).hasClass("fc-daygrid-event")){
@@ -137,7 +139,7 @@ export default class VisitPlanningCalenderLWC extends LightningElement {
             nubbinpos = 'slds-nubbin_right-top';
         }
         var parts = info.event.title.split('\n');
-        let elem = '<div class="calpopover slds-popover slds-popover_tooltip slds-popover_medium" role="tooltip" style="position:absolute;transform:rotate(360deg)"><div class="slds-popover__body">';
+        let elem = '<div class="calpopover slds-popover slds-popover_tooltip slds-popover_medium" role="tooltip" style="position:absolute;min-height:40px;transform:rotate(360deg)"><div class="slds-popover__body">';
         parts.forEach((part,index)=>{
             elem += '<span>'+part+'</span></br>';
         });
@@ -202,7 +204,6 @@ export default class VisitPlanningCalenderLWC extends LightningElement {
         v.Call_To_Action_Notes__c = null;
         v.Visit_Reason__c = null;
         v.Call_To_Action__c = null;
-        v.Visit_Planning_Tracker__c = 'Visit Planning';
         v.Assigned_to__c = userId;
         v.userName = this.userName;
         v.Visit_Notes__c = null;
@@ -216,10 +217,28 @@ async showPopUp(visit){
         });          
         this.updateCalenderEvents();
 }
+navigateToRecord(recordId,ObjectName){
+    const pageReference = {
+        type: 'standard__recordPage',
+        attributes: {
+            recordId: recordId, // Replace with the actual record ID
+            objectApiName: ObjectName, // Replace with the object API name
+            actionName: 'view'
+        }
+    };
+
+    // Use the Navigate method to navigate to the specified record page
+    this[NavigationMixin.Navigate](pageReference);
+}
 eventClickHandler = (info) => {
+    if(info.event.title != null && info.event.title.startsWith('Event') && info.event.extendedProps.isExtraEvent != null && info.event.extendedProps.isExtraEvent == true){
+        var url = '/'+info.event.extendedProps.sfid;
+        window.open(url, "_blank");
+       // this.navigateToRecord(info.event.extendedProps.sfid,'Event');
+    }
     if(info.event.title != null && !info.event.title.startsWith('Event')){
         const titleArray = info.event.title.split('\n');
-        var count = titleArray.length;
+        var count = titleArray.length;        
         if(info.event.start > new Date()){    
             var hoyaAccId = titleArray[count-1];
             getAccountId({hoyaAccId :hoyaAccId})
@@ -229,6 +248,7 @@ eventClickHandler = (info) => {
                     this.showToast('Error', error, 'Missing data like HoyaAccountId');  
                 }
                 else{
+                   // this.navigateToRecord(response,'Account');
                     window.open(url, "_blank");
                 }
             }).catch(error => {
@@ -238,6 +258,7 @@ eventClickHandler = (info) => {
         else{          
             var visitId = info.event.extendedProps.sfid;
             var url = '/' + visitId;
+          //  this.navigateToRecord(info.event.extendedProps.sfid,'Visits__c');
             window.open(url, "_blank");
         }
     }
@@ -288,7 +309,6 @@ eventClickHandler = (info) => {
         .then(response => {
             this.eventOriginalData = response;
             let Events = JSON.parse(JSON.stringify(response));
-            console.log('Events response',JSON.stringify(response));
             for (let event in Events) {
                 var title ;
                 var allDay;
@@ -299,15 +319,28 @@ eventClickHandler = (info) => {
                 var editable;
                 if(Events[event].eventType == 'UserEvent'){
                     this.timezone = TimeZone;
-                    this.locale = locale;
+                    this.locale = locale;                   
                     allDay = Events[event].isAllDayEvent;
                     start = moment(Events[event].startTime).tz(this.timezone).format();
                     end = moment(Events[event].endTime).tz(this.timezone).format();
-                    title = "Event " + Events[event].subject;
-                    sfid = Events[event].eventId;
+                    if(Events[event].subject != null && Events[event].subject != 'undefined'){
+                        title = "Event " + Events[event].subject;
+                    }
+                    else{
+                        title = "Event";
+                    }
+                    if(Events[event].isExtraEvent){
+                        if(Events[event].visitType ){
+                            title += " " + Events[event].visitType;
+                        }
+                        if(Events[event].description ){
+                            title += "\n" + Events[event].description;
+                        }
+                    }
+                   
+                    sfid = Events[event].eventId;                    
                     backgroundColor = '#FF9411';
                     editable=false;
-                                 console.log('error1');
                     this.allEvents.push({
                         title:title,
                         allDay:allDay,
@@ -315,7 +348,8 @@ eventClickHandler = (info) => {
                         end:end,
                         backgroundColor:backgroundColor,
                         sfid:sfid,
-                        editable:editable
+                        editable:editable,
+                        isExtraEvent:Events[event].isExtraEvent
                     });
                 }
                 else{
@@ -360,54 +394,45 @@ eventClickHandler = (info) => {
                             title = title + "\n" + Events[event].hoyaAccountId;
                         }
                     }
-                    console.log('error2');
                     allDay =Events[event].isAllDayEvent;     
                     this.timezone = TimeZone;
                     this.locale = locale;
                     start = moment(Events[event].startTime).tz(this.timezone).format();
                     end = moment(Events[event].endTime).tz(this.timezone).format();                   
                     sfid = Events[event].eventId;
-                    if(Events[event].hoyaAccountId != null && Events[event].hoyaAccountId.toUpperCase().startsWith('US') ){
+                    if(Events[event].visitType=='Visit'){
                         backgroundColor = {
-                        "Planned" : '#bf8040',
-                        "Prepared" : '#bf8040',
-                        "Complete" : '#999966',
-                        "Cancelled" : 'red'
+                            "Planned" : '#082841',
+                            "Prepared" : '#082841',
+                            "Complete" : '#999966',
+                            "Cancelled" : 'red'
                         }[Events[event].visitStatus];
                     }
+                    else if(Events[event].visitType=='Digital Visit'){
+                        backgroundColor = {
+                            "Planned" : '#2eb82e',
+                            "Prepared" : '#2eb82e',
+                            "Complete" : '#999966',
+                            "Cancelled" : 'red'
+                        }[Events[event].visitStatus];
+                    }
+                    else if(Events[event].visitType=='Call'){
+                        backgroundColor = {
+                            "Planned" : '#ff0066',
+                            "Prepared" : '#ff0066',
+                            "Complete" : '#999966',
+                            "Cancelled" : 'red'
+                        }[Events[event].visitStatus];
+                    }   
                     else{
                         backgroundColor = {
-                        "Planned" : '#bf8040',
-                        "Prepared" : '#bf8040',
-                        "Complete" : '#999966',
-                        "Cancelled" : 'red'
+                            "Planned" : '#bf8040',
+                            "Prepared" : '#bf8040',
+                            "Complete" : '#999966',
+                            "Cancelled" : 'red'
                         }[Events[event].visitStatus];
-                        if(Events[event].visitType=='Visit'){
-                            backgroundColor = {
-                                "Planned" : '#082841',
-                                "Prepared" : '#082841',//#039960
-                                "Complete" : '#999966',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }
-                        if(Events[event].visitType=='Digital Visit'){
-                            backgroundColor = {
-                                "Planned" : '#2eb82e',
-                                "Prepared" : '#2eb82e',//#039960
-                                "Complete" : '#999966',//'#bf8040',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }
-                        if(Events[event].visitType=='Call'){
-                            backgroundColor = {
-                                "Planned" : '#ff0066',
-                                "Prepared" : '#ff0066',
-                                "Complete" : '#999966',//'#ecc6d8',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }                    
-                    }
-                    
+                    }                 
+                                       
                     this.allEvents.push({
                         title:title,
                         allDay:allDay,
@@ -417,14 +442,12 @@ eventClickHandler = (info) => {
                         sfid:sfid
                     });
                 }
-            }
-             console.log('error3');
+            }           
             this.error = undefined; 
             this.calendar.removeAllEvents();
             this.calendar.addEventSource(this.allEvents);
             this.calendar.render();
          }).catch(error => {
-             console.log('errorMessage',error.message);
              this.showToast('Error', 'error', error.message);         
         })     
     }   

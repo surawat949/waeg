@@ -84,8 +84,8 @@ public without sharing class LogException extends Exception {
     
     public static void log(Exception e){
         try{
-		    String stackTrace = e.getStackTraceString().substringBefore('\n');
-		    String className = stackTrace.substringAfter('.').substringBefore('.');	
+            String stackTrace = e.getStackTraceString().substringBefore('\n');
+            String className = stackTrace.substringAfter('.').substringBefore('.'); 
             String methodName = stackTrace.substringBefore(':').substringAfter(className).substringAfter('.');
                 
             //Governer Limit of executingQuery 
@@ -108,5 +108,17 @@ public without sharing class LogException extends Exception {
             insert exc;          
         } 
         finally{}            
+    }
+    public static void log(String className, String methodName, String exceptionType, String errorMessage){
+        try{
+            Exception_Logger__c exc = new Exception_Logger__c();
+            exc.Exception_Message__c = errorMessage;
+            exc.Exception_Type__c = exceptionType;
+            exc.Method_Name__c = methodName;
+            exc.Class_Name__c = className;
+            insert exc;          
+        }catch(Exception ex){
+            LogException.log(ex);
+        }
     }
 }

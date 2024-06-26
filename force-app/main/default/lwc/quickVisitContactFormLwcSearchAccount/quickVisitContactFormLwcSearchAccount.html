@@ -1,0 +1,10 @@
+<template>
+    <c-custom-lookup-contact-relation icon-name="standard:account" s-object-api-name="AccountContactRelation" label="" 
+        name="form-input-1" placeholder="...Select Account..." received-id={ContactIdData} default-record-id={AccountIdData} onlookupupdate={handleLookupValueChange}>
+    </c-custom-lookup-contact-relation>
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-1">
+            <lightning-input type="text" name="form-input-1" data-my-id="form-input-1" onchange={ValueChange} class="slds-hide"></lightning-input>
+        </div>
+    </div>
+</template>

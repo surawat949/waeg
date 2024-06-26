@@ -28,6 +28,11 @@ public with sharing class AccountTriggerHelper {
         
         List<Account> strategicNetUpdateList = new List<Account>();
         List<Account> strategicGrossUpdateList = new List<Account>(); 
+
+        List<Account> ownerUpdateList = new List<Account>();
+        List<Account> shopCountryList = new List<Account>();
+        
+
         Set<Id> accLifeCycleList = new Set<Id>();
         Map<Id,Boolean> alcActiveMap = new Map<Id,Boolean>();
         if(newList!=null && newList.size()>0){
@@ -156,6 +161,14 @@ public with sharing class AccountTriggerHelper {
                         strategicNetUpdateList.add(a);
                         somethingToDo = true;
                     }
+                    if(a.OwnerId != oldAccount.OwnerId){
+                        ownerUpdateList.add(a);
+                        somethingToDo = true;
+                    }
+                    if(a.shop_country__c != oldAccount.shop_country__c){
+                        shopCountryList.add(a);
+                        somethingToDo = true;
+                    }
                 }
                 //Update first & Second competitor Global name from metadata
                 //
@@ -174,7 +187,14 @@ public with sharing class AccountTriggerHelper {
                       strategicGrossUpdateList.add(a);
                       somethingToDo = true;
                 }
-                
+                //before insert if HVC Loyalty Program is selected 
+                if(triggerEvent == System.TriggerOperation.BEFORE_INSERT && a.Seiko_Network__c != null && a.Seiko_Network__c == 'none'){
+                    if(a.brand__c == 'HOYA' && a.Seiko_Network__c == 'Seiko Vision Specialist' ){
+                        a.addError('Seiko Vision Specialist can be selectable only on Seiko Accounts');
+                    }else if(a.brand__c == 'SEIKO' && a.Seiko_Network__c == 'Visionary Alliance'){
+                        a.addError('Visionary Alliance can be assigned only on Hoya Accounts');
+                    }
+                }
                 //After Insert               
                 if(triggerEvent == System.TriggerOperation.AFTER_INSERT){
                     Boolean isConsiderableRecTypeForALC = isConsiderableRecTypeForALC(a.RecordTypeId);
@@ -209,6 +229,7 @@ public with sharing class AccountTriggerHelper {
                     SetGlobalCompetitorNames(namesToBeUpdatedList);
                 }
                 addSAPCompanyCode(newList);
+                addMigratedToSFDC(newList);
             }
             when AFTER_INSERT {
                 if (somethingToDo) {
@@ -228,8 +249,11 @@ public with sharing class AccountTriggerHelper {
                     System.debug(strategicNetUpdateList);
                     doLastSalesStatisticsUpdate(strategicGrossUpdateList,newMap,'gross','UPDATE');
                     doLastSalesStatisticsUpdate(strategicNetUpdateList,newMap,'net','UPDATE');
-                    SetGlobalCompetitorNames(namesToBeUpdatedList);
+                    SetGlobalCompetitorNames(namesToBeUpdatedList);                    
+                    addMigratedToSFDC(ownerUpdateList);
+                    addSAPCompanyCode(shopCountryList);
                 }
+                
             }
             when AFTER_UPDATE {
                 if (somethingToDo) {
@@ -255,9 +279,28 @@ public with sharing class AccountTriggerHelper {
             }
         }
     }
-
+    public static void addMigratedToSFDC(List<Account> newList) {
+        List<Entity_Detail__mdt> entityList = Entity_Detail__mdt.getAll().values();
+        Map<String, Entity_Detail__mdt> keyToSAPCodeMapping =  new Map<String,Entity_Detail__mdt>();
+        for (Entity_Detail__mdt eachEntity : entityList) {
+            if (String.isNotBlank(eachEntity.Country_Code__c) && String.isNotBlank(eachEntity.Brand__c) && String.isNotBlank(eachEntity.Company_Name__c)) {
+                String key = eachEntity.Brand__c + '-' + eachEntity.Country_Code__c;
+                keyToSAPCodeMapping.put(key, eachEntity);
+            }
+        }
+        for (Account eachAccount : newList) {
+            if (!keyToSAPCodeMapping.isEmpty() && String.isNotBlank(eachAccount.shop_Country__c) && String.isNotBlank(eachAccount.Brand__c) && String.isNotBlank(eachAccount.Account_Owner_Company__c)) {
+                String key = eachAccount.Brand__c + '-' + eachAccount.shop_Country__c;
+                Entity_Detail__mdt entityDetailRecord = keyToSAPCodeMapping.get(key);
+                if (entityDetailRecord != null && entityDetailRecord.Company_Name__c.equalsIgnoreCase(eachAccount.Account_Owner_Company__c)) {
+                    eachAccount.Migrated_To_SFDC_V2__c = entityDetailRecord.Is_SFDC_V2_Enabled__c;
+                }
+            }
+        }
+    }
+    
     private static void addSAPCompanyCode(List<Account> newList) {
-        List<Entity_Detail__mdt> entityList = [Select Id, SAP_Company_Code__c, Country_Code__c, Brand__c From Entity_detail__mdt];
+        List<Entity_Detail__mdt> entityList = Entity_Detail__mdt.getAll().values();
         Map<String, String> keyToSAPCodeMapping =  new Map<String,String>();
         for (Entity_Detail__mdt eachEntity : entityList) {
             if (String.isNotBlank(eachEntity.Country_Code__c) && String.isNotBlank(eachEntity.Brand__c) && String.isNotBlank(eachEntity.SAP_Company_Code__c)) {
@@ -1269,9 +1312,9 @@ public with sharing class AccountTriggerHelper {
                         }
                         if(salesMap.size() > 0){
                             if(type == 'gross')
-                                lastSalesGrossLst.add(salesMap.values());
+                                lastSalesGrossLst.addAll(salesMap.values());
                             else
-                                lastSalesNetLst.add(salesMap.values());
+                                lastSalesNetLst.addAll(salesMap.values());
                         }
                         if(lastSalesGrossLst.size() > 0)
                             update lastSalesGrossLst;
@@ -1350,7 +1393,7 @@ public with sharing class AccountTriggerHelper {
                 Set<Id> alcExistAccounts = new Set<Id>();
                 alcExistAccounts = VisitTriggerHelper.isAlcRecordExists(accList);
                 for(Id accId:accList){
-                    if(accountStageMap.size() > 0){                                    
+                    if(accountStageMap.size() > 0 && latestVisit.containsKey(accId)){                                    
                         if(alcActiveMap.containsKey(accId) && alcActiveMap.get(accId)){//ALC Active
                             Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
                             alc.Active__c = true;
@@ -1439,9 +1482,9 @@ public with sharing class AccountTriggerHelper {
                 || visit.Account__r.Segmentation_Net__c == 'C3' || visit.Account__r.Segmentation_Net__c == 'UNCATEGORIZED') 
                  && (visit.Visit_Reason__c.startsWith('Grow') || visit.Visit_Reason__c.startsWith('On-board')|| visit.Visit_Reason__c.startsWith('Retain')) 
                  && visit.Account__r.Lenses_Net_Sales_Last_12Mo__c <=0) {
-					accStageMap.put(visit.Account__c,'Start Business');
+                    accStageMap.put(visit.Account__c,'Start Business');
 
-		    } else if (visit.Visit_Reason__c != null && (visit.Account__r.Segmentation_Net__c == 'A3' || visit.Account__r.Segmentation_Net__c == 'B3'
+            } else if (visit.Visit_Reason__c != null && (visit.Account__r.Segmentation_Net__c == 'A3' || visit.Account__r.Segmentation_Net__c == 'B3'
                 || visit.Account__r.Segmentation_Net__c == 'C3' || visit.Account__r.Segmentation_Net__c == 'UNCATEGORIZED') 
                 && (visit.Visit_Reason__c.startsWith('Grow') || visit.Visit_Reason__c.startsWith('On-board')
                 || visit.Visit_Reason__c.startsWith('Retain') || visit.Visit_Reason__c.startsWith('Hunt')) 
@@ -1503,7 +1546,7 @@ public with sharing class AccountTriggerHelper {
                 retainStageFlag = true;
              }
              else{
-              	retainStageFlag = false;   
+                retainStageFlag = false;   
              }
               accRetainStageMap.put(visit.Account__c,retainStageFlag);
          }  

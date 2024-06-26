@@ -10,7 +10,7 @@
  * ==================================================================== 
  */
 
-public with sharing class TabMVCActivationContactPdfList {
+public without sharing class TabMVCActivationContactPdfList {
     
     public String currentRecordId {get;set;}
     public String receivedId{get;set;}
@@ -31,6 +31,6 @@ public with sharing class TabMVCActivationContactPdfList {
                     Contact.MailingCity, Contact.MailingCountry, Contact.MailingState, Account.Name, Account.Shop_Name__c,
                     Account.ShippingStreet, Account.ShippingPostalCode, Account.ShippingCity, 
                     Account.ShippingState, Account.Phone, Account.Clinic_Name__c, Contact.Phone FROM AccountContactRelation
-                    WHERE ContactId=:currentRecordId AND Account.RecordTypeId !=:CONT_OPT_CLINIC];
+                    WHERE ContactId=:currentRecordId AND Account.RecordTypeId !=:CONT_OPT_CLINIC AND IsDirect = false];
     }
 }

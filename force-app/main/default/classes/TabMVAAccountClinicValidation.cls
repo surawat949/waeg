@@ -33,6 +33,12 @@ public with sharing class TabMVAAccountClinicValidation {
             //System.debug('XXX Get Validation All '+qdList.size()+'=>'+qdList);
             return qdList;
      }
+
+    @AuraEnabled(cacheable=true)
+    public static string getContactOpthalmologistRecTypeId(){
+        String ContactOpthalRecId = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Opthalmologist').getRecordTypeId();
+        return ContactOpthalRecId;
+    }
      /*
      @AuraEnabled(cacheable=true)
      public static void DeleteValidation(String recordId){

@@ -38,8 +38,11 @@ import lblCreatedBy from '@salesforce/label/c.SFDC_V_2_MVAActivation_Created';
 import AllAssociatedContact from '@salesforce/apex/TabMVAActivationContactController.getAllContactsHierarchy';
 import getValidationList from '@salesforce/apex/TabMVAAccountClinicValidation.getValidationNameByAccountId';
 import getValidationAll from '@salesforce/apex/TabMVAAccountClinicValidation.getValidationNameByAccountIdAll';
-
+import ContactOpthalRecId from '@salesforce/apex/TabMVAAccountClinicValidation.getContactOpthalmologistRecTypeId';
+import currentUserId from '@salesforce/user/Id';
 import { deleteRecord } from 'lightning/uiRecordApi';
+import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
+import { subscribe, onError, setDebugFlag, isEmpEnabled } from 'lightning/empApi';
 
 const actions = [
     { label: lblButtonEdit, name: 'edit' },
@@ -91,20 +94,56 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
     contactRecRelatd;
     contactCount;
     errors;
+    @track subscription = {};
+    contactOpthalogistRecId;
+    
+    CHANNEL_NAME = '/event/Refresh_Related_List_Contact__e';
 
     constructor() {
         super();
-        // record Id not generated yet here
     }
-
+    refreshList = event=> {
+        const refreshRecordEvent = event.data.payload;
+        if (refreshRecordEvent.Parent_ID__c === this.receivedId && refreshRecordEvent.CreatedById === currentUserId) {
+            this.getAllContactData();
+        }
+        else if (refreshRecordEvent.CreatedById === currentUserId) {            
+            this.getAllContactData();
+        }
+    }
+    handleSubscribe() {
+        const messageCallback = (response) => {};    
+        subscribe(this.CHANNEL_NAME, -1, messageCallback).then(response => {
+            this.subscription = response;
+        });
+    }
     connectedCallback() {
-        //console.log('parent connected callback call' + this.recordId);
+        this.getAllContactData();
+        this.showObjectiveNotesPopup = false;
+        subscribe(this.CHANNEL_NAME, -1, this.refreshList).then(response => {
+            this.subscription = response;
+        });
+        onError(error => {
+            let errorData = error;
+			let triggerAlert = true;
+			if(errorData.advice.reconnect === "handshake"){
+				triggerAlert = false;
+			}
+			if(triggerAlert){
+				const event = new ShowToastEvent({
+					title: 'Error',
+					message: JSON.stringify(errorData.error),
+					variant: 'error',
+					mode: 'sticky'
+				});
+				this.dispatchEvent(event);
+				//this.showToast(JSON.stringify(error), 'Error', 'Error');
+				console.log('Received error from server: ', JSON.stringify(errorData));
+			}
+        });
+        this.handleSubscribe();
     }
 
-    renderedCallback(){
-
-    }
-    
     @wire(getValidationAll, {recordId : '$recordId'})
     validCount({data, error}){
         if(data){
@@ -141,13 +180,13 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
             });
             this.error = undefined;
         }else if(result.error){
-            this.errors = error;
+            //this.errors = error;
             this.error = result.error;
             this.data = undefined;
-            this.showToast('Error', 'error', this.errors);
+            this.showToast('Error', 'error', this.error);
         }
     }
-
+    /*
     @wire(AllAssociatedContact, {recordId: '$receivedId'})
     contactRelate(result){
         this.isContactLstLoading = false;
@@ -165,6 +204,36 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
             this.data = undefined;
             this.errors = error;
             this.showToast('Error', 'error', this.errors);
+        }
+    }*/
+    
+    getAllContactData(){
+        AllAssociatedContact({recordId : this.receivedId}).then(response=>{
+            this.isContactLstLoading = false;
+            if(response){
+                this.data = JSON.parse(JSON.stringify(response));
+                console.log('data connected call back = > '+this.data);
+                if(response.length > 0){
+                    this.isAssociatedConsExist = true;
+                    this.data.forEach(res=>{
+                        res.ContactLink = '/' + res.ContactId;
+                        res.AccountLink = '/' + res.AccountId;
+                        res.contactownerLink = '/' + res.CreatedById;
+                    });
+                }
+            }
+        }).catch(error=>{
+            this.data = undefined;
+            this.showToast(JSON.stringify(error.message), 'Error', 'Error');
+        });
+    }
+
+    @wire(ContactOpthalRecId)
+    CONTACT_OPTHAL_RECID({data,error}){
+        if(data){
+            this.contactOpthalogistRecId = data;
+        }else if(error){
+            this.showToast(JSON.stringify(error.message), 'Error', 'Error');
         }
     }
     /*
@@ -318,10 +387,38 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
             window.open(url, '_top');
         });
     }
+
+    createNewContactRecord(){
+        this.navigateCreateNewContactOpthal('Contact');
+    }
+
+    navigateCreateNewContactOpthal(objectName){
+        const defaultValues = encodeDefaultFieldValues({
+            AccountId : this.receivedId
+        });
+
+        this[ NavigationMixin.Navigate]({
+            type : 'standard__objectPage',
+            attributes : {
+                objectApiName : objectName,
+                actionName : 'new'
+            },
+            state: {
+                defaultFieldValues: defaultValues,
+                navigationLocation: 'RELATED_LIST',  //to avoid prevention of moving to newly created record
+                recordTypeId : this.contactOpthalogistRecId
+            }
+        });
+    }
     
     closeModal() {
         // to close modal set isModalOpen tarck value as false
         this.isModalOpen = false;
+    }
+
+    disconnectedCallback() {
+        unsubscribe(this.subscription, () => {
+        });   
     }
 
     label = {AllContacts, NoData, CloseButton, DeleteButton, DeleteConfirm, ButtonDel, ButtonCancel, ValidationLabel, ViewAll, NewBtn};

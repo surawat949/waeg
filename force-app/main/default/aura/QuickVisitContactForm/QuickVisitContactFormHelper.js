@@ -62,5 +62,20 @@
         event.backgroundColor = '#FF9411';
         event.editable=false;
         return event;
+    },
+
+    getStarndardVisit : function(component, callback){
+        var action = component.get('c.getStarndardVisitRecordType');
+        action.setCallback(this, function(response){
+            var state = response.getState();
+            if(component.isValid() && state === 'SUCCESS'){
+                callback(null, response.getReturnValue());
+            }else if(response.isValid && state === 'ERROR'){
+                callback(response.getError(), response.getReturnValue());
+            }
+           
+        });
+
+        $A.enqueueAction(action);
     }
 })

@@ -1,9 +1,6 @@
 .slds-box{
     padding: 1px;
 }
-.slds-page-header.flexipageHeader { 
-    display: none;
-}
 .table-container {
     overflow-y: auto; /* Enable vertical scrolling */
     height: 69%;
@@ -87,4 +84,9 @@
 }
 .heightset{
     height: -webkit-fill-available;
+}
+.colormatch{
+    border: none;
+    color: #0B5CAB;
+    background-color: #f5f5f5;
 }

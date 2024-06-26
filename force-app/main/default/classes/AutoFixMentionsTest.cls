@@ -17,7 +17,6 @@ public class AutoFixMentionsTest {
         
         List<FeedItem> feedItems = new List<FeedItem>();
         feedItems.add(fi);
-        
         Set<String> expected = new Set<String>();
         expected.add(username1);
         expected.add(username2);
@@ -26,7 +25,31 @@ public class AutoFixMentionsTest {
         
         System.assertEquals(expected, actual);
     }
+    @IsTest(SeeAllData=true)
+    static void testgetBadMentions() {
+        // Create test data
+        Account testAccount = new Account(Name = 'Test Account');
+        insert testAccount;
+        
+        FeedItem testFeedItem = new FeedItem(
+            ParentId = testAccount.Id,
+            Body = 'This is a test feed item'
+        );
+        insert testFeedItem;
+        
+        // Create a FeedComment with an invalid mention
+        FeedComment testFeedComment = new FeedComment(
+            FeedItemId = testFeedItem.Id,
+            CommentBody = 'Hello @[John Doe]'
+        );
+        
+        Test.startTest();
+        insert testFeedComment;
+                Set<String> badMentions = AutoFixMentions.getBadMentions(new List<FeedComment> {testFeedComment});
 
+        Test.stopTest();
+    }
+    
     @IsTest(SeeAllData=true)
     static void testGetBadMentionsNullComments() {
         Set<String> expected = new Set<String>();

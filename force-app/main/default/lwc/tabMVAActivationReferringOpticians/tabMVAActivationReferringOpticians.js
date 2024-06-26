@@ -60,6 +60,7 @@ export default class TabMVAActivationReferringOpticians extends LightningElement
             this.error = result.error;
             this.data = undefined;
             this.isLoading = false;
+            alert('>>>re1');
             this.showToast('Error',this.error ,'error');
         }
     }

@@ -2,6 +2,7 @@ import { LightningElement, api, wire,track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
 import { ShowToastEvent} from 'lightning/platformShowToastEvent';
+
 import {refreshApex} from '@salesforce/apex';
 
 //Platform Event
@@ -522,14 +523,25 @@ export default class TabVisitsCampOpp extends NavigationMixin(LightningElement) 
     }
 
     onSave(event){
-        if(this.projectName == '' || this.projectName == null){
-            this.showToast('Error', 'Project Name cannot be empty', 'Error');
-        }else if(this.category == '' || this.category == null){
-            this.showToast('Error', 'Category cannot be empty', 'Error');
-        }else if(this.description == '' || this.description == null){
-            this.showToast('Error', 'Description cannot be empty', 'Error');
-        }else if(this.status == '' || this.status == null){
-            this.showToast('Error', 'Status cannot be empty', 'Error');
+        const requiredFields = this.template.querySelectorAll('lightning-input, lightning-combobox');
+        let missingFields = [];
+        
+        requiredFields.forEach(field => {
+            if (field.required && !field.value) {
+                missingFields.push(field.label);
+                field.classList.add('slds-has-error'); // Highlight the field
+            } else {
+                field.classList.remove('slds-has-error'); // Remove highlight if filled
+            }
+        });
+
+        if (missingFields.length > 0) {
+            const toastEvent = new ShowToastEvent({
+                title: 'Missing Required Fields',
+                message: 'Please fill in the following required fields: ' + missingFields.join(', '),
+                variant: 'error'
+            });
+            this.dispatchEvent(toastEvent);
         }else{
             this.showSpinner = true;
             createBusinessOpportunity({

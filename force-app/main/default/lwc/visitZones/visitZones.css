@@ -1,0 +1,89 @@
+.card_Design{
+    display: flex;
+    justify-content: space-around;
+    background: #fff;
+    border: 1px solid #ccc;
+}
+.stageContainer{
+    float:left;
+    border: 2px solid #d8dde6;
+    margin: 0.05rem;
+    border-radius: .25rem;
+}
+.slds-text-heading--small{
+    font-size: 8 px;
+    text-align: left;
+    align-items:left ;
+}
+.slds-tabs--path__title{
+    text-align: left;
+}
+.bgcolor{
+    background: #0176D3;
+}
+.stage-info {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    text-align: center;
+}
+.stage-name {
+    font-size: 12px;
+    line-height: 15px;   
+    color: black; 
+}
+.borderLine{
+    border-right: var(--lwc-colorBorder, rgb(229, 229, 229)) var(--lwc-borderWidthThin, 1px) solid;
+    /*overflow-x: auto; */
+}
+.borderBottom{
+    border-bottom: var(--lwc-colorBorder, rgb(229, 229, 229)) var(--lwc-borderWidthThin, 1px) solid;
+}
+.subCount{
+    text-align: center;
+    font-size: small;
+}
+.stg-name{
+    font-size: 14px;
+}
+.posLeft{
+    left: 2.2rem;
+}
+.zone1 {
+    background: yellow;
+    margin-right: 0;
+}
+.zone2 {
+    background: #fcb207;
+    margin-right: 0;
+}
+.zone3 {
+    background: #ec1717;
+    margin-right: 0;
+}
+.zone4 {
+    background: #13cddc;
+    margin-right: 0;
+}
+.zone5 {
+    background: #58bd08;
+    margin-right: 0;
+}
+.backdrop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(8, 7, 7, 0.5); /* background color while spinner onscreen */
+    z-index: 15000; /* set z-index always high */
+  }
+  
+  .spinshow::after {
+    position: absolute;
+    content: "Please wait while loading";
+    width: 100%;
+    text-align: center;
+    top: calc(50% + 3em);
+    font-weight: bold;
+  }

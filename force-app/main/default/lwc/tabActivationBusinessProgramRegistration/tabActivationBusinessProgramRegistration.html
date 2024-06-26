@@ -36,11 +36,11 @@
     </div>
     <template lwc:if={isIndependentChannel}>
         <!--Visionary Alliance-->
-        <template lwc:if={isHoyaAccount}>
+       <!-- <template lwc:if={isHoyaAccount}>-->
             <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
                 <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
                     <tr data-id="header1"  class="row" style="background-color: #aacbff;">
-                        <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.VisionaryAllianceHeader}</h3></td>
+                        <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.LoyaltyProgram}</h3></td>
                         <template lwc:if={onBoarding}>
                             <td><p align="right"><lightning-button label={custLabel.stopOnboardingProcess} variant="brand-outline" onclick={stopOnboardingProcess}></lightning-button></p></td>
                         </template>
@@ -57,11 +57,11 @@
                             record-id={receivedId}
                             object-api-name={objectapiname}
                             fields={visionaryAllianceFields}
-                            mode="view"
+                            mode="read"
                             columns="2"
                             >
                         </lightning-record-form>
-                        <div class="slds-grid">
+                        <!--<div class="slds-grid">
                             <div class="slds-col slds-size_1-of-2">
                             </div>
                             <div class="slds-col slds-size_1-of-2 slds-m-left_small">
@@ -74,11 +74,11 @@
                                 >
                             </lightning-record-form>
                             </div>
-                        </div>
+                        </div>-->
                     </lightning-layout-item>
                 </lightning-layout>
                 <lightning-layout>
-                    <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-layout-item flexibility="auto" padding="around-small">                      
                         <lightning-record-form
                             record-id={receivedId}
                             object-api-name={objectapiname}
@@ -91,9 +91,35 @@
                 </lightning-layout>
                 <br>
             </div>
-        </template>
+            <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+                    <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                        <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.CommunityProgram}</h3></td>
+                        
+                    </tr>
+                </table><br>
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <div class="slds-grid">
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-record-form
+                                    record-id={receivedId}
+                                    object-api-name={objectapiname}
+                                    fields={LoyaltyProgram}
+                                    mode="readonly"
+                                    columns="2"
+                                    >
+                                </lightning-record-form>                        
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+      <!--  </template>-->
         <!--SEIKO Vision Specialist Specialist Program-->
-        <template lwc:else>
+      <!-- <template lwc:else>
             <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
                 <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
                     <tr data-id="header1"  class="row" style="background-color: #aacbff;">
@@ -114,6 +140,18 @@
                             object-api-name={objectapiname}
                             fields={seikoVisionSpecialistAcc}
                             mode="readonly"
+                            columns="2"
+                            >
+                        </lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={objectapiname}
+                            fields={networkFields}
+                            mode="view"
                             columns="2"
                             >
                         </lightning-record-form>
@@ -144,7 +182,7 @@
                     </lightning-layout-item>
                 </lightning-layout>
             </div>
-        </template>
+        </template>-->
     </template>
     <template lwc:else>
         <div class="slds-illustration slds-illustration_small" aria-hidden="true">

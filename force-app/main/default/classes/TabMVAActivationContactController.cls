@@ -2,7 +2,7 @@ public with sharing class TabMVAActivationContactController {
 
     private static final string CONTACT_OPTHO_RT = Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('Opthalmologist').getRecordTypeId();
     
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<ContactDetail> getAllContactsHierarchy(String recordId){
         try {
             Set<Id> finalSetId = new Set<Id>();
@@ -12,7 +12,7 @@ public with sharing class TabMVAActivationContactController {
             accountIdSet.add(recordId);
             finalSetId.addAll(getRecursiveAccountList(accountIdSet));
 
-            List<AccountContactRelation> relationList = [select Id,CreatedById,CreatedBy.Name, AccountId, ContactId, Contact.Name, Account.Name, 
+            List<AccountContactRelation> relationList = [select Id,CreatedById,CreatedBy.Name, AccountId, ContactId, Contact.Name,Contact.OwnerId,Contact.Owner.Name, Account.Name, 
                                                     Account.ShippingCity, Account.ShippingState, Account.ShippingStreet,
                                                     Account.Phone, Preferred_place_for_visit__c,
                                                     Contact_Role__c from AccountContactRelation 
@@ -25,8 +25,10 @@ public with sharing class TabMVAActivationContactController {
                 c.AccountId = eachCon.AccountId;
                 c.AccountName = eachCon.Account.Name;
                 c.Street = eachCon.Account.ShippingStreet;
-                c.OwnerName = eachCon.CreatedBy.Name; 
-                c.CreatedById = eachCon.CreatedById;  
+                //c.OwnerName = eachCon.CreatedBy.Name; 
+                c.OwnerName = eachCon.Contact.Owner.Name; 
+                //c.CreatedById = eachCon.CreatedById;  
+                c.CreatedById = eachCon.Contact.OwnerId;
                 if(eachCon.Preferred_place_for_visit__c){
                     c.PreferedPlace = 'V';
                 }else{

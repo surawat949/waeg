@@ -1,4 +1,4 @@
-public with sharing class TabMVCActivationController {
+public without sharing class TabMVCActivationController { 
     public static Id accountId{get;set;}
     private static final String ACCOUNT_CLINIC_RT = Schema.SObjectType.ACCOUNT.getRecordTypeInfosByDeveloperName().get('Clinic').getRecordTypeId();
     public class referringOpticiansDetails{
@@ -15,6 +15,7 @@ public with sharing class TabMVCActivationController {
     }
     @AuraEnabled(cacheable=true)
     public static List<Integer> getReferringOpticiansCountList(Id contactId){
+        //no need to change anything in this medthod.
         List<Integer> opticiansCountLst=new List<Integer>();
         Integer count = 0;
         List<AccountContactRelation> accContactRelationList = [select Account.Lenses_Net_Sales_Last_12Mo__c, Account.id
@@ -34,6 +35,7 @@ public with sharing class TabMVCActivationController {
     }
     @AuraEnabled(cacheable=true)
     public static String getLastTrainingDate(Id contactId){
+        //no need to change anything in this medthod.
         String lastTrainingDate='';
         List<ECP_Training_Member__c> trainingMembersLst=[select Training__c from ECP_Training_Member__c where contact__c=:contactId];
         List<Id> TrainingIdLst=new List<Id>();
@@ -51,19 +53,21 @@ public with sharing class TabMVCActivationController {
     }
     //get Orders MiyoSmart related list
     @AuraEnabled(cacheable=true)
-    public static List<Order_MiyoSmart__c> getOrdersMiyoSmartRelatedList(Id contactId){       
-       List<Order_MiyoSmart__c> ordersLst = [SELECT Id,Name,Account__c,Account__r.Name,Order_Date__c,Quantity__c,receive_number__c
+    public static List<Order_MiyoSmart__c> getOrdersMiyoSmartRelatedList(Id contactId){   
+        //no need to change for this medthod.    
+        List<Order_MiyoSmart__c> ordersLst = [SELECT Id,Name,Account__c,Account__r.Name,Order_Date__c,Quantity__c,receive_number__c
                                                  FROM Order_MiyoSmart__c
                                                  WHERE Contact__c=:contactId];
-       return ordersLst;
+        return ordersLst;
     }
     //get Referring Opticians selling Miyosmart
     @AuraEnabled
     public static List<referringOpticiansDetails> getRefferingOptsLst(Id contactId ,Boolean isMiyoSmart){
+        //no need to change for this medthod.
         List<referringOpticiansDetails> refOptsLst =new List<referringOpticiansDetails>();       
         List<AccountContactRelation> accContactRelationList = [select Id,Account.Brand__c,Account.id,Account.Name,Account.Shop_Street__c,Account.Shop_Postal_Code__c,
                                                                Account.Shop_City__c,Account.Shop_Phone__c 
-                                                               from AccountContactRelation where contactId =:contactId and isdirect=false and Account.RecordTypeId !=: ACCOUNT_CLINIC_RT ];
+                                                               from AccountContactRelation where contactId =:contactId and isdirect=false and Account.RecordTypeId !=: ACCOUNT_CLINIC_RT];
         List<Id> accountIdLst=new List<Id>();
         if(accContactRelationList.size() > 0){
             for(AccountContactRelation rel:accContactRelationList){
@@ -128,6 +132,7 @@ public with sharing class TabMVCActivationController {
     }
     @AuraEnabled
     public static void deleteRelationShip(Id recordId){
+        //no need to change for this medthod.
         try {
             AccountContactRelation record = [select id from AccountContactRelation where id=:recordId];
             delete record;

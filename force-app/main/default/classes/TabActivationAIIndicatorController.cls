@@ -139,7 +139,7 @@ public class TabActivationAIIndicatorController {
                 if(currAcc.Lenses_Net_Sales_Last_12Mo__c>0){
                     if(currAcc.Brand__c == 'HOYA'){
                         if(currAcc.CHCUSTCLASSIFICATIONID__c == 'Ind'){
-                            if(currAcc.Seiko_Network__c == 'Hoya Vision Center'){
+                            if(currAcc.Seiko_Network__c == 'Visionary Alliance'){
                              	wrapper.HVCProgramFlag='GREEN'; 
                                 wrapper.HVCProgramFlagMeaning=System.Label.get('', 'MKG02', userLanguage);
                             }   
@@ -152,7 +152,7 @@ public class TabActivationAIIndicatorController {
                                 wrapper.HVCProgramFlagMeaning=System.Label.get('', 'MKG04', userLanguage);
                             }
                         } 
-                        else if(currAcc.Seiko_Network__c == 'Hoya Vision Center' ){
+                        else if(currAcc.Seiko_Network__c == 'Visionary Alliance' ){
                              	wrapper.HVCProgramFlag='GREENALERT';  
                                 wrapper.HVCProgramFlagMeaning=System.Label.get('', 'MKG05', userLanguage);
                             }   
@@ -195,7 +195,7 @@ public class TabActivationAIIndicatorController {
                         wrapper.HVCProgramFlagMeaning=System.Label.get('', 'MKG13', userLanguage);
                     }
                 }
-                else if(currAcc.Seiko_Network__c == 'Seiko Vision Specialist' || currAcc.Seiko_Network__c == 'Hoya Vision Center'){
+                else if(currAcc.Seiko_Network__c == 'Seiko Vision Specialist' || currAcc.Seiko_Network__c == 'Visionary Alliance'){
                  	wrapper.HVCProgramFlag='REDALERT'; 
                     wrapper.HVCProgramFlagMeaning=System.Label.get('', 'MKG14', userLanguage);
                 }

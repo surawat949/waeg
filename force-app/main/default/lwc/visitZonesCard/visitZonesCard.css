@@ -1,0 +1,76 @@
+.slds-item {
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    background-clip: padding-box;
+    padding: 0.45rem;
+    margin: 0.25rem;
+}
+.text {
+    white-space: normal; /* Ensures text can wrap */
+    overflow-wrap: break-word; /* Allows breaking long words to wrap */
+    font-size: 10px;
+}
+.zoom {
+    padding: 0.5rem;
+    background-color: #FFFFFF;
+    transition: transform .2s; /* Animation */
+    width: 11rem;
+    height: auto;
+    border: var(--lwc-colorBorder, rgb(229, 229, 229)) var(--lwc-borderWidthThin, 1px) solid;
+    border-radius : 1.25rem;
+    font-size: smaller;
+}
+.zoom:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
+}
+.card {
+    position: relative;
+    padding: 1rem;
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.visited {
+    color: purple; /* Define your visited link color here */
+}
+.card:hover .delete-button {
+    opacity: 1;
+}
+.delete-button {
+    position: absolute;
+    bottom: -0.3rem;
+    right: -0.25rem;
+    width: 24px;
+    height: 24px;
+    /*background-color: rgba(255, 0, 0, 0.7);*/
+    background-color: #CB0015;
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.delete-icon {
+    font-weight: bold;
+    line-height: 1;
+}
+.red-utility-icon {
+    --sds-c-icon-color-foreground-default: #CB0015;
+}
+.Hoya-utility-icon {
+    --sds-c-icon-color-foreground-default: #0176D3;
+}
+.grey-utility-icon {
+    --sds-c-icon-color-foreground-default: #808080;
+}
+.iconMargin {
+    margin-right: .30rem;
+}

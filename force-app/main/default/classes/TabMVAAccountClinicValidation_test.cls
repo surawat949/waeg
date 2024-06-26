@@ -61,6 +61,7 @@ public with sharing class TabMVAAccountClinicValidation_test {
                 Test.StartTest();
                 TabMVAAccountClinicValidation.getValidationNameByAccountId(a.Id);
                 TabMVAAccountClinicValidation.getValidationNameByAccountIdAll(a.Id);
+                TabMVAAccountClinicValidation.getContactOpthalmologistRecTypeId();
                 Test.StopTest();
 
                 try{

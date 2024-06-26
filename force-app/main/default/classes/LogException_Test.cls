@@ -30,4 +30,16 @@ public class LogException_Test {
         }
         
     }
-}
+    @isTest
+    public static void logTest()
+    {
+       Test.startTest();
+           List<String> allErrors = new List<String> {
+               'DML Exception',
+               'String Exception'
+           };
+           LogException.log('VisitsPlannedAutomationBatch','execute','DMLException',JSON.SerializePretty(allErrors));
+       Test.stopTest();
+        
+    }
+ }

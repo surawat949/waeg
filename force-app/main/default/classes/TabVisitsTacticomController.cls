@@ -3,7 +3,7 @@
  * @CreatedDate : 2024-05-16
  * @Description : for Task-1406
  */
-public with sharing class TabVisitsTacticomController {
+public without sharing class TabVisitsTacticomController {
     @AuraEnabled(cacheable=true)
     public static List<sObject> searchLookUpUser(String searchKey, String sObjectApiName){
         List<sObject> returnList = new List<sObject>();
@@ -58,5 +58,30 @@ public with sharing class TabVisitsTacticomController {
         insert t;
         System.debug('WhatId =>'+WhatId + 'Request Visit Plan => '+requestVisitPlan + ' Request Digital Visit Plan => '+requestDigitalVisitPlan);
         
+    }
+    @AuraEnabled(cacheable = true)
+    public static SupportVisitWrapper getSupportVisitsInfo(Id AccountId){
+        SupportVisitWrapper wrapper = new SupportVisitWrapper();
+		Integer supportVisitCount=0;
+        List<AggregateResult> AggregateResultList = [SELECT count(Id) visitCount,Max(End_Time__c) latestDate FROM Visits__c 
+                                                     WHERE Account__c =:AccountId AND Visit_Type__c = 'Support Visit' AND Visit_Status__c = 'Complete' AND End_Time__c = LAST_N_DAYS:365
+                                                     Group By Account__c];
+        if(AggregateResultList.size() > 0){
+           supportVisitCount = (Integer)AggregateResultList[0].get('visitCount');
+           DateTime lastDate= (DateTime)AggregateResultList[0].get('latestDate');
+           wrapper.supportVisitCount = supportVisitCount;
+           Date latestSupportDate = lastDate.Date();
+           wrapper.lastSupportVisitDate = latestSupportDate.format();
+           List<Visits__c> visits =[SELECT Id,Assigned_to__r.Name FROM Visits__c 
+                                    WHERE Account__c =:AccountId AND Visit_Type__c = 'Support Visit' AND Visit_Status__c = 'Complete' AND End_Time__c =:lastDate ];
+           wrapper.lastSupportVisitBy = visits[0].Assigned_to__r.Name;
+        }
+        System.debug(wrapper);
+        return wrapper;
+    }
+    public Class SupportVisitWrapper{
+        @AuraEnabled public Integer supportVisitCount{get;set;}
+        @AuraEnabled public String lastSupportVisitBy{get;set;}
+        @AuraEnabled public String lastSupportVisitDate{get;set;}
     }
 }

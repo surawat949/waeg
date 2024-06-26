@@ -27,6 +27,8 @@ import VisionaryAllianceHeader from '@salesforce/label/c.VisionaryAlliance';
 import startOnboardingProcess from '@salesforce/label/c.Start_OnboardingProcess';
 import stopOnboardingProcess from '@salesforce/label/c.Stop_OnboardingProcess';
 import seikoVisionSpecialistHeader from '@salesforce/label/c.SeikoVisionSpecialistProgram';
+import LoyaltyProgram from '@salesforce/label/c.TabLoyaltyProgram';
+import CommunityProgram from '@salesforce/label/c.Community_Program';
 
 import AI_Indicators from '@salesforce/resourceUrl/SFDC_V2_AI_Indicators';
 
@@ -43,12 +45,13 @@ export default class TabActivationBusinessProgramRegistration extends LightningE
     
     objectapiname = ACCOUNT_OBJ;
     seikoDataObjapiName = SEIKO_DATA_OBJ;
-    visionaryAllianceFields = [VISIONARY_ALLIANCE, LOYALTY_PROGRAMS];
-    totalLoyaltyPoints = [TOTAL_LOYALTY_POINTS];
-    seikoVisionSpecialistAcc = [COMMERCIAL_NETWORK, TOTAL_LOYALTY_POINTS, NETWORK_SIGN_IN, NETWORK_SIGN_OUT ];
+    visionaryAllianceFields = [COMMERCIAL_NETWORK,VISIONARY_ALLIANCE,NETWORK_SIGN_IN,NETWORK_SIGN_OUT];
+    //totalLoyaltyPoints = [TOTAL_LOYALTY_POINTS];
+    seikoVisionSpecialistAcc = [COMMERCIAL_NETWORK, TOTAL_LOYALTY_POINTS];
+    networkFields=[NETWORK_SIGN_IN, NETWORK_SIGN_OUT ];
     SeikoDataFields = [SEIKO_CATALOG_LAST_TRAINING, SEIKO_PRODUCT_LAST_TRAINING, SEIKO_BOXES_SETTING, SVS_COMMUNICATION_KIT];
     AccountOnBoarding = [ACCOUNT_ONBOARDING, ACCOUNT_ONBOARDING_DATE];
-
+    LoyaltyProgram = [LOYALTY_PROGRAMS];
     showLoading = false;
     isHoyaAccount = false;
     isIndependentChannel = false;
@@ -77,7 +80,7 @@ export default class TabActivationBusinessProgramRegistration extends LightningE
         VisionaryAllianceHeader,
         startOnboardingProcess,
         stopOnboardingProcess,
-        seikoVisionSpecialistHeader
+        seikoVisionSpecialistHeader,LoyaltyProgram,CommunityProgram
     }
     @wire(getIndicators, {receivedId: '$receivedId'})  getIndicators ({error, data}) {
         if(data){

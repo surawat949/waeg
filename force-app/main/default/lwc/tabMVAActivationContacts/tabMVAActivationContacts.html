@@ -6,6 +6,9 @@
               <td>
                  <h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.AllContacts}</p></h3>
              </td>
+                <td>
+                    <p align="right"><lightning-button label={label.NewBtn} onclick={createNewContactRecord}></lightning-button></p>
+                </td>
             </tr>
          </table><br>
          <div if:true={isContactLstLoading}>

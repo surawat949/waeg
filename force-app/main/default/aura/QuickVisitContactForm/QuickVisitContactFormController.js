@@ -5,9 +5,18 @@
         component.set('v.userId', userId);
         component.set('v.contactId', contactId);
         helper.getContact(component, contactId, function(err, result){
+            //alert('aura init');
+            console.log('result.AccountId'+result.AccountId);
+            component.set('v.showLookup',true);
             component.set('v.accountId', result.AccountId);
-        } )
+            //component.set('v.AccountIdString', result.AccountId);
+        });
+        helper.getStarndardVisit(component, function(err, result){
+            component.set('v.standardRecType', result);
+        });
+
     },
+
     handleSuccess: function(component, event, helper) {
         // Show toast
         var toastEvent = $A.get("e.force:showToast");
@@ -29,4 +38,15 @@
     onViewChange: function(component, event, helper) {
         helper.updateCalenderEvents(component, event, helper);
     },
+
+    getValueFromLwc : function(component, event, helper){
+        console.log('getValueFromLwc selectedRecord'+JSON.stringify(event.getParam('selectedRecord')));
+        component.set('v.accountId', null);
+        if( event.getParam('selectedRecord')){
+            var AccountIdValue = event.getParam('selectedRecord').AccountId;
+            console.log('AccountIdValue'+AccountIdValue);
+            component.set('v.accountId', AccountIdValue);
+        }
+    }
+    
 })

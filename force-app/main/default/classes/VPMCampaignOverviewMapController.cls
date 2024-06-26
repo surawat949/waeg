@@ -1,4 +1,4 @@
-public with sharing class VPMCampaignOverviewMapController {
+public without sharing class VPMCampaignOverviewMapController {
 
     public class DataSet{
         public DataSet(String AccountId, String CampaignName, String AccCampaignName, String AccountShippingStreet, String AccountShippingCity, String AccountShippingState, String AccountShippingPostalCode, String AccountNameText, String AccountHoyaAccountId, Boolean IsPresent, Integer VisitedSize, String AccountCountry){
@@ -45,7 +45,7 @@ public with sharing class VPMCampaignOverviewMapController {
             accCampMemberList = [SELECT Id, Name, Account_Name__c, Campaign_Name__c, campaign_active__c,Campaign_Presented__c,
             Account_Name__r.Shop_Street__c,Account_Name__r.Shop_State__c, Account_Name__r.Shop_City__c, Account_Name__r.Shop_Postal_Code__c, Account_Name__r.Shop_Country__c, 
             Account_Name__r.Hoya_Account_ID__c, Account_Name__r.Name   
-            FROM Account_Campaing_Member__c WHERE  campaign_active__c = true AND Central_Campaign__r.Id = :CampaignId WITH USER_MODE ORDER BY LastModifiedDate DESC limit 500];
+            FROM Account_Campaing_Member__c WHERE  campaign_active__c = true AND Central_Campaign__c = :CampaignId WITH USER_MODE ORDER BY LastModifiedDate DESC limit 500];
         }
         
         Set<Id> accIds = new Set<Id>();
@@ -117,7 +117,7 @@ public with sharing class VPMCampaignOverviewMapController {
         if(String.isBlank(companyName) || String.isEmpty(companyName) || companyName == 'HVC'){
             campaignList = [SELECT Id, Name FROM Campaign WHERE IsActive=true WITH USER_MODE ORDER BY Name ASC LIMIT 500];
         }else{
-            campaignList = [SELECT Id, Name FROM Campaign WHERE IsActive=true AND Campaign_Subsidiary__c =: companyName ORDER BY Name ASC LIMIT 500];
+            campaignList = [SELECT Id, Name FROM Campaign WHERE IsActive=true AND Campaign_Subsidiary__c =: companyName WITH SYSTEM_MODE ORDER BY Name ASC LIMIT 500];
         }
         
         for(Campaign c : campaignList){

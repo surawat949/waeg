@@ -72,10 +72,13 @@
                                 </div>
                                 <template if:true={isCurrencyCodeSame}>
                                     <div class="stage-info spacing">
-                                        <span class ="smallHeading">Lenses Net Sales Last 12Mo</span>
-                                        <span class ="record-count slds-text-title_bold">{item.summation} {item.accountCurrency}</span>
+                                        <span class ="smallHeading">Lenses Net Sales L12Mo - <span class ="record-count slds-text-title_bold">{item.summation} {item.accountCurrency}</span></span>
+                                    </div>
+                                    <div class="stage-info spacing">
+                                        <span class ="smallHeading">Strategic Value Net - <span class ="record-count slds-text-title_bold">{item.summationOfStrategicValue} {item.accountCurrency}</span></span>
                                     </div>
                                 </template>
+                                
                                 <div class="listHidden">
                                     <c-life-cycle-Reporting-List visitaddflag={visitflagMap} lensesnetsalesl12mo={lensesnetsalesl12mo} taskstats={taskstats} accountstats={accountStats} records={records} stage={item.stage}></c-life-cycle-Reporting-List>
                                 </div>

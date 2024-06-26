@@ -70,7 +70,6 @@ export default class Charts extends LightningElement {
             //DoughnutLabel  - plugin to dsiplay text inside the chart
             //outlabels - plugin used to display the data outside in the percentage
 
-            plugins: [ChartDataLabels],
             options: {
                 responsive: true,
                 legend: {

@@ -1,3 +1,17 @@
+/**
+ * ============================================================================================================
+ * @author : Surawat Sakulmontreechai <<surawat.sakulmontreechai@hoya.com>>
+ * @version : 1.0
+ * @api : v.55.0
+ * @LastModified : 2023-11-28
+ * @LastModifiedBy.Name : Surawat Sakulmontreechai <<surawat.sakulmontreechai@hoya.com>>
+ * @changed log : 2023-11-28
+ *      add new class about MiyoSmart from Contact/Account object and this is support HOLK specific business
+ *      addedd : Surawat Sakulmontreechai <<surawat.sakulmontreechai@hoya.com>>
+ *      Yung required : 2023-11-28 new component will manfiest under MiyoSamrt Authorize Dealer.
+ *      changed api to v.55.0
+ * ============================================================================================================
+ */
 public with sharing class APACAccountNearAccountController {
 
     /*
@@ -77,7 +91,7 @@ public with sharing class APACAccountNearAccountController {
         Double longitude = acc.shippingLongitude;
 
         
-        String soql= 'select Id, name, Hoya_account_id__c, Account_Status__c, shippingStreet, shippingPostalCode, shippingCity, shippingState, shippingCountry, shippingLatitude, shippingLongitude, potential__c, First_Competitor_global_name__c, Second_Competitor_global_name__c, First_Competitor_SOW__c, Second_Competitor_SOW__c, Phone, Brand__c, AnnualRevenue, First_Competitor_local_name__c, CurrencyIsoCode, Segmentation_Box__c, Visit_Frequency_Flag__c, Last_Visit_date__c, Agreed_Visits__c, Visits_performed__c, Visit_Frequency_Status__c,recordType.developerName '
+        String soql= 'select Id, name, Hoya_account_id__c, Account_Status__c, shippingStreet, shippingPostalCode, shippingCity, shippingState, shippingCountry, shippingLatitude, shippingLongitude, potential__c, First_Competitor_global_name__c, Second_Competitor_global_name__c, First_Competitor_SOW__c, Second_Competitor_SOW__c, Phone, Brand__c, AnnualRevenue, First_Competitor_local_name__c, CurrencyIsoCode, Segmentation_Box__c, Visit_Frequency_Flag__c, Last_Visit_date__c, Agreed_Visits__c, Visits_performed__c, Visit_Frequency_Status__c, recordType.developerName '
             + ' from Account where potential__c>=' + potentialMin.longValue() + ' and potential__c<=' + potentialMax.longValue() + critCompetitorGlobal
             + ' and DISTANCE(shippingAddress, GEOLOCATION('+latitude+', '+longitude+'), \'km\')<'+ distance + crtiCompetitorSecondGlobal + account_status + segment ;
         
@@ -674,5 +688,45 @@ public with sharing class APACAccountNearAccountController {
         System.debug('Caompany Option List = '+optionList.size());
         return optionList;
    }
-   
+
+   /**
+    * Add below class for get contact id from Contact object
+    * to support for Contact fields MiyoSmart fields
+    * added : Surawat Sakulmontreechai <<surawat.sakulmontreechai@hoya.com>>
+    * date : 2023-11-28
+    * Required : Chan Yung
+    */
+
+    @AuraEnabled
+    public static Id getContactIdFromAccount(Id recordId){
+        try {
+            Id conId = [SELECT Id, AccountId FROM Contact WHERE AccountId=:recordId].Id;
+            //System.debug('Contact Id associated to Account is '+conId);
+            return conId;
+        } catch (Exception e) {
+            LogException.log(e);
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+    public class NumOfContact{
+        @AuraEnabled public double ContactNum{get;set;}
+    }
+
+    @AuraEnabled
+    public static List<NumOfContact> getContactNumber(Id recordId){
+        try {
+            List<NumOfContact> conNumList = new List<NumOfContact>();
+            List<AggregateResult> result = [SELECT COUNT(Id) counting FROM Contact WHERE AccountId=:recordId];
+            for(AggregateResult ar:result){
+                NumOfContact n = new NumOfContact();
+                n.ContactNum = (Double)ar.get('counting');
+                conNumList.add(n);
+            }
+            System.debug('Contact count==>'+conNumList);
+            return conNumList;
+        } catch (Exception e) {
+            LogException.log(e);
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }

@@ -1,7 +1,7 @@
 public without sharing class Utility {
 	
 	private static final String Task_Status_SFDC_V2 = Schema.SObjectType.Task.getRecordTypeInfosByDeveloperName().get('SFDC_V2_Standard_Task').getRecordTypeId();
-	
+    
     // method to send email with template name
     public static void sendEmailWithTemplate(String template_name,Id obj_id, String from_address){
         EmailTemplate et = [SELECT Id,Subject, Body FROM EmailTemplate WHERE DeveloperName =: template_name LIMIT 1];
@@ -66,6 +66,7 @@ public without sharing class Utility {
 
         return mapCommunitySetting;
     }
+    @AuraEnabled(cacheable=true)
     public static List<String> getPicklistValue(String ObjectApi_name,String Field_name){ 
 
         List<String> lstPickvals=new List<String>();

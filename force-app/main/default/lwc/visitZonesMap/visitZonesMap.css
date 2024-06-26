@@ -1,0 +1,14 @@
+.class1 {
+    background-color: #f3f0f0;
+}
+.class2 {
+    background-color: none;
+}
+.spinshow::after {
+    position: absolute;
+    content: "Please wait while map is loading...";
+    width: 100%;
+    text-align: center;
+    top: calc(50% + 3em);
+    font-weight: bold;
+}

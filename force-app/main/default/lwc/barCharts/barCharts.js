@@ -79,7 +79,6 @@ export default class BarCharts extends LightningElement {
                 }
             ]
             },
-            plugins: [ChartDataLabels],
             options: {
                 responsive: true,
                 legend: {

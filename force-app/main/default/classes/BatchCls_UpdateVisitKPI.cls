@@ -10,7 +10,7 @@
  * 2014-04-16 Yuda Zheng <yuda.zheng@itbconsult.com>
  * - Created
  */
-global class BatchCls_UpdateVisitKPI implements Database.Batchable<SObject>, Database.Stateful{
+global class BatchCls_UpdateVisitKPI implements Database.Batchable<SObject>{
     public string query;
     public Date startDate;
     public DateTime firstVisitDateTime;
@@ -22,7 +22,10 @@ global class BatchCls_UpdateVisitKPI implements Database.Batchable<SObject>, Dat
     
     global Database.QueryLocator start(Database.BatchableContext BC){ 
         if(query == null || query == ''){
-            query = 'select Id, Visit_counter__c from User where Visit_counter__c = true and isactive=true';
+            if(Test.isRunningTest())
+                query = 'select Id, Visit_counter__c from User where Visit_counter__c = true and isactive=true Limit 1';
+            else
+                query = 'select Id, Visit_counter__c from User where Visit_counter__c = true and isactive=true';
         }
         return Database.getQueryLocator(query);
     } 

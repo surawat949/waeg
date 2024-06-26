@@ -152,6 +152,11 @@ export default class LifeCycleReporting extends LightningElement  {
             console.log('>>result.TacticomList',result.TacticomList);
             if(result.isAdminUser == true){
                 this.isCompanyFilterVisible = true;
+                this.selectedCompanyValue =  this.accountCompanyList.find(item => item.label !== "No Filter").value;
+                if(this.selectedCompanyValue){
+                    this.filteredRecords();
+                }
+                
             }
             this.calculateDataForCharts();
             this.checkCountryCurrencyCodes();
@@ -163,7 +168,7 @@ export default class LifeCycleReporting extends LightningElement  {
             }catch(e){
                 this.showToast('Error','An error was occurred during stage count==>'+e.message,'error');
             }
-            this.pickVals = tempPickList;
+            this.pickVals = tempPickList;            
             this.showSpinner = false;
         })
         .catch(error => {
@@ -273,32 +278,29 @@ export default class LifeCycleReporting extends LightningElement  {
         }
     }
 
+    initializeStageMap(records) {
+        return records.reduce((obj, record) => {
+            obj[record.stage] = 0;
+            return obj;
+        }, {});
+    }
+
     revalidateStageCount(){
-        var tempList = this.records;
-        let stageSummationMap = {
-            "Discover": 0,
-            "Engage": 0,
-            "Negotiate": 0,
-            "On-board": 0,
-            "Develop": 0,
-            "Build Loyalty": 0
-        };
-        let stageCountMap = {
-            "Discover": 0,
-            "Engage": 0,
-            "Negotiate": 0,
-            "On-board": 0,
-            "Develop": 0,
-            "Build Loyalty": 0
-        };
+        var tempList = this.records;       
+       // Extracting stage values and converting to object with '0' assigned
+        let stageSummationMap = this.initializeStageMap(this.pickVals);
+        let stageCountMap = this.initializeStageMap(this.pickVals);
+        let summationOfStrategicValueMap = this.initializeStageMap(this.pickVals);
         tempList.forEach(record => {
             let stage = record.Stage__c;
             if (stageCountMap.hasOwnProperty(stage)) {
                 stageCountMap[stage]++;
                 stageSummationMap[stage] = stageSummationMap[stage] + record.Lenses_Net_Sales_Last_12Mo__c;
+                summationOfStrategicValueMap[stage] = summationOfStrategicValueMap[stage] + record.Strategic_Value__c;
             } else {
                 stageCountMap[stage] = 1;
                 stageSummationMap[stage] = stageSummationMap[stage];
+                summationOfStrategicValueMap[stage] = summationOfStrategicValueMap[stage];
             }
         });
         let tempPickList  = JSON.parse(JSON.stringify(this.pickVals));
@@ -306,6 +308,7 @@ export default class LifeCycleReporting extends LightningElement  {
             for (let account of tempPickList){
                 account['noOfRecords'] = stageCountMap[account.stage];
                 account['summation'] = this.convertToBrowserLocale(parseInt(stageSummationMap[account.stage]),account.accountCurrency);
+                account['summationOfStrategicValue'] = this.convertToBrowserLocale(parseInt(summationOfStrategicValueMap[account.stage]),account.accountCurrency);
             }
         }catch(e){
             this.showToast('Error','An error was occurred during stage count==>'+e.message,'error');

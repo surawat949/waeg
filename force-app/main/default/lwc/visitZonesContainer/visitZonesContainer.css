@@ -1,0 +1,25 @@
+.filterssection {
+    width: 40%;
+    border: var(--lwc-colorBorder, rgb(229, 229, 229)) var(--lwc-borderWidthThin, 1px) solid;
+}
+.customwidth2 {
+    width: 60%;
+    padding-left: .02rem;
+}
+.borderLine{
+    padding-left: 10px
+}
+.filterssection .slds-col{
+    flex: none;
+}
+
+.fullwidth .slds-col{
+    flex: none;
+}
+
+.fullwidth{
+    width: 100%;
+}
+.hidesection{
+    display: 'none';
+}

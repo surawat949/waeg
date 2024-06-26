@@ -6,6 +6,7 @@ import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
 import Last_Visit_Completed from '@salesforce/label/c.Last_Visit_Completed';
 import Report_Visit_Id from '@salesforce/label/c.Report_Visit_Id';
 import Report_Visit_Type from '@salesforce/label/c.Report_Visit_Type';
+import Visit_Warning_Message from '@salesforce/label/c.Visit_Warning_Message';
 import Assigned_To from '@salesforce/label/c.Assigned_To';
 import Report_Start from '@salesforce/label/c.Report_Start';
 import Report_Visit_Objective from '@salesforce/label/c.Report_Visit_Objective';
@@ -19,6 +20,7 @@ import Visit_Notes from '@salesforce/label/c.Visit_Notes';
 import Last_Three_Tasks from '@salesforce/label/c.Last_Three_Tasks';
 import Reports_Created_By from '@salesforce/label/c.Reports_Created_By';
 import Reports_Subject from '@salesforce/label/c.Reports_Subject';
+import Visit_Main_Objective from '@salesforce/label/c.Visit_Main_Objective';
 import Report_Due_Date from '@salesforce/label/c.Report_Due_Date';
 import Report_Status from '@salesforce/label/c.Report_Status';
 import visits from '@salesforce/label/c.visits';
@@ -29,6 +31,7 @@ import VisitObj from '@salesforce/label/c.VisitObj';
 import VisitStatus from '@salesforce/label/c.VisitStatus';
 import label_viewall from '@salesforce/label/c.ViewAllRelatedList';
 import label_new from '@salesforce/label/c.NewButtonRelatedList';
+import Id from "@salesforce/user/Id";
 
 import getReportVisit from '@salesforce/apex/TabVisitsReportsController.getReportVisits';
 import getTaskReport from '@salesforce/apex/TabVisitsReportsController.getTaskRecord';
@@ -42,14 +45,16 @@ export default class TabMVCVisitsReports extends NavigationMixin(LightningElemen
   @track taskRecord;
   @track visitData;
   visitCount=0;
+  userId = Id;
   displayVisitViewAllButton=true;
   CHANNEL_NAME = '/event/Refresh_Related_list_Visit__e';
+  showObjectiveNotesPopup=false;
 
   label = {Last_Visit_Completed,Report_Visit_Id,Report_Visit_Type,Assigned_To,
           Report_Start,Report_Visit_Objective,Report_Contact,label_viewall,label_new,
           Report_Call_To_Action_Notes,Last_Three_Visit_Completed,Reports_Date,Visit_Notes,Call_To_Action,Last_Three_Tasks,
           Reports_Created_By,Reports_Subject,Report_Due_Date,Report_Status,visits,Reports_Visit_ID, Reports_Start, VisitType,VisitObj,
-          VisitStatus}
+          VisitStatus,Visit_Main_Objective,Visit_Warning_Message}
 
           @track visitcolumns = [
             {
@@ -66,6 +71,14 @@ export default class TabMVCVisitsReports extends NavigationMixin(LightningElemen
               sortable: true,
               initialWidth: 150,
             },
+            {
+              label: this.label.Visit_Main_Objective,
+              fieldName: 'Visit_Reason__c',
+              type: 'text',
+              sortable: true,
+              initialWidth: 200,
+            },
+            
             {
               label: this.label.Visit_Notes,
               fieldName: 'Visit_Notes__c',
@@ -154,13 +167,39 @@ export default class TabMVCVisitsReports extends NavigationMixin(LightningElemen
     ];
   connectedCallback() {
       this.getReportVisit();
+      this.showObjectiveNotesPopup = false;
       subscribe(this.CHANNEL_NAME, -1, this.refreshList).then(response => {
           this.subscription = response;
       });
       onError(error => {
           this.showToast('Error', 'Error', error.body.message);
       });
+      this.handleSubscribe();
     }
+    handleSubscribe() {
+      // Arrow function to maintain the component instance context
+      const messageCallback = (response) => {
+          const obj = JSON.parse(JSON.stringify(response));
+          console.log('User Id',this.userId);
+          console.log('>>>',obj.data.payload.UserId__c);
+          this.showObjectiveNotesPopup = obj.data.payload.showWarrning__c;
+          if (this.showObjectiveNotesPopup && 
+            (obj.data.payload.Parent_ID__c === this.receivedId)
+            && obj.data.payload.UserId__c === this.userId) {
+              const event = new ShowToastEvent({
+                  title: 'Warning',
+                  message: this.label.Visit_Warning_Message,
+                  variant: 'warning',
+                  mode: 'sticky'
+              });
+              this.dispatchEvent(event);
+          }
+      };
+  
+      subscribe(this.CHANNEL_NAME, -1, messageCallback).then(response => {
+          this.subscription = response;
+      });
+  }
 
     getReportVisit(){
       getReportVisit({accountId : this.receivedId})

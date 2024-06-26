@@ -1,0 +1,13 @@
+<template>
+     <lightning-modal-header label={header}>
+    </lightning-modal-header>
+    <lightning-modal-body>
+        {body}
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <template if:false={hidecancel}>
+            <lightning-button label="Cancel" onclick={handleCancel}></lightning-button>&nbsp;
+        </template>
+        <lightning-button variant="brand" label={buttonlabel} onclick={handleConfirm}></lightning-button>
+    </lightning-modal-footer>
+</template>

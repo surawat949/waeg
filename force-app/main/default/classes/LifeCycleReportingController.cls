@@ -7,6 +7,7 @@
  */
 public with sharing class LifeCycleReportingController {
     private static Decimal count = 0;
+    private static Decimal countStrategicValue = 0;
     private static Decimal countOfAccounts = 0;
     private static String currencyCode = '';
     private static Set<String> ownerNames = new Set<String>();
@@ -31,7 +32,7 @@ public with sharing class LifeCycleReportingController {
                                                      Previous_Stage__c,Stage__c,Total_Visits_Achieved__c,Active__c,
                                                      Account__r.Lenses_Net_Sales_Last_12Mo__c,Account__r.Lenses_Net_Sales_LFY__c,
                                                      Account__r.TACTICOM_SOF__c,Account__r.Account_Owners_Manager__c,Account__r.Strategic_Value_Net_Sales__c,
-                                                     Strategic_Value__c	
+                                                     Strategic_Value__c 
                                                      from Account_Life_Cycle__c where Active__c = true];
         currencyCode = lifeCycleList[0].Account__r.CurrencyIsoCode;
         wrapperResponse.lifeCycleWrapperList = lifeCycleList;
@@ -49,6 +50,7 @@ public with sharing class LifeCycleReportingController {
             }
         }
         Map<String,Decimal> stageRecordCountMap = new Map<String,Decimal>(stageNameMap);
+        Map<String,Decimal> summationOfStrategicValueMap = new Map<String,Decimal>(stageNameMap);
         List<Id> accIds = new List<Id>();
         List<Id> accLifeCycleIds = new List<Id>();
         for(Account_Life_Cycle__c opp: lifeCycleList){
@@ -62,8 +64,13 @@ public with sharing class LifeCycleReportingController {
             if(stageNameMap.containsKey(opp.Stage__c)){
                 ownerNames.add(opp.Account__r.Owner.Name);
                 count = stageNameMap.get(opp.Stage__c);
+                countStrategicValue = summationOfStrategicValueMap.get(opp.Stage__c);
                 Decimal sumPerStage = count + opp.Lenses_Net_Sales_Last_12Mo__c;
+                
+                Decimal sumStrategicValue = countStrategicValue + opp.Strategic_Value__c;
+                //Decimal sumStrategicValue = countStrategicValue + ((opp.Account__r != null && opp.Account__r.Strategic_Value_Net_Sales__c != null) ? opp.Account__r.Strategic_Value_Net_Sales__c  : 0);
                 stageNameMap.put(opp.Stage__c, sumPerStage.intValue());
+                summationOfStrategicValueMap.put(opp.Stage__c, sumStrategicValue.intValue());
                 countOfAccounts = stageRecordCountMap.get(opp.Stage__c);
                 stageRecordCountMap.put(opp.Stage__c, ++countOfAccounts);
             }
@@ -97,7 +104,7 @@ public with sharing class LifeCycleReportingController {
                  addNewIcon=true;
             }
             else{
-             	 addNewIcon=false;   
+                 addNewIcon=false;   
             }
             visitsFieldMap.put(visitObj.Account__c,addNewIcon);
         }    
@@ -106,6 +113,7 @@ public with sharing class LifeCycleReportingController {
             LifeCycleReportingController.stageObject pickVal = new LifeCycleReportingController.stageObject();
             pickVal.stage = stage;
             pickVal.summation = stageNameMap.get(stage);
+            pickVal.summationOfStrategicValue = summationOfStrategicValueMap.get(stage);
             pickVal.noOfRecords = stageRecordCountMap.get(stage);
             pickVal.accountCurrency = currencyCode;
             pickValList.add(pickVal);
@@ -138,6 +146,7 @@ public with sharing class LifeCycleReportingController {
         @AuraEnabled public Decimal noOfRecords = 0;
         @AuraEnabled public String stage = '';
         @AuraEnabled public Decimal summation = 0;
+        @AuraEnabled public Decimal summationOfStrategicValue = 0;
         @AuraEnabled public String accountCurrency = '';
     }
     

@@ -21,8 +21,8 @@ public class HoyaTaskApprovalEmailFlowCtrl {
         RequestWrapper requestWrapper = requestWrappers[0];
         List<Id> recordIds = requestWrapper.recordIds;
         List<Messaging.SingleEmailMessage> emailList = new List<Messaging.SingleEmailMessage>();
-        for(Task taskRec : [SELECT Id, Owner.Email, CreatedBy.Name,CreatedBy.Email, Instructions__c,
-                                AccountId, Account.Name, Account.Owner.Email,Account.Hoya_Account_ID__c,
+        for(Task taskRec : [SELECT Id, Owner.Email,Owner.FirstName,Owner.LastName, CreatedBy.Name,CreatedBy.Email, Instructions__c,
+                                AccountId, Account.Name, Account.Owner.Email,Account.Owner.Manager.Email,Account.Hoya_Account_ID__c,
                                 Account.Owner.Name,Account.OwnerId,Account.CHCUSTCLASSIFICATIONID__c,
                                 Account.Segmentation_Net__c,Account.Strategic_Value_Gross_Sales__c,Account.Strategic_Value_Net_Sales__c,
                                 Account.Agreed_Visits__c,Account.Agreed_No_of_Digital_Visits__c,Account.Total_Visits_Planned__c,Account.Total_Visits_Achieved__c,Account.Requested_Direct_Visits__c,
@@ -30,7 +30,7 @@ public class HoyaTaskApprovalEmailFlowCtrl {
                                 FROM Task WHERE Id IN :recordIds]){
             String subject = eventTypeToSubjectMap.get(requestWrapper.eventType);
             String body = prepareEmailTemplate(taskRec,requestWrapper.eventType);
-            String email = (requestWrapper.eventType == 'Submit_for_apporval') ? taskRec.Owner.Email : taskRec.CreatedBy.Email;
+            String email = (requestWrapper.eventType == 'Submit_for_approval') ? taskRec.Owner.Email : taskRec.CreatedBy.Email;
             emailList.add(sendEmail(email, subject, body));
         }
 
@@ -58,11 +58,11 @@ public class HoyaTaskApprovalEmailFlowCtrl {
    // Method to prepare email template
     public static String prepareEmailTemplate(Task taskRec, String eventType){
         if(eventType == 'Submit_for_approval'){
-            return '<body style="font-family: courier, serif;"><p>Dear '+taskRec.Account.Owner.Name+',</p>' +
+            return '<body style="font-family: courier, serif;"><p>Dear '+taskRec.Owner.FirstName+' '+taskRec.Owner.LastName+',</p>' +
             '<p>You are kindly requested by <b>'+UserInfo.getFirstName()+' '+UserInfo.getLastName()+'</b> to authorize the new visit planning frequency as follow:</p>' +
             '<ul>' +
-            '<li><b>Requested Direct Visit: '+taskRec.Account.Requested_Direct_Visits__c+'</b></li>' +
-            '<li><b>Requested Digital Visit: '+taskRec.Account.Requested_Digital_Visits__c+'</b></li>' +
+            '<li><b><font color="blue">Requested Direct Visit: '+taskRec.Account.Requested_Direct_Visits__c+'</font></b></li>' +
+            '<li><b><font color="blue">Requested Digital Visit: '+taskRec.Account.Requested_Digital_Visits__c+'</font></b></li>' +
             '<p>for the following customer:</p>'+
             '<li>Account name: '+taskRec.Account.Name+'</li>' +
             '<li>Account code: '+taskRec.Account.Hoya_Account_ID__c+'</li>' +

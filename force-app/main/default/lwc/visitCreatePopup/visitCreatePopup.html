@@ -3,13 +3,12 @@
     <lightning-modal-header label={CustLabel.visitPopup}></lightning-modal-header>   
     <lightning-modal-body>
         <div class="slds-form-element__control">           
-            <div>               
-                <h3 class="slds-section__title">
-                    <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
-                        <span class="slds-truncate" title="Details">{CustLabel.visitDetail}</span>
-                      </button>
-                </h3>
-                <br>
+            <div>  
+                <table class="slds-table slds-table_bordered" aria-label="Visit Preparation" style="background-color: #aacbff;">
+                    <tr class="row" style="background-color: #aacbff;">
+                        <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{CustLabel.visitDetail}</p></h3></td>
+                    </tr>
+                </table>
             </div> 
             <template if:true={isLoading}>
                 <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
@@ -45,11 +44,13 @@
                         <lightning-input-field field-name="Coaching_Visit__c" value={coachingVisit} onchange={handleCoachingVisit} ></lightning-input-field>
                     </div>             
                 </div>
-                <h3 class="slds-section__title">
-                    <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
-                        <span class="slds-truncate" title="Schedule">{CustLabel.schedule}</span>
-                      </button>
-                </h3>
+                <div>  
+                    <table class="slds-table slds-table_bordered" aria-label="Visit Preparation" style="background-color: #aacbff;">
+                        <tr class="row" style="background-color: #aacbff;">
+                            <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{CustLabel.schedule}</p></h3></td>
+                        </tr>
+                    </table>
+                </div>                
                 <div class="slds-grid">
                     <div class="slds-col slds-size_1-of-1">                       
                         <lightning-input-field field-name="Start_Time__c" value={start} onchange={handleStart} required ></lightning-input-field>
@@ -65,11 +66,13 @@
                         <lightning-input-field field-name="Is_All_Day_Event__c" value={isAllDay} onchange={handleAllDayEvent}></lightning-input-field>
                     </div>
                 </div>
-                <h3 class="slds-section__title">
-                    <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
-                        <span class="slds-truncate" title="Details">{CustLabel.visit_Preparation}</span>
-                      </button>
-                </h3>
+                <div>  
+                    <table class="slds-table slds-table_bordered" aria-label="Visit Preparation" style="background-color: #aacbff;">
+                        <tr class="row" style="background-color: #aacbff;">
+                            <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{CustLabel.visit_Preparation}</p></h3></td>
+                        </tr>
+                    </table>
+                </div>                
                 <div class="slds-grid">
                     <div class="slds-col slds-size_1-of-1">                      
                         <lightning-input-field class="reason" field-name="Visit_Reason__c" onchange={handleVisitReason} value={visitReason} required></lightning-input-field>

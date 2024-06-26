@@ -42,7 +42,7 @@ global class BatchCls_OpticianFinderEligibility implements Database.Batchable<SO
                 } else {
                     System.debug('+++ Null');
                     if (eachAcc.Optician_Finder_Channel_Decision__c == 'Activation' || eachAcc.Optician_Finder_Channel_Decision__c == null) {
-                        if (mapAccountTOsales.get(eachAcc.Id) != null && mapAccountTOsales.get(eachAcc.Id) > 0) {
+                        if ((mapAccountTOsales.get(eachAcc.Id) != null && mapAccountTOsales.get(eachAcc.Id) > 0) || eachAcc.Turnover_Amount__c >0) {
                             if (!eachAcc.Optician_Finder__c) {
                                 eachAcc.Optician_Finder__c = true;
                                 eachAcc.Optician_finder_optin__c = true;

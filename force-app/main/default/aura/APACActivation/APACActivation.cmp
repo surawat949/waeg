@@ -1,0 +1,243 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" 
+                access="global"
+                description="APACSalesTabStatistic"
+                controller="APACAccountNearAccountController">
+
+    <aura:attribute name="equipement" type="List" />
+    <aura:attribute name="equipHoyalog" type="List" />
+    <aura:attribute name="visualreel" type="List" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="equipFields" type="String[]" default="['Name', 'Product_Type__c', 'Brand2__c', 'Model2__c', 'Subtype__c', 'Shipment_Date__c', 'SEIKO_Login__c', 'SEIKO_Password__c']" />
+    <aura:attribute name="miyoSmartFields" type="String[]" default="['Myo_Smart_AuthorizeDealer__c', 'Myo_Smart_TrainingComplete__c', 'Myo_Kids_Corner__c', 'Monthly_Average_Children_Patient__c', 'Presentation_date__c', 'Myo_Main_Comp_Myopia_Control__c', 'Myo_CompetitorAve__c','Myo_NotesComments__c']" />
+    <aura:attribute name="miyoSmartFieldsChildAverage" type="String[]" default="['Myo_Smart_AuthorizeDealer__c', 'Myo_Smart_TrainingComplete__c', 'Myo_Kids_Corner__c', 'Monthly_Average_Children_Patient__c', 'Presentation_date__c', 'Myo_Main_Comp_Myopia_Control__c', 'Myo_CompetitorAve__c','Myo_NotesComments__c']" />
+    <aura:attribute name="coatingFields" type="String[]" default="['Coating_HVL_Qty__c', 'Coating_Campaign_Account__c', 'Coating_Campaign_Interest__c', 'Coating_Campaign_Presented__c', 'Coating_HVL_Qty_CY__c', 'Coating_HVL_Qty_LY__c', 'Preferred_Coating_supplier_2__c']" />
+    <aura:attribute name="WebId" type="String[]" default="['APAC_Web_ID__c', 'APAC_Tracer_Model__c', 'APAC_Tracer_Serial_Number__c']" />
+    <aura:attribute name="mycolumns" type="List" />
+    <aura:attribute name="myColumnsHoyalog" type="List" />
+    <aura:attribute name="myColumnsVisualReel" type="List" />
+    <aura:attribute name="CompanyName" type="String" />
+    <aura:attribute name="equipements" type="List" />
+    <aura:attribute name="fsvproject" type="List" />
+    <aura:attribute name="instorevisual" type="List" />
+    <aura:attribute name="EdgingFields" type="String[]" default="['APAC_FSV_Primary_Target__c', 'APAC_Hoyalog__c', 'APAC_Competitor_Online_Ordering__c', 'APAC_Number_of_edging_machine_in_shop__c']" />
+    <aura:attribute name="fsvFields" type="String[]" default="['APAC_Stock_Lens_Inventory_In_Shop__c', 'APAC_1st_Main_Stock_Lens_Brand__c', 'APAC_Stock_In_Shop_Index_1__c', 'APAC_Blue_Coat_In_Shop__c', 'APAC_Stock_In_Shop_Index_2__c', 'APAC_Photochromic_in_shop__c', 'APAC_Stock_In_Shop_Index_3__c', 'APAC_Comment__c']" />
+    <aura:attribute name="instoreFields" type="String[]" default="['Product_Focus__c', 'Installation_Date__c']" />
+    <aura:attribute name="ContactId" type="String" />
+    <aura:attribute name="ContactFields" type="String[]" default="['Myopic_Child_Patients_Per_Week__c', 'MiyoSmart_Attitude__c', 'Prescription_Potential__c']" />
+    <aura:attribute name="ContactNum" type="List" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <aura:if isTrue="{!v.CompanyName=='HAPL' || v.CompanyName=='HVC'}">
+        <div class="slds-theme_default slds-box">
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACActivationMarketingPOS}</span>
+                </button>
+            </h3>
+
+            <div class="slds-grid slds-gutters slds-border_bottom">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning:datatable data="{!v.equipement}"
+                        columns="{!v.mycolumns}"
+                        keyField="id"
+                        hideCheckboxColumn="true"/>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="slds-theme_default slds-box">
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACActivationHoyalogAndTracer}</span>
+                </button>
+            </h3>
+            <div class="slds-grid slds-gutters slds-border_bottom">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning:datatable data="{!v.equipHoyalog}"
+                        columns="{!v.myColumnsHoyalog}"
+                        keyField="id"
+                        hideCheckboxColumn="true"
+                    />
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="slds-theme_default slds-box">
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACActivationVisualReel}</span>
+                </button>
+            </h3>
+            <div class="slds-grid slds-gutters slds-border_bottom">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning:datatable data="{!v.visualreel}"
+                    columns="{!v.myColumnsVisualReel}"
+                    keyField="id"
+                    hideCheckboxColumn="true" />
+                </div>
+            </div>
+        </div>
+        <br/>
+        <aura:set attribute="else">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-1">&nbsp;</div>
+            </div>
+        </aura:set>
+    </aura:if>
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACActivationMiyoSmartAuthorizeDealer}</span>
+            </button>
+        </h3>
+        <aura:if isTrue="{!v.CompanyName=='HOLK' || v.CompanyName=='HVC'}">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning:recordForm aura:id="miyoSmart_Child" objectApiName="Account" fields="{!v.miyoSmartFieldsChildAverage}"
+                        recordId="{!v.recordId}" mode="view" density="comfy" columns="3">
+                    </lightning:recordForm>
+                </div>
+            </div>
+            <aura:iteration var="it" items="{!v.ContactNum}">
+                <aura:if isTrue="{!it.ContactNum > 0}">
+                    <div class="slds-grid slds-gutters slds-border_bottom">
+                        <div class="slds-col slds-size_1-of-1">
+                            <lightning:recordForm aura:id="Contact_Id" objectApiName="Contact" fields="{!v.ContactFields}"
+                                recordId="{!v.ContactId}" mode="view" density="comfy" columns="3">
+                            </lightning:recordForm>
+                        </div>
+                    </div>
+                    <aura:set attribute="else">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-1">&nbsp;</div>
+                        </div>
+                    </aura:set>
+                </aura:if>
+            </aura:iteration>
+            <aura:set attribute="else">
+                <div class="slds-grid slds-gutters slds-border_bottom">
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning:recordForm aura:id="miyoSmart" objectApiName="Account" fields="{!v.miyoSmartFields}" 
+                            recordId="{!v.recordId}" mode="view" density="comfy" columns="3"
+                        >
+                        </lightning:recordForm>
+                    </div>
+                </div>
+            </aura:set>
+        </aura:if>
+    </div>
+    <br/>
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACActivationCoatingCampaign}</span>
+            </button>
+        </h3>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:recordForm aura:id="coatingCampaignForm"
+                    objectApiName="Account"
+                    recordId="{!v.recordId}"
+                    mode="view"
+                    density="comfy"
+                    columns="3"
+                    fields="{!v.coatingFields}"/>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACActivationWebId}</span>
+            </button>
+        </h3>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size-1-of-1">
+                <aura:if isTrue="{!and(v.equipements!=null, v.equipements!='')}">
+                    <aura:iteration var="eqi" items="{!v.equipements}">
+                        <lightning:recordForm aura:id="equipment_all"
+                            objectApiName="Equipment__c"
+                            recordId="{!eqi.Id}"
+                            fields="{!v.WebId}"
+                            columns="3" density="comfy"
+                        />
+                    </aura:iteration>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACActivationEdgingAndMounting}</span>
+            </button>
+        </h3>
+        <div class="slds-col slds-size_1-of-1">
+            <aura:if isTrue="{!and(v.fsvproject!=null, fsvproject!='')}">
+                <aura:iteration var="fsv" items="{!v.fsvproject}">
+                    <lightning:recordForm aura:id="fsvedging"
+                        objectApiName="Equipment__c"
+                        recordId="{!fsv.Id}"
+                        fields="{!v.EdgingFields}"
+                        columns="2" density="comfy"
+                    />
+                </aura:iteration>
+            </aura:if>
+        </div>
+    </div>
+    <br/>
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACActivationStockLensInventory}</span>
+            </button>
+        </h3>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-1">
+                <aura:if isTrue="{!and(v.fsvproject!=null, fsvproject!='')}">
+                    <aura:iteration var="fsv" items="{!v.fsvproject}">
+                        <lightning:recordForm aura:id="fsvProject"
+                            objectApiName="Equipment__c"
+                            recordId="{!fsv.Id}"
+                            fields="{!v.fsvFields}"
+                            columns="2" density="comfy"
+                        />
+                    </aura:iteration>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="slds-box slds-theme_default">
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACActivationInstoreVisualList}</span>
+            </button>
+        </h3>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-1">
+                <aura:if isTrue="{!and(v.instorevisual!=null, v.instorevisual!='')}">
+                    <aura:iteration var="e" items="{!v.instorevisual}">
+                        <lightning:recordForm aura:id="instorevisual"
+                            objectApiName="Equipment__c"
+                            recordId="{!e.Id}"
+                            fields="{!v.instoreFields}"
+                            columns="2" density="comfy"
+                        />
+                    </aura:iteration>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+</aura:component>

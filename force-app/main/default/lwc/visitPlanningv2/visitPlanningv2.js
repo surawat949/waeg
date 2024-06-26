@@ -6,8 +6,14 @@ import { loadStyle,loadScript } from 'lightning/platformResourceLoader';
 import FullCalendarJS from '@salesforce/resourceUrl/FullCalendar5';
 import NoHeader from '@salesforce/resourceUrl/HideLightningHeader';
 import ACCOUNT_OBJECT from "@salesforce/schema/Account";
-
+import LOCALE from '@salesforce/i18n/locale';
+import { getRecord } from 'lightning/uiRecordApi';
+import { getPicklistValuesByRecordType } from 'lightning/uiObjectInfoApi';
+import userId from "@salesforce/user/Id";
+import userName from '@salesforce/schema/User.Name';
 //Custom Labels
+import Accounts from '@salesforce/label/c.Accounts';
+import Hoya_Account_ID from '@salesforce/label/c.Hoya_Account_ID';
 import listView from '@salesforce/label/c.tabListView';
 import location from '@salesforce/label/c.SFDC_V_2_tabMVAAccount_Location';
 import lifeCycle from '@salesforce/label/c.Life_Cycle';
@@ -48,20 +54,51 @@ import Account_has_Visit_planned_in_next_fortnight from '@salesforce/label/c.Acc
 import Visit_not_planned_in_next_fortnight from '@salesforce/label/c.Visit_not_planned_in_next_fortnight';
 import lblDisplay from '@salesforce/label/c.SFDC_V_2_tabMVAVisitsClinicNearBy_Display';
 import lblHideDisplay from '@salesforce/label/c.SFDC_V_2_tabMVAVisitsClinicNearBy_Hide';
-
+import ExtraActivityPopup from '@salesforce/label/c.ExtraActivityPopup';
+import Calender_Details from '@salesforce/label/c.Calender_Details';
+import AssignedTo from '@salesforce/label/c.tabTaskModalAssignedTo';
+import Start_Date from '@salesforce/label/c.Start_Date';
+import End_Date from '@salesforce/label/c.End_Date';
+import e_status from '@salesforce/label/c.e_status';
+import IsAllDayEvent from '@salesforce/label/c.IsAllDayEvent';
+import IsPrivate from '@salesforce/label/c.IsPrivate';
+import Subject from '@salesforce/label/c.tabTaskModalSubject';
+import Type from '@salesforce/label/c.SFDC_V_2_tabMVAVisitsClinicNearBy_AccType';
+import AddExtraActivity from '@salesforce/label/c.AddExtraActivity';
+import label_save from '@salesforce/label/c.tabLabelSave';
+import cancel from '@salesforce/label/c.ButtonCancel';
+import schedule from '@salesforce/label/c.Schedule';
+import accountStatus from '@salesforce/label/c.Account_Status';
+import state from '@salesforce/label/c.SFDC_V2_MVA_Activation_State';
 //Apex classes
 import getAccountListViews from '@salesforce/apex/VisitPlanningV2Controller.getAccountListViews';
 import getCampaignOptions from '@salesforce/apex/VisitPlanningV2Controller.getCampaignOptions';
 import fetchData from '@salesforce/apex/VisitPlanningV2Controller.fetchData';
 import getPicklistdata from '@salesforce/apex/VisitPlanningV2Controller.getPicklistValues';
 import getUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
-
-import Country from '@salesforce/schema/Asset.Country';
+import getExtraActivityRecType from '@salesforce/apex/FullCalenderV2Controller.getExtraActivityRecTypeId';
+import addExtraActivity from '@salesforce/apex/FullCalenderV2Controller.addExtraActivity';
 
 export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {   
+    assignedTo;
+    userName;
+    userId = userId;
+    type;
+    isPrivate=false;
+    isAllDay=false;
+    start;
+    end;
+    data;
+    description;
+    isLoading;
+    eventRecTypeId;
+    typeOptions;
+    isValidationSuccess;
+    isModalOpen;
+    isModalLoading =false;
     @track listViews = [];
     @track selectedListView = '';
-    @track listViewName = '';
+    //@track listViewName = '';
     @track records = [];
     @track selectedTacticomValue = '';
     @track selectedSegmentationValue = '';
@@ -73,6 +110,7 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     @track currentPage = 1; // Current page number
     @track tacticomFilter = '';
     @track zipFilter = '' ;
+    stateFilter = '';
     @track cityFilter = '';
     @track campaignOptions = []; // Campaign options for combobox
     @track selectedCampaignId = ''; // Selected campaign Id
@@ -87,7 +125,9 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
         removeFilters,page,of,Name,Select_Campaign,Exclude_Presented_Campaigns,Campaign_Priority_Only,lblDisplay,lblHideDisplay,
         ZIP,city,State,Last_Visit_S_D,Total_visits_achieved,Tacticom,AccountVisitTabSegmentation,VisionaryAlliance,HVC_Loyalty_Program,
         Show_Calender,Hide_Calender,Show_Filters,Hide_Filters,Account_has_Visit_planned_in_next_fortnight,Visit_not_planned_in_next_fortnight,
-        Miyo_Smart_AuthorizeDealer,Lens_Net_Sales_L12Mo,AccountShareofWallet3Mo,Local_competitor,Customer_Review_Stage,Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY
+        Miyo_Smart_AuthorizeDealer,Lens_Net_Sales_L12Mo,AccountShareofWallet3Mo,Local_competitor,Customer_Review_Stage,
+        Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY,Hoya_Account_ID,Accounts,label_save,schedule,cancel,AddExtraActivity,
+        ExtraActivityPopup,Calender_Details,AssignedTo,Start_Date,End_Date,e_status,IsAllDayEvent,IsPrivate,Subject,Type,accountStatus,state
     }
 
     initialisedCalendar = false;
@@ -103,8 +143,114 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     showCampaign = false;
     record;
     sortedColumn;
+    delayDropDownTimeout;
     sortedDirection = 'asc';
     filterCriteria = {};
+   
+    @wire(getRecord, { recordId: userId, fields: [userName] })
+    userDetails({ error, data }) {
+        if (error) {
+            this.error = error;
+        } else if (data) {
+            if (data.fields.Name.value != null) {
+                this.userName = data.fields.Name.value;
+                this.assignedTo = this.userName;
+            }
+        }
+    }
+    @wire(getExtraActivityRecType)
+    getRecTypeId({data,error}){
+        if(data){
+            data = JSON.parse(JSON.stringify(data));
+            this.eventRecTypeId = data;
+            
+        }else if(error){
+            this.showToast('Error', JSON.stringify(error.message), 'error');
+        }
+    }
+
+    @wire(getPicklistValuesByRecordType, {objectApiName : 'Event', recordTypeId: '$eventRecTypeId'})
+    TYPE_PICKLIST_VALUE({data,error}){
+        if(data){
+            this.typeOptions = data.picklistFieldValues.Type.values;
+        }else if(error){
+            this.showToast('Error', JSON.stringify(error.message), 'error');
+        }
+    }    
+           handlePrivate(event){
+        this.isPrivate = event.target.checked;
+    }
+    handleAllDay(event){
+        this.isAllDay = event.target.checked;
+    }
+    handleEnd(event){
+        this.end = event.detail.value;
+    }
+    handleStart(event){
+        this.start = event.detail.value;
+    }
+    handleType(event){
+        this.type = event.detail.value;
+    }
+    handleDescription(event){
+        this.description = event.detail.value;
+    }
+    handleCreateEvent(event){
+        event.preventDefault();
+        this.isLoading  = false;
+        this.isValidationSuccess = true;       
+        var inputCmp = this.template.querySelector('.type');
+        var type = inputCmp.value;
+        if (type == '' || type == null ) {
+           this.showToast('Error', 'Please select Type', 'error');
+           this.isValidationSuccess = false;
+           return;
+        }         
+        var startDate = this.template.querySelector('.start');
+        var start = startDate.value;
+        if (start == '' || start == null ) {
+            this.showToast('Error', 'Please select Start Date', 'error');
+            this.isValidationSuccess = false;
+            return;
+        }  
+        var endDate = this.template.querySelector('.end');
+        var end = endDate.value;
+        if (end == '' || end == null ) {
+            this.showToast('Error', 'Please select End Date', 'error');
+            this.isValidationSuccess = false;
+            return;
+        }
+        if(this.isValidationSuccess){
+            this.isModalLoading =true; 
+            addExtraActivity({
+                recTypeId:this.eventRecTypeId,
+                userId:this.userId,
+                EventType:this.type,
+                description:this.description,                
+                startTime:this.start,
+                endTime:this.end,
+                allDayEvent:this.isAllDay,
+                isPrivate :this.isPrivate
+            }).then(result=>{      
+                this.isModalLoading =false;
+                this.isModalOpen = false;
+                setTimeout(
+                    this.template.querySelector('c-full-calenderv2').refresh()
+                    ,100);
+                this.type = null;
+                this.description = null;
+                this.start = null;
+                this.end = null;
+                this.allDayEvent = false;
+                this.isPrivate = false;
+            }).catch(error=>{
+                this.showToast('Error', 'Error', error.message);                
+            });
+        } 
+            }
+    closePopup() {
+        this.isModalOpen = false;
+    }
 
     handleCalenderView(){
         this.showCalender = !this.showCalender;
@@ -118,7 +264,30 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
             this.toggleCalenderViewText = this.custLabel.Hide_Calender;
         }
     }
-    sortRecs( event ) {
+    
+    sortRecords(event) {
+        let colName = event.target.name;
+        let isAsc = this.sortedColumn === colName ? !this.sortedDirection : true;
+        this.sortedColumn = colName;
+        this.sortedDirection = isAsc;
+            this.records.sort((a, b) => {
+            let aValue = a.Last_Sales_Statistics__r ? parseFloat(a.Last_Sales_Statistics__r[0].Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY__c) : isAsc ? Number.MAX_VALUE : -Number.MAX_VALUE;
+            let bValue = b.Last_Sales_Statistics__r ? parseFloat(b.Last_Sales_Statistics__r[0].Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY__c) : isAsc ? Number.MAX_VALUE : -Number.MAX_VALUE;
+                if (!isNaN(aValue) && !isNaN(bValue)) {
+                return isAsc ? (aValue - bValue) : (bValue - aValue);
+            } else if (isNaN(aValue) && isNaN(bValue)) {
+                return 0;
+            } else if (isNaN(aValue)) {
+                return isAsc ? -1 : 1;
+            } else {
+                return isAsc ? 1 : -1;
+            }
+        });
+        this.updateDisplayedRecords();
+        this.currentPage = 1;
+    }
+    
+        sortRecs( event ) {
         let colName = event.target.name;
         if (this.sortedColumn === colName) {
             this.sortedDirection = (this.sortedDirection === 'asc' ? 'desc' : 'asc');
@@ -135,25 +304,35 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
                 return acc && acc[part];
             }, obj);
         };
-        this.dataMaster = JSON.parse(JSON.stringify(this.dataMaster)).sort((a, b) => {
+        const parseDate = (dateStr) => {
+            if (!dateStr) return null;
+            const [day, month, year] = dateStr.split('/');
+            return new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+        };
+        const isDateColumn = colName === 'Last_Visit_date__c';
+        this.records = JSON.parse(JSON.stringify(this.records)).sort((a, b) => {
             let aValue = getNestedValue(a, colName);
             let bValue = getNestedValue(b, colName);
-            if (aValue === null || aValue === undefined) aValue = '';
+                        if (aValue === null || aValue === undefined) aValue = '';
             if (bValue === null || bValue === undefined) bValue = '';
-            if (typeof aValue === 'string') aValue = aValue.toLowerCase();
-            if (typeof bValue === 'string') bValue = bValue.toLowerCase();
-            if (typeof aValue === 'number' && typeof bValue === 'number') {
+            if (isDateColumn) {
+                aValue = aValue ? parseDate(aValue) : null;
+                bValue = bValue ? parseDate(bValue) : null;
+            } else {
+                if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+                if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+            }
+            if (aValue === null && bValue !== null) return -1 * isReverse;
+            if (aValue !== null && bValue === null) return 1 * isReverse;
+            if (aValue === null && bValue === null) return 0;
+            if (isDateColumn || (typeof aValue === 'number' && typeof bValue === 'number')) {
                 return (aValue - bValue) * isReverse;
             }
-            return aValue > bValue ? 1 * isReverse : -1 * isReverse;
+            return (aValue > bValue ? 1 : -1) * isReverse;
         });
-    
-        this.updateDisplayedRecords();
+            this.updateDisplayedRecords();
         this.currentPage = 1;
-        this.applyFilters();
-        this.getColumnClass(colName);
-
-    }
+}
 
     TacticomList;
     ChannelList;
@@ -175,9 +354,6 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
         super();
         loadStyle(this, NoHeader);
     }
-    Change(event){
-        this.Data = event.detail.join(', ');
-    }
     mouseDown(event){
         event.preventDefault();
     }
@@ -185,8 +361,10 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
         event.preventDefault();
     }
     connectedCallback(){
+        document.addEventListener('mouseup', this.handleDocumentMouseUp);
         this.selectedListView = 'All_Accounts_1';
         this.selectedSearchResult = 'All_Accounts_1';
+        
         Promise.all([
             getPicklistdata(),
             getUserDetail()
@@ -203,19 +381,18 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
             if (result['Stage']) {
                 this.ALCStageList = result['Stage'].map(option => ({ label: option, value: option }));
             }
-            console.log(resultOne);
             if(resultOne === true){
                 this.showCampaign = true;
             }
         })
         .catch(error => {
-            this.showToast('Error','Error fetching dropdown options: ==>'+JSON.stringify(error),'error');
+            this.showToast('Error','Error fetching picklist Values: ==> '+JSON.stringify(error),'error');
         });
     }    
     handleRowAction(event) {
         const row = event.currentTarget.dataset.recordId;
         this.navigateToAccountPage(row);
-        this.selectedListView = this.listViewName;
+        //this.selectedListView = this.listViewName;
     }
     navigateToAccountPage(accountId) {
         this[NavigationMixin.GenerateUrl]({
@@ -265,7 +442,6 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     listViewInfo({ error, data }) {
         if (data) {
             this.isLoading = true;
-            this.listViewName = this.selectedListView;
             this.selectedListViewFilters = data.info.filteredByInfo;
             this.callApexMethod();
         } else if (error) {
@@ -274,8 +450,9 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     }
 
     callApexMethod() {
-        fetchData({ selectedViewsFilter: this.selectedListViewFilters ,filterCriteria :this.filterCriteria})
+        fetchData({ selectedViewsFilter: this.selectedListViewFilters ,filterCriteria :this.filterCriteria, listViewName: this.selectedListView})
         .then(result => {
+            this.isLoading = true;
             this.fetchAccountData(result);
             let that = this;
             setTimeout(function() {
@@ -290,15 +467,24 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     fetchAccountData(result){
         this.records = result.map(account => {
             let formattedLastVisitDate = null;
+            let formattedLnetSales = null;
+            const locale = LOCALE;
             if (account.Last_Visit_date__c) {
                 const date = new Date(account.Last_Visit_date__c);
-                formattedLastVisitDate = new Intl.DateTimeFormat(navigator.language, {
+                formattedLastVisitDate = new Intl.DateTimeFormat('en-GB', {
                     dateStyle: 'short'
                 }).format(date);
+            }
+            if (account.Lenses_Net_Sales_Last_12Mo__c) {
+                const netSales = account.Lenses_Net_Sales_Last_12Mo__c;
+                formattedLnetSales = new Intl.NumberFormat(locale, { style: 'currency', currency: account.CurrencyIsoCode }).format(netSales);
+            }else{
+                formattedLnetSales = new Intl.NumberFormat(locale, { style: 'currency', currency: account.CurrencyIsoCode }).format(0);
             }
             return {
                 ...account,
                 Last_Visit_date__c: formattedLastVisitDate,
+                FormattedLenses_Net_Sales_Last_12Mo: formattedLnetSales,
                 recordUrl: `/lightning/r/Account/${account.Id}/view`
             };
         });
@@ -306,11 +492,10 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
         this.displayedRecords = this.records;
         this.updateDisplayedRecords();
         this.currentPage = 1;
-        //this.applyFilters();
         this.displayOnMap();
         this.isLoading = false;
-        console.log(this.records);
     }
+
     toggleFilterVisibility() {
         this.showFilters = !this.showFilters; // Toggle filter visibility
         if (this.showFilters) {
@@ -325,24 +510,11 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     updateDisplayedRecords() {
         const startIndex = (this.currentPage - 1) * this.pageSize;
         this.displayedRecords = this.records.slice(startIndex, startIndex + this.pageSize);
-        this.recordCount = this.records.length
-        console.log(this.records.length);
+        this.recordCount = this.records.length;
     }
-    handleDragStart(event) {
-        const $ = jQuery.noConflict();
-        if(!this.isJQueryUIInitialized){
-            alert('jquery not loaded');
-        }
-        //event.preventDefault();
-        const recordId = event.currentTarget.dataset.id;
-        const accName = event.currentTarget.dataset.name;
-        event.dataTransfer.setData('text/plain', recordId);
-        event.dataTransfer.setData('accountId', recordId);
-        event.dataTransfer.setData('accName', accName);
-        console.log(event);
-        return $( "<div class='ui-widget-header'>" + accName + "</div>" );
-       
-    }
+    addExtraActivity(event){
+        this.isModalOpen=true;  
+    }  
     previousPage() {
         if (this.currentPage > 1) {
             this.currentPage--;
@@ -396,12 +568,7 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
             this.searchResults = this.picklistOrdered;
         }
     }
-    handleBlur(){
-        setTimeout(() => {
-            this.clearSearchResults();
-        }, 1000);
-        
-    }
+    
     renderedCallback() {
         if (this.isJQueryUIInitialized) {
             return;
@@ -451,15 +618,17 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
         this.selectedTacticomValue = '';
         this.cityFilter = '';
         this.zipFilter = '';
+        this.stateFilter = '';
         this.selectedSegmentationValue = '';
         this.selectedChannelValue = '';
         this.selectedAlcStageValue = '';
         this.selectedCampaignId = '';
         this.excludePresented = false;
         this.campaignPriorityOnly = false;
-
         this.records = this.dataMaster;
-        this.updateDisplayedRecords();
+        this.filterCriteria = {};
+        this.records = this.dataMaster;
+        this.callApexMethod();
     }
     HandleFilterChanges(value,apiName){
         clearTimeout(this.delayTimeout);
@@ -482,40 +651,29 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     handleZipChange(event) {
         this.zipFilter = event.target.value;
         this.HandleFilterChanges(this.zipFilter,'Shop_Postal_Code__c');
+    }    
+    handleStateChange(event) {
+        this.stateFilter = event.target.value;
+        this.HandleFilterChanges(this.stateFilter,'Shop_State__c');
     }
     handleStatusChange(event) {
         this.selectedTacticomValue = this.template.querySelector('lightning-combobox').value;
-        if(this.selectedTacticomValue == 'No Filter'){
-            //this.selectedTacticomValue = '';
-        }
         this.HandleFilterChanges(this.selectedTacticomValue,'TACTICOM_SOF__c');
     }
     handleChannelChange(event) {
         this.selectedChannelValue = event.detail.value;
-        if(this.selectedChannelValue == 'No Filter'){
-            this.selectedChannelValue = '';
-        }
         this.HandleFilterChanges(this.selectedChannelValue,'Seiko_Network__c');
     }
     handleSegmentationChange(event) {
         this.selectedSegmentationValue = event.detail.value;
-        if(this.selectedSegmentationValue == 'No Filter'){
-            this.selectedSegmentationValue = '';
-        }
         this.HandleFilterChanges(this.selectedSegmentationValue,'Segmentation_Box__c');
     }
     handleStageChange(event){
         this.selectedAlcStageValue = event.detail.value;
-        if(this.selectedAlcStageValue == 'No Filter'){
-            this.selectedAlcStageValue = '';
-        }
         this.HandleFilterChanges(this.selectedAlcStageValue,'Account_Life_Cycles__r.Stage__c');
     }
     handleCampaignChange(event) {
         this.selectedCampaignId = event.detail.value;
-        if(this.selectedCampaignId == 'No Filter'){
-            this.selectedCampaignId = '';
-        }
         this.HandleFilterChanges(this.selectedCampaignId,'Campaign_Membership__r.Central_Campaign__c');
     }
     handleExcludePresentedChange(event) {
@@ -526,35 +684,7 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
         this.campaignPriorityOnly = event.target.checked;
         this.HandleFilterChanges(this.campaignPriorityOnly,'Campaign_Membership__r.Campaign_Priority__c');
     }
-    applyFilters() {
-        this.records = this.dataMaster.filter(account =>
-            (
-                (this.selectedCampaignId === '' || 
-                    (account.Campaign_Membership__r && 
-                     account.Campaign_Membership__r.some(member => member.Central_Campaign__c === this.selectedCampaignId))
-                ) &&
-                (
-                    !this.excludePresented || (account.Campaign_Membership__r && 
-                    account.Campaign_Membership__r.some(member => member.Campaign_Presented__c))
-                ) &&
-                (
-                    !this.campaignPriorityOnly || (account.Campaign_Membership__r && 
-                    account.Campaign_Membership__r.some(member => member.Campaign_Priority__c))
-                ) &&
-                (this.selectedTacticomValue === '' || account.TACTICOM_SOF__c === this.selectedTacticomValue) &&
-                (this.cityFilter === '' || (account.Shop_City__c && account.Shop_City__c.toLowerCase().startsWith(this.cityFilter.toLowerCase()))) &&
-                (this.zipFilter === '' || (account.Shop_Postal_Code__c && account.Shop_Postal_Code__c.toLowerCase().startsWith(this.zipFilter.toLowerCase()))) &&
-                (this.selectedSegmentationValue === '' || account.Segmentation_Box__c === this.selectedSegmentationValue) &&
-                (this.selectedChannelValue === '' || account.Seiko_Network__c === this.selectedChannelValue) &&
-                (this.selectedAlcStageValue === '' || (account.Account_Life_Cycles__r && account.Account_Life_Cycles__r.some(lifeCycle => 
-                    lifeCycle.Stage__c !== undefined && 
-                    lifeCycle.Stage__c === this.selectedAlcStageValue
-                )))
-            )
-        );
-        this.updateDisplayedRecords();
-        this.displayOnMap();
-    }
+    
     showToast(title,message, variant) {
         this.dispatchEvent(
             new ShowToastEvent({
@@ -603,7 +733,7 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
             if (record.Visits__r && record.Visits__r[0].Start_Day__c) {
                 const startDate = new Date(record.Visits__r[0].Start_Day__c);
 
-                if (startDate < today || startDate > todayPlus14) {
+                if (startDate > today && startDate < todayPlus14) {
                     this.dataOne.push(record);
                 } else {
                     this.dataTwo.push(record);
@@ -615,7 +745,7 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
 
         if(this.dataOne.length>0){
             this.datOneMarkers = this.dataOne
-            //.filter(account => account?.sf_latitude__c)
+            .filter(account => account?.sf_latitude__c)
             .map(account => ({
             location : {
                 //Latitude : account.sf_latitude__c,
@@ -638,25 +768,22 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
             },
             icon : 'standard:campaign',
             description :   '<b>Account Name : </b>'+account.Name +
-                            '<br><b>Shop Street : </b>' + account.Shop_Street__c + '<br><b>Shop City : </b>'+account.Shop_City__c +
+                            '<br><b>Street : </b>' + account.Shop_Street__c + '<br><b>City : </b>'+account.Shop_City__c +
                             '<br><b>Visit Date : </b>' + account.Visits__r[0].Start_Day__c + '<br><b>Zip : </b>'+account.Shop_Postal_Code__c + 
-                            '<br><b>Shop State : </b>' + account.Shop_State__c,
+                            '<br><b>State : </b>' + account.Shop_State__c,
 
             }));
         }
         if(this.dataTwo.length>0){
             this.datTwoMarkers = this.dataTwo
-            //.filter(account => account?.sf_latitude__c)
+            .filter(account => account?.sf_latitude__c)
             .map(account => ({
             location : {
-                //Latitude : account.sf_latitude__c,
-                //Longitude : account.sf_longitude__c ,
                 Street : account.Shop_Street__c,
                 City : account.Shop_City__c,
                 State : account.Shop_State__c,
                 PostalCode : account.Shop_Postal_Code__c,
                 Country : account.Shop_Country__c,
-
             },
             title : account.Name,
             value : account.Name,
@@ -669,8 +796,8 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
             },
             icon : 'standard:campaign',
             description :   '<b>Account Name : </b>'+account.Name +
-                            '<br><b>Shop Street : </b>' + account.Shop_Street__c + '<br><b>Shop City : </b>'+account.Shop_City__c + 
-                            '<br><b>Shop State : </b>' + account.Shop_State__c + '<br><b>Zip : </b>'+account.Shop_Postal_Code__c,
+                            '<br><b>Street : </b>' + account.Shop_Street__c + '<br><b>City : </b>'+account.Shop_City__c + 
+                            '<br><b>State : </b>' + account.Shop_State__c + '<br><b>Zip : </b>'+account.Shop_Postal_Code__c,
 
             }));
         }
@@ -678,18 +805,18 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
         
         if(this.dataTwo.length > 0){
             accountWithLatitude = this.dataTwo.find(account => {
-                return account.sf_latitude__c !== null && account.sf_latitude__c !== '' && account.sf_latitude__c !== '0' && account.sf_latitude__c !== 0;
+                return account.Shop_Postal_Code__c !== '' || account.Shop_State__c !== '' || account.Shop_Country__c !== '' || account.Shop_State__c !== '';
             });
         }else if(this.dataOne.length > 0){
             accountWithLatitude = this.dataOne.find(account => {
-                return account.sf_latitude__c !== null && account.sf_latitude__c !== '' && account.sf_latitude__c !== '0' && account.sf_latitude__c !== 0;
+                return account.Shop_Postal_Code__c !== '' || account.Shop_State__c !== '' || account.Shop_Country__c !== '' || account.Shop_State__c !== '';
             });
         }
 
         this.vCenter = {
             location : {
-                //Latitude: accountWithLatitude.sf_latitude__c || 0, // default to 0 if undefined
-                //Longitude: accountWithLatitude.sf_longitude__c || 0, // default to 0 if undefined            
+                //Latitude: accountWithLatitude?.sf_latitude__c || 0, // default to 0 if undefined
+                //Longitude: accountWithLatitude?.sf_longitude__c || 0, // default to 0 if undefined            
                 Street : accountWithLatitude?.Shop_Street__c || '',
                 City : accountWithLatitude?.Shop_City__c || '',
                 State : accountWithLatitude?.Shop_State__c || '',
@@ -738,5 +865,41 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
             {label : '300', value : '300'},
             {label : '500', value : '500'}
         ];
+    }
+    isMouseDownInside = false;
+
+    handleFocusIn() {
+        this.isMouseDownInside = true;
+    }
+    handleFocusOut(event) {
+                this.isMouseDownInside = this.template.querySelector('.combo-box').contains(event.target);
+    }
+    handleMouseDown(event) {
+        this.isMouseDownInside = this.template.querySelector('.combo-box').contains(event.target);
+            }
+    handleBlur(event){
+        clearTimeout(this.delayTimeoutOne);
+        this.isMouseDownInside = this.template.querySelector('.combo-box').contains(event.target);
+        if(!this.isMouseDownInside){
+            this.delayTimeoutOne =  setTimeout(() => {
+                this.clearSearchResults();
+            }, 1000);
+        }
+    }   
+    disconnectedCallback() {
+        document.removeEventListener('mouseup', this.handleDocumentMouseUp);
+    }
+   
+    handleDocumentMouseUp = (event) => {
+        clearTimeout(this.delayTimeoutOne);
+        if(!this.isMouseDownInside){
+            this.delayTimeoutOne =  setTimeout(() => {
+                this.clearSearchResults();
+            }, 1000);
+        }
+        this.isMouseDownInside = this.template.querySelector('.combo-box').contains(event.target);
+    }
+    closeModal(){
+        this.isModalOpen = false;
     }
 }

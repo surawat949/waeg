@@ -1,4 +1,10 @@
 import { LightningElement, api ,track,wire} from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getPicklistValuesByRecordType } from 'lightning/uiObjectInfoApi';
+import { RefreshEvent } from 'lightning/refresh';
+import { NavigationMixin } from 'lightning/navigation';
+//Apex Classes
 import TacticomDetails from '@salesforce/apex/TabVisitsController.TacticomDetails';
 import getAccByZone from '@salesforce/apex/TabVisitsController.getAccountsByZone';
 import ParentAggregate from '@salesforce/apex/TabVisitsController.Aggregate';
@@ -6,10 +12,12 @@ import recommendedAccountsByZone from '@salesforce/apex/TabVisitsController.reco
 import getIndicators from '@salesforce/apex/TabVisitsIndicatorController.getAIIndicators';
 import SFDC_V2_StandardTask from '@salesforce/apex/Utility.getTaskSFDCStandardTask';
 import CreateNewTask from '@salesforce/apex/TabVisitsTacticomController.CreateNewTaskRequestNewVisits';
+import getSupportVisitsInfo from '@salesforce/apex/TabVisitsTacticomController.getSupportVisitsInfo';
+import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
+//Fields
 import Id from '@salesforce/user/Id';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import { getPicklistValuesByRecordType } from 'lightning/uiObjectInfoApi';
-import { RefreshEvent } from 'lightning/refresh';
+import Manual_Segment from '@salesforce/schema/Account.Manual_Segment__c';
+import AccObj from '@salesforce/schema/Account';
 import PARENTID_FIELD from '@salesforce/schema/Account.ParentId';
 import OWNER_NAME from '@salesforce/schema/Account.Owner.Name';
 import BUDDYOWNER_FIELD from '@salesforce/schema/Account.TACTICOM_Owner__c';
@@ -19,7 +27,6 @@ import APACVisitVisitSummary from '@salesforce/label/c.APACVisitVisitSummary';
 import Segmentation_Box_Net from '@salesforce/schema/Account.Segmentation_Net__c';
 import Segmentation_Box_Gross from '@salesforce/schema/Account.Segmentation_Gross__c';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
-
 import Last_Visit_date from '@salesforce/schema/Account.Last_Visit_date__c';
 import Last_Digital_Visit_date from '@salesforce/schema/Account.Last_Digital_Visit_Date__c';
 import Total_Visits_Achieved from '@salesforce/schema/Account.Total_Visits_Achieved__c';
@@ -28,16 +35,22 @@ import Digital_Visits_Frequency from '@salesforce/schema/Account.Digital_Visits_
 import Total_Visits_Planned from '@salesforce/schema/Account.Total_Visits_Planned__c';
 import Agreed_Visits from '@salesforce/schema/Account.Agreed_Visits__c';
 import Agreed_No_of_Digital_Visits from '@salesforce/schema/Account.Agreed_No_of_Digital_Visits__c';
+import LOCAL_CONSOLIDATION from '@salesforce/schema/Account.Local_Consolidation_Key__c';
+import accCountry from '@salesforce/schema/Account.Shop_Country__c';
+import AGREE_VISIT from '@salesforce/schema/Account.Agreed_Visits__c';
+import AGREE_DIGITAL_VISIT from '@salesforce/schema/Account.Agreed_No_of_Digital_Visits__c';
+import ACCOUNT_NAME from '@salesforce/schema/Account.Name';
+import ACCOUNT_HOYA_ACC_ID from '@salesforce/schema/Account.Hoya_Account_ID__c';
+import ACCOUNT_OWNER_NAME from '@salesforce/schema/Account.Account_Owner_Name__c';
+import ACCOUNT_HVC_INTER_CHAN from '@salesforce/schema/Account.CHCUSTCLASSIFICATIONID__c';
+import ACCOUNT_SEGMENT from '@salesforce/schema/Account.Segmentation_Box__c';
+import ACCOUNT_STRATEGIC from '@salesforce/schema/Account.Potential__c';
+import ACCOUNT_MANAGER_NAME from '@salesforce/schema/Account.Account_Owners_Manager__c';
+import ACCOUNT_MANAGER_ID from '@salesforce/schema/Account.Owner.ManagerId';
+import totalVisitsPerformed from '@salesforce/schema/Account.Total_Visits_Performed__c';
+//Custom Labels
 import Tacticom from '@salesforce/label/c.Tacticom';
-import Parent_Account_Segmentation from '@salesforce/label/c.Parent_Account_Segmentation';
 import Add_Parent_Account from '@salesforce/label/c.Add_Parent_Account';
-import { NavigationMixin } from 'lightning/navigation';
-import Parent_Account_Potential from '@salesforce/label/c.Parent_Account_Potential';
-import Parent_Account_Potential_helptext from '@salesforce/label/c.Parent_Account_Potential_helptext';
-import Parent_Account_Total_Sales from '@salesforce/label/c.Parent_Account_Total_Sales';
-import Parent_Account_Total_Sales_Helptext from '@salesforce/label/c.Parent_Account_Total_Sales_Helptext';
-import Parent_Account_SOW from '@salesforce/label/c.Parent_Account_SOW';
-import Parent_Account_SOW_Text from '@salesforce/label/c.Parent_Account_SOW_Text';
 import All_Account_Associated_Segmentation from '@salesforce/label/c.All_Account_Associated_Segmentation';
 import Consolidation_Key_Strategic_Value from '@salesforce/label/c.Consolidation_Key_Strategic_Value';
 import Consolidation_Key_Strategic_HelpText from '@salesforce/label/c.Consolidation_Key_Strategic_HelpText';
@@ -62,25 +75,13 @@ import Campaigns from '@salesforce/label/c.Campaigns';
 import Life_Cycle from '@salesforce/label/c.Life_Cycle';
 import TACTICOM_Buddy_Partner from '@salesforce/label/c.TACTICOM_Buddy_Partner';
 import Opportunities from '@salesforce/label/c.opportunities';
-import Manual_Segment from '@salesforce/schema/Account.Manual_Segment__c';
-import AccObj from '@salesforce/schema/Account';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import Representative_Level from '@salesforce/label/c.Representative_Level';
+import Team_Level from '@salesforce/label/c.Team_Level';
+import Total_Visits_Performed from '@salesforce/label/c.Total_Visits_Performed';
+import Support_Visits_Performed from '@salesforce/label/c.Support_Visits_Performed';
+import Last_Support_Visit_Date from '@salesforce/label/c.Last_Support_Visit_Date';
+//Static Resources
 import AI_Indicators from '@salesforce/resourceUrl/SFDC_V2_AI_Indicators';
-import LOCAL_CONSOLIDATION from '@salesforce/schema/Account.Local_Consolidation_Key__c';
-import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
-import accCountry from '@salesforce/schema/Account.Shop_Country__c';
-import AGREE_VISIT from '@salesforce/schema/Account.Agreed_Visits__c';
-import AGREE_DIGITAL_VISIT from '@salesforce/schema/Account.Agreed_No_of_Digital_Visits__c';
-import ACCOUNT_NAME from '@salesforce/schema/Account.Name';
-import ACCOUNT_HOYA_ACC_ID from '@salesforce/schema/Account.Hoya_Account_ID__c';
-import ACCOUNT_OWNER_NAME from '@salesforce/schema/Account.Account_Owner_Name__c';
-import ACCOUNT_HVC_INTER_CHAN from '@salesforce/schema/Account.CHCUSTCLASSIFICATIONID__c';
-import ACCOUNT_SEGMENT from '@salesforce/schema/Account.Segmentation_Box__c';
-import ACCOUNT_STRATEGIC from '@salesforce/schema/Account.Potential__c';
-import ACCOUNT_MANAGER_NAME from '@salesforce/schema/Account.Account_Owners_Manager__c';
-import ACCOUNT_MANAGER_ID from '@salesforce/schema/Account.Owner.ManagerId';
-
-
 export default class TabVisitsTacticom extends NavigationMixin(LightningElement) {
    
     isSpinner=false;
@@ -109,7 +110,7 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
     DigitalVisitPlaned;
     TotalVisitPlaned;
     TotalVisitAchived;
-    
+
     ownerIdAccount;
     recommendedTacticom;
     isGermanyAccount;
@@ -127,7 +128,6 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
     campaignsIndicator;
     busiOppIndicator;
     lifeCycleIndicator;
-    SegmentationField;
     //helpText
     totalVisitsHelpText;
     strategicValueHelpText;
@@ -148,24 +148,21 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
     RequestVisitPlan;
     RequestDigitalVisitPlan;
     CurrentUserName;
-   
+    supportVisitsCount = 0;
+    lastSupportVisitDate;
+    totalvisits = 0;
+    visitsCount = 0;
+    lastVisitBy;
     accountSegmentationfieldsNet = [Segmentation_Box_Net,Last_Visit_date,Last_Digital_Visit_date,Total_Visits_Achieved, Visit_Frequency_Status, Digital_Visits_Frequency
         ,Total_Visits_Planned,Agreed_Visits,Agreed_No_of_Digital_Visits];
     accountSegmentationfieldsGross = [Segmentation_Box_Gross,Last_Visit_date,Last_Digital_Visit_date,Total_Visits_Achieved, Visit_Frequency_Status, Digital_Visits_Frequency
-            ,Total_Visits_Planned,Agreed_Visits,Agreed_No_of_Digital_Visits];
+        ,Total_Visits_Planned,Agreed_Visits,Agreed_No_of_Digital_Visits];
   
     label = {
         APACVisitVisitSummary,
         Tacticom,
-        Parent_Account_Segmentation,
         Add_Parent_Account,
-        Parent_Account_Potential,
-        Parent_Account_Potential_helptext,
-        Parent_Account_Total_Sales,
-        Parent_Account_Total_Sales_Helptext,
-        Parent_Account_SOW,
         TACTICOM_Buddy_Partner,
-        Parent_Account_SOW_Text,
         Parent_Account_Number,
         Local_Segmentation,
         Tacticom_Sub_area,
@@ -189,7 +186,7 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
         Consolidation_Key_Share_Of_Wallet,
         Consolidation_Key_SOW_HelpText,
         Consolidation_Key_Segmentation,
-        Consolidation_Key_Segmentation_HelpText
+        Consolidation_Key_Segmentation_HelpText,Representative_Level,Team_Level,Total_Visits_Performed,Support_Visits_Performed,Last_Support_Visit_Date
     };
 
     constructor() {
@@ -197,42 +194,44 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
         // passed parameters are not yet received here
     }
       
-    connectedCallback() {
-    
+   connectedCallback() {
     }
-    /*@wire(getRecord, { recordId: "$receivedId", fields:[accCountry] })
-    record( { error, data }){
-        if(data){
-            this.accountCountry = data.fields.Shop_Country__c.value;
-            if(this.accountCountry == 'DE'){
-                this.isGermanyAccount = true;
-            }
-            else
-                this.isGermanyAccount = false;
-            }
-        else if(error){
-            this.showToast('Error', 'Error',error);
-        }
-    }*/
-
-    @wire(getRecord, { recordId:'$receivedId', fields: [ LOCAL_CONSOLIDATION , accCountry] })
+   
+   
+    @wire(getRecord, { recordId:'$receivedId', fields: [ LOCAL_CONSOLIDATION , accCountry,totalVisitsPerformed] })
     localKeyDetails({ error, data }) {
         if (error) {
             this.error = error;
         } else if (data) {
-           console.log('>>>data',data);
             if (data.fields.Local_Consolidation_Key__c.value != null) {
                 this.keyValue = data.fields.Local_Consolidation_Key__c.value;
-                console.log('>>>data',this.keyValue);
-            } 
+            }        
             this.accountCountry = data.fields.Shop_Country__c.value;
             if(this.accountCountry == 'DE'){
                 this.isGermanyAccount = true;
             }
             else
                 this.isGermanyAccount = false;
-            }       
+            if(data.fields.Total_Visits_Performed__c != null){
+                this.visitsCount = data.fields.Total_Visits_Performed__c.value;
+            }
+        }
     }
+    @wire(getSupportVisitsInfo, { AccountId:'$receivedId'}) 
+    getSupportVisitsInfo({data,error}){
+        if(data){
+           var supportData = JSON.parse(JSON.stringify(data));
+           if(supportData.supportVisitCount != undefined && supportData.supportVisitCount != null){
+                this.supportVisitsCount = supportData.supportVisitCount;
+                this.totalvisits = this.visitsCount + supportData.supportVisitCount;
+           }
+           this.lastSupportVisitDate =  supportData.lastSupportVisitDate;
+           this.lastVisitBy = supportData.lastSupportVisitBy;
+        }
+        else if(error){
+            this.showToast('Error','Error while fetching the Support Visit Details '+JSON.stringify(error.message),'error');
+        }
+    };
 
     @wire(getRecord, {recordId : '$receivedId', fields: [AGREE_VISIT, AGREE_DIGITAL_VISIT, ACCOUNT_NAME, ACCOUNT_HOYA_ACC_ID, ACCOUNT_OWNER_NAME, ACCOUNT_HVC_INTER_CHAN, ACCOUNT_SEGMENT, ACCOUNT_STRATEGIC, Total_Visits_Planned,Total_Visits_Achieved,ACCOUNT_MANAGER_NAME]})
     VisitPlanValuesDetails({data, error}){
@@ -314,7 +313,7 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
     @wire(getRecord, { recordId:'$receivedId', fields: [PARENTID_FIELD,BUDDYOWNER_FIELD,TACTICOM_SOF,OWNER_FIELD,OWNER_NAME,AGREE_VISIT,AGREE_DIGITAL_VISIT,ACCOUNT_MANAGER_ID,ACCOUNT_MANAGER_NAME]})
     AdditionalAccountData
 
-    get parentId() {
+     get parentId() {
         return getFieldValue(this.AdditionalAccountData.data, PARENTID_FIELD);
     }
 
@@ -349,30 +348,10 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
     get ManagerName(){
         return getFieldValue(this.AdditionalAccountData.data, ACCOUNT_MANAGER_NAME);
     }
-    
-   /* wiredRecord({error,data}){
-    if(data)
-    {
-    console.log(data);
-     this.keyValue = data.fields.Local_Consolidation_Key__c.value;
-    console.log(this.keyValue);
-
-    }else if(error){
-    console.error(error);
-    }
-
-    }*/
-
-   /* get localConsolidationKey(){
-        this.keyValue = getFieldValue(this.AdditionalAccountData.data, LocalConsolidation);
-        console.log('key value',this.keyValue);
-        return this.keyValue;
-    }*/
-       
+        
 // @wire(ParentAggregate, { parentId:'$parentId'}) AggregateData({data,error}){
    @wire(ParentAggregate, { parentId:'$receivedId',key: '$keyValue'}) AggregateData({data,error}){
         if(data){
-            console.log(data);
         this.aggrResult=data;
         }
         else if(error){
@@ -381,8 +360,8 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
     };
 
   //Doughnut chart - start
-    totalCount=0;
-    pieChartLabels=[]
+   totalCount=0;
+   pieChartLabels=[]
     pieChartData=[]
     pieChartDataTemp = [];
     pieChartLablesTemp = [];
@@ -457,7 +436,7 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
         return 'GreenLightAlert.png';
 
 }
-   //Bar chart - start
+  //Bar chart - start
    recommendedVisitsData=[]
    recommendedVisitsPerSubArea=[]
    recommendedVisitsDataTemp=[]
@@ -500,13 +479,13 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
             this.showAllTab = false;
         }
     }
-    
-    //surawat add this - 20240514 - Task 1406
+
+     //surawat add this - 20240514 - Task 1406
     openModal(){
         this.isModalOpen = true;
     }
 
-    closeModal(){
+     closeModal(){
         this.isModalOpen = false;
         this.HoyaAccountId = '';
         this.HVCInterChannel = '';
@@ -544,7 +523,7 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
         }
     }
 
-    handleSaveData(){
+     handleSaveData(){
         this.isActiveDisabled = true;
         let currentDate = new Date();
         currentDate.setDate(currentDate.getDate()+7);       //add for duedate just current day plus 7 days.
@@ -614,4 +593,5 @@ export default class TabVisitsTacticom extends NavigationMixin(LightningElement)
         },1000);
         this.dispatchEvent(new RefreshEvent());
     }
+ 
 }

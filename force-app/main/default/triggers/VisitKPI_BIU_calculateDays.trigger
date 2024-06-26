@@ -29,7 +29,10 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
     Date currentDate;
     Set<String> set_country = new Set<String>();
     Set<String> set_region = new Set<String>();
-
+    System.debug('DistanceUpdateforMonthBatch.skipTrigger'+DistanceUpdateforMonthBatch.skipTrigger);
+    if(DistanceUpdateforMonthBatch.skipTrigger){
+        return;
+    }    
     for(VISIT_KPI__c visitKPI : trigger.new){
         set_userId.add(visitKPI.Area_Sales_Manager__c);
         map_userId_visitKPIId.put(visitKPI.Area_Sales_Manager__c, visitKPI.Id);
@@ -119,8 +122,8 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
     map<Id, set<date>> map_user_workdayTotalVisits = new map<Id, set<date>>();
     //Stores visits with assigned user and visit
     Map<Id, Set<Date>> map_user_visits = new Map<Id, Set<Date>>(); 
-
-    for(Visits__c visit : [select Id, End_Time__c, Assigned_to__c, Visit_Type__c  from Visits__c where Assigned_to__c IN :set_userId and Visit_Status__c = 'Complete' and End_Time__c >=: startDateInMonth and  End_Time__c <=: endDateInMonth and Visit_Type__c in ('Visit', 'Digital Visit')]) {
+    
+    for(Visits__c visit : [select Id, End_Time__c, Assigned_to__c, Visit_Type__c,Account_Shipping_Latitude__c,Account_Shipping_Longitude__c  from Visits__c where Assigned_to__c IN :set_userId and Visit_Status__c = 'Complete' and End_Time__c >=: startDateInMonth and  End_Time__c <=: endDateInMonth and Visit_Type__c in ('Visit', 'Digital Visit')]) {
         if(!map_user_info.containsKey(visit.Assigned_to__c)) {
             map_user_info.put(visit.Assigned_to__c, new map<String, Integer>{
                 'workdayVisits' => 0,
@@ -187,6 +190,26 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
         map_user_workdayDigitalVisits.put(visit.Assigned_to__c, set_workdayDigitalVisits);
         map_user_workdayTotalVisits.put(visit.Assigned_to__c,set_totalworkdayVisits);
     }
+    Map<Id, Map<String, DistanceTravelCalculator.AggregateDistanceTravel>> userWeeklyDistances = DistanceTravelCalculator.calculateWeeklyDistances(currentDate,set_userId);
+    Map<Id, Decimal> userAverageDistances = new Map<Id, Decimal>();
+    System.debug('userWeeklyDistances'+userWeeklyDistances);
+    for (Id userId : userWeeklyDistances.keySet()) {
+         System.debug('userWeeklyDistance userId'+userId);
+          System.debug('userWeeklyDistance Map'+userWeeklyDistances.get(userId));
+        Map<String, DistanceTravelCalculator.AggregateDistanceTravel> weeklyDistances = userWeeklyDistances.get(userId);
+         Decimal totalDistance = 0;
+         Integer totalcustomerCount = 0;
+          for (DistanceTravelCalculator.AggregateDistanceTravel aggregateDistanceTravel : weeklyDistances.values()) {
+              totalDistance += aggregateDistanceTravel.totalDistance;
+              totalCustomerCount += aggregateDistanceTravel.customerCount;
+          }
+         System.debug('totalDistance'+totalDistance);
+         System.debug('totalCustomerCount'+totalCustomerCount);
+         Decimal averageDistance = (totalCustomerCount > 0) ? (totalDistance / totalCustomerCount) : 0;
+         System.debug('averageDistance'+averageDistance);
+         userAverageDistances.put(userId, averageDistance);
+     }
+   // System.debug('weekVisitsMap'+weekVisitsMap);
 
     /*
      * CDU 2019/01/09 add counter coaching call for visit KPI
@@ -305,6 +328,7 @@ trigger VisitKPI_BIU_calculateDays on VISIT_KPI__c (before insert, before update
         visitKPI.Name = uCountry + ',' + currentYear + ',' + currentMonth + ',' + uName;
         visitKPI.Unique_Identifier__c = uCountry + '_' + currentYear + '_' + currentMonth + '_' + uName;
         visitKPI.ownerId = visitKPI.Area_Sales_Manager__c;
+        visitKPI.X12WeekAverageDistanceCovered__c = userAverageDistances.containsKey(visitKPI.Area_Sales_Manager__c)? userAverageDistances.get(visitKPI.Area_Sales_Manager__c) : 0;
     
     mapOfUserIdVisitKpi.put(visitKPI.Area_Sales_Manager__c,visitKPI); 
     if(trigger.isUpdate) {

@@ -9,6 +9,7 @@ public class VisitTriggerHelper {
         List<Account_Life_Cycle__c> alcList = new List<Account_Life_Cycle__c>();
         if(triggerEvent == System.TriggerOperation.BEFORE_INSERT || triggerEvent == System.TriggerOperation.BEFORE_UPDATE){
             Set<Id> accountIdsLst = new Set<Id>();
+            Set<Id> visitAssignedUserLst = new Set<Id>();
             Set<Id> completedVisitAccLst = new Set<Id>();
             List<Visits__c> completedVisitList = new List<Visits__c>();
             if(newList != null && newList.size() > 0){
@@ -19,16 +20,42 @@ public class VisitTriggerHelper {
                              completedVisitList.add(visit);
                         }
                         accountIdsLst.add(visit.Account__c);  
+                        //Collect Assigned to user Ids
+                        visitAssignedUserLst.add(visit.Assigned_to__c);
                     }
-                    else if(triggerEvent == System.TriggerOperation.BEFORE_UPDATE 
-                            && oldMap.get(visit.Id).Visit_Status__c != 'Complete' && newMap.get(visit.Id).Visit_Status__c == 'Complete'){
-                        completedVisitAccLst.add(visit.Account__c);
-                        completedVisitList.add(visit);
-                     //   if(oldMap!=null && oldMap.get(visit.Id).Visit_Reason__c!=null && oldMap.get(visit.Id).Actions_executed__c!=null && !oldMap.get(visit.Id).Visit_Reason__c.contains(visit.Actions_executed__c)){
-                    }                                     
+                    else if(triggerEvent == System.TriggerOperation.BEFORE_UPDATE){ 
+                        if(oldMap.get(visit.Id).Visit_Status__c != 'Complete' && newMap.get(visit.Id).Visit_Status__c == 'Complete'){
+                            completedVisitAccLst.add(visit.Account__c);
+                            completedVisitList.add(visit);
+                        }
+                        //if Visit Type is changed or Assigned To Person is changed
+                        if(oldMap.get(visit.Id).Visit_Type__c != newMap.get(visit.Id).Visit_Type__c || oldMap.get(visit.Id).Assigned_to__c != newMap.get(visit.Id).Assigned_to__c){
+                            visitAssignedUserLst.add(visit.Assigned_to__c);
+                        }
+                    }
                 }
         	} 
-            
+            if(visitAssignedUserLst.size() > 0 && newList.size() > 0){
+                Map<Id,User> userMap = new Map<Id,user>([Select Id,Sales_Role__c,Profile.Name from User where id in :visitAssignedUserLst]);
+                if(userMap.size() > 0){
+                    for(Visits__c visit:newList){
+                        if(visit.Visit_Type__c == 'Digital Visit' || visit.Visit_Type__c == 'Visit'){
+                            if(userMap.containsKey(visit.Assigned_to__c)){
+                                if((userMap.get(visit.Assigned_to__c).Profile.Name != 'System Administrator' && userMap.get(visit.Assigned_to__c).Sales_Role__c == null) || (userMap.get(visit.Assigned_to__c).Profile.Name != 'System Administrator' && userMap.get(visit.Assigned_to__c).Sales_Role__c != 'ASM' && userMap.get(visit.Assigned_to__c).Sales_Role__c != 'AMS' && userMap.get(visit.Assigned_to__c).Sales_Role__c != 'AMV')){
+                                   visit.addError(System.Label.Visit_Error_Message1);
+                                }
+                            }
+                        }
+                        else if(visit.Visit_Type__c == 'Support Visit'){
+                            if(userMap.containsKey(visit.Assigned_to__c)){
+                                if(userMap.get(visit.Assigned_to__c).Sales_Role__c == 'ASM' || userMap.get(visit.Assigned_to__c).Sales_Role__c == 'AMS' || userMap.get(visit.Assigned_to__c).Sales_Role__c == 'AMV'){
+                                    visit.addError(System.Label.Visit_Error_Message2);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             if(triggerEvent == System.TriggerOperation.BEFORE_INSERT){
                 updateVisitHomeOfficeTracker(newList,accountIdsLst);
             }            
@@ -77,7 +104,7 @@ public class VisitTriggerHelper {
                    alcExistsAccsLst = isAlcRecordExists(considerableAccIdLst);
                 }
                 for(Id accId:considerableAccIdLst){
-                    if(accountStageMap.size() > 0){ 
+                    if(accountStageMap.size() > 0 && latestVisit.containsKey(accId)){ 
                         Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
                         alc.Active__c = true;
                         alc.Stage__c = accountStageMap.get(accId);

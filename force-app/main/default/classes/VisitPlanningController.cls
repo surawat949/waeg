@@ -663,7 +663,7 @@
         return fieldsToReturn;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static List<ListView> getListViews() {
         /* CDU 11/06/2018 add auto-filter on user id, user should see only his own listview */
         /* SS 23/02/2021 for user should can see in target customer (Opportunity Account List) by their Account, Request from Yung & Samson */
