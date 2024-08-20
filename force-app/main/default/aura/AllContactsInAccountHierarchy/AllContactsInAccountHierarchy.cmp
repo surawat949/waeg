@@ -1,0 +1,34 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+access="public" controller="ContactsInAccountHierarchy">
+<aura:attribute name="mycolumns" type="List"/>
+<aura:attribute name="contactList" type="Contact[]"/>
+<aura:attribute name="ContactOpthalRT" type="String" />
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+<lightning:navigation aura:id="NavigateToNewRecord" />
+
+<div class="slds-theme_default slds-box" >
+
+    <table class="slds-table">
+        <thead>
+            <tr class="row" style="background-color: #f2f2f2;">
+                <td>
+                    <div class="slds-truncate" title="All associated Active Contacts">
+                        <h3  class="slds-section__title  test-id__section-header-container">All associated Active Contacts</h3>
+                    </div>
+                </td>
+                <td><div class="slds-truncate" title="New Contact"><p align="right"><lightning:button variant="brand-outline" label="New" onclick="{!c.navigateToNewRecord}" /></p></div></td>
+            </tr>
+        </thead>
+    </table>
+    
+    <lightning:datatable data="{!v.contactList}"
+                        columns="{!v.mycolumns}"
+                        keyField="id"
+                        aura:id="datatable01"
+                        hideCheckboxColumn="true"/>
+    
+</div>
+
+
+
+</aura:component>

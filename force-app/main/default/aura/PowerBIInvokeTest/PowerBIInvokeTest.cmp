@@ -1,0 +1,3 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes">
+    <lightning:button label="Click me" onclick="{!c.handleClick}"/>
+</aura:component>

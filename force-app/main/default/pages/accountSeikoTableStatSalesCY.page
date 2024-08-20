@@ -1,0 +1,150 @@
+<apex:page standardController="Account" extensions="AccountSeikoDataPageController" showHeader="false" >
+    <div class="table-responsive">
+        <table class="list" width="100%">
+            <thead class="rich-table-thead">
+                <tr class="headerRow">
+                    <th class="headerRow"><apex:outputLabel value="Monthly Trend" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><apex:outputLabel value="Last Calendar Year" style="font-weight:bold"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_January_Last_Year__c,1)}"/></td><!--false-->
+                    <td><apex:outputText value="{!ROUND(account.Actuals_February_Last_Year__c,1)}"/></td><!--false-->
+                    <td><apex:outputText value="{!ROUND(account.Actuals_March_Last_Year__c,1)}"/></td><!--false-->
+                    <td><apex:outputText value="{!ROUND(account.Actuals_April_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_May_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_June_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_July_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_August_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_September_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_October_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_November_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_December_Last_Year__c,1)}"/></td>
+                </tr>
+                <tr>
+                    <!-- this is 2020 -->
+                    <td><apex:outputLabel value="Current Calendar Year" style="font-weight:bold"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_January_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_February_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_March_Last_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_April_Current_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_May_Current_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_June_Current_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_July_Current_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_August_Current_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_September_Current_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_October_Current_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_November_Current_Year__c,1)}"/></td>
+                    <td><apex:outputText value="{!ROUND(account.Actuals_December_Current_Year__c,1)}"/></td>
+                    <!-- 2021? -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="detailList">
+        <apex:pageBlock mode="maindetail">            
+            <apex:pageBlockSection title="Turnover" columns="1">
+                <apex:outputField value="{!data.Total_turnover__c}"/>
+                <apex:outputField value="{!account.Total_Turnover_LY_YTD__c}"/>
+                <apex:outputField value="{!account.Total_Turnover_CY__c}"/>
+                <apex:outputField value="{!account.Total_Turnover_CY__c}"/>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:outputField value="{!account.Seiko_objective_ECP_agr__c}"/>
+            </apex:pageBlockSection>            
+            <apex:pageBlockSection title="Turnover Per Brand" columns="2">
+                <apex:outputField value="{!data.Seiko_Turnover_CY__c}"/>
+                <apex:outputField value="{!data.Seiko_Turnover_LY__c}"/>
+                
+                <apex:outputField value="{!data.Starvision_Turnover_CY__c}"/>
+                <apex:outputField value="{!data.Starvision_Turnover_LY__c}"/>
+                
+                <apex:outputField value="{!data.Pentax_Turnover_CY__c}"/>
+                <apex:outputField value="{!data.Pentax_Turnover_LY__c}"/>
+                
+                <apex:outputField value="{!data.White_Label_Turnover_CY__c}"/>
+                <apex:outputField value="{!data.White_Label_Turnover_LY__c}"/>
+                
+                <apex:outputField value="{!data.Frames_Turnover_CY__c}"/>
+                <apex:outputField value="{!data.Frames_Turnover_LY__c}"/>
+                
+                <apex:outputField value="{!data.Other_Turnover_CY__c}"/>
+                <apex:outputField value="{!data.Other_Turnover_LY__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <!-- VOLUMES -->
+        <div class="table-responsive">
+            <table class="list" width="100%">
+                <thead class="rich-table-thead">
+                    <tr class="headerRow">
+                        <th class="headerRow"><apex:outputLabel value="Monthly Trend Volumes" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><apex:outputLabel value="Last Calendar Year" style="font-weight:bold"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyJanLY__c,1)}"/></td><!--false-->
+                        <td><apex:outputText value="{!ROUND(account.QtyFebLY__c,1)}"/></td><!--false-->
+                        <td><apex:outputText value="{!ROUND(account.QtyMarLY__c,1)}"/></td><!--false-->
+                        <td><apex:outputText value="{!ROUND(account.QtyAprLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyMayLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyJunLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyJulLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyAugLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtySepLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyOctLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyNovLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyDecLY__c,1)}"/></td>
+                    </tr>
+                    <tr>
+                        <!-- this is 2020 -->
+                        <td><apex:outputLabel value="Current Calendar Year" style="font-weight:bold"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyJanLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyFebLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyMarLY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyAprCY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyMayCY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyJunCY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyJulCY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyAugCY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtySepCY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyOctCY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyNovCY__c,1)}"/></td>
+                        <td><apex:outputText value="{!ROUND(account.QtyDecCY__c,1)}"/></td>
+                        <!-- 2021? -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <apex:pageBlock mode="maindetail">
+            <apex:pageBlockSection title="Volumes Per Brand" columns="2">
+                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </div>
+</apex:page>

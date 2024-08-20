@@ -1,0 +1,464 @@
+@font-face {
+    font-family: 'Drescher Grotesk';
+    font-weight: normal;
+    src: url('fonts/dgroman.woff2') format('woff2'),
+        /* Super Modern Browsers */
+        url('fonts/dgroman.woff') format('woff'),
+        /* Pretty Modern Browsers */
+        url('fonts/dgroman.ttf') format('truetype'),
+        /* Safari, Android, iOS */
+        url('fonts/dgroman.svg') format('svg');
+
+    /* Legacy iOS */
+}
+
+@font-face {
+    font-family: 'Drescher Grotesk';
+    font-weight: 500;
+    src: url('fonts/dgsemibold.woff2') format('woff2'),
+        /* Super Modern Browsers */
+        url('fonts/dgsemibold.woff') format('woff'),
+        /* Pretty Modern Browsers */
+        url('fonts/dgsemibold.ttf') format('truetype'),
+        /* Safari, Android, iOS */
+        url('fonts/dgsemibold.svg#svgFontName') format('svg');
+
+    /* Legacy iOS */
+}
+
+@font-face {
+    font-family: 'Drescher Grotesk';
+    font-weight: 600;
+    src: url('fonts/dgdemibold.woff2') format('woff2'),
+        /* Super Modern Browsers */
+        url('fonts/dgdemibold.woff') format('woff'),
+        /* Pretty Modern Browsers */
+        url('fonts/dgdemibold.ttf') format('truetype'),
+        /* Safari, Android, iOS */
+        url('fonts/dgdemibold.svg') format('svg');
+
+    /* Legacy iOS */
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-align: center;
+    -ms-flex-pack: center;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    font-family: "Drescher Grotesk", Arial, Sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.form-signin {
+    padding: 15px 15px 0;
+    margin: 0 auto;
+    margin-left: 30px;
+    width: 55%;
+}
+
+
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: 0;
+    width: 100%;
+    padding: .5em 0;
+    border: none;
+    border-bottom: 1px solid #b2b2b2;
+    border-radius: 0;
+    color: #0D0D0D;
+    background-color: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.05em;
+    -webkit-transition: all ease-in-out 0.15s;
+    transition: all ease-in-out 0.15s;
+    color: #fcfcfc;
+    background-color: inherit;
+    border-bottom: 1px solid #fcfcfc;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: 0;
+    width: 100%;
+    padding: .5em 0;
+    border: none;
+    border-bottom: 1px solid #b2b2b2;
+    border-radius: 0;
+    color: #0D0D0D;
+    background-color: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.05em;
+    -webkit-transition: all ease-in-out 0.15s;
+    transition: all ease-in-out 0.15s;
+    color: #fcfcfc;
+    background-color: inherit;
+    border-bottom: 1px solid #fcfcfc;
+}
+
+.form-signin button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline-block;
+    -webkit-transition: all ease-in-out 0.2s;
+    transition: all ease-in-out 0.2s;
+    margin-top: 6px;
+    margin-bottom: 4px;
+    border-radius: 0;
+    border: none;
+    -webkit-font-smoothing: antialiased;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: 1.434em 2.083333333em 1.234em;
+    padding: 1.25em 2.083333333em;
+}
+
+.seiko {
+    background-color: #000000;
+    background-image: url(img/bg@2x.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    color: #ffffff;
+    background-size: cover;
+}
+
+
+
+.seiko button {
+    background-color: #D69719;
+    padding: 10px 15px;
+    color: #000000;
+    font-size: 12px;
+    text-align: center;
+    min-width: 35%;
+    border: 1px solid #D69719;
+}
+
+.seiko button:hover {
+    background-color: white;
+    color: black;
+    border: 1px solid white;
+}
+
+.seiko button.btn-signup {
+    background-color: #000000;
+    padding: 10px 20px;
+    color: #ffffff;
+    font-size: 12px;
+    text-align: center;
+    min-width: 40%;
+    border: 1px solid #ffffff;
+}
+
+.seiko button.btn-signup:hover {
+    background-color: #000000;
+    padding: 10px 20px;
+    color: #D69719;
+    font-size: 12px;
+    text-align: center;
+    min-width: 40%;
+    border: 1px solid #D69719;
+}
+
+.login {
+    border: 1px solid #707070;
+    background-color: #000000;
+    background-image: url('img/brand-face.jpg');
+    background-position: right top;
+    background-size: cover;
+    box-shadow: 10px 6px 10px 6px rgba(0, 0, 0, 0.4);
+    max-width: 1000px;
+}
+
+
+
+p {
+    font-family: Drescher Grotesk;
+    font-size: 18px;
+    line-height: 24px;
+   
+    -moz-hyphens: auto;
+    -o-hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+a{
+    color: #ccc;
+    text-decoration: none;
+}
+a:hover{
+    color: #D69719
+}
+
+.form-check-input:checked{
+    background-color: #D69719;
+    border-color: #D69719 !important;
+}
+
+.form-check-input:focus{
+
+    border-color: #ccc !important;
+
+}
+.footer {
+    height: 48px;
+    width: auto;
+    margin: 0 -12px;
+    z-index: 100;
+    background-color: #333333;
+    vertical-align: middle;
+   
+}
+
+.footer p {
+    font-size: 14px !important;
+    color: rgba(255, 255, 255, 0.7);
+    line-height:normal;
+}
+
+.footer div {
+    align-self: flex-end;
+}
+
+.footer a {
+    color: #ffffff !important;
+    padding: 0 15px;
+}
+
+.footer a:hover {
+    text-decoration: none;
+    color: #D69719 !important;
+}
+
+h3,
+.h3 {
+    font-size: 1.75rem;
+    text-transform: uppercase;
+}
+
+.inverted-ui .form-signin label {
+    color: #efefef;
+}
+
+input {
+    outline: none !important;
+}
+
+:focus {
+    outline-color: transparent;
+    outline-style: none;
+    box-shadow: none !important;
+}
+
+::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    text-transform: uppercase !important;
+    font-size: 12px !important;
+    letter-spacing: 200% !important;
+    color: #666 !important;
+}
+
+::-moz-placeholder {
+    /* Firefox 19+ */
+    text-transform: uppercase !important;
+    font-size: 12px !important;
+    letter-spacing: 200% !important;
+}
+
+:-ms-input-placeholder {
+    /* IE 10+ */
+    text-transform: uppercase !important;
+    font-size: 12px !important;
+    letter-spacing: 200% !important;
+}
+
+:-moz-placeholder {
+    /* Firefox 18- */
+    text-transform: uppercase !important;
+    font-size: 12px !important;
+    letter-spacing: 200% !important;
+}
+
+form p {
+    font-size: 1rem;
+}
+
+.form-signin input:focus {
+    border-color: #d28c00;
+    -webkit-box-shadow: 0 1px 0 0 #d28c00;
+    box-shadow: 0 1px 0 0 #d28c00;
+}
+
+.logindiv {
+    padding: 45px;
+    height: calc(100% - 48px);
+    z-index: 10;
+}
+
+.left-box {
+    padding: 40px 90px 40px 40px;
+    border-right: 1px solid #373939;
+    height: 100%;
+}
+
+
+@media (min-width:300px) and (max-width:991px) {
+    .seiko {
+        background-color: #000000;
+        background-image: none;
+        background-position: center center;
+        background-repeat: no-repeat;
+        color: #ffffff;
+        background-size: cover;
+    }
+
+    .login {
+        background-color: #000000;
+        background-image: none;
+        background-position: right top;
+        background-size: cover;
+        height: 100vh;
+        box-shadow: 10px 6px 10px 6px rgba(0, 0, 0, 0.4);
+        max-width: 100%;
+        border: 0px solid #707070;
+        max-width: 100% !important;
+    }
+
+    .left-box {
+        border-right: none 0 !important;
+        padding: 30px !important;
+    }
+
+    .logindiv {
+        /* max-height: 100%; */
+    }
+
+    .left-box {
+        height: auto;
+        padding: 0 0 30px !important;
+        border-bottom: #4A4A4A solid 1px;
+        margin-bottom: 30px;
+
+    }
+
+    .right-box {
+        padding: 0;
+
+    }
+
+    .form-signin {
+        margin: 0;
+        width: 100%;
+        padding: 0;
+    }
+
+    .logindiv {
+        padding: 60px;
+        height: auto;
+    }
+
+    p {
+        font-size: 20px !important;
+        line-height: 28px;
+    }
+
+    input {
+        margin: 20px 0;
+        font-size: 20px !important;
+    }
+
+    .footer {
+        height: auto;
+        text-align: center !important;
+        margin-top: 40px !important;
+        padding: 10px 0;
+    }
+
+    h1.h3 {
+        font-size: 30px !important;
+        font-weight: 500 !important;
+    }
+
+    .footer p {
+        font-size: 16px !important;
+        text-align: center !important;
+        padding: 10px 0 0;
+    }
+}
+
+@media (min-width:992px) and (max-width:1024px) {
+    .seiko {
+        background-color: #000000;
+        background-image: none;
+        background-position: center center;
+        background-repeat: no-repeat;
+        color: #ffffff;
+        background-size: cover;
+    }
+
+    .login {
+        background-color: #000000;
+
+        background-position: right top;
+        background-size: cover;
+        height: 100vh;
+        box-shadow: 10px 6px 10px 6px rgba(0, 0, 0, 0.4);
+        max-width: 100%;
+        border: 0px solid #707070;
+        max-width: 100% !important;
+    }
+
+
+}
+
+@media (min-width:500px) and (max-width:1023px) {
+    .login {
+
+        max-width: 90% !important;
+    }
+
+    .footer {
+        margin: 0 calc(-10% + 15px);
+    }
+}

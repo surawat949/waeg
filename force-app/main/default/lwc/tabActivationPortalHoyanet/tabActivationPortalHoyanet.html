@@ -1,0 +1,49 @@
+<template>
+
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{CustLabel.Hoyanet}
+                </h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={objectapiname}
+                    fields={loyaltyPointStatus}
+                    mode="view"
+                    columns="2"
+                    >
+                </lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{CustLabel.Hoyanet_Last_Usage}</span>
+                    <div class="slds-form-element__static" >{LastUsageDate}</div>            
+                </div>
+            </div>
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2"></div>
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{CustLabel.Hoyanet_Last_Training}</span>
+                    <div class="slds-form-element__static " >{LastTraningDate}</div>            
+                </div>   
+            </div>
+        </div><br/>
+    </div>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{CustLabel.Hoyanet_Login}
+                </h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;position: relative;">
+            <canvas class="chartHoyaNet" height="250"></canvas>
+        </div>
+    </div>
+</template>

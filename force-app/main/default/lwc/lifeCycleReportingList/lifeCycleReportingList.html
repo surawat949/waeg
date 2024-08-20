@@ -1,0 +1,9 @@
+<template>
+    <ul>
+        <template for:each={records} for:item="recordItem">
+            <c-life-cycle-reporting-card stage={stage} record={recordItem} accountstats={accountstats} taskstats={taskstats}
+            lensesnetsalesl12mo={lensesnetsalesl12mo} key={recordItem.Id} addnewiconflag={visitaddflag}> 
+            </c-life-cycle-reporting-card> 
+       </template>
+   </ul> 
+</template>

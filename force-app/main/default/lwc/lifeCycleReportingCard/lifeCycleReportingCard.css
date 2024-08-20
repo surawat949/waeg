@@ -1,0 +1,134 @@
+.slds-item {
+    border-radius: 0.25rem;
+    background-clip: padding-box;
+    padding: 0.45rem;
+}
+.innerLink{
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.mainstyle {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+}
+.flip-card {
+    background-color: transparent;
+    width: 560%;
+    height: 120px;
+    perspective: 1000px;
+    border-radius:25px;
+}
+  
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 130%;
+    text-align: left;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+}
+  
+.class1 {
+    transform: rotateY(180deg);
+}
+  
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    background-color: #eef1f3;
+    border-radius:25px;
+}
+  
+.flip-card-front {
+    color: black;
+}
+  
+.flip-card-back {
+    color: rgb(0, 0, 0);
+    transform: rotateY(180deg);
+}
+
+.negative-value {
+    background-color: red;
+    color: white;
+    .slds-icon-text-default {
+        --slds-c-icon-color-foreground: var(--slds-c-icon-color-foreground-default, var(--sds-c-icon-color-foreground-default, var(--slds-g-color-neutral-base-50, var(--lwc-colorTextIconDefault,white))));
+    }
+}
+
+.zoom {
+    padding: 0.5rem;
+    background-color: #FFFFFF;
+    transition: transform .2s; /* Animation */
+    width: 9rem;
+    height: auto;
+    margin: 0 auto;
+    border: var(--lwc-colorBorder, rgb(229, 229, 229)) var(--lwc-borderWidthThin, 1px) solid;
+    border-radius : 1.25rem;
+    font-size: smaller;
+}
+.zoom:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
+}
+/* .zoom:hover {
+    border-radius : 1.25rem;
+    overflow: auto;
+    transform: scale(1.5);
+    padding-left: 2.5rem;
+    padding-top: 2rem;
+    font-size: smaller;
+}
+*/
+.zoom-negative {
+    padding: 0.5rem;
+    background-color: #FFFFFF;
+    /*
+    color: white;
+    background-color: red;
+    */
+    transition: transform .2s; /* Animation */
+    width: 9rem;
+    height: auto;
+    margin: 0 auto;
+    border: var(--lwc-colorBorder, rgb(229, 229, 229)) var(--lwc-borderWidthThin, 1px) solid;
+    border-radius : 1.25rem;
+    font-size: smaller;
+}
+.zoom-negative:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
+}
+
+.iconMargin {
+    margin-right: .05rem;
+    padding-right: 0.35rem;
+}
+
+.This lightning-button.custom-button > button.slds-button_neutral{
+    --slds-c-button-spacing-inline-start: none !important;
+    --slds-c-button-spacing-inline-end: none !important;
+    text-align: center;
+    justify-content: center;
+    transition: border .15s linear;
+    --slds-c-button-color-background: none !important;
+    --slds-c-button-color-border: none !important;
+}
+
+.slds-icon{
+    fill : red;
+}
+.red-utility-icon {
+    --sds-c-icon-color-foreground-default: #CB0015;
+}
+
+.Hoya-utility-icon {
+    --sds-c-icon-color-foreground-default: #0176D3;
+}
+.visited {
+    color: purple; /* Define your visited link color here */
+}

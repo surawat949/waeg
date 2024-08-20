@@ -1,0 +1,180 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" 
+                controller="APACUserPerformanceController">
+
+    <aura:attribute name="sObjectName" type="String" default="Account_Campaing_Member__c"/>
+    <aura:attribute name="sObjectFieldsNames" type="List" default="Account_Related_Name__c,Campaign_Name__c,Campaign_Start_Date__c,Account_Last_Visited_Date__c,Campaign_Presented__c,Level_interest__c"/>
+    <aura:attribute name="AndWhere" type="String" default=" AND campaign_active__c=true" />
+    <aura:attribute name="OwnerWhere" type="String" default=" WHERE Account_OwnerId__c=" />
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>    
+    <aura:attribute name="allData" type="List" />
+    <aura:attribute name="filteredData" type="List" />
+    <aura:attribute name="pageSize" type="Integer" default="10" />
+    <aura:attribute name="pageSizeOptions" type="Integer[]" default="10,15,20,25,50,100" />
+    <aura:attribute name="currentPageNumber" type="Integer" default="1" />
+    <aura:attribute name="totalPages" type="Integer" default="1" />
+    <aura:attribute name="searchPhrase" type="String" />
+    <aura:attribute name="searchPicklist" type="String" />
+    <aura:attribute name="searchByPicklist" type="String" />
+
+    <aura:attribute name="ActiveCampaign" type="List" />
+    <aura:attribute name="CampNotPresent" type="List" />
+    <aura:attribute name="LevelInterested" type="List" />
+
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+
+    <ltng:require scripts="{!join(',',
+        $Resource.chartjs2 + '/Chart.min.js',
+        $Resource.chartjs2 + '/Chart.bundle.min.js')}"
+        styles="{!$Resource.chartjs2 + '/Chart.min.css'}" />
+
+    <aura:html tag="style">
+        .slds-form-element__label{
+        display:none !important;
+        }
+    </aura:html>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-6">
+            <div class="exampleHolder">
+                <lightning:spinner aura:id="mySpinner" class="slds-hide"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-scrollable_x" style="width:100%">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><canvas aura:id="doughnut-1" id="doughnut-1" height="100"></canvas></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                            <tr class="row">
+                                <th scope="col" align="left"><span class="slds-truncate">Active Campaign</span></th>
+                                <th scope="col" align="right"><span class="slds-truncate"><p align="right">Number of Account(s)</p></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.ActiveCampaign}" var="item">
+                                <tr class="col">
+                                    <td class="col" align="left"><lightning:formattedText value="{!item.label}" /></td>
+                                    <td class="col"><p align="right"><lightning:formattedNumber value="{!item.Qty}" maximumFractionDigits="0" /></p></td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-scrollable_x" style="width:100%">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><canvas aura:id="barchart-1" id="barchart-1" height="100"></canvas></div>    
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                            <tr class="row">
+                                <th scope="col" align="left"><span class="slds-truncate">Campaign Not Presented</span></th>
+                                <th scope="col" align="right"><span class="slds-truncate"><p align="right">Number of Account(s)</p></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.CampNotPresent}" var="item">
+                                <tr class="row">
+                                    <td class="col" align="left"><lightning:formattedText value="{!item.label}" /></td>
+                                    <td class="col" align="right"><p align="right"><lightning:formattedNumber value="{!item.Qty}" maximumFractionDigits="0" /></p></td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-scrollable_x" style="width:100%">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><canvas aura:id="bar-stack-1" id="bar-stack-1" height="300"></canvas></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                            <tr>
+                                <th scope="col"><span class="slds-truncate">Campaign Name</span></th>
+                                <th scope="col"><span class="slds-truncate"><p align="right">Not Interest</p></span></th>
+                                <th scope="col"><span class="slds-truncate"><p align="right">Partial Interest</p></span></th>
+                                <th scope="col"><span class="slds-truncate"><p align="right">Interest</p></span></th>
+                                <th scope="col"><span class="slds-truncate"><p align="right">Very Interest</p></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.LevelInterested}" var="item">
+                                <tr>
+                                    <td class="col"><lightning:formattedText value="{!item.CampaignName}" /></td>
+                                    <td class="col"><p align="right"><lightning:formattedNumber value="{!item.InterestedLevel1}" maximumFractionDigits="0" /></p></td>
+                                    <td class="col"><p align="right"><lightning:formattedNumber value="{!item.InterestedLevel2}" maximumFractionDigits="0" /></p></td>
+                                    <td class="col"><p align="right"><lightning:formattedNumber value="{!item.InterestedLevel3}" maximumFractionDigits="0" /></p></td>
+                                    <td class="col"><p align="right"><lightning:formattedNumber value="{!item.InterestedLevel4}" maximumFractionDigits="0" /></p></td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="container slds-theme_default slds-box">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-2">
+                <span class="padding-right">
+                    <lightning:select name="select1" aura:id="select1" variant="label-hidden" value="{!v.searchByPicklist}" onchange="{!c.handleSearch}">
+                        <option value="">Search by Campaign Name...</option>
+                            <aura:iteration items="{!v.searchPicklist}" var="item">
+                                <option value="{!item.label}">{!item.label}</option>
+                            </aura:iteration>
+                    </lightning:select>
+                </span>
+            </div>
+        </div><br/>
+        <div class="slds-grid">
+            <div class="slds-col slds-szie_1-of-4">
+                <lightning:select label="Record(s) per page" value="{!v.pageSize }" onchange="{!c.onPageSizeChange}">
+                    <aura:iteration items="{!v.pageSizeOptions}" var="opt">
+                        <option text="{!opt}"></option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+                <lightning:button label="First" iconName="utility:left" iconPosition="left" onclick="{!c.onFirst}" disabled="{!v.currentPageNumber == 1 }" />
+                <lightning:button label="Previous" iconName="utility:chevronleft" iconPosition="left" onclick="{!c.onPrev}" disabled="{!v.currentPageNumber == 1 }" />
+            </div>
+            <div class="slds-col slds-size_1-of-4"><span class="slds-var-p-vertical_small"><p align="center"> Page {! (v.currentPageNumber) } of {! (v.totalPages) }</p></span></div>
+            <div class="slds-col slds-size_1-of-4">                
+                <lightning:button label="Next" iconName="utility:chevronright" iconPosition="right" onclick="{!c.onNext }" disabled="{!v.currentPageNumber == v.totalPages }"/>
+                <lightning:button label="Last" iconName="utility:right" iconPosition="right" onclick="{!c.onLast }" disabled="{!v.currentPageNumber == v.totalPages }" />
+            </div>
+                <!--
+                <div class="inline-container">
+                    <span class="padding-right">
+                        <lightning:input onkeyup="{!c.handleSearch}" variant="label-hidden" placeholder="Search Campaign Name" type="search" value="{!v.searchPhrase }" onchange="{!c.onChangeSearchPhrase}" />
+                    </span>
+                </div>-->
+        </div><br/>
+        <lightning:datatable data="{!v.data}" 
+                 columns="{!v.columns}"  
+                 keyField="id" 
+                 hideCheckboxColumn="true"/>
+    </div>
+</aura:component>

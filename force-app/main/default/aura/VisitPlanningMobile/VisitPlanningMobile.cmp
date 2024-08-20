@@ -1,0 +1,15 @@
+<aura:component description="VisitPlanning"
+                implements="flexipage:availableForAllPageTypes,force:appHostable,lightning:isUrlAddressable"
+                controller="VisitPlanningController">
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:attribute name="translations" type="Object"/>
+
+    <lightning:tabset>
+        <lightning:tab label="Accounts">
+            <c:VisitPlanningMobileAccList translations="{!v.translations}"/>
+        </lightning:tab>
+        <lightning:tab label="Visits Agenda">
+            <c:VisitPlanningMobileCalendar translations="{!v.translations}"/>
+        </lightning:tab>
+    </lightning:tabset>
+</aura:component>

@@ -1,0 +1,318 @@
+<!-- add implements="forceCommunity:availableForAllPageTypes" to surface the component in community builder -->
+<aura:component controller="LightningLoginFormController" implements="forceCommunity:availableForAllPageTypes">
+    <aura:attribute name="showError" type="Boolean" required="true" description="" default="false" access="private" />
+    <aura:attribute name="errorMessage" type="String" required="false" description="" access="private" />
+    <aura:attribute name="startUrl" type="String" required="false"
+        description="The url you go to after a successful login" />
+    <aura:attribute name="expid" type="String" required="false" description="The branding experience ID" />
+    <aura:attribute name="selfRegisterUrl" type="String" required="false"
+        description="The url you go to if you do not have an account" />
+    <aura:attribute name="forgotPasswordUrl" type="String" required="false"
+        description="The url you go to if you forgot your password" />
+    <aura:attribute name="usernameLabel" type="String" required="false" default="Username" />
+    <aura:attribute name="passwordLabel" type="String" required="false" default="Password" />
+    <aura:attribute name="loginButtonLabel" type="String" required="false" default="Log in" />
+    <aura:attribute name="rememberLabel" type="String" required="false" default="remember me" />
+    <aura:attribute name="welcomeLabel" type="String" required="false" default="Welcome to Hoya" />
+    <aura:attribute name="forgotPasswordLabel" type="String" required="false" default="Forgot your password?" />
+    <aura:attribute name="selfRegisterLabel" type="String" required="false"
+        default="Don't have an Account? Click here." />
+    <aura:attribute name="language" type="String" />
+    <aura:attribute name="brand" type="String" />
+    <aura:attribute name="backgroundImageURL" type="String" />
+    <aura:attribute name="backgroundColor" type="String" />
+    <aura:attribute name="descriptionLabel" type="String" />
+    <aura:attribute name="descriptionLabelFirst" type="String" />
+    <aura:attribute name="createAccountLabel" type="String" />
+    <aura:attribute name="contactUrl" type="String" required="false" />
+    <aura:attribute name="contactLabel" type="String" required="false" />
+    <aura:attribute name="helpUrl" type="String" required="false" />
+    <aura:attribute name="helpLabel" type="String" required="false" />
+    <aura:attribute name="privacyUrl" type="String" required="false" />
+    <aura:attribute name="privacyLabel" type="String" required="false" />
+    <aura:attribute name="termsUrl" type="String" required="false" />
+    <aura:attribute name="termsLabel" type="String" required="false" />
+
+    <aura:attribute name="backgroundSeiko" type="String" />
+    <aura:attribute name="cssToHoya" type="String" />
+    <aura:attribute name="descriptionSeiko" type="String" />
+    <!--BP-->
+    <aura:attribute name="instanceUrl" type="String" />
+    <aura:attribute name="previousRealm" type="String" />
+
+    <aura:html tag="style">
+        .salesforceIdentityLoginBody2 {
+        background-image: url({!v.backgroundSeiko});
+        <!--background-color: {!v.backgroundColor};-->
+        }
+        .salesforceIdentityLoginBody2 .cCenterPanel {
+        {!v.cssToHoya}
+        <!--margin: 0 !important;
+        padding: 0px !important;-->
+        }
+        .slds-col--padded,.slds-col_padded{
+        padding: 0px !important;
+        }
+        .ui-widget{
+        padding:0px !important;
+        }
+        .salesforceIdentityLoginBody2 .cCenterPanel:before {
+        display: none !important;
+        }
+
+    </aura:html>
+
+    <aura:registerevent name="sitePropagatedStartUrl" type="c:setStartUrl" />
+    <aura:registerEvent name="urlsAndLabels" type="c:urlsAndLabels" />
+    <aura:handler name="init" value="{!this}" action="{!c.initialize}" />
+    <aura:dependency resource="c:setStartUrl" type="EVENT" />
+
+    <aura:handler event="c:setStartUrl" action="{!c.setStartUrl}" />
+    <aura:dependency resource="c:setExpId" type="EVENT" />
+
+    <aura:renderIf isTrue="{!v.brand == 'hoya'}">
+        <div class="wrapper slds-grid slds-wrap slds-grid--vertical-stretch">
+            <div class="slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_6-of-12 slds-full-centered"
+                style="background-color:white;">
+                <div class="slds-grid slds-grid_vertical">
+                    <div class="slds-col" style="padding-bottom: 50px;">
+                        <img src="{!v.backgroundImageURL}" />
+                    </div>
+                    <div class="slds-col">
+                        <span>
+                            <aura:renderIf isTrue="{!v.showError}">
+                                <div id="error">
+                                    <ui:outputRichText value="{!v.errorMessage}" />
+                                </div>
+                            </aura:renderIf>
+                        </span>
+                        <div style="padding-bottom: 10px;">
+                            <span class="labelInputs">{!v.usernameLabel}</span>
+                        </div>
+                        <!--<ui:outputText value="{!v.usernameLabel}" class="labelInputs" />-->
+                        <div style="padding-bottom: 10px;">
+                            <ui:inputText value="" aura:id="username" placeholder="{!v.usernameLabel}"
+                                keyup="{!c.onKeyUp}" label="{!v.usernameLabel}" labelClass="assistiveText"
+                                class="input-credentials" required="true" />
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div style="padding-bottom: 10px;">
+                            <ui:outputText value="{!v.passwordLabel}" class="labelInputs" />
+                        </div>
+                        <div>
+                            <ui:inputSecret value="" aura:id="password" placeholder="{!v.passwordLabel}"
+                                keyup="{!c.onKeyUp}" label="{!v.passwordLabel}" labelClass="assistiveText"
+                                class="input-credentials" />
+                        </div>
+                    </div>
+                    <div class="slds-col" id="small_link">
+                        <u><a href="{!v.forgotPasswordUrl}">{!v.forgotPasswordLabel}</a></u><br />
+                    </div>
+                    <div class="slds-grid" style="margin-top: 30px;">
+                        <div class="slds-col">
+                            <div id="remember_me">
+                                <ui:inputCheckbox aura:id="remember" label="{!v.rememberLabel}"
+                                    class="remember-checkbox-hoya myCheckbox" />
+                            </div>
+                        </div>
+                        <div class="slds-col">
+                            <div class="container">
+                                <ui:button aura:id="submitButton" label="{!v.loginButtonLabel}" press="{!c.handleLogin}"
+                                    class="sfdc_button" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- no sens
+                    <div class="slds-col" style="margin-top: 65px;">
+                        <span>{!v.selfRegisterLabel}</span><br />
+                        <a href="{!v.selfRegisterUrl}" class="create-account">{!v.createAccountLabel}</a>
+                    </div>
+                -->
+                </div>
+            </div>
+            <div class="slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_6-of-12"
+                style="background-color:RGB(152,139,141);">
+                <div style="padding:4%">
+                    <a class="social_me" href="{!v.helpUrl}" target="_blank">
+                        <div class="circle" style="margin-left: 15px;">
+                            <img src="{!$Resource.appiushelp}" style="width: 40px;position:absolute" />
+                        </div>
+                    </a>
+                    <a class="social_me" href="{!v.contactUrl}" target="_blank">
+                        <div class="circle">
+                            <img src="{!$Resource.appiuscontact}" style="width: 40px;position:absolute;" />
+                        </div>
+                    </a>
+                </div>
+                <div class="slds-full-centered">
+                    <img src="{!$Resource.Hoya_Login_Graphic}" style="margin-left:25%;" />
+                </div>
+
+            </div>
+        </div>
+    </aura:renderIf>
+    <aura:if isTrue="{!v.brand == 'seiko'}">
+
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+            <meta name="description" content="" />
+            <meta name="author" content="" />
+            <title>SEIKO Log in</title>
+
+<!--            <ltng:require styles="{!$Resource.login_seiko_bootstrap_css}" />
+            <ltng:require styles="{!$Resource.login_seiko_css}" />-->
+            <ltng:require styles="{!$Resource.Seiko_Theme + '/bootstrap/css/bootstrap.min.css'}" />
+            <ltng:require styles="{!$Resource.Seiko_Theme + '/css/log-in.css'}" />
+
+            <ltng:require scripts="{!join(',',
+                                   $Resource.Seiko_Theme + '/assets/js/jquery.min.js',
+                              $Resource.Seiko_Theme + '/bootstrap/js/bootstrap.min.js')}"
+                afterScriptsLoaded="{!c.initialize}" />
+        </head>
+
+        <body class="text-center seiko" style="text-align:unset !important;">
+            <div class="container login">
+                <div class="row logindiv">
+                    <div class="col-xs-12 col-lg-6 align-self-center left-box">
+                        <img class="mb-4" src="{!$Resource.seiko_welcome}" alt=""
+                            style="width: 100%;" />
+                        <p>{!v.descriptionSeiko}</p>
+                    </div>
+                    <div class="col-lg-6 text-left align-self-end right-box">
+                        <form class="form-signin">
+                            <h1 class="h3 mb-3 font-weight-normal" style="color: #D69719;">{!v.loginButtonLabel}</h1>
+                            <p style="text-align: left;">
+                                {!v.descriptionLabel}
+                            </p>
+                            <span>
+                                <aura:renderIf isTrue="{!v.showError}">
+                                    <div id="error">
+                                        <ui:outputRichText value="{!v.errorMessage}" />
+                                    </div>
+                                </aura:renderIf>
+                            </span>
+                            <ui:inputText value="" aura:id="username_seiko" placeholder="{!v.usernameLabel}"
+                                keyup="{!c.onKeyUp}" class="inputSeiko" required="true" />
+                            <ui:inputSecret value="" aura:id="password_seiko" placeholder="{!v.passwordLabel}"
+                                class="inputSeiko" keyup="{!c.onKeyUp}" />
+                            <!--<input type="email" id="username" class="form-control" placeholder="{!v.usernameLabel}"
+                                required="" autofocus="" autocomplete="off" />
+                            <input type="password" id="inputPassword" class="form-control"
+                                placeholder="{!v.passwordLabel}" required="" autocomplete="off" />-->
+                            <br /><br />
+                            <p class="text-left">
+                                <a href="{!v.forgotPasswordUrl}"
+                                    style="color: #ccc !important;">{!v.forgotPasswordLabel}</a>
+                            </p>
+                            <p class="text-left">
+                            <div class="form-switch form-check ">
+                                <ui:inputCheckbox aura:id="remember_seiko" class="form-check-input" />
+                                <input id="remember_seiko" type="checkbox" value="remember" class="form-check-input"
+                                    style="border-radius: 2em !important;margin-left: -2.5em !important;width: 2em !important;" />
+                                {!v.rememberLabel}
+                            </div>
+                            </p>
+                            <!--<button class="btn btn-primary" type="submit">LOG IN</button>-->
+                            <ui:button label="{!v.loginButtonLabel}" press="{!c.handleLogin}" class="btn btn-primary" />
+                            <!--<button class="btn btn-signup" type="submit"
+                                onclick="{!v.selfRegisterUrl}">{!v.createAccountLabel}</button>-->
+                        </form>
+                    </div>
+                </div>
+                <div class="row footer align-bottom">
+                    <div class="col-xs-12 col-lg-8">
+                        <p>SEIKO OPTICAL PRODUCTS CO., LTD. 18-10, Nihonbashi Hakozaki-Cho, Chuo-Ku, Tokyo 103-0015,
+                            Japan</p>
+                    </div>
+                    <div class="col-xs-12 col-lg-4">
+                        <p class="xs-text-center" style="text-align: right;">
+                            <a href="{!v.helpUrl}" style="color: #ffffff !important;">{!v.helpLabel}</a>
+                            <a href="{!v.contactUrl}" style="color: #ffffff !important;">{!v.contactLabel}</a>
+                            <a href="{!v.privacyUrl}" style="color: #ffffff !important;">{!v.privacyLabel}</a>
+                            <a href="{!v.termsUrl}" style="color: #ffffff !important;">{!v.termsLabel}</a>
+                            <!--a href="{!v.helpUrl}" style="color: #ffffff !important;">Help</a>
+                            <a href="{!v.contactUrl}" style="color: #ffffff !important;">Contact Us</a>
+                            <a href="{!v.privacyUrl}" style="color: #ffffff !important;">Privacy</a>
+                            <a href="{!v.termsUrl}" style="color: #ffffff !important;">Terms of use</a-->
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </body>
+    </aura:if>
+
+    <!--Test for optic-->
+    <aura:renderIf isTrue="{!v.brand == 'Optic'}">
+        <div class="wrapper slds-grid slds-wrap slds-grid--vertical-stretch">
+            <div class="slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_6-of-12 slds-full-centered"
+                style="background-color:white;">
+                <div class="slds-grid slds-grid_vertical">
+                    <div class="slds-col" style="padding-bottom: 50px;">
+                        <img style="width: 15rem;" src="{!v.backgroundImageURL}" />
+                    </div>
+                    <div class="slds-col">
+                        <span>
+                            <aura:renderIf isTrue="{!v.showError}">
+                                <div id="error">
+                                    <ui:outputRichText value="{!v.errorMessage}" />
+                                </div>
+                            </aura:renderIf>
+                        </span>
+                        <div style="padding-bottom: 10px;">
+                            <span class="labelInputs">{!v.usernameLabel}</span>
+                        </div>
+                        <!--<ui:outputText value="{!v.usernameLabel}" class="labelInputs" />-->
+                        <div style="padding-bottom: 10px;">
+                            <ui:inputText value="" aura:id="username_optic" placeholder="{!v.usernameLabel}"
+                                keyup="{!c.onKeyUp}" label="{!v.usernameLabel}" labelClass="assistiveText"
+                                class="input-credentials" required="true" />
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div style="padding-bottom: 10px;">
+                            <ui:outputText value="{!v.passwordLabel}" class="labelInputs" />
+                        </div>
+                        <div>
+                            <ui:inputSecret value="" aura:id="password_optic" placeholder="{!v.passwordLabel}"
+                                keyup="{!c.onKeyUp}" label="{!v.passwordLabel}" labelClass="assistiveText"
+                                class="input-credentials" />
+                        </div>
+                    </div>
+                    <div class="slds-col" id="small_link">
+                        <u><a href="{!v.forgotPasswordUrl}">{!v.forgotPasswordLabel}</a></u><br />
+                    </div>
+                    <div class="slds-grid" style="margin-top: 30px;">
+                        <div class="slds-col">
+                            <div id="remember_me">
+                                <ui:inputCheckbox aura:id="remember_optic" label="{!v.rememberLabel}"
+                                    class="remember-checkbox-hoya myCheckbox" />
+                            </div>
+                        </div>
+                        <div class="slds-col">
+                            <div class="container">
+                                <ui:button aura:id="submitButton_optic" label="{!v.loginButtonLabel}" press="{!c.handleLogin}"
+                                    class="sfdc_button" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-size_12-of-12 slds-medium-size_6-of-12 slds-large-size_6-of-12 center-container"
+                style="background-color:white">
+
+                <!--Lenses Image on right of the page-->
+                <div class="abc" style="margin: 5%;">
+                    <img src="{!$Resource.Safevision_Login_RHS_Logo}" style="max-width: 80%; max-height: 100%;" />
+                </div>
+
+            </div>
+        </div>
+    </aura:renderIf>
+
+
+</aura:component>

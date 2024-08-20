@@ -1,0 +1,138 @@
+.toggle-btn {
+    cursor: pointer;
+}
+.heightsize{
+    height: 3rem;
+}
+.button-container {
+    transition: max-height 0.5s ease;
+}
+.button {
+    padding: 10px 20px;
+    background-color: #0176D3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+.slide-in {
+    max-height: 1000px; /* Adjust to your content's height */
+    transform: translateX(0px);
+    -webkit-animation: slide 0.5s forwards;
+    -webkit-animation-delay: 2s;
+    animation: slide 0.5s forwards;
+    animation-delay: 2s;
+    position: relative;
+    animation: animateleft 0.4s;
+    visibility: collapse;
+}
+.slide-out {
+    max-height: 0;
+    -webkit-animation: slide 0.5s forwards;
+    -webkit-animation-delay: 2s;
+    animation: slide 0.5s forwards;
+    animation-delay: 2s;
+    position: relative;
+    animation: animateright 0.4s;
+}
+.filterSection{
+    border-bottom: 0.5rem;
+    padding-bottom: 1rem;
+    border:1px solid #C9C9C9;
+    background: #F3F3F3;
+}
+.filterButton{
+    position: relative;
+    top: 1.5rem;
+    left: 1.5rem;
+}
+.dateControl{
+    position: relative;
+    top: 1rem;
+    left: 1rem;
+    height: 2rem;
+}
+.datePosition{
+    border: 1px solid #C9C9C9;
+    padding: 0.5rem;
+    height: 100%;
+}
+.keepMiddle{
+    position: relative;
+    bottom: 0.5rem;
+    width: 10rem;
+}
+.displayButton{
+    height: 2rem;
+    width: 8rem;
+    top: 1.5rem;
+}
+.traverseButton{
+    position: relative;
+    top: 1rem;
+    width: 3rem;
+}
+.slds-box {
+    padding: .2rem;
+    border-radius: .5rem;
+}
+.fix{
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    /*background: #f8f8f8;*/
+    background: #dbe7ff !important;
+ }
+ .backdrop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(8, 7, 7, 0.5); /* background color while spinner onscreen */
+    z-index: 15000; /* set z-index always high */
+  }
+  
+  .spinshow::after {
+    position: absolute;
+    content: "Please wait while loading";
+    width: 100%;
+    text-align: center;
+    top: calc(50% + 3em);
+    font-weight: bold;
+  }
+  img {
+    height: 3rem !important;
+    /*width: 100% !important;*/
+}
+.colWidth {
+    width: 80px; /* Adjust the width as needed */
+}
+.dynamic-css{
+    text-align: left !important;
+    background: #dbe7ff !important;
+    font-weight: bold !important;
+}
+.image-container {
+    position: relative;
+    height: 3rem !important;
+    width: 100% !important;
+    background-size: cover;
+    background-position: center;
+}
+
+.overlay-text {
+    position: inherit;
+    top: 50%;
+    left: 51%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    text-align: left !important;
+}
+.image-row {
+    display: flex;
+    align-items: center; /* Align items vertically center */
+    justify-content: flex-start; /* Align items to the start */
+}

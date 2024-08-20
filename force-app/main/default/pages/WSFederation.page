@@ -1,0 +1,45 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" controller="WSFederationController">
+<html lang="en">
+    <head></head>
+    <style>
+        .parent {
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto; 
+            text-align: center;
+        }
+
+        .child {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 50%;
+            height: 10%;
+            margin: auto;
+            font-size: 20px;
+            line-height: 28px;
+            padding: 10px;
+        }
+    </style>
+    
+    <div class="parent">
+        <div class="child"><apex:image value="{!URLFOR($Resource.loader2)}"/></div>
+    </div>
+    <apex:outputPanel rendered="{!errorMessage != null}">{!errorMessage}</apex:outputPanel>
+    <apex:outputPanel rendered="{!errorMessage == null}">
+        <body onload="document.forms[0].submit();">
+            <form action="{!action}" method="POST">
+                <input type="hidden" name="wa" value="wsignin1.0" /><br/>
+                <input type="hidden" name="wctx" value="{!context}" /><br/>
+                <input type="hidden" name="wresult" value="{!result}" /><br/>
+              
+            </form>
+        </body>   
+        <apex:pageMessages />
+     </apex:outputPanel>  
+  
+
+</html>
+</apex:page>

@@ -1,0 +1,183 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="Lenses net Sales">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <template lwc:if={isTypeNet}> 
+                    <td><h3 class="slds-section__title">{custLabel.LensesNetSales}</h3></td>
+                </template>
+                <template lwc:else>
+                    <td><h3 class="slds-section__title">{custLabel.LensesGrossSales}</h3></td>
+                </template>
+            </tr>
+        </table><br>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales Last 12Mo</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSalesLast12Mo} maximum-fraction-digits="0" format-style='currency' currency-code={CurrencyCode}>
+                </lightning-formatted-number> 
+                </span> 
+            </div> 
+            <div class="slds-col slds-size_4-of-12"><span>Lenses Qty Last 12Mo</span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesQtyLast12Mo} maximum-fraction-digits="0">
+                </lightning-formatted-number> 
+                </span> 
+            </div> 
+        </div>        
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales LFY</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSalesLFY} maximum-fraction-digits="0" format-style='currency' currency-code={CurrencyCode}>
+                </lightning-formatted-number> 
+                </span> 
+            </div>         
+            <div class="slds-col slds-size_4-of-12"><span>Lenses Qty LFY</span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesQtyLFY} maximum-fraction-digits="0">
+                </lightning-formatted-number> 
+                </span> 
+            </div> 
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales Last 12Mo vs LFY</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSales12MovsLFY} maximum-fraction-digits="0">
+                </lightning-formatted-number>% 
+                </span> 
+            </div>         
+            <div class="slds-col slds-size_4-of-12"><span>Lenses Qty Last 12Mo vs LFY</span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesQty12MovsLFY} maximum-fraction-digits="0">
+                </lightning-formatted-number>% 
+                </span> 
+            </div> 
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses SoW Last 12Mo</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSowLast12Mo} maximum-fraction-digits="0" >
+                </lightning-formatted-number>%
+                </span> 
+            </div> 
+        </div>
+        <br/>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales CFY</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSalesCFY} maximum-fraction-digits="0" format-style='currency' currency-code={CurrencyCode}>
+                </lightning-formatted-number> 
+                </span> 
+            </div> 
+            <div class="slds-col slds-size_4-of-12"><span>Lenses Qty CFY</span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesQtyCFY} maximum-fraction-digits="0">
+                </lightning-formatted-number> 
+                </span> 
+            </div> 
+        </div>        
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales LFY YTD</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSalesLFYYTD} maximum-fraction-digits="0" format-style='currency' currency-code={CurrencyCode}>
+                </lightning-formatted-number> 
+                </span> 
+            </div>         
+            <div class="slds-col slds-size_4-of-12"><span>Lenses Qty LFY YTD</span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesQtyLFYYTD} maximum-fraction-digits="0">
+                </lightning-formatted-number> 
+                </span> 
+            </div> 
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales CFY vs LFY YTD</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSalesCFYvsLFYYTD} maximum-fraction-digits="0">
+                </lightning-formatted-number>% 
+                </span> 
+            </div>         
+            <div class="slds-col slds-size_4-of-12"><span>Lenses Qty CFY vs LFY YTD</span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesQtyCFYvsLFYYTD} maximum-fraction-digits="0">
+                </lightning-formatted-number>% 
+                </span> 
+            </div> 
+        </div>        
+        <br/>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales Last 3Mo CFY</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSales3MoCFY} maximum-fraction-digits="0" format-style='currency' currency-code={CurrencyCode}>
+                </lightning-formatted-number> 
+                </span> 
+            </div> 
+            <div class="slds-col slds-size_4-of-12"><span>Lenses Qty Last 3Mo CFY</span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesQty3MoCFY} maximum-fraction-digits="0">
+                </lightning-formatted-number> 
+                </span> 
+            </div> 
+        </div>        
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales Last 3Mo LFY</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSales3MoLFY} maximum-fraction-digits="0" format-style='currency' currency-code={CurrencyCode}>
+                </lightning-formatted-number> 
+                </span> 
+            </div>         
+            <div class="slds-col slds-size_4-of-12"><span>Lenses Qty Last 3Mo LFY</span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesQty3MoLFY} maximum-fraction-digits="0">
+                </lightning-formatted-number> 
+                </span> 
+            </div> 
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales Last 3Mo CFY vs LFY</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSales3MoCFYvsLFY} maximum-fraction-digits="0">
+                </lightning-formatted-number>% 
+                </span> 
+            </div>         
+            <div class="slds-col slds-size_4-of-12"><span>Lenses Qty Last Last 3Mo CFY vs LFY</span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesQty3MoCFYvsLFY} maximum-fraction-digits="0">
+                </lightning-formatted-number>% 
+                </span> 
+            </div> 
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses SoW Last 3Mo</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSOW3Mo} maximum-fraction-digits="0" >
+                </lightning-formatted-number>%
+                </span> 
+            </div> 
+        </div>
+        <br/>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales Forecast CFY</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSalesForecastCFY} maximum-fraction-digits="0" format-style='currency' currency-code={CurrencyCode}>
+                </lightning-formatted-number> 
+                </span> 
+            </div>            
+        </div>        
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales Forecast CFY vs LFY</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSalesForecastCFYvsLFY} maximum-fraction-digits="0">
+                </lightning-formatted-number>%
+                </span> 
+            </div>  
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Sales Forecast vs ECP Agreement</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span>
+                <lightning-formatted-number value={LensesSalesForecastvsECP} maximum-fraction-digits="0">
+                </lightning-formatted-number>% 
+                </span> 
+            </div>  
+        </div>          
+    </div>
+</template>

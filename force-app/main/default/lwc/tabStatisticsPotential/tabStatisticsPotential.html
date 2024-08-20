@@ -1,0 +1,404 @@
+<template>
+    <template lwc:if={showLoading}>
+        <lightning-spinner alternative-text="Loading..." size="medium" class="spinnerClass"></lightning-spinner>
+    </template>
+    <!--Indicators-->
+    <c-tab-statistics-indicators received-id={receivedId} ></c-tab-statistics-indicators>
+    <!--Competitor Lens Suppliers-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
+        <table class="slds-table slds-table_bordered" aria-label="CompetitorLensSupplier">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.CompetitorLensSuppliers}</h3></td>
+                <td><p align="right">
+                    <lightning-button variant="brand-outline" label="Change Competitors" onclick={openModal}></lightning-button>&nbsp;
+                    <template if:true={showAllTab}>
+                        <lightning-button variant="brand-outline" label="Request New Competitor" onclick={newTaskOpenModal}></lightning-button>
+                    </template>
+                    </p>
+                </td>
+            </tr>            
+        </table><br>
+        <div class="slds-grid">
+            <div class="sld-col slds-size_2-of-3">
+                <template lwc:if={isRender}>
+                    <lightning-layout>
+                        <lightning-layout-item flexibility="auto" padding="around-small">
+                            <lightning-record-form
+                                record-id={receivedId}
+                                object-api-name={objectApiName}
+                                fields={field1}
+                                mode="readonly"
+                                columns="2"                 
+                            >
+                            </lightning-record-form>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={lastSalesId}
+                            object-api-name={LastSalesObjectName}
+                            fields={FirstCompetitorSOWField}
+                            mode="readonly"
+                            columns="2"                 
+                        ></lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout>
+                
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-3">
+                
+                    <lightning-layout>
+                        <lightning-layout-item flexibility="auto" padding="around-small">
+                            <lightning-record-form
+                                record-id={receivedId}
+                                object-api-name={objectApiName}
+                                fields={FirstCompetitorWeakness}
+                                mode="view"
+                                columns="2"
+                                onsubmit={handleSubmit}
+                            ></lightning-record-form>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-3">
+                <template lwc:if={isRender}>
+                    <lightning-layout>
+                        <lightning-layout-item flexibility="auto" padding="around-small">
+                            <lightning-record-form
+                                record-id={receivedId}
+                                object-api-name={objectApiName}
+                                fields={field3}
+                                mode="readonly"
+                                columns="2"                 
+                            >
+                            </lightning-record-form>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <template lwc:if={isRender}>
+                    <lightning-layout>
+                        <lightning-layout-item flexibility="auto" padding="around-small">
+                            <lightning-record-form
+                                record-id={lastSalesId}
+                                object-api-name={LastSalesObjectName}
+                                fields={SecondCompetitorSOWField}
+                                mode="readonly"
+                                columns="1"
+                            >
+                            </lightning-record-form>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={objectApiName}
+                            fields={SecondCompetitorWeakness}
+                            mode="view"
+                            columns="2"
+                            onsubmit={handleSubmit}
+                        ></lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-edit-form record-id={receivedId} object-api-name={objectApiName}>
+                        <lightning-output-field class="slds-competitors-css slds-form-element_readonly" field-name="Competitors_Info_Last_updated_On__c"></lightning-output-field>
+                    </lightning-record-edit-form>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div> 
+        </div>
+    </div>   
+        <template lwc:if={isGermanAccount}>
+        <!--H+S Lens Gross Sales-->
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="H+SLensGrossSales">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.HSLensGrossSales}</h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={objectApiName}
+                            fields={Account_Strategic_Gross_Field}
+                            mode="view" 
+                            columns = "3" 
+                            onsubmit={handleSubmit}>
+                        </lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-edit-form record-id={receivedId} object-api-name={objectApiName}>
+                        <lightning-output-field class="slds-competitors-css slds-form-element_readonly" field-name="Strategic_Value_Last_Update__c"></lightning-output-field>
+                    </lightning-record-edit-form>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </div><br>
+        <template lwc:if={isRender}>
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-record-form
+                        record-id={lastSalesId}
+                        object-api-name={LastSalesObjectName}
+                        fields={Last_Gross_Sales}
+                        mode="readonly"  
+                        columns="3"               
+                        >
+                    </lightning-record-form>
+                </lightning-layout-item>
+            </lightning-layout><br>
+        </template>
+        <br/>
+        <template lwc:if={isRender}>
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-record-form
+                        record-id={lastSalesId}
+                        object-api-name={LastSalesObjectName}
+                        fields={Last_Gross_Sales_3Mo}
+                        mode="readonly"  
+                        columns="3"               
+                        >
+                    </lightning-record-form>
+                </lightning-layout-item>
+            </lightning-layout><br>
+        </template>
+    </div>
+    </template>
+    <template lwc:else>
+        <!--H+S Lens Net Sales-->
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+            <table class="slds-table slds-table_bordered" aria-label="H+SLensNetSales">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.HSLensNetSales}</h3></td>
+                </tr>               
+            </table><br>
+            <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={objectApiName}
+                            fields={Account_Strategic_Net_Field}
+                            mode="view" 
+                            columns = "2"   
+                            onsubmit={handleSubmit}>
+                        </lightning-record-form> 
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-edit-form record-id={receivedId} object-api-name={objectApiName}>
+                        <lightning-output-field class="slds-competitors-css slds-form-element_readonly" field-name="Strategic_Value_Last_Update__c"></lightning-output-field>
+                    </lightning-record-edit-form>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>   
+            </div>
+            <template lwc:if={isRender}>
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={lastSalesId}
+                            object-api-name={LastSalesObjectName}
+                            fields={Last_Net_Sales}
+                            mode="readonly"  
+                            columns="3"               
+                            >
+                        </lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout><br>
+            </template>
+            <br/>
+            <template lwc:if={isRender}>
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-record-form
+                            record-id={lastSalesId}
+                            object-api-name={LastSalesObjectName}
+                            fields={Last_Net_Sales_3Mo}
+                            mode="readonly"  
+                            columns="3"               
+                            >
+                        </lightning-record-form>
+                    </lightning-layout-item>
+                </lightning-layout><br>
+            </template>
+        </div>
+    </template>
+    <!--Modal popup start here-->
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Change Competitors</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <!--<div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">First Competitor Local Name</div>
+                    </div>-->
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <c-custom-lookup-competitor icon-name="standard:picklist_choice" s-object-api-name="account" label="First Competitor Local Name"
+                                placeholder="Search" id="form-input-1" onlookupupdate={handleLookupSelectCompValue} default-record-id={FirstCompLocalName}>
+                            </c-custom-lookup-competitor>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <c-cust-lookup-competitor-2 icon-name="standard:picklist_choice" s-object-api-name="account" label="Second Competitor Local Name"
+                                placeholder="Search" id="form-comp-2" onlookupupdate={hadleLookupSelectCompValue2} default-record-id={SecondCompLocalName}>
+                            </c-cust-lookup-competitor-2>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1"><lightning-input type="text" onchange={handleChangeCompetitor} name="form-input-2" id="form-input-2" data-my-id="form-input-2" class="slds-hide" value={defaultValue}></lightning-input></div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1"><lightning-input type="text" onchange={handleChange2Competitor} name="form-input-3" id="form-input-3" data-my-id="form-input-3" class="slds-hide"></lightning-input></div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">&nbsp;</div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">&nbsp;</div>
+                    </div>               
+                </div>
+                 <div class="slds-modal__footer">
+                    <p align="right">
+                        <lightning-button variant="netural" label="Cancel" onclick={closeModal} icon-name="utility:close"></lightning-button>&nbsp;
+                        <lightning-button variant="brand" label="Save" onclick={handleUpdateCompetitor} icon-name="utility:save"></lightning-button>&nbsp;
+                    </p>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!--end-->
+    <!--New Task Modal Popup request new competitor start here-->
+    <template if:true={isNewTaskModalOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-02" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeTaskModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Request New Competitor</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <lightning-input type="text" label="Subject" required="true" name="FormInput0" id="FormInput0" data-my-id="FormInput0" value={subject} onchange={subjectCH}></lightning-input>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1"><lightning-input type="text" label="First Local Competitor Name" name="FormInput1" id="FormInput1" data-my-id="FormInput1" required="true" onchange={firstCompetitorLocalChange}></lightning-input></div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1"><lightning-input type="text" label="First Global Competitor Name" name="FormInput2" id="FormInput2" data-my-id="FormInput2" required="true" onchange={firstCompeitorGlobalChange}></lightning-input></div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <label class="slds-form-element__label" for="FormAccount">
+                                <abbr class="slds-required" title="required">*</abbr>Account
+                            </label>
+                            <c-custom-lookup-competitor-account icon-name="standard:account" s-object-api-name="Account" name="FormAccount" label=""
+                                placeholder="Search Account" id="FormAccount" received-id={receivedId} default-record-id={receivedId}
+                                data-my-id="FormAccount" onlookupupdate={handleLookupSelectAccountId}>
+                            </c-custom-lookup-competitor-account><br>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <lightning-textarea label="Instruction" name="FormInput3" id="FormInput3" data-my-id="FormInput3" onchange={instructionChange} value={instruction}></lightning-textarea>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <label class="slds-form-element__label" for="FormInput4">
+                                <abbr class="slds-required" title="required">*</abbr>Assigned To
+                            </label>
+                            <c-custom-lookup-competitor-user icon-name="standard:user" s-object-api-name="user" name="FormInput4" label=""
+                                placeholder="Search User" id="FormInput4" received-id={receivedId} data-my-id="FormInput4" onlookupupdate={handleLookupSelectionOwnerId}>
+                            </c-custom-lookup-competitor-user><br>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1"><lightning-input type="date" label="Due Date" name="FormInput5" id="FormInput5" data-my-id="FormInput5" onchange={duedatechange}></lightning-input></div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <lightning-combobox
+                                        name="FormInput6"
+                                        label="Status"
+                                        value={value}
+                                        placeholder="Select Status"
+                                        options={StatusOptions}
+                                        required="true"
+                                        id="FormInput6"
+                                        data-my-id="FormInput6"
+                                        onchange={statuschange}
+                                        >
+                            </lightning-combobox>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input type="text" name="FormInput7" id="FormInput7" data-my-id="FormInput7" class="slds-hide"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input type="text" name="FormInput8" id="FormInput8" data-my-id="FormInput8" onchange={accountIdChange} value={receivedId} class="slds-hide"></lightning-input>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button variant="netural" label="Cancel" onclick={closeTaskModal} icon-name="utility:close"></lightning-button>&nbsp;
+                    <lightning-button variant="brand" label="Save" onclick={handleCreateNewTask} icon-name="utility:save"></lightning-button>&nbsp;
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!--End-->
+</template>

@@ -1,0 +1,342 @@
+<template>
+  
+  <div class="slds-is-relative">
+      <template if:true={isSpinner}>      
+          <div class="spinner">        
+                  <lightning-spinner class="slds-is-fixed" variant="brand" alternative-text="Loading..."></lightning-spinner>                       
+          </div>
+      </template>     
+  </div>
+
+  <!--Customer Satisfaction Indicator Section-->
+  <div class="slds-grid slds-box">   
+    <div class="slds-col slds-size_1-of-5">
+      {label.Tacticom}
+      <br>
+      <div>
+        <img style="height: 40px; width: 40px;" src={tacticomIndicator} title={tacticomHelpText}>
+      </div>
+    </div>
+    <div class="slds-col slds-size_1-of-5">
+      {label.Total_Visits}
+      <br>
+      <img style="height: 40px; width: 40px;" src={totalVisitsIndicator} title={totalVisitsHelpText}>
+    </div>
+    <div class="slds-col slds-size_1-of-5">
+      {label.Campaigns}
+      <br>
+      <img style="height: 40px; width: 40px;" src={campaignsIndicator} title={campaignsHelpText}>
+    </div>
+    <div class="slds-col slds-size_1-of-5">
+      {label.Opportunities}
+      <br>
+      <img style="height: 40px; width: 40px;" src={busiOppIndicator} title={busiOppHelpText}>
+    </div>   
+    <div class="slds-col slds-size_1-of-5">
+      {label.Life_Cycle}
+      <br>
+      <img style="height: 40px; width: 40px;" src={lifeCycleIndicator}>
+    </div>
+  
+  </div>
+
+  <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+      <table class="slds-table slds-table_bordered" aria-label="Visit Summary" style="background-color: #215ca0;">
+          <tr class="row" style="background-color: #aacbff;">
+              <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.APACVisitVisitSummary} - {label.Representative_Level}</p></h3></td>
+               <td><p align="right"><lightning-button label="Request Modification Of Planned Visits" variant="brand-outline" onclick={openModal}></lightning-button></p></td>
+          </tr>
+      </table><br>
+      <div class="sld-grid slds-gutters">
+        <div class="slds-col slds-m-left_small slds-size_1-of-1">
+      <template lwc:if={isGermanyAccount}>
+            <lightning-record-form  
+                record-id={receivedId} object-api-name="Account"
+                fields={accountSegmentationfieldsGross} columns="3" mode="readonly">
+            </lightning-record-form>
+            <div class="slds-col slds-size_1-of-3" style="padding-left:3px;">
+            <lightning-record-form  
+                record-id={receivedId} object-api-name="Account"
+                fields={ManualSegment} columns="3">
+            </lightning-record-form>
+            </div>
+          </template>
+          <template lwc:else>
+            <lightning-record-form  
+                record-id={receivedId} object-api-name="Account"
+                fields={accountSegmentationfieldsNet} columns="3" mode="readonly">
+            </lightning-record-form>
+            <div class="slds-col slds-size_1-of-3" style="padding-left:3px;">
+              <lightning-record-form
+                  object-api-name={Account_Obj}
+                  record-id={receivedId}
+                  fields={ManualSegment}
+                  mode ="view"
+                  columns="1"
+                  >
+              </lightning-record-form>
+            </div>
+      </template>
+        </div>
+      </div>
+      <br/>
+  </div>
+  <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+    <table class="slds-table slds-table_bordered" aria-label="Visit Summary" style="background-color: #215ca0;">
+        <tr class="row" style="background-color: #aacbff;">
+            <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.APACVisitVisitSummary} - {label.Team_Level}</p></h3></td>
+        </tr>
+    </table><br>
+    <lightning-layout>
+      <lightning-layout-item flexibility="auto" >
+        <div class="slds-grid slds-m-left_small">
+          <div class="slds-col slds-size_1-of-3">
+            <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:30px;" >
+                <label class="slds-form-element__label">{label.Total_Visits_Performed}</label><br/>
+                <div class="slds-form-element__control">{totalvisits}</div>  
+            </div>                  
+          </div>
+          <div class="slds-col slds-size_1-of-3">
+            <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:30px;" >
+                <label class="slds-form-element__label">{label.Support_Visits_Performed}</label><br/>
+                <div class="slds-form-element__static">{supportVisitsCount}</div>  
+            </div>                  
+          </div> 
+          <div class="slds-col slds-size_1-of-3">
+            <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:12px;" >
+                <label class="slds-form-element__label">{label.Last_Support_Visit_Date}</label><br/>
+                <div class="slds-form-element__static">{lastVisitBy} {lastSupportVisitDate}</div>  
+            </div>                  
+          </div> 
+        </div>
+      </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout>
+      <lightning-layout-item flexibility="auto" >
+        <div class="slds-grid slds-m-left_small slds-var-m-top_x-small">    
+          <div class="slds-col slds-size_1-of-3">
+           &nbsp;              
+          </div>      
+          <div class="slds-col slds-size_1-of-3">
+            <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:30px;" >
+                <label class="slds-form-element__label">{label.Support_Digital_Visit_Performed}</label><br/>
+                <div class="slds-form-element__static">{supportDigitalVisitCount}</div>  
+            </div>                  
+          </div> 
+          <div class="slds-col slds-size_1-of-3">
+            <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:12px;" >
+                <label class="slds-form-element__label">{label.Last_Support_Digital_Visit_Date}</label><br/>
+                <div class="slds-form-element__static">{lastDigitalVisitBy} {lastSupportDigitalVisitDate}</div>  
+            </div>                  
+          </div> 
+        </div>
+      </lightning-layout-item>
+    </lightning-layout>
+  </br>
+  </div>
+  <template if:true={showAllTab}>
+  <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+    <table class="slds-table slds-table_bordered" aria-label="All Associated Account's Segmentation" style="background-color: #215ca0;">
+      <tr class="row" style="background-color: #aacbff;">
+          <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.All_Account_Associated_Segmentation}</p></h3></td>
+      </tr>
+    </table><br>
+    <lightning-layout>
+      <lightning-layout-item flexibility="auto" > 
+        <div class="slds-grid slds-m-left_small">
+          <div class="slds-col slds-size_1-of-3">        
+            <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:30px;">
+              <span class="slds-form-element__label">{label.Consolidation_Key_Strategic_Value}
+                <lightning-helptext content={label.Consolidation_Key_Strategic_HelpText}></lightning-helptext>
+              </span>
+              <div class="slds-form-element__control">
+                <div class="slds-form-element__static"><lightning-formatted-number value={aggrResult.consolidationKeyStrategicValue} format-style="currency" currency-code="EUR" currency-display-as="symbol"></lightning-formatted-number></div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-col slds-size_1-of-3">
+            <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:30px;">
+              <span class="slds-form-element__label">{label.Consolidation_Key_Share_Of_Wallet}
+                <lightning-helptext content={label.Consolidation_Key_SOW_HelpText}></lightning-helptext>
+              </span>
+              <div class="slds-form-element__control">
+                <div class="slds-form-element__static"><lightning-formatted-number value={aggrResult.consolidationKeyShareOfWallet} format-style="percent"></lightning-formatted-number></div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-col slds-size_1-of-3">
+            <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:12px;">
+              <span class="slds-form-element__label">{label.Consolidation_Key_Segmentation}
+                <lightning-helptext content={label.Consolidation_Key_Segmentation_HelpText}></lightning-helptext>
+              </span>
+              <div class="slds-form-element__control">
+                <div class="slds-form-element__static">{aggrResult.consolidationKeySegmentation}</div>
+              </div>
+            </div>
+          </div>    
+        </div>   
+    </lightning-layout-item>
+    </lightning-layout>   
+  <br/>
+</div>
+ 
+<div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+    <table class="slds-table slds-table_bordered" aria-label="Tacticom" style="background-color: #215ca0;">
+      <tr class="row" style="background-color: #aacbff;">
+          <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.Tacticom}</p></h3></td>
+      </tr>
+    </table><br>
+    <div class="slds-grid  slds-m-left_small">
+      <div class="slds-col slds-size_1-of-3" style="width:33%">
+        <lightning-record-form
+            object-api-name={Account_Obj}
+            record-id={receivedId}
+            fields={fields}
+            mode ="view"
+            columns="1"
+            >
+        </lightning-record-form>
+      </div>
+      <div class="slds-col slds-size_1-of-2">
+      </div>
+    </div>  
+    <lightning-layout>
+      <lightning-layout-item flexibility="auto" > 
+        <div class="slds-grid slds-m-left_small">
+        <div class="slds-col slds-size_1-of-3" >
+          <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:30px;">
+            <span class="slds-form-element__label">{label.Tacticom_HOYA}</span>
+            <div class="slds-form-element__control">
+              <div class="slds-form-element__static">{tacticomDetail.isHOYA}</div>
+            </div>
+          </div>
+        </div>
+        <div class="slds-col slds-size_1-of-3">
+          <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:30px;">
+            <span class="slds-form-element__label">{label.Tacticom_SEIKO}</span>
+            <div class="slds-form-element__control">
+              <div class="slds-form-element__static">{tacticomDetail.isSEIKO}</div>
+            </div>
+          </div>
+        </div>
+        <div class="slds-col slds-size_1-of-3">
+          <div class="slds-form-element slds-form-element_readonly" style="padding-left:5px;margin-right:12px;">
+            <span class="slds-form-element__label">{label.TACTICOM_Buddy_Partner}</span>
+            <div class="slds-form-element__control">
+              <div class="slds-form-element__static">{tacticomDetail.buddyPartner}</div>
+            </div>
+          </div>
+        </div>
+        <br/>
+    </div>
+      </lightning-layout-item>
+    </lightning-layout>       
+    <br/>
+    <!--div>
+      <lightning-layout>
+        <lightning-layout-item size="6" padding="around-small"> 
+          <template if:true={isDoughnutChartDataReceived}>
+              <h3><b style="font-size: large;">{label.MY_TACTICOM}</b></h3>
+              <h1 style="text-align: center;">{label.Sum_of_Total_Visits_per_year}</h1>
+          
+              <c-charts type="doughnut" 
+              chart-heading="Visits"
+              chart-data={pieChartData} 
+              chart-labels={pieChartLabels}
+              total-count={totalCount}
+              ></c-charts>
+          </template>
+        </lightning-layout-item >
+
+        <lightning-layout-item size="6" padding="around-small">  
+          <template if:true={isBarChartDataReceived}>
+            <h3><b style="font-size: large;">{label.RECOMMENDED_TACTICOM}</b></h3>
+            <c-bar-charts  recommended-visits-data={recommendedVisitsData} recommended-visits-per-sub-area={recommendedVisitsPerSubArea} owner-name={ownerName}></c-bar-charts >
+          
+            <h2>Add or remove prospects from your tacticom to reach the "Recommended Number of visits"</h2>   
+          </template>
+        </lightning-layout-item>
+      </lightning-layout>
+    </div-->
+  </div>
+</template>
+ <!--Modal open up start here -->
+  <template if:true={isModalOpen}>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-02" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+              <lightning-icon icon-name="utility:close"
+                  alternative-text="close"
+                  variant="inverse"
+                  size="small" ></lightning-icon>
+              <span class="slds-assistive-text">Close</span>
+          </button>
+          <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Request For Modification Of Planned Visits</h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+          <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium">
+            <div class="slds-col slds-size_1-of-2">
+              <lightning-input type="text" name="form-input-1" value={AccountName} label="Account" disabled="true" data-my-id="form-input-1"></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+              <template lwc:if={isManagerAvailable}>
+                <lightning-input type="text" name="form-input-9" data-my-id="form-input-9" label="Approver" value={ManagerName} disabled="true"></lightning-input>
+              </template>
+              <template lwc:else>
+                <div class="slds-form-element__control slds-has-divider--bottom">
+                  <span class="slds-form-element__static">
+                      <label class="slds-form-element__label" for="form-input-6">
+                          <abbr class="slds-required" title="required" aria-disabled="true">*</abbr>
+                          Approver
+                      </label>
+                  </span>
+                  <c-custom-lookup-user-r-s-m icon-name="standard:user" s-object-api-name="user" label="" 
+                      name="form-input-6" placeholder="...Select Approver..." onlookupupdate={handleLookupUserChange}>
+                  </c-custom-lookup-user-r-s-m>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium slds-m-top_medium">
+            <div class="slds-col slds-size_1-of-2">
+              <lightning-input type="text" name="form-input-2" value={DirectVisitPlan} label="Direct Visits Plan" disabled="true" data-my-id="form-input-2"></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+              <template lwc:if={isVisitPlan}>
+                <lightning-input type="number" name="form-input-4" value={DirectVisitPlan} label="Requested Direct Visits" data-my-id="form-input-4" onchange={requestVisitPlanChange} disabled={isActiveDisabled}></lightning-input>
+              </template>
+              <template lwc:else>
+                <lightning-input type="number" name="form-input-4" value="0" label="Requested Direct Visits" data-my-id="form-input-4" onchange={requestVisitPlanChange} disabled={isActiveDisabled}></lightning-input>
+              </template>
+            </div>
+          </div>
+          <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium slds-m-top_medium">
+            <div class="slds-col slds-size_1-of-2">
+              <lightning-input type="text" name="form-input-3" value={DigittalVisitPlan} label="Digital Visits Plan" disabled="true" data-my-id="form-input-3"></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+              <template lwc:if={isDigitalVisitPlan}>
+                <lightning-input type="number" name="form-input-5" value={DigittalVisitPlan} label="Requested Digital Visits" data-my-id="form-input-5" onchange={requestDigitalVisitPlanChange} disabled={isActiveDisabled}></lightning-input>
+              </template>
+              <template lwc:else>
+                <lightning-input type="number" name="form-input-5" value="0" label="Requested Digital Visits" data-my-id="form-input-5" onchange={requestDigitalVisitPlanChange} disabled={isActiveDisabled}></lightning-input>
+              </template>
+            </div>
+          </div>
+          <div class="slds-grid slds-gutters slds-m-left_medium slds-m-right_medium slds-m-top_medium">
+            <div class="slds-col slds-size_1-of-1">
+              <lightning-input type="text" name="form-input-7" data-my-id="form-input-7" onchange={AssignToChange} value={ManagerIdVal} class="slds-hide"></lightning-input>
+            </div>
+          </div>
+        </div>
+        <div class="slds-modal__footer">
+          <lightning-button variant="netural" label="Cancel" onclick={closeModal} icon-name="utility:close" disabled={isActiveDisabled}></lightning-button>&nbsp;
+          <lightning-button variant="brand" label="Save" icon-name="utility:save" onclick={handleSaveData} disabled={isActiveDisabled}></lightning-button>&nbsp;
+        </div>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+  <!--End --> 
+</template>

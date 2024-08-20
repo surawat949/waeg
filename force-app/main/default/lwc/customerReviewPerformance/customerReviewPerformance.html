@@ -1,0 +1,247 @@
+<template>
+    <template if:true={showSpinner}>
+        <div class="backdrop">
+            <lightning-spinner class="spinshow" size="medium" variant="brand" alternative-text="Loading">
+            </lightning-spinner>
+        </div>
+    </template>
+    <div class="slds-grid slds-grid_vertical maxheight">
+        <div class="filterSection slds-col flex-container">
+            <div class="slds-grid slds-gutters heightsize">
+                <div class="slds-col slds-size_1-of-12">
+                    <button class="toggle-btn slds-button slds-button_outline-brand filterButton" onclick={toggleSlide}>{custLabel.Filter}</button>
+                </div>
+                <div class="slds-col slds-size_11-of-12">
+                    <div class={buttonContainerClass}>
+                        <div class="slds-grid slds-gutters">
+                            <template if:true={companyOptions.length}>
+                                <lightning-combobox class="slds-size_1-of-6 slds-col" name="company" label={custLabel.Company} options={companyOptions} placeholder={custLabel.Select_Company} onchange={handleCompanyChange} disabled={isCompanyDisabled}></lightning-combobox>
+                            </template>
+                            <lightning-combobox class="slds-size_1-of-6 slds-col" name="salesManager" label={custLabel.Sales_Manager} options={salesManagerOptions} placeholder={custLabel.Select_Sales_Manager} onchange={handleSalesManagerChange} value={selectedSalesManagerId} disabled={isSalesManagerDisabled}></lightning-combobox>
+                            <lightning-combobox class="slds-size_1-of-6 slds-col" name="representative" label={custLabel.Representative} options={representativeOptions} placeholder={custLabel.Select_Representative} disabled={isRepresentativeDisabled} value={selectedRepresentativeId} onchange={handleRepresentativeChange}></lightning-combobox>
+                            <div class="slds-form-element" style="padding-top: 12px !important;">
+                                <label class="slds-form-element__label" for="checkbox-unique-id-85"></label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="checkbox" label={custLabel.Consolidation_Team_Performance} onchange={handleCheckboxEvents} checked={isTeamPerformanceChecked} disabled={isTeamPerformanceDisabled}></lightning-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-m_top_medium">
+            <div class="slds-col slds-size_1-of-1">
+				<div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">					
+                    <div class="table-responsive">
+                        <div class="image-row">
+                            <img src={alc_performance_graph}/>
+                            <div class="image-container" style={containerStyle}>
+                                <div class="overlay-text">
+                                    {custLabel.Team_or_User_Sales_Performance}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-scrollable_x" style="width:100%">                            
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="fix headerRow" style="background: #dbe7ff !important;" width="22%" scope="col">{custLabel.Monthly_Performance}</th>                                          
+                                        <template for:each={months} for:item="month">
+                                            <th key={month.value} style="text-align:left !important;background: #dbe7ff !important;" width="6%" class="fix headerRow">{month.label}</th>
+                                        </template>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={data} for:item="item">
+                                        <tr key={item.metric} class="dataRow">
+                                            <td class="fix dataCell slds-text-title_caps"><strong>{item.metric}</strong></td>
+                                            <template lwc:if={item.isPercentageHolder}>
+                                                <td class={item.values.APR.class} style="text-align:left;">{item.values.APR.value}</td>
+                                                <td class={item.values.MAY.class} style="text-align:left;">{item.values.MAY.value}</td>
+                                                <td class={item.values.JUN.class} style="text-align:left;">{item.values.JUN.value}</td>
+                                                <td class={item.values.JUL.class} style="text-align:left;">{item.values.JUL.value}</td>
+                                                <td class={item.values.AUG.class} style="text-align:left;">{item.values.AUG.value}</td>
+                                                <td class={item.values.SEP.class} style="text-align:left;">{item.values.SEP.value}</td>
+                                                <td class={item.values.OCT.class} style="text-align:left;">{item.values.OCT.value}</td>
+                                                <td class={item.values.NOV.class} style="text-align:left;">{item.values.NOV.value}</td>
+                                                <td class={item.values.DEC.class} style="text-align:left;">{item.values.DEC.value}</td>
+                                                <td class={item.values.JAN.class} style="text-align:left;">{item.values.JAN.value}</td>
+                                                <td class={item.values.FEB.class} style="text-align:left;">{item.values.FEB.value}</td>
+                                                <td class={item.values.MAR.class} style="text-align:left;">{item.values.MAR.value}</td>
+                                                <td class={item.values.TOT_YTD.class} style="text-align:left;">{item.values.TOT_YTD.value}</td>
+                                            </template>
+                                            <template lwc:else>
+                                                <td class={item.values.APR.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.APR.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.MAY.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.MAY.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.JUN.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.JUN.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.JUL.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.JUL.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.AUG.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.AUG.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.SEP.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.SEP.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.OCT.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.OCT.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.NOV.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.NOV.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.DEC.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.DEC.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.JAN.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.JAN.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.FEB.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.FEB.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.MAR.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.MAR.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                                <td class={item.values.TOT_YTD.class} style="text-align:left;">
+                                                    <lightning-formatted-number value={item.values.TOT_YTD.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                                </td>
+                                            </template>                                            
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="image-row">
+                        <img src={alc_performance_kpi}/>
+                        <div class="image-container" style={containerStyle}>
+                            <div class="overlay-text">
+                                {custLabel.Team_or_User_Key_Performance_Indicators}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-scrollable_x" style="width:100%">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr>
+                                    <th class="fix headerRow" style="background: #dbe7ff !important;" width="22%" scope="col"></th>                                           
+                                    <template for:each={tableMonths} for:item="month">
+                                        <th class="fix headerRow" width="6%" style="text-align:left !important;background: #dbe7ff !important;" scope="col" key={month}>{month}</th>
+                                    </template>
+                                    <th style="text-align:left;background: #dbe7ff !important;"  width="6%" class="fix headerRow">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix headerRow" style="background: #dbe7ff !important;width: 2rem !important;"><strong>{custLabel.Sales_Per_Active_Accounts}</strong></td>
+                                    <template for:each={emptyRow} for:item="empty">
+                                        <td style="background: #f3f3f3 !important;" scope="col" key={empty}>{empty}</td>
+                                    </template>
+                                    <td style="background: #f3f3f3 !important;" scope="col"></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix">{currencyTitle}</td>                                    
+                                    <template for:each={activeSales} for:item="item"> 
+                                        <td key={item} style="text-align:left;" class={item.class}>
+                                            <lightning-formatted-number value={item.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                        </td>                  
+                                    </template>
+                                    <td></td> 
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix headerRow" style="background: #dbe7ff !important;width: 2rem !important;"><strong>{custLabel.Active_Accounts}</strong></td>
+                                    <template for:each={emptyRow} for:item="empty">
+                                        <td style="background: #f3f3f3 !important;" scope="col" key={empty}>{empty}</td>
+                                    </template>
+                                    <td style="background: #f3f3f3 !important;" scope="col"></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix">{custLabel.Greater_than_01}</td>
+                                    <template for:each={greaterThan0} for:item="item"> 
+                                        <td key={item} style="text-align:left;" class={item.class}>
+                                            <lightning-formatted-number value={item.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                        </td>                
+                                    </template>
+                                    <td></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix">{custLabel.Greater_than_500_USD} {greaterThan500Currency}</td>
+                                    <template for:each={greaterThan500} for:item="item"> 
+                                        <td key={item} style="text-align:left;" class={item.class}>
+                                            <lightning-formatted-number value={item.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                        </td>               
+                                    </template>
+                                    <td></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix headerRow" style="background: #dbe7ff !important;width: 2rem !important;"><strong>{custLabel.Visits}</strong></td>
+                                    <template for:each={emptyRow} for:item="empty">
+                                        <td style="background: #f3f3f3 !important;" scope="col" key={empty}>{empty}</td>
+                                    </template>
+                                    <td style="background: #f3f3f3 !important;" scope="col"></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix">{custLabel.Direct_Digital}</td>
+                                    <template for:each={dVisits} for:item="item"> 
+                                        <td key={item} style="text-align:left;" class={item.class}>
+                                            <lightning-formatted-number value={item.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                        </td>                 
+                                    </template>
+                                    <td></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix">{custLabel.Accounts_Visited}</td>
+                                    <template for:each={accountsVisitedLst} for:item="item"> 
+                                        <td key={item} style="text-align:left;" class={item.class}>
+                                            <lightning-formatted-number value={item.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                        </td>                 
+                                    </template>
+                                    <td></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix">{custLabel.Days_in_Field}</td>
+                                    <template for:each={uniqueDaysCount} for:item="item"> 
+                                        <td key={item} style="text-align:left;" class={item.class}>
+                                            <lightning-formatted-number value={item.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                        </td>                
+                                    </template>
+                                    <td></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix" style="background: #dbe7ff !important;width: 2rem !important;"><strong>{custLabel.Prospection_Rate_A3_B3_C3}</strong></td>
+                                    <template for:each={emptyRow} for:item="empty">
+                                        <td style="background: #f3f3f3 !important;" scope="col" key={empty}>{empty}</td>
+                                    </template>
+                                    <td style="background: #f3f3f3 !important;" scope="col"></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix">{custLabel.Visits_A3_B3_C3}</td>
+                                    <template for:each={visitsA3} for:item="item"> 
+                                        <td key={item} style="text-align:left;" class={item.class}>{item.value}</td>               
+                                    </template>
+                                    <td></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td class="fix">{custLabel.Accounts_Visited_A3_B3_C3}</td>
+                                    <template for:each={accsVisitedA3} for:item="item"> 
+                                        <td key={item} style="text-align:left;" class={item.class}>
+                                            <lightning-formatted-number value={item.value} maximum-fraction-digits="0" ></lightning-formatted-number>
+                                        </td>               
+                                    </template>
+                                    <td></td>
+                                </tr>            
+                            </tbody>
+                        </table>       
+                    </div>
+				</div>
+            </div>
+        </div>
+    </div>
+</template>

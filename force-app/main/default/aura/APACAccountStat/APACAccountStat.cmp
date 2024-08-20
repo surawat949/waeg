@@ -1,0 +1,855 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" 
+                access="global"
+                description="APACSalesTabStatistic"
+                controller="APACSalesTabController">
+
+    <aura:attribute name="accountId" type="String" />
+    <aura:attribute name="account" type="Account" />
+    <aura:attribute name="activeSections" type="List" />
+    <aura:attribute name="sales" type="Object" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="relatedDataList" type="QvRelatedAccountSales[]" />
+    <aura:attribute name="relatedDataListLY" type="QvRelatedAccountSales[]" />
+    <aura:attribute name="relatedDataListCYvsLY" type="QvRelatedAccountSales[]" />
+    <!--<aura:attribute name="accountFields" type="String[]" default="['AnnualRevenue', 'Potential__c', 'Share_of_Wallet__c', 'First_Competitor_global_name__c', 'First_Competitor_local_name__c', 'First_Competitor_SOW__c', 'Second_Competitor_global_name__c', 'Second_Competitor_Local_Name__c', 'Second_Competitor_SOW__c']" />-->
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <ltng:require scripts="{!join(',',
+        $Resource.chartjs2 + '/Chart.min.js',
+        $Resource.chartjs2 + '/Chart.bundle.min.js')}"
+        styles="{!$Resource.chartjs2 + '/Chart.min.css'}" />
+
+    <div class="slds-theme_default slds-box">
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACSalesStatLensSupplier}</span>
+                </button>
+            </h3>
+        	<lightning:recordEditForm recordId="{!v.recordId}" objectApiName="Account" onsuccess="{!c.handleSuccess}">
+            	<div class="slds-grid slds-grid_align-space slds-m-top_medium">
+                <!--<div class="slds-col slds-size_1-of-1"><lightning:recordForm aura:id="accountForm" recordId="{!v.recordId}" objectApiName="Account" fields="{!v.accountFields}" columns="3" mode="view" density="auto" /></div>-->
+                <!-- Below code amend to not allow for First competitor global not allow to editable -->
+                	<div class="slds-col slds-size_1-of-3">
+                        <lightning:inputField fieldName="Potential__c" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning:outputField fieldName="AnnualRevenue" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning:outputField fieldName="Share_of_Wallet__c" />
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid_align-space slds-m-top_small">
+                	<div class="slds-col slds-size_1-of-3">
+                        <lightning:outputField fieldName="First_Competitor_global_name__c" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning:inputField fieldName="First_Competitor_local_name__c" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning:inputField fieldName="First_Competitor_SOW__c" />
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid_align-space slds-m-top_small">
+                	<div class="slds-col slds-size_1-of-3">
+                        <lightning:outputField fieldName="Second_Competitor_global_name__c" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning:inputField fieldName="Second_Competitor_Local_Name__c" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning:inputField fieldName="Second_Competitor_SOW__c" />
+                    </div>
+                </div>
+                <div class="slds-grid slds-grid_align-space slds-m-top_small slds-m-bottom_small">
+                	<div class="slds-col slds-size_1-of-3">&nbsp;</div>
+                    <div class="slds-col slds-size_2-of-3">
+                        <lightning:button variant="brand" type="submit" label="Save" />
+                    </div>
+                </div>
+            </lightning:recordEditForm>
+        <br/>
+        <div class="slds-scrollable_x" style="width:100%">
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APAC_AccountSalesFiscalYearLabel}</span>
+                </button>
+            </h3>
+
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><canvas aura:id="chartSales" id="myChart" height="80"></canvas></div>
+                <div class="slds-col slds-size_1-of-2"><canvas aura:id="chartSales0" id="myChart" height="80"></canvas></div>
+            </div>
+            <br/>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer" >
+                <thead>
+                    <tr>
+                        <td>{!$Label.c.NetSalesHeader}</td>
+                        <td>APR</td>
+                        <td>MAY</td>
+                        <td>JUN</td>
+                        <td>JUL</td>
+                        <td>AUG</td>
+                        <td>SEP</td>
+                        <td>OCT</td>
+                        <td>NOV</td>
+                        <td>DEC</td>
+                        <td>JAN</td>
+                        <td>FEB</td>
+                        <td>MAR</td>
+                        <td>TOTAL</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="slds-text-title_caps">
+                        <th>{!$Label.c.LastFiscalYear}</th>
+                        <td><lightning:formattedNumber value="{!v.sales.AprSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MaySalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JunSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JulSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.AugSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.SepSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.OctSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.NovSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.DecSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JanSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.FebSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MarSalesLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.TotalSalesLY}" maximumFractionDigits="0"/></td>
+                    </tr>
+                    <tr class="slds-text-title_caps">
+                        <th>{!$Label.c.CurrentFiscalYear}</th>
+                        <td><lightning:formattedNumber value="{!v.sales.AprSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MaySales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JunSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JulSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.AugSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.SepSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.OctSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.NovSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.DecSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JanSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.FebSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MarSales}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.TotalSales}" maximumFractionDigits="0"/></td>
+                    </tr>
+                    <tr class="slds-text-title_caps">
+                        <th>FORECAST</th>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_April_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_May_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_June_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_July_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_August_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="sdls-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_September_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_October_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_November_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_December_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_January_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_February_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!v.sales.account.Budget_March_Current_Year__c}" maximumFractionDigits="0" /></div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate">
+                            <lightning:formattedNumber value="{!v.sales.account.Budget_April_Current_Year__c +
+                                v.sales.account.Budget_May_Current_Year__c +
+                            v.sales.account.Budget_June_Current_Year__c +
+                            v.sales.account.Budget_July_Current_Year__c +
+                            v.sales.account.Budget_August_Current_Year__c +
+                            v.sales.account.Budget_September_Current_Year__c +
+                            v.sales.account.Budget_October_Current_Year__c +
+                            v.sales.account.Budget_November_Current_Year__c +
+                            v.sales.account.Budget_December_Current_Year__c +
+                            v.sales.account.Budget_January_Current_Year__c +
+                            v.sales.account.Budget_February_Current_Year__c +
+                            v.sales.account.Budget_March_Current_Year__c}"
+                                maximumFractionDigits="0" />
+                        </div></td>
+                    </tr>
+                    <tr class="slds-text-title_caps">
+                        <th>CY VS FORECAST</th>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_April_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.AprSales/v.sales.account.Budget_April_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_May_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.MaySales/v.sales.account.Budget_May_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_June_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.JunSales/v.sales.account.Budget_June_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="sdls-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_July_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.JulSales/v.sales.account.Budget_July_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_August_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.AugSales/v.sales.account.Budget_August_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_September_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.SepSales/v.sales.account.Budget_September_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-trundate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_October_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.OctSales/v.sales.account.Budget_October_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_November_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.NovSales/v.sales.account.Budget_November_Current_Year__c)*100}" maximumFractionDigits="0"/></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_December_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.DecSales/v.sales.account.Budget_December_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_January_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.JanSales/v.sales.account.Budget_January_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_February_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.FebSales/v.sales.account.Budget_February_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><aura:if isTrue="{!not(empty(v.sales.account.Budget_March_Current_Year__c))}"><lightning:formattedNumber value="{!(v.sales.MarSales/v.sales.account.Budget_March_Current_Year__c)*100}" maximumFractionDigits="0" /></aura:if>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate">
+                            <lightning:formattedNumber value="{!(v.sales.TotalSales/
+                                (v.sales.account.Budget_April_Current_Year__c+v.sales.account.Budget_May_Current_Year__c+
+                                v.sales.account.Budget_June_Current_Year__c+v.sales.account.Budget_July_Current_Year__c+
+                                v.sales.account.Budget_August_Current_Year__c+v.sales.account.Budget_September_Current_Year__c+
+                                v.sales.account.Budget_October_Current_Year__c+v.sales.account.Budget_November_Current_Year__c+
+                                v.sales.account.Budget_December_Current_Year__c+v.sales.account.Budget_January_Current_Year__c+
+                                v.sales.account.Budget_February_Current_Year__c+v.sales.account.Budget_March_Current_Year__c))*100}"
+                            maximumFractionDigits="0" />
+                        %</div></td>
+                    </tr>
+                    <tr class="slds-text-title_caps">
+                        <th>CY VS LY (%)</th>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.AprSales/v.sales.AprSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.MaySales/v.sales.MaySalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.JunSales/v.sales.JunSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.JulSales/v.sales.JulSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.AugSales/v.sales.AugSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.SepSales/v.sales.SepSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.OctSales/v.sales.OctSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.NovSales/v.sales.NovSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.DecSales/v.sales.DecSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.JanSales/v.sales.JanSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.FebSales/v.sales.FebSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.MarSales/v.sales.MarSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                        <td class="slds-cell-wrap"><div class="slds-truncate"><lightning:formattedNumber value="{!(v.sales.TotalSales/v.sales.TotalSalesLY)*100}" maximumFractionDigits="0"/>%</div></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer" >
+                <thead>
+                    <tr>
+                        <td>{!$Label.c.VolumesHeader}</td>
+                        <td>APR</td>
+                        <td>MAY</td>
+                        <td>JUN</td>
+                        <td>JUL</td>
+                        <td>AUG</td>
+                        <td>SEP</td>
+                        <td>OCT</td>
+                        <td>NOV</td>
+                        <td>DEC</td>
+                        <td>JAN</td>
+                        <td>FEB</td>
+                        <td>MAR</td>
+                        <td>TOTAL</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="slds-text-title_caps">
+                        <th>{!$Label.c.LastFiscalYear}</th>
+                        <td><lightning:formattedNumber value="{!v.sales.AprQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MayQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JunQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JulQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.AugQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.SepQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.OctQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.NovQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.DecQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JanQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.FebQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MarQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.TotalQtyLY}" maximumFractionDigits="0"/></td>
+                    </tr>
+                    <tr class="slds-text-title_caps">
+                        <th>{!$Label.c.CurrentFiscalYear}</th>
+                        <td><lightning:formattedNumber value="{!v.sales.AprQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MayQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JunQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JulQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.AugQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.SepQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.OctQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.NovQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.DecQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JanQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.FebQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MarQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.TotalQty}" maximumFractionDigits="0"/></td>
+                    </tr>
+                    <tr class="slds-text-title_caps">
+                        <th>CY VS LY (%)</th>
+                        <td><lightning:formattedNumber value="{!(v.sales.AprQty/v.sales.AprQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.MayQty/v.sales.MayQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.JunQty/v.sales.JunQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.JulQty/v.sales.JulQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.AugQty/v.sales.AugQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.SepQty/v.sales.SepQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.OctQty/v.sales.OctQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.NovQty/v.sales.NovQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.DecQty/v.sales.DecQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.JanQty/v.sales.JanQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.FebQty/v.sales.FebQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.MarQty/v.sales.MarQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.TotalQty/v.sales.TotalQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer" >
+                <thead>
+                    <tr>
+                        <td>{!$Label.c.AverageSalesPriceHeader}</td>
+                        <td>APR</td>
+                        <td>MAY</td>
+                        <td>JUN</td>
+                        <td>JUL</td>
+                        <td>AUG</td>
+                        <td>SEP</td>
+                        <td>OCT</td>
+                        <td>NOV</td>
+                        <td>DEC</td>
+                        <td>JAN</td>
+                        <td>FEB</td>
+                        <td>MAR</td>
+                        <td>TOTAL</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="slds-text-title_caps">
+                        <th>{!$Label.c.LastFiscalYear}</th>
+                        <td><lightning:formattedNumber value="{!v.sales.AprSalesLY/v.sales.AprQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MaySalesLY/v.sales.MayQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JunSalesLY/v.sales.JunQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JulSalesLY/v.sales.JulQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.AugSalesLY/v.sales.AugQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.SepSalesLY/v.sales.SepQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.OctSalesLY/v.sales.OctQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.NovSalesLY/v.sales.NovQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.DecSalesLY/v.sales.DecQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JanSalesLY/v.sales.JanQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.FebSalesLY/v.sales.FebQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MarSalesLY/v.sales.MarQtyLY}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.TotalSalesLY/v.sales.TotalQtyLY}" maximumFractionDigits="0"/></td>
+                    </tr>
+                    <tr class="slds-text-title_caps">
+                        <th>{!$Label.c.CurrentFiscalYear}</th>
+                        <td><lightning:formattedNumber value="{!v.sales.AprSales/v.sales.AprQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MaySales/v.sales.MayQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JunSales/v.sales.JunQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JulSales/v.sales.JulQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.AugSales/v.sales.AugQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.SepSales/v.sales.SepQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.OctSales/v.sales.OctQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.NovSales/v.sales.NovQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.DecSales/v.sales.DecQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.JanSales/v.sales.JanQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.FebSales/v.sales.FebQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.MarSales/v.sales.MarQty}" maximumFractionDigits="0"/></td>
+                        <td><lightning:formattedNumber value="{!v.sales.TotalSales/v.sales.TotalQty}" maximumFractionDigits="0"/></td>
+                    </tr>
+                    <tr class="slds-text-title_caps">
+                        <td>CY VS LY (%)</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.AprSales/v.sales.AprQty)/(v.sales.AprSalesLY/v.sales.AprQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.MaySales/v.sales.MayQty)/(v.sales.MaySalesLY/v.sales.MayQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.JunSales/v.sales.JunQty)/(v.sales.JunSalesLY/v.sales.JunQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.JulSales/v.sales.JulQty)/(v.sales.JulSalesLY/v.sales.JulQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.AugSales/v.sales.AugQty)/(v.sales.AugSalesLY/v.sales.AugQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.SepSales/v.sales.SepQty)/(v.sales.SepSalesLY/v.sales.SepQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.OctSales/v.sales.OctQty)/(v.sales.OctSalesLY/v.sales.OctQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.NovSales/v.sales.NovQty)/(v.sales.NovSalesLY/v.sales.NovQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.DecSales/v.sales.DecQty)/(v.sales.DecSalesLY/v.sales.DecQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.JanSales/v.sales.JanQty)/(v.sales.JanSalesLY/v.sales.JanQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.FebSales/v.sales.FebQty)/(v.sales.FebSalesLY/v.sales.FebQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.MarSales/v.sales.MarQty)/(v.sales.MarSalesLY/v.sales.MarQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                        <td><lightning:formattedNumber value="{!(v.sales.TotalSales/v.sales.TotalQty)/(v.sales.TotalSalesLY/v.sales.TotalQtyLY)*100}" maximumFractionDigits="0"/>%</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-1"><span>&nbsp;</span></div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-scrollable_x" style="width:100">
+                <lightning:accordion allowMultipleSectionsOpen="true" 
+                    onsectiontoggle="{!c.handleSectionToggle }"
+                    activeSectionName="{!v.activeSections }">
+                        <lightning:accordionSection name="CalendarSales" label="{!$Label.c.APAC_AccountSalesCalendarYearLabel}">             
+                            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APAC_AccountSalesCalendarYearLabel}</span>
+                                </button>
+                            </h3>
+                            
+                            <div class="slds-grid">
+                                <div class="slds-col slds-size_1-of-2"><canvas aura:id="chartSalesC" id="myChart" height="80"></canvas></div>
+                                <div class="slds-col slds-size_1-of-2"><canvas aura:id="chartSalesC1" id="myChart" height="80"></canvas></div>
+                            </div>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer" >
+                                <thead>
+                                    <tr class="slds-text-title_caps">
+                                        <th>{!$Label.c.CalendarYearNetSales}</th>
+                                        <th>JAN</th>
+                                        <th>FEB</th>
+                                        <th>MAR</th>
+                                        <th>APR</th>
+                                        <th>MAY</th>
+                                        <th>JUN</th>
+                                        <th>JUL</th>
+                                        <th>AUG</th>
+                                        <th>SEP</th>
+                                        <th>OCT</th>
+                                        <th>NOV</th>
+                                        <th>DEC</th>
+                                        <th>TOTAL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="slds-text-title_caps">
+                                        <td>{!$Label.c.LastCalendarlYear}</td>
+                                        <td><lightning:formattedNumber value="{!v.sales.janSalesN2}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.febSalesN2}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.marSalesN2}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.AprSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.MaySalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.JunSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.JulSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.AugSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.SepSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.OctSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.NovSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.DecSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.TotalCalendarSalesLY}" maximumFractionDigits="0" /></td>
+                                    </tr>
+                                    <tr class="slds-text-title_caps">
+                                        <td>{!$Label.c.CurrentCalendarYear}</td>
+                                        <td><lightning:formattedNumber value="{!v.sales.JanSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.FebSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.MarSalesLY}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.AprSales}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.MaySales}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.JunSales}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.JulSales}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.AugSales}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.SepSales}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.OctSales}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.NovSales}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.DecSales}" maximumFractionDigits="0" /></td>
+                                        <td><lightning:formattedNumber value="{!v.sales.TotalCalendarSales}" maximumFractionDigits="0" /></td>
+                                    </tr>
+                                    <tr class="slds-text-title-caps">
+                                        <td>CY VS LY (%)</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.JanSalesLY/v.sales.janSalesN2)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.FebSalesLY/v.sales.febSalesN2)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.MarSalesLY/v.sales.marSalesN2)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.AprSales/v.sales.AprSalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.MaySales/v.sales.MaySalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.JunSales/v.sales.JunSalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.JulSales/v.sales.JulSalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.AugSales/v.sales.AugSalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.SepSales/v.sales.SepSalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.OctSales/v.sales.OctSalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.NovSales/v.sales.NovSalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.DecSales/v.sales.DecSalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                        <td><lightning:formattedNumber value="{!(v.sales.TotalCalendarSales/v.sales.TotalCalendarSalesLY)*100}" maximumFractionDigits="0" />%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        <br/>
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer" >
+                            <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th>{!$Label.c.CalendarYearVolumes}</th>
+                                    <th>JAN</th>
+                                    <th>FEB</th>
+                                    <th>MAR</th>
+                                    <th>APR</th>
+                                    <th>MAY</th>
+                                    <th>JUN</th>
+                                    <th>JUL</th>
+                                    <th>AUG</th>
+                                    <th>SEP</th>
+                                    <th>OCT</th>
+                                    <th>NOV</th>
+                                    <th>DEC</th>
+                                    <th>TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="slds-text-title_caps">
+                                    <td>{!$Label.c.LastCalendarlYear}</td>
+                                    <td><lightning:formattedNumber value="{!v.sales.janQtyN2}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.febQtyN2}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.marQtyN2}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.AprQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.MayQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JunQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JulQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.AugQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.SepQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.OctQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.NovQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.DecQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.TotalCalendarQtyLY}" maximumFractionDigits="0" /></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td>{!$Label.c.CurrentCalendarYear}</td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JanQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.FebQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.MarQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.AprQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.MayQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JunQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JulQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.AugQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.SepQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.OctQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.NovQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.DecQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.TotalCalendarQty}" maximumFractionDigits="0" /></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td>CY VS LY (%)</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.JanQtyLY/v.sales.janQtyN2)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.FebQtyLY/v.sales.febQtyN2)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.MarQtyLY/v.sales.marQtyN2)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.AprQty/v.sales.AprQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.MayQty/v.sales.MayQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.JunQty/v.sales.JunQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.JulQty/v.sales.JulQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.AugQty/v.sales.AugQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.SepQty/v.sales.SepQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.OctQty/v.sales.OctQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.NovQty/v.sales.NovQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.DecQty/v.sales.DecQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!(v.sales.TotalCalendarQty/v.sales.TotalCalendarQtyLY)*100}" maximumFractionDigits="0" />%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer" >
+                            <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th>{!$Label.c.AverageSalesPriceHeader}</th>
+                                    <th>JAN</th>
+                                    <th>FEB</th>
+                                    <th>MAR</th>
+                                    <th>APR</th>
+                                    <th>MAY</th>
+                                    <th>JUN</th>
+                                    <th>JUL</th>
+                                    <th>AUG</th>
+                                    <th>SEP</th>
+                                    <th>OCT</th>
+                                    <th>NOV</th>
+                                    <th>DEC</th>
+                                    <th>TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="slds-text-title_caps">
+                                    <td>{!$Label.c.LastCalendarlYear}</td>
+                                    <td><lightning:formattedNumber value="{!v.sales.janSalesN2/v.sales.janQtyN2}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.febSalesN2/v.sales.febQtyN2}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.marSalesN2/v.sales.marQtyN2}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.AprSalesLY/v.sales.AprQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.MaySalesLY/v.sales.MayQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JunSalesLY/v.sales.JunQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JulSalesLY/v.sales.JulQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.AugSalesLY/v.sales.AugQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.SepSalesLY/v.sales.SepQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.OctSalesLY/v.sales.OctQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.NovSalesLY/v.sales.NovQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.DecSalesLY/v.sales.DecQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.TotalCalendarSalesLY/v.sales.TotalCalendarQtyLY}" maximumFractionDigits="0" /></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td>{!$Label.c.CurrentCalendarYear}</td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JanSalesLY/v.sales.JanQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.FebSalesLY/v.sales.FebQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.MarSalesLY/v.sales.MarQtyLY}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.AprSales/v.sales.AprQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.MaySales/v.sales.MayQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JunSales/v.sales.JunQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.JulSales/v.sales.JulQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.AugSales/v.sales.AugQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.SepSales/v.sales.SepQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.OctSales/v.sales.OctQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.NovSales/v.sales.NovQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.DecSales/v.sales.DecQty}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.TotalCalendarSales/v.sales.TotalCalendarQty}" maximumFractionDigits="0" /></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td>CY VS LY (%)</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.JanSalesLY/v.sales.JanQtyLY)/(v.sales.janSalesN2/v.sales.janQtyN2))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.FebSalesLY/v.sales.FebQtyLY)/(v.sales.febSalesN2/v.sales.janQtyN2))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.MarSalesLY/v.sales.MarQtyLY)/(v.sales.marSalesN2/v.sales.marQtyN2))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.AprSales/v.sales.AprQty)/(v.sales.AprSalesLY/v.sales.AprQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.MaySales/v.sales.MayQty)/(v.sales.MaySalesLY/v.sales.MayQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.JunSales/v.sales.JunQty)/(v.sales.JunSalesLY/v.sales.JunQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.JulSales/v.sales.JulQty)/(v.sales.JulSalesLY/v.sales.JulQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.AugSales/v.sales.AugQty)/(v.sales.AugSalesLY/v.sales.AugQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.SepSales/v.sales.SepQty)/(v.sales.SepSalesLY/v.sales.SepQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.OctSales/v.sales.OctQty)/(v.sales.OctSalesLY/v.sales.OctQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.NovSales/v.sales.NovQty)/(v.sales.NovSalesLY/v.sales.NovQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.DecSales/v.sales.DecQty)/(v.sales.DecSalesLY/v.sales.DecQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.sales.TotalCalendarSales/v.sales.TotalCalendarQty)/(v.sales.TotalCalendarSalesLY/v.sales.TotalCalendarQtyLY))*100}" maximumFractionDigits="0" />%</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        
+                </lightning:accordionSection>
+            </lightning:accordion>
+            </div>
+        </div>
+        <div class="slds-gird slds-gutters">
+            <div class="slds-col slds-size_1-of-1"><span>&nbsp;</span></div>
+        </div>
+        <!--
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-4">Target List</div>
+            <div class="slds-col slds-size_1-of-4">
+                <aura:if isTrue="{!v.account.Target_List__c == TRUE}">
+                    <lightning:input type="checkbox" disabled="true" checked="true" />
+                <aura:set attribute="else">
+                    <lightning:input type="checkbox" disabled="true" checked="false"/>
+                </aura:set>
+                </aura:if>
+            </div>
+            <div class="slds-col slds-size_1-of-4">Annual Revenue</div>
+            <div class="slds-col slds-size_1-of-4">{!v.account.CurrencyIsoCode}&nbsp;<lightning:formattedNumber value="{!v.account.AnnualRevenue}" maximumFractionDigits="0" /></div>
+        </div>
+        <div class="slds-gird slds-gutters">
+            <div class="slds-col slds-size_1-of-1"><span>&nbsp;</span></div>
+        </div>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-4">Segmentation Box Pre-Covid</div>
+            <div class="slds-col slds-size_1-of-4">{!v.account.Segmentation_Box__c}</div>
+            <div class="slds-col slds-size_1-of-4">Sales Total Last Year</div>
+            <div class="slds-col slds-size_1-of-4">{!v.account.CurrencyIsoCode}&nbsp;<lightning:formattedNumber value="{!v.account.Sales_Total_Last_Year__c}" maximumFractionDigits="0" /></div>
+        </div>
+        <div class="slds-gird slds-gutters">
+            <div class="slds-col slds-size_1-of-1"><span>&nbsp;</span></div>
+        </div>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-4">Manual Segmentation</div>
+            <div class="slds-col slds-size_1-of-4">{!v.account.Manual_Segment__c}</div>
+            <div class="slds-col slds-size_1-of-4">Sales Total Current Year</div>
+            <div class="slds-col slds-size_1-of-4">{!v.account.CurrencyIsoCode}&nbsp;<lightning:formattedNumber value="{!v.account.Sales_Total_Current_Year__c}" maximumFractionDigits="0" /></div>
+        </div>
+        <div class="slds-gird slds-gutters">
+            <div class="slds-col slds-size_1-of-1"><span>&nbsp;</span></div>
+        </div>
+        <div class="slds-grid slds-gutters slds-border_bottom">
+            <div class="slds-col slds-size_1-of-4">Strategic Value</div>
+            <div class="slds-col slds-size_1-of-4">{!v.account.CurrencyIsoCode}&nbsp;<lightning:formattedNumber value="{!v.account.Potential__c}" maximumFractionDigits="0" /></div>
+            <div class="slds-col slds-size_1-of-4">Share of Wallet (3 Months basis)</div>
+            <div class="slds-col slds-size_1-of-4">{!v.account.CurrencyIsoCode}&nbsp;<lightning:formattedNumber value="{!v.account.Share_of_Wallet__c}" maximumFractionDigits="0" /></div>
+        </div>-->
+        <!-- Multi shop sales -->
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a" style="padding-bottom:40px;">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APAC_AccountSalesMultiShopLabel}</span>
+            </button>
+        </h3>
+        <div class="slds-grid" style="padding-bottom: 40px;">
+            <div class="slds-col slds-size_1-of-2"><canvas aura:id="relatedChartSales" id="relatedChartSal" height="80"></canvas></div>
+            <div class="slds-col slds-size_1-of-2"><canvas aura:id="relatedChartVolumes" id="relatedChartVol" height="80"></canvas></div>
+        </div>
+
+        <div class="slds-scrollable_x" style="width:100%">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer" >
+                <!-- Sales TABLE-->
+                    <thead>
+                        <tr>
+                            <th>{!$Label.c.NetSalesHeader}</th>
+                            <th>APR</th>
+                            <th>MAY</th>
+                            <th>JUN</th>
+                            <th>JUL</th>
+                            <th>AUG</th>
+                            <th>SEP</th>
+                            <th>OCT</th>
+                            <th>NOV</th>
+                            <th>DEC</th>
+                            <th>JAN</th>
+                            <th>FEB</th>
+                            <th>MAR</th>
+                            <th>TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.relatedDataList}" var="sal">
+                            <!-- Account + related shops + total -->
+                            <aura:if isTrue="{!sal.type=='sales'}">
+                                <tr class="slds-text-title_caps">
+                                    <td><lightning:formattedUrl value="{!'/'+sal.accountId}" label="{!sal.hoya_account_id}" target="_blank"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.april}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.may}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.june}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.july}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.august}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.september}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.october}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.november}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.december}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.january}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.february}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.march}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td>
+                                        <aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">
+                                            -
+                                            <aura:set attribute="else">
+                                                <lightning:formattedNumber value="{!sal.april+sal.may+sal.june+sal.july+sal.august+sal.september+sal.october+sal.november+sal.december+sal.january+sal.february+sal.march}" maximumFractionDigits="0"/>
+                                            </aura:set>
+                                        </aura:if>
+                                    </td>
+                                </tr>
+                            </aura:if>
+                        </aura:iteration>
+                        <tr class="slds-text-title_caps"><td colspan="14">&nbsp;</td></tr>
+                        <aura:iteration items="{!v.relatedDataListLY}" var="sal">
+                            <!-- Account + related shops + total -->
+                            <aura:if isTrue="{!sal.type=='sales'}">
+                                <tr class="slds-text-title_caps">
+                                    <td><lightning:formattedUrl value="{!'/'+sal.accountId}" label="{!sal.hoya_account_id}" target="_blank"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.april}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.may}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.june}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.july}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.august}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.september}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.october}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.november}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.december}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.january}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.february}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td><lightning:formattedNumber value="{!sal.march}" maximumFractionDigits="0"/><aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">%</aura:if></td>
+                                    <td>
+                                        <aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">
+                                            -
+                                            <aura:set attribute="else">
+                                                <lightning:formattedNumber value="{!sal.april+sal.may+sal.june+sal.july+sal.august+sal.september+sal.october+sal.november+sal.december+sal.january+sal.february+sal.march}" maximumFractionDigits="0"/>
+                                            </aura:set>
+                                        </aura:if>
+                                    </td>
+                                </tr>
+                            </aura:if>
+                        </aura:iteration>
+                        <tr class="slds-text-title_caps"><td colspan="14">&nbsp;</td></tr>
+                        <aura:iteration items="{!v.relatedDataListCYvsLY}" var="sal">
+                            <!-- Account + related shops + total -->
+                            <aura:if isTrue="{!sal.type=='sales'}">
+                                <tr class="slds-text-title_caps">
+                                    <td><lightning:formattedUrl value="{!'/'+sal.accountId}" label="{!sal.hoya_account_id}" target="_blank"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.april}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.may}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.june}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.july}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.august}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.september}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.october}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.november}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.december}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.january}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.february}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.march}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.total}" maximumFractionDigits="0"/>%</td>
+                                </tr>
+                            </aura:if>
+                        </aura:iteration>
+                    </tbody>
+                    <tr><td colspan="13" style="padding-top:40px;"></td></tr>
+                    <thead>
+                        <tr>
+                            <th>{!$Label.c.VolumesHeader}</th>
+                            <th>APR</th>
+                            <th>MAY</th>
+                            <th>JUN</th>
+                            <th>JUL</th>
+                            <th>AUG</th>
+                            <th>SEP</th>
+                            <th>OCT</th>
+                            <th>NOV</th>
+                            <th>DEC</th>
+                            <th>JAN</th>
+                            <th>FEB</th>
+                            <th>MAR</th>
+                            <th>TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.relatedDataList}" var="sal">
+                            <!-- Account + related shops + total -->
+                            <aura:if isTrue="{!sal.type=='volume'}">
+                                <tr class="slds-text-title_caps">
+                                    <td><lightning:formattedUrl value="{!'/'+sal.accountId}" label="{!sal.hoya_account_id}" target="_blank"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.april}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.may}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.june}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.july}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.august}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.september}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.october}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.november}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.december}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.january}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.february}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.march}" maximumFractionDigits="0"/></td>
+                                    <td>
+                                        <aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">
+                                            -
+                                            <aura:set attribute="else">
+                                                <lightning:formattedNumber value="{!sal.april+sal.may+sal.june+sal.july+sal.august+sal.september+sal.october+sal.november+sal.december+sal.january+sal.february+sal.march}" maximumFractionDigits="0"/>
+                                            </aura:set>
+                                        </aura:if>
+                                    </td>
+                                </tr>
+                            </aura:if>
+                        </aura:iteration>
+                        <tr class="slds-text-title_caps"><td colspan="14">&nbsp;</td></tr>
+                        <aura:iteration items="{!v.relatedDataListLY}" var="sal">
+                            <!-- Account + related shops + total -->
+                            <aura:if isTrue="{!sal.type=='volume'}">
+                                <tr class="slds-text-title_caps">
+                                    <td><lightning:formattedUrl value="{!'/'+sal.accountId}" label="{!sal.hoya_account_id}" target="_blank"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.april}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.may}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.june}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.july}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.august}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.september}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.october}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.november}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.december}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.january}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.february}" maximumFractionDigits="0"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.march}" maximumFractionDigits="0"/></td>
+                                    <!--td><lightning:formattedNumber value="{!sal.total}" maximumFractionDigits="0"/>%</td-->
+                                    <td>
+                                        <aura:if isTrue="{!sal.hoya_account_id=='CFY vs LFY'}">
+                                            -
+                                            <aura:set attribute="else">
+                                                <lightning:formattedNumber value="{!sal.april+sal.may+sal.june+sal.july+sal.august+sal.september+sal.october+sal.november+sal.december+sal.january+sal.february+sal.march}" maximumFractionDigits="0"/>
+                                            </aura:set>
+                                        </aura:if>
+                                    </td>
+                                </tr>
+                            </aura:if>
+                        </aura:iteration>
+                        <tr class="slds-text-title_caps"><td colspan="14">&nbsp;</td></tr>
+                        <aura:iteration items="{!v.relatedDataListCYvsLY}" var="sal">
+                            <!-- Account + related shops + total -->
+                            <aura:if isTrue="{!sal.type=='volume'}">
+                                <tr class="slds-text-title_caps">
+                                    <td><lightning:formattedUrl value="{!'/'+sal.accountId}" label="{!sal.hoya_account_id}" target="_blank"/></td>
+                                    <td><lightning:formattedNumber value="{!sal.april}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.may}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.june}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.july}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.august}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.september}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.october}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.november}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.december}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.january}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.february}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.march}" maximumFractionDigits="0"/>%</td>
+                                    <td><lightning:formattedNumber value="{!sal.total}" maximumFractionDigits="0"/>%</td>
+                                </tr>
+                            </aura:if>
+                        </aura:iteration>
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</aura:component>

@@ -1,0 +1,40 @@
+<template>
+    <template if:true={companyOptions.length}>
+        <lightning-combobox
+            name="company"
+            label="Company"
+            options={companyOptions}
+            placeholder="Select Company"
+            onchange={handleCompanyChange}
+            disabled={isCompanyDisabled}>
+        </lightning-combobox>
+    </template>
+
+    <lightning-combobox
+        name="salesManager"
+        label="Sales Manager"
+        options={salesManagerOptions}
+        placeholder="Select Sales Manager"
+        onchange={handleSalesManagerChange}
+        value={selectedSalesManagerId}
+        disabled={isSalesManagerDisabled}>
+    </lightning-combobox>
+
+    <template if:true={isASM}>
+        <lightning-input
+            name="representative"
+            label="Representative"
+            value={currentUserName}
+            disabled>
+        </lightning-input>
+    </template>
+    <template if:false={isASM}>
+        <lightning-combobox
+            name="representative"
+            label="Representative"
+            options={representativeOptions}
+            placeholder="Select Representative"
+            disabled={isRepresentativeDisabled}>
+        </lightning-combobox>
+    </template>
+</template>

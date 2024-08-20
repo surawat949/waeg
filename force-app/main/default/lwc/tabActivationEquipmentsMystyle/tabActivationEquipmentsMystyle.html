@@ -1,0 +1,34 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+        <table class="slds-table slds-table_bordered" aria-label="MyStyle V+" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{customlabel.myStyle}</p></h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-var-m-left_xx-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{customlabel.myStyleLastUsage}</span>
+                    <div class="slds-form-element__static" >{lastUsageDate}</div>            
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{customlabel.myStyleLastTraining}</span>
+                    <div class="slds-form-element__static" >{lastTraningDate}</div>            
+                </div>   
+            </div>
+        </div>        
+        <br/>
+    </div>   
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+        <table class="slds-table slds-table_bordered" aria-label="MyStyle V+ Usage" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{customlabel.myStyleUsage}</p></h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+            <canvas class="chartMyStyle" height="250"></canvas>
+        </div>
+    </div> 
+</template>

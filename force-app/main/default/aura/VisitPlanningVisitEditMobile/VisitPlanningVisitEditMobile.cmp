@@ -1,0 +1,434 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:isUrlAddressable" 
+                access="global"
+                description="VisitPlanningVisitEditMobile"
+                controller="VisitPlanningController">
+    <ltng:require styles="{!$Resource.fullcalendar + '/fullcalendar.min.css'}"
+                scripts="{!join(',',
+                        $Resource.fullcalendar + '/jquery.min.js',
+                        $Resource.fullcalendar + '/moment.min.js',
+                        $Resource.fullcalendar + '/jquery-ui.min.js',
+                        $Resource.fullcalendar + '/fullcalendar.min.js',
+                        $Resource.fullcalendar + '/locale-all.js')}"
+                />
+
+    <lightning:navigation aura:id="navService"/>
+    <aura:attribute name="pageReference" type="Object"/>
+
+    <aura:attribute name="AccountId" type="String" />
+    <aura:attribute name="account" type="Account" />
+    <aura:attribute name="visit" type="Visits__c"/>
+    <aura:attribute name="translations" type="Object"/>
+    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="companyName" type="String"/>
+    <aura:attribute name="profileName" type="String"/>
+    <aura:attribute name="campaignId" type="String" />
+    <aura:attribute name="campaignName" type="String" />
+    <aura:attribute name="specificMkgSection" type="Boolean" default="false"/>
+    <aura:attribute name="contactSelectOptions" type="Object"/>
+    <aura:attribute name="objectiveSelectOptions" type="String[]"/>
+    <aura:attribute name="loaded" type="Boolean" default="false"/>
+
+    <aura:registerEvent name="decisionresult" type="c:DecisionResultEvent"/>
+    <aura:attribute name="picklists" type="Object"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:card>
+    <div>
+        <!--Creating visit for account {!v.AccountId}<br/> -->
+        
+        <header class="slds-modal__header">
+            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+               Visit
+                <aura:if isTrue="{!not(empty(v.visit.Id))}">
+                    <lightning:formattedUrl value="{!'/'+v.visit.Id}" label="{!v.visit.Name}" target="_blank"/>
+                </aura:if>
+            </h2>
+            <aura:if isTrue="{!v.message!= null}">
+                <ui:message title="Error" severity="error" closable="true">
+                    {!v.message}
+                </ui:message>
+            </aura:if>
+        </header>
+        {!v.account.Hoya_Account_ID__c}&nbsp;{!v.account.name}
+    </div>
+    <div>
+        <!-- <lightning:button variant="brand" label="{!$Label.c.Cancel}" onclick="{!c.backToVPM}"/> -->
+        <lightning:button variant="brand" label="{!$Label.c.Save}" onclick="{! c.handleSave }" disabled="{!v.saving}"/>
+    </div>
+
+    <div class="spinnerHolder">
+        <aura:if isTrue="{!v.loaded}">
+            <lightning:spinner alternativeText="Loading" />
+        </aura:if>
+    </div>
+
+    <fieldset class="slds-form-element">
+        <div class="slds-form-element__group">
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size_1-of-1">
+                    <ui:inputDateTime disabled="{!v.isdisabled}"
+                            class="slds-input"
+                            labelClass="slds-form-element__label"
+                            label="{!v.translations.Visits__c_Start_Time__c}"
+                            value="{!v.visit.Start_Time__c}"
+                            required="true"
+                            displayDatePicker="true"
+                            format="YYYY/MM/dd HH:mm"/>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size_1-of-1">
+                    <ui:inputDateTime disabled="{!v.isdisabled}"
+                            class="slds-input"
+                            labelClass="slds-form-element__label"
+                            label="{!v.translations.Visits__c_End_Time__c}"
+                            value="{!v.visit.End_Time__c}"
+                            required="true"
+                            displayDatePicker="true" />
+
+                    <lightning:input disabled="{!v.isdisabled}"
+                            label="{!v.translations.Visits__c_Is_All_Day_Event__c}"
+                            checked="{!v.visit.Is_All_Day_Event__c}"
+                            type="checkbox"/>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slds-form-element__group">
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size_1-of-1">
+                    <lightning:select disabled="{!v.isdisabled}"
+                        label="{!v.translations.Visits__c_Visit_Status__c}"
+                        required="true" aura:id="field"
+                        value="{!v.visit.Visit_Status__c}" >
+                        <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Status__c}" var="option">
+                            <option value="{!option.value}" text="{!option.label}"></option>
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size_1-of-1">
+                    <aura:if isTrue="{!v.companyName=='HLSH'}">
+                        <lightning:select disabled="{!v.isdisabled}"
+                                label="{!v.translations.Visits__c_HLSH_Visit_Type__c}"
+                                required="true" aura:id="field"
+                                value="{!v.visit.HLSH_Visit_Type__c}" >
+                            <aura:iteration items="{!v.translations.picklists.Visits__c_HLSH_Visit_Type__c}" var="option">
+                                <option value="{!option.value}" text="{!option.label}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    <aura:set attribute="else">
+                        <lightning:select disabled="{!v.isdisabled}"
+                                label="{!v.translations.Visits__c_Visit_Type__c}"
+                                required="true" aura:id="field"
+                                value="{!v.visit.Visit_Type__c}" >
+                            <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Type__c}" var="option">
+                                <option value="{!option.value}" text="{!option.label}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </aura:set>
+                    </aura:if>
+                    <lightning:input disabled="{!v.isdisabled}"
+                    label="{!v.translations.Visits__c_Visited_but_not_seen__c}"
+                    checked="{!v.visit.Visited_but_not_seen__c}"
+                    type="checkbox"/>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size_1-of-1">
+                    <aura:if isTrue="{!and(v.companyName!='HOLA',v.companyName!='HLCA')}">
+                        <!-- STANDARD GLOBAL FIELD -->
+                        <lightning:select disabled="{!v.isdisabled}"
+                                label="{!v.translations.Visits__c_Visit_Reason__c}"
+                                required="true" aura:id="field"
+                                value="{!v.visit.Visit_Reason__c}" 
+                                            >
+                            <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Reason__c}" var="option">
+                                <option value="{!option.value}" text="{!option.label}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </aura:if>
+                    <!--aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH'|| v.companyName=='HLSI'}">
+                       
+                        <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}">
+                            <lightning:select disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_SOC_VCC_Visit_Reason__c}"
+                                    required="true" aura:id="field"
+                                    value="{!v.visit.SOC_VCC_Visit_Reason__c}" 
+                                                >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_VCC_Visit_Reason__c}" var="option">
+                                    <option value="{!option.value}" text="{!option.label}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.profileName=='SOC Area Sales Manager ASM TSM'}">
+                            <lightning:select disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_SOC_Sales_Visit_Reason__c}"
+                                    required="true" aura:id="field"
+                                    value="{!v.visit.SOC_Sales_Visit_Reason__c}" 
+                                                >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_Sales_Visit_Reason__c}" var="option">
+                                    <option value="{!option.value}" text="{!option.label}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.profileName=='China Area Sales Manager ASM TSM' || v.profileName=='China Local System Administrator'}">
+                            <lightning:select disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_HLSH_Visit_Reason__c}"
+                                    required="true" aura:id="field"
+                                    value="{!v.visit.HLSH_Visit_Reason__c}" 
+                                                >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_HLSH_Visit_Reason__c}" var="option">
+                                    <option value="{!option.value}" text="{!option.label}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.companyName=='HLSI'}">
+                        
+                            <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_HLSI_Visit_Objective2__c}"
+                                    aura:id="multiSelectId"
+                                    value="{!v.visit.HLSI_Visit_Objective2__c}" 
+                                                >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_HLSI_Visit_Objective2__c}" var="option">
+                                    <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+                                </aura:iteration>
+                            </ui:inputSelect>
+                        </aura:if>
+                        
+                        <aura:set attribute="else">
+                            <aura:if isTrue="{!and(v.companyName!='HOLA',v.companyName!='HLCA')}">
+                               
+                                <lightning:select disabled="{!v.isdisabled}"
+                                        label="{!v.translations.Visits__c_Visit_Reason__c}"
+                                        required="true" aura:id="field"
+                                        value="{!v.visit.Visit_Reason__c}" 
+                                                    >
+                                    <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Reason__c}" var="option">
+                                        <option value="{!option.value}" text="{!option.label}"></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </aura:if>
+                        </aura:set>
+                    </aura:if-->
+                    <aura:if isTrue="{!or(v.companyName=='HOLA',v.companyName=='HLCA')}">
+                        <!-- specific hvna section -->
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size_1-of-1">
+                                <lightning:textarea disabled="{!v.isdisabled}"
+													maxlength="100"
+													label="Subject"
+													value="{!v.visit.HVNA_Subject__c}">
+											</lightning:textarea>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size_1-of-1">
+                                <lightning:select disabled="{!v.isdisabled}"
+                                    label="Visit Objective"
+                                     aura:id="field"
+                                    value="{!v.visit.HVNA_Visit_Objectives__c}" >
+                                    <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_HVNA_Visit_Objectives__c}" var="option">
+                                        <option value="{!option.value}" text="{!option.label}"></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size_1-of-1">
+                                <lightning:select disabled="{!v.isdisabled}"
+												label="Customer Goal"
+												 aura:id="field"
+												value="{!v.visit.HVNA_Customer_Goal__c}" >
+												<aura:iteration items="{!v.translations.picklists.Visits__c_Visit_HVNA_Customer_Goal__c}" var="option">
+													<option value="{!option.value}" text="{!option.label}"></option>
+												</aura:iteration>
+											</lightning:select>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size_1-of-1">
+								<lightning:select disabled="{!v.isdisabled}"
+                                    label="Appointment"
+                                     aura:id="field"
+                                    value="{!v.visit.HVNA_Appointment__c}" >
+                                    <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_HVNA_Appointment__c}" var="option">
+                                        <option value="{!option.value}" text="{!option.label}"></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </aura:if>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size_1-of-1">
+                    <lightning:textarea disabled="{!v.isdisabled}"
+                            label="{!v.translations.Visits__c_Visit_Notes__c}"
+                            value="{!v.visit.Visit_Notes__c}">
+                    </lightning:textarea>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size_1-of-1">
+                    <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+                            label="{!v.translations.Visits__c_Actions_executed__c}"
+                            aura:id="multiSelectId"
+                            value="{!v.visit.Actions_executed__c}" 
+                                        >
+                        <aura:iteration items="{!v.translations.picklists.Visits__c_Actions_executed__c}" var="option">
+                            <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+                        </aura:iteration>
+                    </ui:inputSelect>
+                    <!--aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH' || v.companyName=='HLSI'}">
+                        
+                        <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}">
+                            <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_SOC_VCC_Action_Exectued__c}"
+                                    aura:id="multiSelectId"
+                                    value="{!v.visit.SOC_VCC_Action_Exectued__c}" 
+                                                >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_VCC_Action_Exectued__c}" var="option">
+                                    <ui:inputSelectOption label="{!option.label}" text="{!option.value}" ></ui:inputSelectOption>
+                                </aura:iteration>
+                            </ui:inputSelect>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.profileName=='SOC Area Sales Manager ASM TSM'}">
+                            <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_SOC_Sales_Actions_executed__c}"
+                                    aura:id="multiSelectId"
+                                    value="{!v.visit.SOC_Sales_Actions_executed__c}" 
+                                                >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_Sales_Actions_executed__c}" var="option">
+                                    <ui:inputSelectOption label="{!option.label}" text="{!option.value}" ></ui:inputSelectOption>
+                                </aura:iteration>
+                            </ui:inputSelect>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.profileName=='China Area Sales Manager ASM TSM'|| v.profileName=='China Local System Administrator'|| v.profileName=='System Administrator'}">
+                            <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_HLSH_Action_Excecuted__c}"
+                                    aura:id="multiSelectId"
+                                    value="{!v.visit.HLSH_Action_Excecuted__c}" 
+                                                >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_HLSH_Action_Excecuted__c}" var="option">
+                                    <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+                                </aura:iteration>
+                            </ui:inputSelect>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.companyName=='HLSI'}">
+                        
+                            <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_HLSI_action_executed__c}"
+                                    aura:id="multiSelectId"
+                                    value="{!v.visit.HLSI_action_executed__c}" 
+                                                >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_HLSI_action_executed__c}" var="option">
+                                    <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+                                </aura:iteration>
+                            </ui:inputSelect>
+                        </aura:if>
+                        
+                        <aura:set attribute="else">
+                            <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_Actions_executed__c}"
+                                    aura:id="multiSelectId"
+                                    value="{!v.visit.Actions_executed__c}" 
+                                                >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_Actions_executed__c}" var="option">
+                                    <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+                                </aura:iteration>
+                            </ui:inputSelect>
+                        </aura:set>
+                    </aura:if-->
+                </div>
+            </div>
+            
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size_1-of-1">
+                    <lightning:select disabled="{!v.isdisabled}"
+                            label="{!v.translations.Visits__c_Call_To_Action__c}"
+                            required="false" aura:id="field"
+                                        value="{!v.visit.Call_To_Action__c}" >
+                        <aura:iteration items="{!v.translations.picklists.Visits__c_Call_To_Action__c}" var="option">
+                            <option value="{!option.value}" text="{!option.label}"></option>
+                        </aura:iteration>
+                    </lightning:select>
+                    <!--aura:if isTrue="{!v.companyName=='SOC' || v.companyName == 'HLSI'}">
+                        
+                        <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}">
+                            <lightning:select disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_SOC_VCC_Call_To_Action__c}"
+                                    required="false" aura:id="field"
+                                              value="{!v.visit.SOC_VCC_Call_To_Action__c}" >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_VCC_Call_To_Action__c}" var="option">
+                                    <option value="{!option.value}" text="{!option.label}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.profileName=='SOC Area Sales Manager ASM TSM'}">
+                            <lightning:select disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_SOC_Sales_Call_To_Action__c}"
+                                    required="false" aura:id="field"
+                                              value="{!v.visit.SOC_Sales_Call_To_Action__c}" >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_Sales_Call_To_Action__c}" var="option">
+                                    <option value="{!option.value}" text="{!option.label}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.companyName=='HLSI'}">
+                        
+                            <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_HLSI_Call_to_action__c}"
+                                    aura:id="multiSelectId"
+                                    value="{!v.visit.HLSI_Call_to_action__c}"
+                                             >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_HLSI_Call_to_action__c}" var="option">
+                                    <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+                                </aura:iteration>
+                            </ui:inputSelect>
+                        </aura:if>
+                        
+                        <aura:set attribute="else">
+                            
+                            <lightning:select disabled="{!v.isdisabled}"
+                                    label="{!v.translations.Visits__c_Call_To_Action__c}"
+                                    required="false" aura:id="field"
+                                              value="{!v.visit.Call_To_Action__c}" >
+                                <aura:iteration items="{!v.translations.picklists.Visits__c_Call_To_Action__c}" var="option">
+                                    <option value="{!option.value}" text="{!option.label}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </aura:set>
+                    </aura:if-->
+
+                </div>
+            </div>
+            
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size_1-of-1">
+                    <lightning:textarea disabled="{!v.isdisabled}"
+                            label="{!v.translations.Visits__c_Call_To_Action_Notes__c}"
+                            value="{!v.visit.Call_To_Action_Notes__c}">
+                    </lightning:textarea>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <div>
+        <!-- <lightning:button variant="brand" label="{!$Label.c.Cancel}" onclick="{!c.backToVPM}"/> -->
+        <lightning:button variant="brand" label="{!$Label.c.Save}" onclick="{! c.handleSave }" disabled="{!v.saving}"/>
+    </div>
+    </lightning:card>
+</aura:component>

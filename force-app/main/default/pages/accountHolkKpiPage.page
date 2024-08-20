@@ -1,0 +1,64 @@
+<apex:page standardController="Account" extensions="AccountHolkSpecificController">
+<apex:slds />
+
+    <table class="list" width="100%">
+            <thead class="rich-table-thead">
+                <tr class="headerRow">
+                    <th class="headerRow"><apex:outputLabel value="품목" style="font-weight:bold"/></th><!--Item-->
+                    <th class="headerRow"><apex:outputLabel value="전년 3개월 수량" style="font-weight:bold"/></th><!--Last year 3Mon Qty-->
+                    <th class="headerRow"><apex:outputLabel value="금년 3개월 수량" style="font-weight:bold"/></th><!--This year 3 Mon Qty-->
+                    <th class="headerRow"><apex:outputLabel value="전년 대비(%)" style="font-weight:bold"/></th><!--LY/CY Performance(%)-->
+                    <th class="headerRow"><apex:outputLabel value="전년 3개월 수량(전거래처)" style="font-weight:bold"/></th><!--All Customer Last year 3 mon Qty-->
+                    <th class="headerRow"><apex:outputLabel value="금년 3개월 수량(전거래처)" style="font-weight:bold"/></th><!--All Customer This year 3 mon Qty-->
+                    <th class="headerRow"><apex:outputLabel value="전년 대비(%)(전거래처)" style="font-weight:bold"/></th><!--All Customer LY/CY Performance(%)-->
+                </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_Item1__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM1_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM1_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM1_LY_COMP__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM1_ALL_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM1_ALL_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM1_ALL_LY_COMP__c}"/></td>
+            </tr>
+            <tr>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_Item2__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM2_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM2_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM2_LY_COMP__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM2_ALL_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM2_ALL_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM2_ALL_LY_COMP__c}"/></td>
+            </tr>
+            <tr>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_Item3__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM3_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM3_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM3_LY_COMP__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM3_ALL_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM3_ALL_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM3_ALL_LY_COMP__c}"/></td>
+            </tr>
+            <tr>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_Item4__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM4_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM4_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM4_LY_COMP__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM4_ALL_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM4_ALL_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM4_ALL_LY_COMP__c}"/></td>
+            </tr>
+            <tr>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_Item5__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM5_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM5_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM5_LY_COMP__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM5_ALL_LY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM5_ALL_CY_3MON_QTY__c}"/></td>
+                <td class="dataCell"><apex:outputField value="{!account.HOLK_account_data__r.KPI_ITEM5_ALL_LY_COMP__c}"/></td>
+            </tr>
+        </tbody>
+    </table>
+</apex:page>

@@ -1,0 +1,111 @@
+<apex:page standardController="Promotion_Group__c" extensions="ExtPromotionGrpMemberManagement" id="thePage" sidebar="false" showheader="false" title="{!promotionGrp.Name}">
+<style type="text/css">
+table.dataintable {
+	font-family: Arial, Helvetica, sans-serif;
+	margin-top: 10px;
+	border-collapse: collapse;
+	border: 1px solid #aaa;
+	width: 100%;
+	text-align: center;
+}
+html body div#datePicker.datePicker{top:5px !important; }
+</style>
+<script type="text/javascript">
+	//window.onload=function() {
+	//	var d=document.getElementById('thePage:topForm:thePageBlock');
+	//	d.style.background="#fff";
+	//}
+</script>
+	<apex:form id="topForm">
+	<apex:actionFunction name="addProGrpMembs" action="{!addProGrpMembs}" status="theStatus" reRender="topForm" />
+	<apex:actionFunction name="saveProGrpMembs" action="{!saveProGrpMembs}" status="theStatus" reRender="topForm" />
+    <apex:actionFunction action="{!deleteProGrpMembs}" name="deleteProGrpMembs" rerender="topForm" status="theStatus">
+         <apex:param name="indexParam" assignTo="{!currentIndex}" value="" />
+    </apex:actionFunction>	
+		<apex:pageBlock id="thePageBlock" mode="detail" >
+			<div id="pageDiv" style="background: #fff;">
+				<apex:pageMessages id="msg_ID" />
+			        <apex:pageBlockButtons location="top">
+				        <apex:actionStatus startText=" Loading... " stopText="" id="theStatus" >
+			                <apex:facet name="start"><img src="/img/loading.gif"/><span class="waitingDescription"></span></apex:facet>
+			            </apex:actionStatus>  
+						<apex:selectList value="{!customOption.selected}" size="1" styleClass="selectListGroup" onchange="changeLists(this)"><apex:selectOptions value="{!customOption.NumberAddOptions}"/></apex:selectList>	        
+			        	<input type="button" class="btn" value="Add Promotion Members" onclick="addProGrpMembs();"/>
+			        	<input type="button" class="btn" value="Save Promotion Members" onclick="saveProGrpMembs();"/>
+			        	<!--<apex:commandButtonmandButton action="{!SaveProGrpMembers}" value="Save" id="theSaveButton"/>-->
+			        	<!--<apex:commandButton action="{!cancel}" value="Cancel" id="theCancelButton"/>-->
+			        </apex:pageBlockButtons>
+			        
+			        <table id="proGrpMemberTab" class="dataintable">
+			        	<thead style="font-size: .9em; font-weight: bold; background: #fff; border-width: 0 0 1px 1px; border-color: #e0e3e5; padding: 5px 2px 4px 5px;">
+			        		<tr id="theadId">
+			        			<td style="width : 5%;">Action</td>
+			        			<!--<td style="width : 15%;">Account Group Member ID</td>-->
+			        			<td style="width : 15%;">Account</td>
+			        			<td style="width : 10%;">Start</td>
+			        			<td style="width : 10%;">End</td>
+			        			<td style="width : 5%;">Collected Points</td>
+			        			<td style="width : 5%;">Total Points</td>
+			        			<td style="width : 5%;">Credited Points</td>
+			        			<td style="width : 10%;">Marketing Material</td>
+			        			<td style="width : 5%;">Telesales</td>
+			        			<td style="width : 10%;">Member</td>
+			        			<td style="width : 5%;">Registration</td>
+			        		</tr>
+			        		
+			        	</thead>
+			        	
+			        	<tbody id="tbodyId">
+			        		<tr>
+			        			<div style="overflow-y : auto;"></div>
+			        		</tr>
+			        		<apex:repeat value="{!list_proMember}" var="memb">
+			        			<tr style="border: 1px solid #EEE;">
+			        				<td style="width : 5%;">
+				                        <img src="{!URLFOR($Resource.DeleteIcon)}" width="15px" height="15px" onclick="deleteProGrpMembs('{!memb.rowIndex}');" title="Delete This Member" style="cursor: pointer;"/>
+			        				</td>
+			        				<td style="width : 15%;">
+										<apex:outputPanel layout="block" styleClass="requiredInput" style="width: 200px;">
+											<div class="requiredBlock"></div>
+											<apex:inputField value="{!memb.promotionMember.Account__c}"  required="false"/>					
+										</apex:outputPanel>	        				
+			        				</td>
+			        				<td style="width : 15%;">
+										<apex:outputPanel layout="block" styleClass="requiredInput">
+											<div class="requiredBlock"></div>
+											<apex:inputField value="{!memb.promotionMember.Start_of_Membership__c}" required="false"/>        					
+										</apex:outputPanel>		        				
+			        					
+			        				</td>
+			        				<td style="width : 10%;">
+			        					<apex:inputField value="{!memb.promotionMember.End_of_Membership__c}"/>
+			        				</td>
+			        				<td style="width : 5%;">
+			        					<apex:inputField value="{!memb.promotionMember.Number_of_collected_Points__c}"/>
+			        				</td>
+			        				<td style="width : 5%;">
+			        					<apex:inputField value="{!memb.promotionMember.Number_of_Total_Points__c}"/>
+			        				</td>
+			        				<td style="width : 5%;">
+			        					<apex:inputField value="{!memb.promotionMember.Number_of_credited_Points__c}"/>
+			        				</td>
+			        				<td style="width : 10%;">
+			        					<apex:inputField value="{!memb.promotionMember.Marketing_Material__c}"/>
+			        				</td>
+			        				<td style="width : 5%;">
+			        					<apex:inputField value="{!memb.promotionMember.Telesales__c}"/>
+			        				</td>
+			        				<td style="width : 10%;">
+			        					<apex:inputField value="{!memb.promotionMember.Member_of_the_Group__c}"/>
+			        				</td>
+			        				<td style="width : 5%;">
+			        					<apex:inputField value="{!memb.promotionMember.Registration__c}"/>
+			        				</td>
+			        			</tr>
+			        		</apex:repeat>
+			        	</tbody>
+			        </table>
+				</div>
+			</apex:pageBlock>
+	</apex:form>
+</apex:page>

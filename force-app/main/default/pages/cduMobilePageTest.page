@@ -1,0 +1,13 @@
+<apex:page standardController="Account">
+  <!-- Begin Default Content REMOVE THIS -->
+Value of $User.UIThemeDisplayed: {! $User.UIThemeDisplayed }
+<apex:outputPanel rendered="{! $User.UIThemeDisplayed == 'Theme3' }">
+    <apex:outputText value="This is Salesforce Classic."/>
+    <apex:outputText value="These are multiple components wrapped by an outputPanel."/>
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{! $User.UIThemeDisplayed == 'Theme4t' }">
+    <apex:outputText value="Everything is simpler in Lightning Experience."/>
+</apex:outputPanel>
+
+</apex:page>

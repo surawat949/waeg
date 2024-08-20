@@ -1,0 +1,4 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" access="public">
+    <aura:attribute name="vfHost" type="String" default="hoya--waeg.sandbox.lightning.force.com/"></aura:attribute>
+    <iframe aura:id="vfFrame" src="{!'https://' + v.vfHost + 'apex/ShowpadForSF__showpad_app_contact'}"/>
+</aura:component>

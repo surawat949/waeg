@@ -1,0 +1,159 @@
+<aura:component controller="serviceFlow_QualityReturnTemplate_Ctrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >    
+    <aura:attribute name="recordId" type="string"/>
+    <aura:attribute name="customerCode" type="string"/>
+    <aura:attribute name="userCaseConfigObj" type="object"/>
+    <aura:attribute name="caseObj" type="object"/>
+    <aura:attribute name="as400data" type="List" default="[]"/>
+    <aura:attribute name="as400Columns" type="List"/>
+    <aura:attribute name="issearching"    type="Boolean" default="false"/>
+    <aura:attribute name="queueInfo" type="object"/>
+    <aura:attribute type="Boolean" name="showLoader" default="true"/>
+    <aura:attribute type="Boolean" name="showComponent" default="false"/>
+    <aura:attribute type="Boolean" name="showCustomerSales" default="false"/>
+    <aura:attribute name="options" type="List" default="[
+                                                        {'label':'Off power','value':'Off_power'},
+                                                        {'label':'Thinning prism','value':'Thinning_prism'},
+                                                        {'label':'Inset position','value':'Inset_position'},
+                                                        {'label':'Coating adhesion','value':'Coating_adhesion'},
+                                                        {'label':'Hard','value':'Hard'},
+                                                        {'label':'Centration parameters','value':'Centration_parameters'},
+                                                        {'label':'Functional areas','value':'Functional_areas'},
+                                                        {'label':'Pantascopic angle','value':'Pantascopic_angle'},
+                                                        {'label':'Edging parameters','value':'Edging_parameters'},
+                                                        {'label':'Warranty expired','value':'Warranty_expired'},
+                                                        {'label':'Semifinished parameters','value':'Semifinished_parameters'},
+                                                        {'label':'Tinting','value':'Tinting'},
+                                                        {'label':'Photocormic','value':'Photocormic'},
+                                                        {'label':'Coating','value':'Coating'},
+                                                        {'label':'Other','value':'Other'}]"/>
+    <aura:attribute name="parameters_checked_Values" type="List"/>
+    <aura:attribute name="defectOptions" type="List" default="[
+                                                              {'label': 'Yes', 'value': 'Yes'},
+                                                              {'label': 'No', 'value': 'No'}
+                                                              ]"/>
+    <aura:attribute name="defectOption" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />    
+    <aura:html tag="style"> 
+        .slds-modal__container{ 
+        height: 110% !important;
+        width: 95% !important;
+        max-width: 377vh !important;
+        max-height: 300vh !important;
+        } 
+        .slds-modal__content{
+        height: fit-content !important;
+        max-height: fit-content !important;
+        }
+        .toastMessage.forceActionsText{
+        white-space : pre-line !important;
+        }
+    </aura:html>
+    <aura:if isTrue="{!v.showLoader}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div class="slds-spinner--brand  slds-spinner slds-spinner--small slds-is-relative" role="alert">
+                <span class="slds-assistive-text">Loading...</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <header class="slds-modal__header">
+        <h2 class="slds-text-heading_medium"><b>Quality Return Details</b></h2>
+    </header><br/>
+    <h3 class="slds-section-title--divider"><b>Search sales returns</b></h3>
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-2">
+            <dl class="slds-dl_inline">
+                <dt class="slds-dl_inline__label">
+                    <lightning:input aura:id="field" type="search" required="true" label="Customer code" value="{!v.caseObj.serviceFlow_Customer_code__c}"  variant="label-stacked" name="serviceFlow_Customer_code__c"/>                
+                </dt>
+                <dd class="slds-dl_inline__detail" style="padding-top: 23px !important;">
+                    <lightning:button label="Search" variant="brand" onclick="{!c.handleAS400Data}"/>
+                </dd>
+            </dl>
+        </div>        
+        <div class="slds-col slds-size_1-of-2">
+            <lightning:input aura:id="field" disabled="true"  required="true" label="Customer Name" value="{!v.caseObj.Account.Name}"  variant="label-stacked" name="Customer_Name__c"/>
+        </div>
+    </div>
+    <h3 class="slds-section-title--divider"><b>Quality Return inputs</b></h3>
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-2">
+            <lightning:input aura:id="field" type="date"  required="true" label="Date of the complaint" value="{!v.caseObj.Date_of_the_complaint__c}"  variant="label-stacked" name="Date_of_the_complaint__c"/>
+        </div>        
+        <div class="slds-col slds-size_1-of-2">
+            <lightning:input aura:id="field" type="date" required="true" label="Date of Hoya delivery note" value="{!v.caseObj.Date_of_Hoya_delivery_note__c}"  variant="label-stacked" name="Date_of_Hoya_delivery_note__c"/>
+        </div>        
+    </div>
+    <div class="slds-grid">        
+        <div class="slds-col slds-size_2-of-2">
+            <lightning:textarea aura:id="field"  required="true" label="Hoya Delivery note" value="{!v.caseObj.serviceFlow_Hoya_Delivery_note__c}"  variant="label-stacked" name="serviceFlow_Hoya_Delivery_note__c"/>
+        </div>        
+    </div>
+    <div class="slds-grid"> 
+        <div class="slds-col slds-size_1-of-2">
+            <lightning:input aura:id="field"  required="true" label="Report Number" value="{!v.caseObj.serviceFlow_Report_numnber__c}"  variant="label-stacked" name="serviceFlow_Report_numnber__c"/>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+            <lightning:input aura:id="field"  required="true" label="Box Number" value="{!v.caseObj.serviceFlow_Box_Number__c}"  variant="label-stacked" name="serviceFlow_Box_Number__c"/>
+        </div>
+    </div>
+    <div class="slds-grid"> 
+        <div class="slds-col slds-size_1-of-2">
+            <lightning:input aura:id="field"  required="true" label="Lenstype" value="{!v.caseObj.Lenstype__c}"  variant="label-stacked" name="Lenstype__c"/>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+            <lightning:textarea aura:id="field"  required="true" label="Notes" value="{!v.caseObj.serviceFlow_Notes__c}"  variant="label-stacked" name="serviceFlow_Notes__c"/>
+        </div>
+    </div>
+    <div class="slds-grid">     
+        <div class="slds-col slds-size_1-of-2">
+            <div class="slds-box slds-theme_default">            
+                <lightning:radioGroup required="true" aura:id="field"
+                                      name="serviceFlow_Defect__c"
+                                      label="Defect(yes or no)"
+                                      options="{! v.defectOptions }"
+                                      value="{! v.defectOption }"
+                                      type="radio"/>
+            </div>
+        </div>&nbsp;&nbsp;
+        <div class="slds-col slds-size_1-of-2">
+            <div class="slds-box slds-theme_default">            
+                <lightning:checkboxGroup required="true" aura:id="field" name="serviceFlow_Parameters_checked__c"
+                                         label="Parameters checked"
+                                         options="{! v.options }"
+                                         value="{! v.parameters_checked_Values }"
+                                         onchange="{! c.handleChange }"/>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <br/>
+    <aura:if isTrue="{!v.caseObj.Owner.Name == 'Customer Service'}">
+        <div class="slds-grid">     
+            <div class="slds-col slds-size_2-of-2">
+                <lightning:input aura:id="field" required="true" type="email" label="Customer Email" value="{!v.caseObj.serviceFlow_Customer_Email__c}"  variant="label-stacked" name="serviceFlow_Customer_Email__c"/>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.caseObj.Owner.Name == 'Customer Service'}">        
+        <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-2">
+                <lightning:textarea aura:id="field"  required="true" label="Text for notes" value="{!v.caseObj.serviceFlow_Free_Text_for_notes__c}"  variant="label-stacked" name="serviceFlow_Free_Text_for_notes__c"/>
+            </div>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showCustomerSales}"> 
+        <h3 class="slds-section-title--divider"><b>Sales Returns Data</b></h3>
+        <c:seviceFlow_CustomerSalesReturns customerCode="{!v.customerCode}" aura:id="lWCChild"></c:seviceFlow_CustomerSalesReturns>    
+    </aura:if>
+    <center>
+        <aura:if isTrue="{!v.caseObj.Owner.Name == 'Customer Service'}">
+            <footer class="slds-modal__footer fixedFooter">
+                <lightning:button label="Send email to customer" variant="brand" onclick="{!c.handlerSaveSendEmail}"/>
+                
+            </footer> 
+        </aura:if>
+    </center>
+</aura:component>

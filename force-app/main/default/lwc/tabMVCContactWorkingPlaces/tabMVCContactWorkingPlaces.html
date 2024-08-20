@@ -1,0 +1,112 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="workingplaces" style="background-color: #aacbff;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left"><lightning-icon icon-name="standard:facility_bed" alternative-text="doctore" size="small"></lightning-icon> &nbsp; Working Places Address</p></h3>
+                </td>
+                <td>
+                    <p align="right"><lightning-button variant="brand-outline" label="Add Relationship" onclick={navigateToContactRelationship}></lightning-button></p>
+                </td>
+            </tr>
+        </table><br>
+        <div if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+        </div>
+        <template lwc:if={isDataExists}>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <div style="width: auto;">
+                        <template if:true={data}>
+                            <lightning-datatable
+                                data={data}
+                                columns={columns2}
+                                key-field="Id"
+                                show-row-number-column="true"
+                                hide-checkbox-column="true"
+                            >
+                            </lightning-datatable>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div>
+        </template>
+    </div>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="workingplaces" style="background-color: #aacbff;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left"><lightning-icon icon-name="standard:facility_bed" alternative-text="doctore" size="small"></lightning-icon> &nbsp; {lables.other_Related_Clinics}</p></h3>
+                </td>
+            </tr>
+        </table><br>
+        <div if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+        </div>
+        <template lwc:if ={isDataExists}>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <div style="width: auto;">
+                        <template if:true={data}>
+                            <lightning-datatable data={data}
+                                    columns={columns}
+                                    key-field="id"
+                                    show-row-number-column="true"
+                                    hide-checkbox-column="true">
+                            </lightning-datatable>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div>
+        </template>
+        <template lwc:if={isDataExists}>
+            <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_medium slds-m-top_medium">
+                <div class="slds-col slds-size_1-of-2">&nbsp;</div>
+                <div class="slds-col slds-size_1-of-2">
+                    <template if:true={IsdisplayList}>
+                        <p align="right">
+                            <lightning-button label="Display List" onclick={handleListViewShow} variant="brand"></lightning-button>
+                        </p>
+                    </template>
+                    <template if:false={IsdisplayList}>
+                        <p align="right">
+                            <lightning-button label="Hide List" onclick={handleListViewHide} variant="brand"></lightning-button>
+                        </p>
+                    </template>
+                </div>
+            </div>
+            <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_medium slds-m-top_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-map
+                        map-markers={mapMakers}
+                        markers-title={mapTitle}
+                        zoom-level={zoomLevel}
+                        center={vCenter}
+                        list-view={displayListView}
+                    ></lightning-map>
+                </div>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">&nbsp;</div>
+            </div>
+        </template>
+    </div>
+</template>

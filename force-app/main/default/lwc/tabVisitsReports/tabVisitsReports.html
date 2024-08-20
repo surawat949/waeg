@@ -1,0 +1,67 @@
+<template>
+    
+    <!--Section 1 Start-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
+        <table class="slds-table slds-table_bordered" aria-label="Account Address" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.Last_Three_Visit_Completed}</p></h3></td>
+            </tr>
+        </table><br>
+        <template lwc:if={visitRecord}>
+            <lightning-datatable data={visitRecord} columns={visitcolumns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div> 
+        </template>
+    </div>
+    <!--Section 1 End-->
+
+<!--Section 2 Start-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
+        <table class="slds-table slds-table_bordered" aria-label="Account Address" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.Last_Three_Tasks}</p></h3></td>
+            </tr>
+        </table><br>
+        <template lwc:if={taskRecord}>
+            <lightning-datatable data={taskRecord} columns={taskColumns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div> 
+        </template>
+    </div>
+<!--Section 2 End-->
+
+<!--Section 3 Start-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+ 
+        <table class="slds-table slds-table_bordered" aria-label="Account Address" style="background-color: #215ca0;">
+        <tr class="row" style="background-color: #aacbff;">
+            <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.visits} ({visitCount})</p></h3></td>
+            <td><p align="right"> 
+                <lightning-button label= {label.label_new} variant="brand-outline" onclick={navigateVisitCreatePage}></lightning-button> &nbsp;
+            </p></td>
+        </tr>
+        </table><br>
+            <lightning-datatable data={visitData} columns={visitColumns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+            
+            <template if:true={displayVisitViewAllButton}>
+                <br><p align="center">
+                    <lightning-button label={label.label_viewall} onclick={navigateToVisitRelatedList}></lightning-button></p></br>
+            </template>
+    </div>
+<!--Section 3 End-->
+    <div class="slds-box">
+        <c-tab-visits-reports-fullcalendar></c-tab-visits-reports-fullcalendar>
+    </div>
+</template>

@@ -1,0 +1,6 @@
+<aura:component implements="force:appHostable,lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes">
+    <lightning:workspaceAPI aura:id="workspace"/>
+    <aura:attribute name="accountId" type="String"></aura:attribute>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" description="Handler for valueInit event fired when the component has been initialised"/>
+    <c:trainingCertificateModal displayValue ="{!v.accountId}"  oncloseclicked="{!c.closeSubtab}"/>
+</aura:component>

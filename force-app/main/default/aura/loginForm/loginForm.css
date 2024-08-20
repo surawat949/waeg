@@ -1,0 +1,431 @@
+.THIS .transparent {
+  background-color: white; /*rgba(255,255,255,0.9);*/
+  padding: 32px;
+  height: 424px;
+  width: 400px;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
+}
+.THIS .center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+}
+
+.THIS img {
+  opacity: 0.85;
+}
+
+.THIS.wrapper.cLoginForm {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.THIS .labelInputs {
+  font-size: 14px;
+  color: rgb(0, 87, 188);
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.THIS .input::-webkit-input-placeholder {
+  font-size: 13px;
+  color: #a0a0a0;
+}
+
+.THIS .input:-moz-placeholder {
+  /* Firefox 18- */
+  font-size: 17px;
+  color: #a0a0a0;
+}
+
+.THIS .input::-moz-placeholder {
+  /* Firefox 19+ */
+  font-size: 17px;
+  color: #a0a0a0;
+}
+
+.THIS .input:-ms-input-placeholder {
+  font-size: 17px;
+  color: #a0a0a0;
+}
+.THIS #company_container {
+  text-align: center;
+  color: #0056c4;
+  font-weight: bold;
+  font-size: 150%;
+}
+
+.THIS.cLoginForm img {
+  opacity: unset;
+  /*max-width: 320px;
+  padding-bottom: 35px;*/
+}
+
+.THIS #small_link {
+  font-size: 13px;
+  color: #2d2926;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.THIS #sfdc_user {
+  float: left;
+  width: 23px;
+  height: 25px;
+  padding-top: 1px;
+  padding-left: 2px;
+  margin: 0px;
+}
+
+.THIS a {
+  color: #2d2825 !important;
+}
+
+.THIS #sfdc_lock {
+  float: left;
+  width: 23px;
+  height: 25px;
+  padding-top: 1px;
+  padding-left: 2px;
+  margin: 0px;
+}
+
+.THIS #error {
+  text-align: center;
+  color: #ff0000;
+}
+
+.THIS .login-icon {
+  color: #ccc;
+  font-size: 22px;
+}
+
+.THIS.cLoginForm img {
+  width: auto;
+  max-height: 85vh;
+}
+
+.THIS .container {
+  margin-right: 0px;
+}
+
+.THIS button.sfdc_button {
+  position: relative;
+  width: 140px;
+  background-color: #861b65;
+  font-size: 16px;
+  /*height: 40px;
+  padding: 9px 24px 8px;*/
+  float: right;
+  border-radius: unset;
+}
+
+.THIS button:hover {
+  cursor: pointer;
+}
+
+.THIS button .label {
+  color: #fff;
+}
+
+.THIS input {
+  /*margin-left: 10px;
+  /margin-top: 3px;*/
+  border: 0px solid transparent;
+  /*width: 70%;*/
+  -webkit-appearance: none;
+  font-size: 14px;
+}
+
+.wrapper.THIS {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+.wrapper.THIS > .slds-grid {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.THIS label.uiLabel-hidden {
+  display: none;
+}
+
+.THIS .slds-full-centered {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+
+.THIS.cLoginForm .input-credentials {
+  margin-left: 0px !important;
+  width: 300px;
+  border-radius: unset;
+  min-height: 0.5em !important;
+}
+
+.THIS .circle {
+  /*background: white;*/
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  float: right;
+}
+
+.THIS .remember-checkbox-hoya {
+  display: inline-block !important;
+  margin-right: 10px !important;
+  margin-top: 3px !important;
+  outline: 2px solid #0054c4 !important;
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.THIS .remember-checkbox-hoya:focus {
+  outline-color: rgb(0, 87, 188);
+}
+.THIS .remember-checkbox-hoya:checked {
+  outline-color: rgb(0, 87, 188);
+}
+/*
+.THIS .uiInput--checkbox input {
+  display: inline-block !important;
+  margin-right: 10px !important;
+  margin-top: 3px !important;
+  outline: 2px solid #0054c4 !important;
+  width: 15px;
+  height: 15px;
+}
+.THIS.uiInput input:focus {
+  outline-color: rgb(0, 87, 188);
+}
+
+.THIS .uiInput--checkbox input[type="checkbox"]:checked {
+  background-color: rgb(0, 87, 188);
+}*/
+
+.THIS .myCheckbox {
+  float: left;
+}
+
+.THIS .logo cLoginForm {
+  position: relative !important;
+  display: inline-block !important;
+  top: -40px !important;
+  left: calc(100% - 52px) !important;
+}
+
+.THIS .main {
+  display: flex !important;
+  justify-content: center !important;
+  width: 450px !important;
+  background-position: top !important;
+}
+
+.THIS .labelText {
+  font-size: 24px;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.THIS .list-items {
+  list-style-type: circle;
+  font-size: 17px;
+  color: #ffffff;
+  text-align: justify;
+  padding-left: 5%;
+}
+
+.THIS .create-account {
+  font-size: 13px !important;
+  color: rgb(0, 87, 188) !important;
+  font-weight: bold !important;
+}
+
+.THIS .column {
+  float: left;
+  width: 50%;
+}
+
+/* Clear floats after the columns */
+.THIS.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.THIS.cLoginForm.seiko button .label {
+  color: #000000;
+}
+
+.THIS .login {
+  background-image: url(/resource/login_seiko_brand_face) !important;
+}
+
+.THIS.seiko {
+  padding: 0px !important;
+}
+
+.THIS .remember_seiko {
+  border-radius: 2em !important;
+  margin-left: -2.5em !important;
+  width: 2em !important;
+}
+
+.THIS .inputSeiko {
+  margin-bottom: -1px !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  outline: 0 !important;
+  width: 100% !important;
+  padding: 0.5em 0 !important;
+  border: none !important;
+  border-bottom: 1px solid #b2b2b2 !important;
+  border-radius: 0 !important;
+  color: #0d0d0d !important;
+  background-color: inherit !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0.05em !important;
+  -webkit-transition: all ease-in-out 0.15s !important;
+  transition: all ease-in-out 0.15s !important;
+  color: #fcfcfc !important;
+  background-color: inherit !important;
+  border-bottom: 1px solid #fcfcfc !important;
+}
+
+.THIS .form-check-input:checked {
+  background-color: #d69719;
+  border-color: #d69719 !important;
+}
+
+.THIS .form-check-input:focus {
+  border-color: #ccc !important;
+}
+
+.THIS .form-control {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  width: 100% !important;
+  padding: 0.5em 0;
+  border: none;
+  border-bottom: 1px solid #b2b2b2;
+  border-radius: 0;
+  color: #0d0d0d;
+  background-color: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  -webkit-transition: all ease-in-out 0.15s;
+  transition: all ease-in-out 0.15s;
+  color: #fcfcfc;
+  background-color: inherit;
+  border-bottom: 1px solid #fcfcfc;
+}
+
+@media (max-width: 1000px) {
+  .THIS .main {
+    display: flex !important;
+    justify-content: center !important;
+    width: 350px !important;
+    background-position: top !important;
+  }
+  .THIS.wrapper > .slds-grid {
+    flex-wrap: wrap;
+  }
+  .THIS.wrapper.cLoginForm {
+    padding: 7px;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .THIS.wrapper.cLoginForm > .slds-grid {
+    padding-top: 20px;
+  }
+
+  .THIS.wrapper.cLoginForm > .slds-grid .slds-col {
+    width: 100%;
+  }
+
+  .THIS .labelInputs {
+    font-size: 13px;
+  }
+
+  .THIS.cLoginForm.cLoginForm img {
+    max-width: 230px;
+    padding-bottom: 26px;
+  }
+
+  .THIS .input::-webkit-input-placeholder {
+    font-size: 13px;
+  }
+
+  .THIS .list-items {
+    padding-bottom: 10px;
+  }
+
+  .THIS .labelText {
+    font-size: 15px;
+  }
+  .THIS .list-items {
+    list-style-type: circle;
+    font-size: 13px;
+    color: #ffffff;
+    text-align: justify;
+    padding-left: 5%;
+  }
+
+  .THIS button.sfdc_button {
+    font-size: 12px;
+  }
+  .THIS#upper_left {
+    top: 10px;
+    left: 0px;
+  }
+
+  .THIS#upper_right {
+    top: 10px;
+    right: 0;
+  }
+
+  .THIS#lower_left {
+    bottom: 0%;
+    left: -11px;
+  }
+
+  .THIS#lower_right {
+    bottom: 0%;
+    right: -1%;
+  }
+
+  .THIS.cross {
+    font-size: 100px;
+  }
+}
+
+/*.THIS .main {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  justify-content: center !important;
+}*/

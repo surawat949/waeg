@@ -1,0 +1,21 @@
+<template>
+    <div class="slds-grid slds-wrap">
+        <div class={section1}>
+            <div class="buttonsSection slds-grid no-wrap slds-m-around_x-small">
+                <div class="slds-col slds-m-right_small">
+                    <lightning-button variant="brand" label={filterText} onclick={toggleFilter}></lightning-button>
+                </div>
+                <div class="slds-col slds-m-right_small">
+                    <lightning-button variant="brand" label="Remove Filters" onclick={handleRemoveFilters}></lightning-button>
+                </div>
+                <div class="slds-col slds-m-right_small">
+                    <lightning-button variant="brand" label={zoneText}  onclick={toggleZone}></lightning-button>
+                </div>
+            </div>
+            <c-visit-zones-filters show-filters={showFilters} onrefreshcarddata={handlerefreshcardData}></c-visit-zones-filters>
+        </div>
+        <div class={section2} if:true={showZones}>
+            <c-visit-zones onrefreshdata={handlerefreshData}></c-visit-zones>
+        </div>
+    </div>
+</template>

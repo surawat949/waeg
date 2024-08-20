@@ -1,0 +1,105 @@
+<!--
+Created by Cedric Dupre
+Display a visit form creation, with calendar that adapt to user assigned to visit
+Used on opportunity management screen
+-->
+
+
+<aura:component  access="global"
+    implements="flexipage:availableForRecordHome,force:hasRecordId"
+    extensible="true"
+    controller="QuickVisitAuraController"
+    >
+    
+<aura:attribute name="userId" type="Id"/>
+<aura:attribute name="events" type="Object[]"/>
+<aura:attribute name="contactId" type="Id"/>
+<aura:attribute name="accountId" type="Id"/>
+<aura:attribute name="standardRecType" type="Id" />
+<aura:attribute name="showLookup" type="Boolean" default="false"/>
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+<aura:method name="reload" action="{!c.onViewChange}" access="PUBLIC"/>
+
+<ltng:require styles="{!$Resource.fullcalendar + '/fullcalendar.min.css'}"
+    scripts="{!join(',',
+            $Resource.fullcalendar + '/moment.min.js',
+            $Resource.fullcalendar + '/moment-timezone-with-data.min.js'
+            )}"
+    afterScriptsLoaded="{!c.jsLoaded}"/>
+	<!--recordTypeId="0126700000110DGAAY"-->
+    <div class="slds-theme_default slds-box">   
+        <lightning:recordEditForm aura:id="recordEditForm"
+                                objectApiName="Visits__c"
+                                density="compact"
+                                recordTypeId="{!v.standardRecType}"
+                                onsuccess="{!c.handleSuccess}">
+            <lightning:messages />
+            
+             <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="RecordTypeId" value="{!v.standardRecType}" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Assigned_to__c"  value="{!v.userId}" aura:id="userId" disabled="true" /></div>
+            </div>
+            <div class="slds-form">
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <label class="slds-form-element__label" for="form-input-1"><span style="color:red">*</span>Account</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-grid">
+                            <div class="slds-col slds-size_1-of-1">
+                                <aura:if isTrue="{!v.showLookup}">
+                                    <c:customLookupContactRelation iconName="standard:account" sObjectApiName="AccountContactRelation" label="" id="form-input-1"
+                                        name="form-input-1" placeholder="Select Account..." receivedId="{!v.contactId}" defaultRecordId="{!v.accountId}" onlookupupdate="{!c.getValueFromLwc}">
+                                    </c:customLookupContactRelation>
+                                    <aura:if isTrue="{!v.accountId == null}">
+                                        <div class="slds-form-element slds-has-error">
+                                            <div class="slds-form-element__help">Complete this field.</div>
+                                        </div>
+                                        <aura:set attribute="else">
+                                            &nbsp;
+                                        </aura:set>
+                                    </aura:if>
+                                </aura:if>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Contact__c" value="{!v.contactId}" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col sdls-size_1-of-1"><lightning:inputField fieldName="Visit_Type__c" required="true" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_Reason__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_Status__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Start_Time__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="End_Time__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_Notes__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Call_To_Action_Notes__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Account__c" value="{!v.accountId}"  required="true" class="slds-hide" /></div>
+            </div>
+            
+            
+            <lightning:button class="slds-m-top_small" type="submit" label="Create new" />
+        </lightning:recordEditForm>
+
+        <c:FullCalendar events="{!v.events}"
+                        viewChange="{!c.onViewChange}" aura:id="uCalendar"
+        ></c:FullCalendar>
+</div>
+</aura:component>

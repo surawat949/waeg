@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Public</cacheControl>
+    <contentType>image/jpeg</contentType>
+    <description>A 1200x848 jpg image used as background for certificate generation</description>
+</StaticResource>

@@ -1,0 +1,62 @@
+<apex:page showHeader="false" sidebar="false"  docType="html-5.0" standardController="Account" extensions="QvSalesAccountWithSameParentController">
+  <div class="table-responsive">
+    <table class="list" width="100%">
+        <thead class="rich-table-thead">
+            <tr class="headerRow">
+                <th class="headerRow"><apex:outputLabel value="Monthly Trend{!AccountConversionRate}" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+                <th class="headerRow"><apex:outputLabel value="ANNUAL" style="font-weight:bold"/></th>
+            </tr>
+        </thead>
+        <tbody>
+              <apex:repeat value="{!dataList}" var="data">
+                <tr>
+                  <td><apex:outputText value="{!data.hoya_account_id}"/></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.april*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.may*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.june*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.july*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.august*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.september*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.october*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.november*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.december*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.january*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.february*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.march*AccountConversionRate,0)}"/></apex:outputText></td>
+                  <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(data.annual*AccountConversionRate,0)}"/></apex:outputText></td>
+                </tr>
+              </apex:repeat>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Total</td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.april*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.may*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.june*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.july*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.august*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.september*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.october*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.november*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.december*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.january*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.february*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.march*AccountConversionRate,0)}"/></apex:outputText></td>
+                <td><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(total.annual*AccountConversionRate,0)}"/></apex:outputText></td>
+            </tr>
+        </tfoot>
+    </table>
+  </div>
+</apex:page>

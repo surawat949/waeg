@@ -1,0 +1,87 @@
+<apex:page showHeader="false" sidebar="false"  docType="html-5.0" standardController="Account">
+
+
+<div class="table-responsive">
+<table class="zen" width="100%">
+    <thead>
+        <tr>
+            <th><apex:outputLabel value="Monthly Trend" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+            <th><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><apex:outputLabel value="Last Year" style="font-weight:bold"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_April_Last_year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_May_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_June_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_July_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_August_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_September_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_October_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_November_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_December_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_January_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_February_Last_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_March_Last_Year__c,1)}"/></td>
+        </tr>
+        <tr>
+            <td><apex:outputLabel value="Current Year" style="font-weight:bold"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_April_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_May_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_June_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_July_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_August_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_September_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_October_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_November_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_December_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_January_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_February_Current_Year__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Gross_Sales_March_Current_Year__c,1)}"/></td>
+        </tr>
+        <tr>
+            <td><apex:outputLabel value="Forecast Year" style="font-weight:bold"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_April_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_May_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_June_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_July_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_August_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_September_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_October_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_November_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_December_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_January_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_February_current_FY__c,1)}"/></td>
+            <td><apex:outputText value="{!ROUND(account.Forecast_Gross_March_current_FY__c,1)}"/></td>
+        </tr>
+        <tr>
+            <td><apex:outputLabel value="CY/FY Performance" style="font-weight:bold"/></td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_April_current_FY__c)|| account.Forecast_Gross_April_current_FY__c<=0 , '', ROUND((account.Gross_Sales_April_Current_Year__c / account.Forecast_Gross_April_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_May_current_FY__c)|| account.Forecast_Gross_May_current_FY__c<=0 , '', ROUND((account.Gross_Sales_May_Current_Year__c / account.Forecast_Gross_May_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_June_current_FY__c)|| account.Forecast_Gross_June_current_FY__c<=0 , '', ROUND((account.Gross_Sales_June_Current_Year__c / account.Forecast_Gross_June_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_July_current_FY__c)|| account.Forecast_Gross_July_current_FY__c<=0 , '', ROUND((account.Gross_Sales_July_Current_Year__c / account.Forecast_Gross_July_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_August_current_FY__c)|| account.Forecast_Gross_August_current_FY__c<=0 , '', ROUND((account.Gross_Sales_August_Current_Year__c / account.Forecast_Gross_August_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_September_current_FY__c)|| account.Forecast_Gross_September_current_FY__c<=0 , '', ROUND((account.Gross_Sales_September_Current_Year__c / account.Forecast_Gross_September_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_October_current_FY__c)|| account.Forecast_Gross_October_current_FY__c<=0 , '', ROUND((account.Gross_Sales_October_Current_Year__c / account.Forecast_Gross_October_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_November_current_FY__c)|| account.Forecast_Gross_November_current_FY__c<=0 , '', ROUND((account.Gross_Sales_November_Current_Year__c / account.Forecast_Gross_November_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_December_current_FY__c)|| account.Forecast_Gross_December_current_FY__c<=0 , '', ROUND((account.Gross_Sales_December_Current_Year__c / account.Forecast_Gross_December_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_January_current_FY__c)|| account.Forecast_Gross_January_current_FY__c<=0 , '', ROUND((account.Gross_Sales_January_Current_Year__c / account.Forecast_Gross_January_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_February_current_FY__c)|| account.Forecast_Gross_February_current_FY__c<=0 , '', ROUND((account.Gross_Sales_February_Current_Year__c / account.Forecast_Gross_February_current_FY__c)*100,1))}"/>%</td>
+            <td><apex:outputText value="{!IF(ISNULL(account.Forecast_Gross_March_current_FY__c)|| account.Forecast_Gross_March_current_FY__c<=0 , '', ROUND((account.Gross_Sales_March_Current_Year__c / account.Forecast_Gross_March_current_FY__c)*100,1))}"/>%</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</apex:page>

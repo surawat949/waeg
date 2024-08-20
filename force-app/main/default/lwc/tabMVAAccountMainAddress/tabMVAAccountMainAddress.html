@@ -1,0 +1,152 @@
+<template>
+    <!--spinner loader-->
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+    <div class="slds-box slds-p-around_none slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="mvaAddress" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.label_AccAddress}</p>
+                    </h3>
+                </td>
+            </tr>
+        </table><br>
+        
+        <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+            <div class="slds-col slsd-size_2-of-3">
+                <lightning-record-form
+                    id="fields1"
+                    name="fields1"
+                    record-id={receivedId}
+                    object-api-name={ObjectApiName}
+                    fields={fields1}
+                    mode="readonly"
+                    density="comfy"
+                    columns="3"
+                ></lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={ObjectApiName}
+                    fields="Responsible_Customer_Service_Agent__c"
+                    mode="view"  
+                    columns="1"   
+                    onsuccess={handleSuccess}  
+                ></lightning-record-form>
+            </div>
+        </div>
+        
+        <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+            <div class="slds-size_1-of-1">
+                <lightning-record-form
+                    object-api-name={ObjectApiName}
+                    record-id={receivedId}
+                    fields={fields2}
+                    mode="readonly"
+                    density="comfy"
+                    columns="3"
+                ></lightning-record-form>
+            </div>
+        </div>
+    </div>
+        <br>
+        <!--Clinc Profile Section-->
+        <div class="slds-box slds-p-around_none slds-m-horizontal_none">
+            <table class="slds-table slds-table_bordered" aria-label="mvaClinic" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td>
+                        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                            <p align="left">{label.label_AccClinicProfile}</p>
+                        </h3>
+                    </td>
+                </tr>
+            </table><br>
+            
+            <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={ObjectApiName}
+                        fields={fields3}
+                        mode="readonly"
+                        density="comfy"
+                        columns="3"
+                    ></lightning-record-form>
+                </div>
+            </div>
+            <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={ObjectApiName}
+                        fields="Manual_Segment__c"
+                        columns="1"
+                        density="comfy"
+                        mode="view"
+                        onsuccess={handleSuccess}
+                    ></lightning-record-form>
+                </div>
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={ObjectApiName}
+                        fields={fields4}
+                        density="comfy"
+                        mode="readonly"
+                        columns="1"
+                    ></lightning-record-form>
+                </div>
+            </div>
+            <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={ObjectApiName}
+                        fields="Long_Text__c"
+                        density="comfy"
+                        mode="view"
+                        columns="1"
+                        onsuccess={handleSuccess}
+                    ></lightning-record-form>
+                </div>
+            </div>
+        </div>
+        <br>
+        <!--Location Section-->
+        <div class="slds-box slds-p-around_none slds-m-horizontal_none">
+            <table class="slds-table slds-table_bordered" aria-label="Visit" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td>
+                        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                            <p align="left">{label.label_AccLocation}</p>
+                        </h3>
+                    </td>
+                </tr>
+            </table><br>
+            <div class="slds-grid slds-m-left_medium slds-m-top_small slds-m-right_medium slds-m-bottom_medium slds-border_bottom">
+                <div class="slds-col slds-size_1-of-4">
+                    <p align="left">
+                        
+                        <a href={urlGoogle} target="_blank">
+                            {Street}<br>
+                            {City}<br>
+                            {State}<br>
+                            {PostalCode}<br>
+                            {Country}<br>
+                        
+                            <lightning-card variant="narrow">
+                                <lightning-map
+                                    map-markers={mapMarkers}
+                                    markers-title={markersTitle}
+                                    zoom-level={zoomLevel}
+                            ></lightning-map>
+                            </lightning-card>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+</template>

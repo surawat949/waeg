@@ -1,0 +1,74 @@
+.slds-box{
+    padding: 1px;
+}
+.slds-page-header.flexipageHeader { 
+    display: none;
+}
+.table-container {
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: 69%;
+}
+.dropdown{
+    left: 10.6rem;
+    width: 17rem;
+}
+.sortable {
+    cursor: pointer;
+}
+.sortIcon {
+    content: '\\25b2';
+}
+.sortIconDesc {
+    content: '\\25bc';
+}
+.upicon{
+    position: relative;
+    top: -1.75rem;
+    left: 3rem;
+}
+.hidden {
+    display: none;
+}
+.middle{
+    top: 1.5rem;
+    left: 2rem;
+}
+.pagination {
+    margin-top: 10px;
+}
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.custom-table th, .custom-table td {
+    border: 1px solid #ddd; /* Define border style */
+    padding: 8px; /* Add padding inside cells */
+}
+.table-container {
+    margin-top: 20px; /* Add margin to the table container */
+}
+.keepRight{
+    left: 83%;
+    position: sticky;
+}
+.keepMiddle{
+    position: relative;
+    left: 35%;
+}
+.sticky-column {
+    position: sticky;
+    left: 0;
+    z-index: 1; /* Ensure first column stays above other columns */
+    background-color: #f5f5f5;
+}
+.fixed-header-container {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+    border-bottom: 1px solid #ddd; /* Optional: Add border below headers */
+    /* Additional styling for fixed header container */
+}
+.fit{
+    height: 50rem;
+}

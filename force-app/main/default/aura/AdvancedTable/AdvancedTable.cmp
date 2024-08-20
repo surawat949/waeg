@@ -1,0 +1,104 @@
+<!--
+ - Created by thomas.schnocklake on 23.01.18.
+ -->
+
+<aura:component description="AdvancedTable">
+    <aura:attribute name="objectList" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="toolbar" type="Aura.Component[]"/>
+    <aura:attribute name="quickFilter" type="String" default="ne"/>
+
+    <aura:attribute name="dataArrayInternal" type="List"/>
+
+    <aura:attribute name="sortField" type="String" default="Name"/>
+    <aura:attribute name="sortDir" type="String" default="asc"/>
+    <aura:attribute name="fromIndex" type="Integer" default="0"/>
+    <aura:attribute name="pageSize" type="Integer" default="15"/>
+
+    <!--mohan start-->
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>
+    <!--mohan End-->
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="change" value="{!v.columns}" action="{!c.colsChange}"/>
+    <aura:handler name="change" value="{!v.objectList}" action="{!c.objectListChange}"/>
+    <aura:handler name="change" value="{!v.quickFilter}" action="{!c.objectListChange}"/>
+
+    <ltng:require styles="{!join(',',
+            $Resource.fullcalendar + '/fullcalendar.min.css',
+            $Resource.fullcalendar + '/jquery.dataTables.min.css')}"
+                  scripts="{!join(',',
+                          $Resource.fullcalendar + '/jquery.min.js',
+                          $Resource.fullcalendar + '/moment.min.js',
+                          $Resource.fullcalendar + '/jquery-ui.min.js',
+                          $Resource.fullcalendar + '/fullcalendar.min.js',
+                          $Resource.fullcalendar + '/jquery.ui.touch-punch.js',
+                          $Resource.fullcalendar + '/jquery.dataTables.min.js')}"
+                  afterScriptsLoaded="{!c.jsLoaded}"/>
+
+
+
+    <lightning:buttonGroup class="">
+        <lightning:button iconName="utility:chevronleft" onclick="{!c.prev}" disabled="{!v.fromIndex==0}"/>
+        <lightning:button iconName="utility:chevronright" onclick="{!c.next}" disabled="{!v.fromIndex+v.pageSize > v.dataArrayInternal.length}"/>
+            {!v.toolbar}
+    </lightning:buttonGroup>
+
+
+    <div class="slds-scrollable--x tablescroller" id="idTableScroller">
+        <div style="height: 1px;" ></div>
+    </div>
+    <div class="slds-scrollable--x scrolledtable" style="overflow-x: hidden;" id="idScrolledTable">
+        <aura:if isTrue="{!v.objectList==null}">
+            <lightning:spinner variant="brand" size="medium" alternativeText="loading products" title="loading products"/>
+        </aura:if>
+
+
+            <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal " id="accDataTable">
+                <thead>
+                 <tr class="slds-text-title_caps">
+                    <aura:iteration items="{!v.columns}" var="col">
+                        <th scope="col">
+                            <div class="slds-truncate" title="{!col.label}">{!col.label}
+                                <lightning:buttonIconStateful iconName="{!if(v.sortField==col.fieldName,if(v.sortDir=='asc','utility:arrowdown','utility:arrowup'),'')}"
+                                        size="x-small"
+                                        onclick="{!c.onSortClick}"
+                                        value="{!col.fieldName}"
+                                />
+                            </div>
+                        </th>
+                    </aura:iteration>
+                </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.dataArrayInternal}" var="row" indexVar="rowIdx" start="{!v.fromIndex}" end="{!v.fromIndex+v.pageSize}">
+                        <tr class="slds-hint-parent">
+                            <aura:iteration items="{!row.dataList}" var="data" indexVar="colIndex">
+                                <td>
+                                    <div class="slds-col ddrag"
+                                         data-id="{!row.dataObject.Id}"
+                                         data-name="{!row.dataObject.Name}">
+                                         <aura:if isTrue="{!and(data==row.dataObject.Name,data!=null)}">
+                                     
+                                             <!-- <lightning:formattedUrl value="{!'/'+row.dataObject.Id}" label="{!data}" target="_blank"/>  -->
+                                             
+                                             <a href="{!'/'+row.dataObject.Id}">{!data}</a>                                             
+                                             
+                                             
+                                             <aura:set attribute="else">
+                                                <aura:unescapedHtml value="{!data}" />
+                                            </aura:set>
+                                        </aura:if>
+                                        </div>
+                                </td>
+                            </aura:iteration>
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+            </table>
+
+    </div>
+
+</aura:component>

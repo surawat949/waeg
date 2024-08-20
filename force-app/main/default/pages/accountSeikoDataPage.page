@@ -1,0 +1,99 @@
+<apex:page standardController="Account" extensions="AccountSeikoDataPageController" showHeader="false" >
+
+
+    <div class="detailList">
+
+    <apex:pageBlock mode="maindetail">
+        <apex:pageBlockSection title="Turnover" columns="2">
+        
+            <apex:outputField value="{!data.Total_turnover__c}"/>
+            <apex:outputField value="{!data.Total_turnover_last_year__c}"/>
+            
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            
+            <apex:outputField value="{!data.Seiko_Turnover_CY__c}"/>
+            <apex:outputField value="{!data.Seiko_Turnover_LY__c}"/>
+            
+            <apex:outputField value="{!data.Starvision_Turnover_CY__c}"/>
+            <apex:outputField value="{!data.Starvision_Turnover_LY__c}"/>
+            
+            <apex:outputField value="{!data.Pentax_Turnover_CY__c}"/>
+            <apex:outputField value="{!data.Pentax_Turnover_LY__c}"/>
+            
+            <apex:outputField value="{!data.White_Label_Turnover_CY__c}"/>
+            <apex:outputField value="{!data.White_Label_Turnover_LY__c}"/>
+            
+            <apex:outputField value="{!data.Frames_Turnover_CY__c}"/>
+            <apex:outputField value="{!data.Frames_Turnover_LY__c}"/>
+            
+            <apex:outputField value="{!data.Other_Turnover_CY__c}"/>
+            <apex:outputField value="{!data.Other_Turnover_LY__c}"/>
+            
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            
+            <apex:outputField value="{!data.Total_turnover_Trend__c}"/>
+            <apex:outputField value="{!data.Forecast_YTD__c}"/>
+            
+            <apex:outputField value="{!data.Seiko_Turnover_trend__c}"/>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+
+            <apex:outputField value="{!data.Starvision_Turnover_Trend__c}"/>
+            <apex:outputField value="{!account.Turnover_Amount__c}"/>
+
+            <apex:outputField value="{!data.Pentax_Turnover_Trend__c}"/>
+            <apex:outputField value="{!account.Last_3_months_Avg_sales__c}"/>
+
+            <apex:outputField value="{!data.White_label_Turnover_Trend__c}"/>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+
+            <apex:outputField value="{!data.Frame_Turnover_Trend__c}"/>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+
+            <apex:outputField value="{!data.Other_Turnover_Trend__c}"/>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+
+        </apex:pageBlockSection>
+        <apex:pageBlockSection title="Volumes" columns="2">
+
+            <apex:outputField value="{!data.Total_QTY_CY__c}"/>
+            <apex:outputField value="{!data.Total_QTY_LY__c}"/>
+            <apex:outputField value="{!data.Seiko_QTY_CY__c}"/>
+            <apex:outputField value="{!data.Seiko_QTY_LY__c}"/>
+            
+            <apex:outputField value="{!data.SEIKO_QTY_of_All_QTY_in__c}"/>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+
+            <apex:outputField value="{!data.SEIKO_PAL_of_ALL_SEIKO_in__c}"/>
+            <apex:outputField value="{!data.SEIKO_PAL_of_ALL_PAL_in__c}"/>
+            
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+
+            <apex:outputField value="{!data.Seiko_Prime_CY__c}"/>
+            <apex:outputField value="{!data.Seiko_Prime_LY__c}"/>
+            
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+
+            <apex:outputField value="{!data.SEIKO_SRC_CY__c}"/>
+            <apex:outputField value="{!data.SEIKO_SRC_LY__c}"/>
+            <apex:outputField value="{!data.SEIKO_SRB_CY__c}"/>
+            <apex:outputField value="{!data.SEIKO_SRB_LY__c}"/>
+            <apex:outputField value="{!data.Seiko_RCC_CY__c}"/>
+            <apex:outputField value="{!data.Seiko_RCC_LY__c}"/>
+            
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            
+            <apex:outputField value="{!data.EDI_orders_total__c}"/>
+            <apex:outputField value="{!data.EDI_orders_blocked__c}"/>
+            <apex:outputField value="{!data.Remote_Edging__c}"/>
+            <apex:outputField value="{!data.Glazing_Level__c}"/>
+            <apex:outputField value="{!data.France_2nd_Lens_Pair_orders__c}"/>
+
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</div>
+</apex:page>

@@ -1,0 +1,120 @@
+<template>
+    <template lwc:if={showLoading}>
+        <lightning-spinner alternative-text="Loading..." size="medium" class="spinnerClass"></lightning-spinner>
+    </template>
+    <!--Section 1 Start-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
+        <table class="slds-table slds-table_bordered" aria-label="Training" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.Instore_Training_And_Webinars} ({trainingCount})</p></h3></td>
+                <td><p align="right"> 
+                    <lightning-button label= {label.label_new} variant="brand-outline" onclick={navigateToTrainingCreatePage}></lightning-button> &nbsp;
+                    <lightning-button label= "Certificate" variant="brand-outline" onclick={openModal}></lightning-button>
+                </p></td>
+            </tr>
+        </table><br>
+           <lightning-datatable data={trainingRecords} columns={trainingColumns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+           
+            <template if:true={displayTrainingViewAllButton}>
+                <br><p align="center">
+                    <lightning-button label={label.label_viewall} onclick={navigateToTrainingRelatedList}></lightning-button></p></br>
+            </template>
+    </div>
+    <!--Section 1 End-->
+   
+   <!--Section 2 Start-->
+    <template if:true={showAllTab}>
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
+            <table class="slds-table slds-table_bordered" aria-label="eLearning" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.e_learnings} ({eLearningCount})</p></h3></td>
+                </tr> 
+            </table><br>
+                <lightning-datatable data={elarningRecords} columns={elarningColumns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+                <template if:true={displayElearningViewAllButton}>
+                    <br><p align="center">
+                        <lightning-button label={label.label_viewall} onclick={navigateToELearningRelatedList}></lightning-button></p></br>
+                </template>     
+        </div>
+    </template>
+
+    <!--Section 2 End-->
+    <!--Modal pop-up start here-->
+    <template if:true={isModalOpen}>
+        <template lwc:if={showLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+        </template>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Training Certificate</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <lightning-combobox
+                                label="Trainings"
+                                name="Traninings"
+                                value=""
+                                options={selectedOption}
+                                required="true"
+                                onchange={handleTrainingChange}
+                                placeholder={label.selectTraining}
+                            ></lightning-combobox>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <lightning-radio-group
+                                name="OptRadioGroup"
+                                label={label.createFor}
+                                value={value1}
+                                options={certificateOptions}
+                                disabled={disabledRadio}
+                                onchange={handleRadioChange}
+                                type="radio"
+                            ></lightning-radio-group>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <template if:true={showAttendees}>
+                                <lightning-combobox
+                                    name="Attendees"
+                                    label="Attendees"
+                                    value=""
+                                    placeholder={label.selectAttendee}
+                                    options={selectedAttendees}
+                                    onchange={handleAttendeeChange}
+                                    required="true"
+                                ></lightning-combobox>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <template if:true={showMissingError}>
+                                <span style="color: rgb(250, 6, 6);">{label.noAttendeeError}</span>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <p align="right">
+                        <lightning-button variant="netural" label="Cancel" onclick={closeModal}></lightning-button>&nbsp;
+                        <lightning-button variant="brand" label={label.sendCertificate} disabled={disabledButton} onclick={processCertificateGeneration}></lightning-button>&nbsp;
+                    </p>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!--End of Modal Section-->
+</template>

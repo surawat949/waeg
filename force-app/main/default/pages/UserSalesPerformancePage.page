@@ -1,0 +1,121 @@
+<apex:page showHeader="false" sidebar="false"  docType="html-5.0" Controller="UserSalesPerformanceController" lightningStylesheets="true">
+    <apex:slds />
+    <apex:outputPanel rendered="{!budget==null}">
+        <table class="list" width="100%">
+            <thead class="rich-table-thead">
+                <tr>
+                    <th colspan="14"><apex:image url="{!URLFOR($Resource.Hope_Page_Title_002)}" alt="Team (or User) Sales Performance" /></th>
+                </tr>
+            </thead>
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!budget!=null}">
+        <div class="table-responsive">
+            <table class="list" width="100%">
+                <thead class="rich-table-thead">
+                    <tr>
+                        <th colspan="14"><apex:image url="{!URLFOR($Resource.Hope_Page_Title_002)}" alt="Team (or User) Sales Performance" /></th>
+                    </tr>
+                    <tr class="headerRow">
+                        <th class="headerRow"><apex:outputLabel value="Monthly Performance" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="APR" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="MAY" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="JUN" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="JUL" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="AUG" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="SEP" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="OCT" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="NOV" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="DEC" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="JAN" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="FEB" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="MAR" style="font-weight:bold"/></th>
+                        <th class="headerRow"><apex:outputLabel value="TOT YTD" style="font-weight:bold"/></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="dataRow">
+                        <td class="dataCell"><apex:outputLabel value="Quota FY" style="font-weight:bold"/></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota1CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota2CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota3CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota4CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota5CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota6CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota7CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota8CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota9CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota10CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota11CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota12CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Quota_YTD__c,0)}"/></apex:outputText></td>
+                    </tr>
+                    <tr class="dataRow">
+                        <td class="dataCell"><apex:outputLabel value="Sales FY" style="font-weight:bold"/></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales1CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales2CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales3CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales4CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales5CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales6CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales7CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales8CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales9CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales10CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales11CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales12CY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Local_Sales_YTD__c,0)}"/></apex:outputText></td>
+                    </tr>
+                    <tr class="dataRow">
+                        <td class="dataCell"><apex:outputLabel value="% Quota Achievement" style="font-weight:bold"/></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_April__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_May__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_June__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_July__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_August__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_September__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_October__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_November__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_December__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_January__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_February__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_March__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Quota_Ach_YTD__c,1)}"/></apex:outputText>%</td>
+                    </tr>
+                    <tr class="dataRow">
+                        <td class="dataCell"><apex:outputLabel value="Sales Last FY" style="font-weight:bold"/></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales1LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales2LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales3LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales4LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales5LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales6LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales7LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales8LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales9LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales10LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales11LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.LocalSales12LY__c,0)}"/></apex:outputText></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(budget.Local_Sales_LY_YTD__c,0)}"/></apex:outputText></td>
+                    </tr>
+                    <tr class="dataRow">
+                        <td class="dataCell"><apex:outputLabel value="% Last year Achievement" style="font-weight:bold"/></td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Apr_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_May_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Jun_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Jul_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Aug_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Sep_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Oct_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Nov_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Dec_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Jan_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Feb_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_Mar_vsLY__c,1)}"/></apex:outputText>%</td>
+                        <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0.0}"><apex:param value="{!ROUND(budget.Sales_YTD_vsLY__c,1)}"/></apex:outputText>%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </apex:outputPanel>
+</apex:page>

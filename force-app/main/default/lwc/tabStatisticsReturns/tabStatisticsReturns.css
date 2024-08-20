@@ -1,0 +1,15 @@
+.slds-table thead th {
+    background-color: #aacbff;
+    height:35px;   
+}
+.fix{
+    position: sticky;
+    left: 0;
+    z-index: 1;
+ }
+ .nonAdap1 tr:last-child {
+    font-weight: bold;
+  }
+  .nonAdap2 tr:last-child {
+    font-weight: bold;
+  }

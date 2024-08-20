@@ -1,0 +1,4 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" access="public" >
+    <force:canvasApp developerName="showpad_canvas_app" namespacePrefix="ShowpadForSF" parameters="{ application: 'crm-widget'}"  width="100%" maxHeight="infinite" scrolling="auto" height="100%" />
+
+</aura:component>

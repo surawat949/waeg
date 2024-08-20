@@ -1,0 +1,240 @@
+<apex:component controller="Email_Controller" access="global">
+    <apex:attribute name="contact" type="Contact" description="This is the Id of the contact" access="global" />
+    <html>
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>HOYA</title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet" />
+        <style type="text/css">
+            @media screen and (max-width:600px) {
+                .mfontsize {
+                    font-size: 20px !important;
+                    line-height: 34px !important;
+                }
+                .tw100 {
+                    width: 100% !important;
+                }
+                .loginbtn {
+                    width: 200px;
+                    height: auto;
+                }
+            }
+        </style>
+    </head>
+    <body style="background-color:#fff;padding: 0 0 25px;margin: 0;">
+        <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr>
+                <td align="center">
+                    <table align="center" width="600" border="0" cellspacing="0" cellpadding="0" style="background-color:#fff;">
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center">
+                                <table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td>
+                                            <a href="javascript:">
+                                                <apex:repeat value="{!list_documents}" var="doc">
+                                                    <apex:outputPanel layout="none" rendered="{!AND(doc.DeveloperName = 'X2021New_header',contact.Account_Portal__c != 'italyportal')}">
+                                                        <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                            alt="HOYA" width="600" height="65" border="0" style="display:block;"
+                                                        />
+                                                    </apex:outputPanel>
+                                                    <!-- Header for italy portal -->
+                                                    <apex:outputPanel layout="none" rendered="{!AND(doc.DeveloperName = 'X2021New_header_IT',contact.Account_Portal__c = 'italyportal')}">
+                                                        <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                            alt="HOYA" width="600" height="65" border="0" style="display:block;"
+                                                        />
+                                                    </apex:outputPanel>
+                                                    <!-- Header for italy portal -->
+                                                </apex:repeat>
+                                                <!--<img src="images/header.png" alt="HOYA" width="600" height="65" border="0" style="display:block;" />-->
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <!--<tr>
+                                        <td>
+                                            <a href="javascript:">
+                                                <apex:repeat value="{!list_documents}" var="doc">
+                                                    <apex:outputPanel layout="none" rendered="{!AND(doc.DeveloperName = 'X2021New_banner_Invitation_Email',contact.Invite_Portal_Email__c = 'HOYA Hub',contact.Account_Portal__c != 'italyportal')}">
+                                                        <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                            alt="HOYA" width="600" height="300" border="0" style="display:block;"
+                                                        />
+                                                    </apex:outputPanel>
+                                                    <!-- Banner for italian portal ->
+                                                    <apex:outputPanel layout="none" rendered="{!AND(doc.DeveloperName = 'X2021New_banner_Invitation_Email_IT',contact.Invite_Portal_Email__c = 'HOYA Hub',contact.Account_Portal__c = 'italyportal')}">
+                                                        <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                            alt="HOYA" width="600" height="300" border="0" style="display:block;"
+                                                        />
+                                                    </apex:outputPanel>
+                                                    <!-- Banner for italian portal ->
+                                                    <apex:outputPanel layout="none" rendered="{!AND(doc.DeveloperName = 'X2021New_banner_Invitation_Email_LMS',contact.Invite_Portal_Email__c = 'HOYA Learning Center')}">
+                                                        <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                            alt="HOYA" width="600" height="300" border="0" style="display:block;"
+                                                        />
+                                                    </apex:outputPanel>
+                                                </apex:repeat>
+                                                <!--<img src="images/banner.png" alt="HOYA" width="600" height="300" border="0" style="display:block;" />->
+                                            </a>
+                                        </td>
+                                    </tr>-->
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center">
+                                <table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="left" width="300" valign="middle" style="background:#0056bb;">
+                                            <table width="100%" style="border-collapse: collapse;">
+                                                <tr>
+                                                    <td valign="top" style="padding:0 25px;font-size:0;">
+                                                        <span style=" font-family: Arial, Helvetica, sans-serif;font-weight:bold;font-size:20px;line-height:26px;color:#fff;text-align:left;display:block;">
+                                                            Your one-stop- <br/> shop for all things <br/> HOYA is here.
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td align="left" width="300" valign="top">
+                                            <apex:repeat value="{!list_documents}" var="doc">
+                                                <apex:outputPanel layout="none" rendered="{!AND(doc.DeveloperName = 'X2021VA_New_banner_half')}">
+                                                    <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                        alt="HOYA" width="300" height="300" border="0" style="display:block;"
+                                                    />
+                                                </apex:outputPanel>                                       
+                                            </apex:repeat>
+                                            <!--<img src="images/banner-half.jpg" width="300" height="300" border="0" style="display:block;" />-->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center" style="background-color:#ffffff;padding:30px 30px 40px 30px;">
+                                <table align="center" width="540" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="left" valign="top">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;font-weight:400;font-size:14px;line-height:22px;color:#050505;text-align:left;display:block;"
+                                                class="mfontsize">
+                                               
+                                                Dear {!Contact.Name}, <br/><br/>
+                                                We are excited to announce that your single sign-on portal to HOYA Hub, Visionary Alliance, and HOYA Learning Center is now live. <br/><br/>
+                                                <strong>When you sign up, you’ll get instant access to:</strong> <br/><br/>
+                                                <strong>HOYA Hub:</strong><br/>
+                                                Track your jobs in real time, access invoices and statements, news, and product info. <br/><br/>
+                                                <strong>Visionary Alliance:</strong><br/>
+                                                HOYA’s re-defined loyalty program complete with tools, benefits, and accelerating rewards. <br/><br/>
+                                                <strong>HOYA Learning Center:</strong><br/>
+                                                Your interactive learning management system with more than 20 modules. <br/><br/>
+                                                And the best part is, we’re only getting started. We will continue to add new features that will make these platforms even more powerful.
+
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+
+
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center" style="background-color:#0056bb;padding:40px 30px 40px 30px;">
+                                <table align="center" width="540" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="left" valign="top">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;font-weight:400;font-size:14px;line-height:22px;color:#fff;text-align:left;display:block;"
+                                                class="mfontsize">
+                                                
+                                                <strong>Set up is quick and easy. Follow the steps below to complete your registration.</strong> <br/><br/>
+                                                <ol style="padding:0 0 0 20px;margin:0;">
+                                                <li style="padding-left:5px;color:#fff;">Validate your registration by clicking the “Register Now” link provided in this email. <br/><br/></li>
+                                                <li style="padding-left:5px;color:#fff;">Choose a password (please do not share these credentials and store them in a secure place). <br/><br/></li>
+                                                <li style="padding-left:5px;color:#fff;">You will get an email with your username.</li>
+                                                </ol>
+
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+
+
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center" style="background-color:#fff;padding:40px 30px 20px 30px;">
+                                <table align="center" width="540" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="left" valign="top" style="display:inline-block;">
+                                            <!--<span style="font-family: Arial, Helvetica, sans-serif;font-weight:600;font-size:14px;line-height:22px;text-align:left;display:block;background:#0056bb;color:#fff;text-decoration:none;padding:10px 44px;border:1px solid #0056bb;"
+                                                class="mfontsize">
+                                                <a href="{!Contact.CMDT_Register__c}&lang={!Contact.Account_Language__c}" target="_blank" style="display:inline-block;background:#0056bb;color:#fff;text-decoration:none;padding:10px 44px;border:1px solid #0056bb;">
+                                                    {!$Label.Register_Now}
+                                                </a>
+                                            </span>-->
+                                            <table border="0" cellspacing="0" cellpadding="0" style="font-family: Arial, Helvetica, sans-serif;font-weight:600;font-size:14px;line-height:22px;text-align:left;display:block;">
+                                                <tr>
+                                                    <td align="center" valign="middle" height="36" style="display:inline-block;background:#0056bb;color:#fff;text-decoration:none;padding:5px 30px;border:1px solid #0056bb;">
+                                                        <a href="{!Contact.CMDT_Register__c}&lang={!Contact.Language_Pick__c}" target="_blank" style="display:inline-block;color:#fff;text-decoration:none;padding:5px 30px;border:1px solid #0056bb;">
+                                                            Register Now
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="left" valign="top"><span style="font-family: Arial, Helvetica, sans-serif;font-weight:400;font-size:14px;line-height:22px;color:#050505;text-align:left;display:block;" class="mfontsize">
+                                            <br/>
+                                            We hope this new platform makes it easier for you and your team to continue to help the world have clear and comfortable vision. <br/><br/>
+                                            Best,<br/>
+                                            The HOYA Team<br/><br/>
+                                          </span></td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center">
+                                <table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td>
+                                            <apex:repeat value="{!list_documents}" var="doc">
+                                                <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'X2021New_Footer'}">
+                                                    <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                        alt="HOYA" width="600" height="52" border="0" style="display:block;"
+                                                    />
+                                                </apex:outputPanel>
+                                            </apex:repeat>
+                                            <!--<img src="images/footer.png" alt="HOYA" width="600" height="52" border="0" style="display:block;" />-->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+
+    </html>
+</apex:component>

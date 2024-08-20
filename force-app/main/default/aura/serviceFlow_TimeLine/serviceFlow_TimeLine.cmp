@@ -1,0 +1,27 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" 
+                controller="serviceFlow_TimeLineController">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute type="String" name="header" />
+    <aura:attribute name="collpaseText" type="String" default="Show"/>    
+    <aura:attribute name="lstActivity" type="list" />
+    <aura:attribute name="recordId" type="String" />
+    <lightning:card class="slds-p-around_medium">
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title">
+                <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.ToggleCollapse}">
+                    <lightning:icon class="{!v.collpaseText == 'Show' ? 'slds-hide' : 'slds-show'}" aura:id="articleOne" iconName="utility:right" size="x-small" alternativeText="Indicates add"/>
+                    <lightning:icon class="{!v.collpaseText == 'Show' ? 'slds-show' : 'slds-hide'}" aura:id="articleOne" iconName="utility:down" size="x-small" alternativeText="Indicates dash"/>
+                    <span class="slds-truncate" title="Section Title">&nbsp;&nbsp;<strong>Closed Activities</strong></span>
+                </button>
+            </h3>
+            <div class="{!v.collpaseText == 'Show' ? 'slds-show slds-p-around--medium' : 'slds-hide slds-p-around--medium'}" aura:id="articleOne">
+                <ul class="slds-timeline">    
+                    <aura:iteration items="{!v.lstActivity}" var="task">
+                        <c:serviceFlow_TimeLineUtility activity="{!task}"/>
+                    </aura:iteration>
+                </ul>
+            </div>
+        </div>
+        
+    </lightning:card>
+</aura:component>

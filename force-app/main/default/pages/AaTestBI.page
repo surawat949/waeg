@@ -1,0 +1,17 @@
+<apex:page standardStylesheets="false">
+<apex:slds />
+<apex:form >
+
+
+  <h1></h1>
+
+<iframe 
+width="1140"
+height="541.25"
+src="https://app.powerbi.com/reportEmbed?reportId=cf95cb47-6f93-4a7b-a62c-71798b3f966b&autoAuth=true"
+frameborder="0"
+allowFullScreen="true">
+
+</iframe>
+</apex:form>
+</apex:page>

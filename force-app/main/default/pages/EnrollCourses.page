@@ -1,0 +1,78 @@
+<apex:page standardController="Contact" extensions="pss_UserCourses" sidebar="false" showHeader="false" docType="html-5.0" >  
+<head>
+<title>Enroll Course</title>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"/>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.4/js/jquery.tablesorter.min.js"/>
+
+    <script type="text/javascript">
+        $j = jQuery.noConflict();    
+        $j(document).ready(function () {
+        $j("[id$=theaddrs]").tablesorter();
+        });    
+     </script>
+    
+  </head>          
+    <Apex:pageBlock id="theaddrsblock">
+        
+        <Apex:form id="filters-form">
+        
+            <Apex:pageBlock title="Filters">
+            
+            <table>
+                <tr><td><b>Filter by Date:</b></td>
+                <td><apex:input type="date" label="Filter by Date" value="{!startdate}" id="startfilter"/></td>
+                 </tr><tr>               
+                <td><b>Filter by Name: </b></td>
+                <td><apex:input type="text" label="Filter by Name" value="{!filterbyname}" id="namefilter"/></td>
+                </tr>
+                
+            </table>    
+
+                <!--<apex:repeat value="{!alphabet}" var="a">
+                    <apex:commandLink value="{!a}" action="{!refreshList}" rerender="form" style="{!if($CurrentPage.parameters.alpha=a,'font-weight:bold','')}" status="stat">
+                        <apex:param name="alpha" value="{!a}"/>
+                    </apex:commandLink>
+                    &nbsp;|&nbsp;
+                </apex:repeat>-->
+                <apex:actionFunction name="searchServer" action="{!runSearch}" rerender="results,debug,errors">
+                    <apex:param name="startdate" value="" />
+                </apex:actionFunction>
+                <br /><br />
+                <Apex:commandbutton action="{! FilterResults}" value="Apply Filters"> </apex:commandbutton>
+                <Apex:commandbutton action="{! CancelFilterResults}" value="Cancel Filters"> </apex:commandbutton>
+                
+                <apex:pageMessages />
+            </apex:pageBlock>
+        </Apex:form>
+        <Apex:form id="enroll-form">
+            <Apex:pageBlock title="Available Courses">
+            <apex:pageBlockButtons >
+            <Apex:commandbutton action="{!EnrollUser}" value="Save" > </apex:commandbutton>
+            </apex:pageBlockButtons>
+                <apex:pageBlockTable value="{! GetCourselist}" var="course_table" id="theaddrs" styleClass="tablesorter" headerClass="header">
+                            <Apex:column headerValue="▼ Course Name" value="{!course_table.course.Name}" />
+                          <!--  <Apex:column headerValue="▼ Start Date" value="{!course_table.course.plms_startdate__c} " />-->
+                            <Apex:column headerValue="▼ Start Date">
+                            <apex:outputText value="{0,date,MM/dd/yy}"> <apex:param value="{!course_table.course.Start_Date__c}" /> </apex:outputText>
+                           </Apex:column>
+                           <!-- 
+                            <Apex:column headerValue="▼ Account Name" value="{!course_table.accountname} " />-->
+                            <Apex:column headerValue="Enrolled">
+                                <Apex:inputCheckbox value="{!course_table.isSelected}" />
+                            </Apex:column>
+                </apex:pageBlockTable>
+             </Apex:pageBlock>
+         </Apex:form>
+    </Apex:pageBlock>
+   <!-- <apex:pageBlock rendered="True" title="My Courses"  >
+        <apex:pageBlockTable value="{!Courses}" var="div">
+            <apex:column headerValue="Course" value="{!div.Course__r.name}"/>
+            <apex:column headerValue="Progress" value="{!div.Progress__c}"/>
+            <apex:column headerValue="Grade" value="{!div.Score__c}"/>
+            <apex:column headerValue="Last access" value="{!div.Last_Login__c}"/>
+            <apex:column headerValue="Completed" value="{!div.Is_Completed__c}"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>-->
+</apex:page>

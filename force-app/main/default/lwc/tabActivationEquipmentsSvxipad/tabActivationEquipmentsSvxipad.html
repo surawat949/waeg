@@ -1,0 +1,83 @@
+<template>
+    <div>   
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+            <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+                <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container">{CustLabel.Seiko_Vision_Xperience_iPAD}
+                    </h3></td>
+                </tr>
+            </table><br>
+            <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">{CustLabel.AccountActivationMeasurements}</span>
+                        <div class="slds-form-element__static" >{LastMeasurementDate}</div>            
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">{CustLabel.AccountActivationFrame}</span>
+                        <div class="slds-form-element__static" >{LastFrameDemo}</div>            
+                    </div>   
+                </div>
+            </div><br/>
+            <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">{CustLabel.AccountActivationLensSelection}</span>
+                        <div class="slds-form-element__static" >{LastUsageLensDemo}</div>            
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">{CustLabel.AccountActivationVisionTest}</span>
+                        <div class="slds-form-element__static" >{LastReadingLast}</div>            
+                    </div>   
+                </div>
+            </div><br/>
+            <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">{CustLabel.SVX_Ipad_Last_Training}</span>
+                        <div class="slds-form-element__static" >{LastTraningDate}</div>            
+                    </div>   
+                </div>
+            </div><br/>
+        </div>
+        <!--charts-->
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+            <table class="slds-table slds-table_bordered" aria-label="Visureal Master Usage" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{CustLabel.Seiko_Vision_Xperience_iPAD_Measurement}</p></h3></td>
+                </tr>
+            </table><br>
+            <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+                <canvas class="chartMeasurement" height="250"></canvas>
+            </div>       
+        </div>
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+            <table class="slds-table slds-table_bordered" aria-label="Visureal Master Usage" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{CustLabel.Seiko_Vision_Xperience_iPAD_Lens_Demo}</p></h3></td>
+                </tr>
+            </table><br>
+            <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+                <canvas class="chartLensDemo" height="250"></canvas>
+            </div>
+        </div> 
+
+
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+            <table class="slds-table slds-table_bordered" aria-label="Visureal Master Usage" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{CustLabel.Seiko_Vision_Xperience_iPAD_Reading_Test}</p></h3></td>
+                </tr>
+            </table><br>
+            <div class="fixed-height-chart slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+                <canvas class="chartReadingTest" height="250"></canvas>
+            </div>
+        </div>
+        </div>
+</template>

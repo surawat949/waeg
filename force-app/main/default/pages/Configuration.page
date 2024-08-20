@@ -1,0 +1,204 @@
+<apex:page controller="LMSConfigurations" id="pg"  action="{!saveSetting}">
+<apex:includeScript value="{!URLFOR($Resource.JqueryAlert, 'jquery_alert_files/jQuery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.JqueryAlert, 'jquery_alert_files/jquery.ui.draggable.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.JqueryAlert, 'jquery_alert_files/jquery.alerts.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.JqueryAlert, 'jquery_alert_files/jquery.alerts.css')}"/>
+
+<apex:sectionHeader title="LMS Configurations"  />
+  
+    
+  <apex:form id="frm">
+  
+   <apex:pageBlock id="jobs"  >
+    <apex:pageBlockSection title="Scheduled Jobs" columns="1">
+      <apex:pageBlockTable value="{!scheduledMoodleJobs}" var="job" id="cronJobs">
+          <apex:column >
+              <apex:facet name="header">
+                  <apex:inputCheckbox onclick="checkedAll()" id="chkAll" />
+              </apex:facet>
+            <apex:outputPanel rendered="{!job.JobStatus == false}">
+                <input type="checkbox" label="{!job.JobStatus}"  name="{!job.JobName}" value="Moodle_Scheduled_Jobs"/>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!job.JobStatus == true}">
+                <input type="checkbox" label="{!job.JobStatus}"  name="{!job.JobId}" value="Moodle_Scheduled_Jobs"/>
+            </apex:outputPanel>
+          </apex:column>
+          
+          <apex:column headerValue="Job Name" >
+              {!job.JobName}
+          </apex:column>
+          
+          <apex:column headerValue="Job Status" >
+              <apex:outputPanel rendered="{!job.JobStatus}">
+                  <apex:image url="{!$Resource.SuccessImg}" width="20" height="20"/>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!job.JobStatus == false}">
+                  <apex:image url="{!$Resource.UnsuccessImg}" width="20" height="20"/>
+              </apex:outputPanel> 
+          </apex:column>
+      </apex:pageBlockTable>
+   </apex:pageBlockSection>
+      <apex:pageBlockButtons location="top">
+          <apex:commandButton onclick="JobsToStart()" value="{!getButtonLabel}" reRender="cronJobs"/>
+          <apex:commandButton onclick="JobsToAbort()" value="Stop Synchronization" reRender="cronJobs"/>
+          
+      </apex:pageBlockButtons>    
+      
+      <apex:actionFunction name="startJobs" action="{!startAbortJobs}" oncomplete="refreshPage();">
+          <apex:param assignTo="{!abortJobs}" name="abortJobs" value=""/> 
+      </apex:actionFunction>
+      <apex:actionFunction name="abortJobs" action="{!AbortStartedJobs}" oncomplete="refreshPage();">
+          <apex:param assignTo="{!startedJobs}" name="startedJobs" value=""/> 
+      </apex:actionFunction>
+   </apex:pageBlock>
+  
+  <apex:pageBlock id="pb" >
+   
+   
+      <apex:pageBlockButtons location="top">
+          <apex:commandButton value="Save" action="{!save}" />
+          <apex:commandButton value="Cancel" action="{!getCancel}" />
+          <apex:commandButton value="Reset LMS" action="{!ResetLMS}" />          
+      </apex:pageBlockButtons>    
+      <apex:pagemessages id="msg" />
+      
+      <apex:pageBlockSection Title="LMS Settings">
+        <!--<apex:inputfield value="{!settings.IDP_URL__c}"/>-->
+        <!--<apex:inputfield value="{!settings.Email_Report_Address__c}"/>-->
+        <!--<apex:inputfield value="{!settings.Email_Report_From_Address__c}"/>-->
+        <apex:inputfield value="{!settings.LMS_Client_Push_Period__c}"/>
+        <apex:inputfield label="LMS URL" value="{!settings.LMS_URL__c}"/>
+        <apex:inputfield label="LMS Web Service Token" value="{!settings.LMS_WebService_Token__c}"/>        
+        <apex:inputfield value="{!settings.Course_Refresh_Interval__c}"/>        
+        <apex:inputfield value="{!settings.Last_Course_Sync_Date__c}"/>
+        <apex:inputfield value="{!settings.Course_Enrollment_Refresh_Interval__c}"/>        
+        <apex:inputfield value="{!settings.Last_Enrollment_Sync_Date__c}"/>
+        <!--<apex:inputfield value="{!settings.Push_Enrollment_Data_Interval__c}"/>-->
+        
+        <apex:inputfield value="{!settings.Debug_Mode__c}"/>        
+        <apex:inputfield value="{!settings.LMS_Suspend_User__c}"/> 
+        <apex:inputfield value="{!settings.PLMS_Enrollments__c}"/>
+      <!--  <apex:inputfield value="{!settings.Synchronise_Users_from_PLMS_to_Salesforc__c}" /> -->
+      </apex:pageBlockSection>
+
+      <apex:pageBlockSection Title="LMS Cohorts Settings">
+        <apex:inputfield value="{!settings.Create_cohort_by_date_name__c}"/>
+        <apex:inputfield value="{!settings.Create_cohort_by_date__c}"/>
+        <apex:inputfield value="{!settings.Create_cohort_by_profile__c}"/>
+      </apex:pageBlockSection>
+      
+      
+
+    </apex:pageBlock>
+  </apex:form>
+
+ <!--Chatter Settings Page Block Section -- Added By Jaspreet Singh -->  
+ <!--
+ <apex:form id="chatterForm">
+    <apex:pageBlock id="ChatterBlock">
+        <apex:pageBlockSection title="Chatter Settings">
+            <apex:inputField value="{!objC.Course_Completed_Chatter_Feed__c}"/>
+            <apex:inputField value="{!objC.Course_Created_Chatter_Feed__c}"/>
+            <apex:inputField value="{!objC.Course_Enrolled_Chatter_Feed__c}"/>
+            <apex:inputField value="{!objC.Course_Criteria_Chatter_Feed__c}"/>
+        </apex:pageBlockSection>
+        <apex:pageBlockButtons location="bottom">
+            <apex:commandButton action="{!saveChatterSetting}" value="Save"/>
+            <apex:commandButton action="{!cancelChatterSetting}" value="Cancel"/>
+        </apex:pageBlockButtons>
+    </apex:pageBlock>
+    </apex:form>
+    -->  
+    <script>
+        checked = false;
+        var startJobName = new Array();
+        var abortJobName = new Array();
+        function checkedAll(){
+            var checkboxes = new Array(); 
+            checkboxes = document.getElementsByTagName('input');
+            if (checked == false){
+                checked = true ;
+            }
+            else{
+                checked = false ;
+            }
+        
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox' && checkboxes[i].value == 'Moodle_Scheduled_Jobs' ){
+                    checkboxes[i].checked = checked;
+                }
+            }  
+        }
+        
+        function refreshPage(){
+            window.location = document.referrer;
+            //jAlert('Synchronization started successfully.', '');
+        }
+        
+        function JobsToStart(){
+            
+            var checkboxes = new Array(); 
+            checkboxes = document.getElementsByTagName('input');
+            
+            for(var i = 0 ; i < checkboxes.length; i++){ 
+                if (checkboxes[i].type == 'checkbox' && checkboxes[i].value == 'Moodle_Scheduled_Jobs' && checkboxes[i].getAttribute("label") == 'false'){            
+                    var apexJobName = checkboxes[i].getAttribute("name");
+                    if(checkboxes[i].checked ){
+                        startJobName.push(apexJobName);
+                    }
+                }
+            }
+            console.log('final jobName = '+startJobName);
+             
+            if(startJobName.length > 0){
+                startJobs(startJobName+'');
+                for(var i = 0 ; i < checkboxes.length; i++){ 
+                    if (checkboxes[i].type == 'checkbox'){            
+                        checkboxes[i].checked = false;
+                    }
+                }
+                alert('Synchronization started successfully.');
+                //jAlert('Synchronization started successfully.', '');
+                startJobName.length = 0;
+            }
+            else{
+                alert('Please select at least one checkBox .');
+                //jAlert('Please select at least one checkBox .', '');
+            }
+        }
+        
+         function JobsToAbort(){
+            
+            var checkboxes = new Array(); 
+            checkboxes = document.getElementsByTagName('input');
+            
+            for(var i = 0 ; i < checkboxes.length; i++){ 
+                if (checkboxes[i].type == 'checkbox' && checkboxes[i].value == 'Moodle_Scheduled_Jobs' && checkboxes[i].getAttribute("label") == 'true'){            
+                    var apexJobName = checkboxes[i].getAttribute("name");
+                    if(checkboxes[i].checked ){
+                        abortJobName.push(apexJobName);
+                    }
+                }
+            }
+            console.log('final jobName = '+abortJobName);
+             
+            if(abortJobName.length > 0){
+                abortJobs(abortJobName+'');
+                for(var i = 0 ; i < checkboxes.length; i++){ 
+                    if (checkboxes[i].type == 'checkbox'){            
+                        checkboxes[i].checked = false;
+                    }
+                }
+                alert('Synchronization stoped successfully.');
+                //jAlert('Synchronization stoped successfully.', '');
+                abortJobName.length = 0;
+            }
+            else{
+               alert('Please select at least one checkBox .');
+               //jAlert('Please select at least one checkBox .', '');
+            }
+        }
+                    
+    </script>
+    
+</apex:page>

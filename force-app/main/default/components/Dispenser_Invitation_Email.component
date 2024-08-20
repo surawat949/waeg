@@ -1,0 +1,171 @@
+<apex:component controller="Email_Controller" access="global">
+    <apex:attribute name="contact" type="Contact" description="This is the Id of the contact" access="global" />
+    <html>
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>HOYA</title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet" />
+        <style type="text/css">
+            @media screen and (max-width:600px) {
+                .mfontsize {
+                    font-size: 20px !important;
+                    line-height: 34px !important;
+                }
+                .tw100 {
+                    width: 100% !important;
+                }
+                .loginbtn {
+                    width: 200px;
+                    height: auto;
+                }
+            }
+        </style>
+    </head>
+    <body style="background-color:#fff;padding: 0 0 25px;margin: 0;">
+        <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr>
+                <td align="center">
+                    <table align="center" width="600" border="0" cellspacing="0" cellpadding="0" style="background-color:#fff;">
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center">
+                                <table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td>
+                                            <a href="javascript:">
+                                                <apex:repeat value="{!list_documents}" var="doc">
+                                                    <apex:outputPanel layout="none" rendered="{!AND(doc.DeveloperName = 'SafeVision_New_Header',contact.Account_Portal__c != 'italyportal')}">
+                                                        <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                            alt="SafeVision" width="600" height="65" border="0" style="display:block;"
+                                                        />
+                                                    </apex:outputPanel>                                          
+                                                </apex:repeat>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+                        <!-- Main TR Start-->
+
+                        <!-- Main TR End-->
+
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center" style="background-color:#ffffff;padding:30px 30px 40px 30px;">
+                                <table align="center" width="540" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="left" valign="top">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;font-weight:400;font-size:14px;line-height:22px;color:#050505;text-align:left;display:block;"
+                                                class="mfontsize">
+                                                <!-- TEXT FOR SafeVision HUB PORTAL -->
+                                                <apex:outputText value="{!SUBSTITUTE(SUBSTITUTE($Label.Dispenser_First_Part_Dear,'{NAME}',Contact.Name),'{PORTAL_NAME}',Contact.Invite_Portal_Email__c)}"
+                                                    escape="false" />
+                                                <apex:outputText value="{!SUBSTITUTE($Label.SafeVision_What_Can_Do_For_You,'{PORTAL_NAME}',Contact.Invite_Portal_Email__c)}" escape="false"
+                                                    rendered="{!contact.Invite_Portal_Email__c = 'SafeVision'}" />
+                                                <!-- END TEXT FOR SafeVision HUB PORTAL -->
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+
+
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center" style="background-color:#0056bb;padding:40px 30px 40px 30px;">
+                                <table align="center" width="540" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="left" valign="top">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;font-weight:400;font-size:14px;line-height:22px;color:#fff;text-align:left;display:block;"
+                                                class="mfontsize">
+                                                <apex:outputText value="{!$Label.SafeVision_After_Principle_Practice}" escape="false" />
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+
+
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center" style="background-color:#fff;padding:40px 30px 20px 30px;">
+                                <table align="center" width="540" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="left" valign="top" style="display:inline-block;">
+                                            <!--<span style="font-family: Arial, Helvetica, sans-serif;font-weight:600;font-size:14px;line-height:22px;text-align:left;display:block;background:#0056bb;color:#fff;text-decoration:none;padding:10px 44px;border:1px solid #0056bb;"
+                                                class="mfontsize">
+                                                <a href="{!Contact.CMDT_Register__c}&lang={!Contact.Account_Language__c}" target="_blank" style="display:inline-block;background:#0056bb;color:#fff;text-decoration:none;padding:10px 44px;border:1px solid #0056bb;">
+                                                    {!$Label.Register_Now}
+                                                </a>
+                                            </span>-->
+                                            <table border="0" cellspacing="0" cellpadding="0" style="font-family: Arial, Helvetica, sans-serif;font-weight:600;font-size:14px;line-height:22px;text-align:left;display:block;">
+                                                <tr>
+                                                    <td align="center" valign="middle" height="36" style="display:inline-block;background:#0056bb;color:#fff;text-decoration:none;padding:5px 30px;border:1px solid #0056bb;">
+                                                        <a href="{!Contact.CMDT_Register__c}&lang={!Contact.Language_Pick__c}" target="_blank" style="display:inline-block;color:#fff;text-decoration:none;padding:5px 30px;border:1px solid #0056bb;">
+                                                            {!$Label.Register_Now}
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="left" valign="top">
+                                            <span style="font-family: Arial, Helvetica, sans-serif;font-weight:400;font-size:14px;line-height:22px;color:#050505;text-align:left;display:block;"
+                                                class="mfontsize">
+                                                <!--1 - {!$Label.Final_Part_1}-->
+                                                <apex:outputText value="{!SUBSTITUTE(SUBSTITUTE($Label.SafeVision_Final_Part1,'{CMDT_URL}',Contact.CMDT_Help_URL__c),'{PORTAL_NAME}',contact.Invite_Portal_Email__c)}"
+                                                    escape="false" />
+                                                <!--2 - {$Label.Invitation_Email}
+                                                <apex:outputText value="{!SUBSTITUTE($Label.Invitation_Email,'{CMDT_URL}',Contact.CMDT_Contact_Us_URL__c)}" escape="false"
+                                                />
+                                                <!--3 - {!$Label.Final_Part_2}-->
+                                                <apex:outputText value="{!$Label.SafeVision_Final_Part_2}" escape="false" />
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+
+                        <!-- Main TR Start-->
+                        <tr>
+                            <td align="center">
+                                <table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td>
+                                            <apex:repeat value="{!list_documents}" var="doc">
+                                                <apex:outputPanel layout="none" rendered="{!doc.DeveloperName = 'X2021New_Footer'}">
+                                                    <img src="https://{!serverInstance}/servlet/servlet.ImageServer?id={!doc.Id}&oid={!$Organization.Id}&lastMod=1596105659000"
+                                                        alt="SafeVision" width="600" height="52" border="0" style="display:block;"
+                                                    />
+                                                </apex:outputPanel>
+                                            </apex:repeat>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Main TR End-->
+
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+
+    </html>
+</apex:component>

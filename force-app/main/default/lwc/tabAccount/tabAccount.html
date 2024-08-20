@@ -1,0 +1,32 @@
+<template>
+    <lightning-tabset variant="scoped">
+        <lightning-tab label={custLabel.addressTab}>
+            <c-tab-account-address received-id = {recordId}> </c-tab-account-address>
+        </lightning-tab>
+        <lightning-tab label={custLabel.membershipsTab}>
+            <c-tab-account-memberships received-id = {recordId}> </c-tab-account-memberships>
+        </lightning-tab>
+        <lightning-tab label={custLabel.invoiceTab}>
+            <c-tab-account-invoicing received-id = {recordId}> </c-tab-account-invoicing>
+        </lightning-tab>
+        <lightning-tab label={custLabel.logisticTab}>
+            <c-tab-account-logistic received-id = {recordId}> </c-tab-account-logistic>
+        </lightning-tab>
+        <template if:true={showAllTab}>
+            <lightning-tab label={custLabel.contractsTab}>
+                <c-tab-account-contracts received-id = {recordId}> </c-tab-account-contracts>
+            </lightning-tab>
+            <!--lightning-tab label={custLabel.pricelistTab}>
+                <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                    <img src="/projRes/ui-home-private/emptyStates/noTasks.svg" class="slds-illustration__svg" alt=""/>
+                    <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                        <b>UNDER DEVELOPMENT. Nothing to see so far.</b>
+                    </div>
+                </div>
+            </lightning-tab-->
+        </template>
+        <lightning-tab label={custLabel.systemTab}>
+            <c-tab-account-system received-id = {recordId}> </c-tab-account-system>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

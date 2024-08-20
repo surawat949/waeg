@@ -1,0 +1,133 @@
+<template>
+   
+<!--Section 1 Start-->
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+ 
+        <table class="slds-table slds-table_bordered" aria-label="VisitFreq" style="background-color: #aacbff;">
+        <tr class="row" style="background-color: #aacbff;">
+            <td>
+                <h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left"><lightning-icon icon-name="standard:visits" alternative-text="Visits" size="small"></lightning-icon> &nbsp; {lables.Visit_Frequency}</p></h3>
+            </td>
+        </tr>
+        </table><br>
+        <div if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+        </div>
+        <template lwc:if ={isVisitFreqDataExists}>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-max-medium-table_stacked" width="100%">
+                        <thead>
+                            <th>{lables.Last_Visit_Date}</th>
+                            <th>{lables.contact}</th>
+                            <th>{lables.Total_Visits_Achieved}</th>
+                            <th>{lables.Office_Visits_Frequency}</th>
+                            <th>{lables.Digital_Visits_Frequency}</th>
+                        </thead>
+                        <tbody>
+                            <template if:true={visitFrequencyData}>
+                                <template for:each={visitFrequencyData} for:item="visitFrequency">
+
+                                    <tr key={visitFrequency.id}>
+                                        
+                                        <td class="slds-truncate">
+                                            <div class="slds-truncate slds-cell-wrap">
+                                                <lightning-formatted-date-time 
+                                                    value={visitFrequency.Lastcontactvisitdate} 
+                                                    month="short" 
+                                                    day="numeric" 
+                                                    year="numeric"
+                                                    time-zone={timezone}>
+                                                </lightning-formatted-date-time>
+                                                </div>
+                                        </td>
+                                        <td class="slds-truncate"><div class="slds-truncate slds-cell-wrap"><lightning-formatted-url value={visitFrequency.link} tooltip={visitFrequency.ContactName} label={visitFrequency.ContactName} target="_top"></lightning-formatted-url></div></td>
+                                        <td class="slds-truncate"><div class="slds-truncate slds-cell-wrap">{visitFrequency.TotalVisitAchieved}</div></td>
+                                        <td class="slds-truncate"><div class="slds-truncate slds-cell-wrap">{visitFrequency.ContactDirectVisitsFrequency}</div></td>
+                                        <td class="slds-truncate"><div class="slds-truncate slds-cell-wrap">{visitFrequency.ContactDigitalVisitsFrequency}</div></td>
+                                        </tr>
+                                </template>
+                            </template>
+                        </tbody>
+                    </table> 
+                </div>           
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div>
+        </template>
+    </div>
+    <!--Section 1 End--> 
+
+    <!--Section 2 Start-->
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+    
+        <table class="slds-table slds-table_bordered" aria-label="Visit" style="background-color: #aacbff;">
+        <tr class="row" style="background-color: #aacbff;">
+            <td>
+                <h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left"><lightning-icon icon-name="standard:visits" alternative-text="Visits" size="small"></lightning-icon> &nbsp; {lables.visits} ({visitCount})</p></h3>
+            </td>
+        </tr>
+        </table><br>
+        <template lwc:if ={isVisitDataExists}> 
+            <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-max-medium-table_stacked" width="100%">
+                    <thead>
+                        <th>{lables.date}</th>
+                        <th>{lables.contact}</th>
+                        <th>{lables.visitType}</th>
+                        <th>{lables.visit_Objective}</th>
+                        <th>{lables.VisitAssignedTo}</th>
+                        <th>{lables.visit_ID}</th>
+                    </thead>
+                    <tbody>
+                        <template if:true={visitsData}>
+                            <template for:each={visitsData} for:item="visit">
+                                <tr key={visit.id}>                                
+                                    <td class="slds-truncate">
+                                        <div class="slds-truncate slds-cell-wrap">
+                                            <lightning-formatted-date-time 
+                                                value={visit.Start_Day__c} 
+                                                month="short" 
+                                                day="numeric" 
+                                                year="numeric"
+                                                time-zone={timezone}>
+                                            </lightning-formatted-date-time>
+                                            </div>
+                                    </td>
+                                    <td class="slds-truncate"><div class="slds-truncate slds-cell-wrap"><lightning-formatted-url value={visit.contactLink} tooltip={visit.contactName} label={visit.contactName} target="_top"></lightning-formatted-url></div></td>
+                                    <td class="slds-truncate"><div class="slds-truncate slds-cell-wrap">{visit.Visit_Type__c}</div></td>
+                                    <td class="slds-truncate"><div class="slds-truncate slds-cell-wrap">{visit.Visit_Reason__c}</div></td>
+                                    <td class="slds-truncate"><div class="slds-truncate slds-cell-wrap">{visit.Visit_assigned_to__c}</div></td>
+                                    <td class="slds-truncate"><div class="slds-truncate slds-cell-wrap"><lightning-formatted-url value={visit.nameLink} tooltip={visit.Name} label={visit.Name} target="_top"></lightning-formatted-url></div></td>
+                                    </tr>
+                            </template>
+                        </template>
+                    </tbody>
+                </table> 
+            </div>
+            </div>
+
+            <br>
+            <p align="center"><lightning-button label={lables.ViewAll} variant="brand-outline" onclick={navigateToRelatedList}></lightning-button></p><br>
+
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div>
+        </template>
+        
+    </div>
+    <!--Section 2 End--> 
+ 
+</template>

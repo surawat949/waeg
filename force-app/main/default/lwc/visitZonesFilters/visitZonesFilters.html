@@ -1,0 +1,142 @@
+<template>
+    <template if:true={isLoading}>
+        <div class="backdrop">
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </div>
+    </template>
+    <template if:true={showFilters}>
+        <lightning-tabset variant="scoped">
+            <lightning-tab label={custLabel.listView}>
+                <fieldset class="slds-form-element">
+                    <div class="slds-form-element__group">
+                        <div class="slds-grid slds-wrap" style="margin-top: -15px;">
+                            <div class="slds-form-element slds-size_7-of-12">
+                                 <lightning-combobox label={custLabel.listView}
+                                                    value={selectedListView}
+                                                    options={listViews}
+                                                    onchange={handleListViewChange}>
+                                    </lightning-combobox>
+                            </div>
+                            <div class="slds-form-element slds-size_3-of-12 slds-p-left_xx-small">
+                                <lightning-input label={custLabel.QuickFilterLabel}
+                                                    type="text"
+                                                    value={selectedQuickFilter}
+                                                    field-level-help= {custLabel.QuickFilterHelpText}
+                                                    onchange={handleQuickFilterChange}>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-form-element slds-size_2-of-12 slds-p-left_xx-small" style="margin-top: 5px;" >
+                                <label for="bsearch">&nbsp;</label><br/>
+                                <lightning-button  variant="brand" label="Search" onclick={handleSearch}></lightning-button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </lightning-tab>
+            <lightning-tab label={custLabel.location}>
+                <div class="slds-grid slds-gutters_xx-small" style="margin-top: -15px;">
+                    <lightning-input label={custLabel.city} class="slds-col" type="text" value={selectedCity} onchange={handleCityChange}></lightning-input>
+                    <lightning-input label={custLabel.state} class="slds-col" type="text" value={selectedState} onchange={handleStateChange}></lightning-input>
+                </div>
+            </lightning-tab>
+            <lightning-tab label={custLabel.AccountVisitTabSegmentation}>
+                <div class="slds-grid slds-gutters" style="margin-top: -15px;">
+                    <lightning-combobox name="dropdown" class="slds-col" label={custLabel.HVC_Loyalty_Program} value={selectedChannelValue} options={ChannelList} onchange={handleChannelChange}> </lightning-combobox>
+                    <lightning-combobox name="dropdown" class="slds-col" label={custLabel.AccountVisitTabSegmentation} value={selectedSegmentationValue} options={SegmentationList} onchange={handleSegmentationChange}> </lightning-combobox>
+                </div>
+            </lightning-tab>
+            <lightning-tab label={custLabel.campaigns}>
+                <div class="slds-grid slds-gutters" style="margin-top: -15px;">
+                    <lightning-combobox label={custLabel.Select_Campaign} class="slds-col" options={campaignOptions} value={selectedCampaignId} onchange={handleCampaignChange}></lightning-combobox>
+                    <lightning-input type="checkbox" label={custLabel.Exclude_Presented_Campaigns} class="slds-col middle" checked={selectedExcludePresented} onchange={handleExcludePresentedChange}></lightning-input>
+                    <lightning-input type="checkbox" label={custLabel.Campaign_Priority_Only} class="slds-col last" checked={selectedCampaignPriorityOnly} onchange={handleCampaignPriorityChange}></lightning-input>
+                </div>
+            </lightning-tab>
+        </lightning-tabset>
+    </template>
+        <div class="slds-grid slds-wrap pagination">
+            <div class="slds-col slds-grow-none pleft5 ptop10 pbottom5">
+                <lightning-button icon-name="utility:chevronleft"  onclick={previousPage} disabled={isFirstPage}></lightning-button>
+            </div>
+            <div class="slds-col slds-align_absolute-center">
+                <span>{custLabel.page} {currentPage} {custLabel.of} {totalPages} ({recordCount} {custLabel.Accounts})</span>
+            </div>
+            <div class="slds-col slds-grow-none slds-text-align_right pright5 ptop10 pbottom5">
+                <lightning-button icon-name="utility:chevronright" class="keepRight" onclick={nextPage} disabled={isLastPage}></lightning-button>
+            </div>
+        </div>
+        <div class="table-container table-wrapper">
+            <table class="custom-table slds-table slds-table_cell-buffer slds-table_bordered"  ondragover={handleDragOver}  ondrop={handleDrop}>
+                <thead>
+                    <tr class="slds-line-height_reset fixed-header-container">
+                        <th style="position: sticky; top: 0;" class="sticky-column index3">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Name" onclick={sortRecs}>{custLabel.Name}</button>
+                        </th>
+                        <th style="top: 0;" class="index2">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Hoya_Account_ID__c" onclick={sortRecs}>{custLabel.Hoya_Account_ID}</button>
+                        </th>
+                        <th style="position: sticky; top: 0;">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Account_Status__c" onclick={sortRecs}>{custLabel.accountStatus}</button>
+                        </th>
+                        <th style="top: 0;" class="index2">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Shop_Postal_Code__c" onclick={sortRecs}>{custLabel.ZIP}</button>
+                        </th>
+                        <th style="top: 0;" class="index2">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Shop_City__c" onclick={sortRecs}>{custLabel.city}</button>
+                        </th>
+                        <th style="position: sticky; top: 0;" class="index2">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Shop_State__c" onclick={sortRecs}>{custLabel.State}</button>
+                        </th>
+                        <th style="position: sticky; top: 0;" class="index2">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Channel__c" onclick={sortRecs}>{custLabel.Channel}</button>
+                        </th>
+                        <th style="position: sticky; top: 0;">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Segmentation_Net__c" onclick={sortRecs}>{custLabel.AccountVisitTabSegmentation}</button>
+                        </th>
+                        <th style="position: sticky; top: 0;">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Seiko_Network__c" onclick={sortRecs}>{custLabel.HVC_Loyalty_Program}</button>
+                        </th>
+                         <th style="position: sticky; top: 0;">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Strategic_Value_Net_Sales__c" onclick={sortRecs}>{custLabel.StrategicValueNet} </button>
+                        </th>
+                        <th style="position: sticky; top: 0;">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Lenses_Net_Sales_Last_12Mo__c" onclick={sortRecs}>{custLabel.Lens_Net_Sales_L12Mo}</button>
+                        </th>
+                        <th style="position: sticky; top: 0;">
+                            <button class="slds-th__action sortable colormatch nameTagBig" name="Total_Visits_Planned__c" onclick={sortRecs}>{custLabel.TotalPlannedVisits}</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="accheadersection">
+                    <template for:each={displayedRecords} for:item="record">
+                        <tr class="slds-hint-parent draggable-item" key={record.Id} 
+                        data-record-id={record.Id} data-lenses-net-sales-last12mo={record.Lenses_Net_Sales_Last_12Mo__c}
+                        draggable="true" ondragstart={handleDragStart}> 
+                            <td class="sticky-column">
+                                <div class="slds-col">
+                                    <div class="draggable-row" data-id={record.Id} data-name={record.Name}>
+                                        <a href={record.recordUrl} target="_blank" data-record-id={record.Id} data-lenses-net-sales-last12mo={record.Lenses_Net_Sales_Last_12Mo__c}>
+                                            <span class="slds-p-around_none" data-id={record.Id}>
+                                                {record.Name}
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="position: static">{record.Hoya_Account_ID__c}</td>
+                            <td style="position: static">{record.Account_Status__c}</td>
+                            <td style="position: static">{record.Shop_Postal_Code__c}</td>
+                            <td style="position: static">{record.Shop_City__c}</td>
+                            <td style="position: static">{record.Shop_State__c}</td>
+                            <td style="position: static">{record.Channel__c}</td>
+                            <td style="position: static">{record.Segmentation_Net__c}</td>
+                            <td style="position: static">{record.Seiko_Network__c}</td>
+                            <td style="position: static">{record.Strategic_Value_Net_Sales__c}</td>
+                            <td style="position: static">{record.FormattedLenses_Net_Sales_Last_12Mo}</td>
+                            <td style="position: static">{record.Total_Visits_Planned__c}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </template>

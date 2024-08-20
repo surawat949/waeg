@@ -1,0 +1,67 @@
+<template>
+    <template if:true={isSameStage} for:index="index">
+        <li class="slds-item slds-var-m-around_small zoom" draggable="true" ondragstart={itemDragStart} onmouseover={showDeleteButton} onmouseout={hideDeleteButton} style={cardStyle}>
+            <article class="slds-tile slds-tile_board">
+                <div class="text" data-name={record.Name}>
+                    <a href={record.recordUrl} target="_blank" data-record-id={record.Id} onclick={navigateAccHandler} class={linkClass}>
+                        <span class="slds-p-around_none" data-id={record.Id}>
+                            {record.Name}
+                        </span>
+                    </a>
+                </div>    
+                <div class="slds-tile__detail slds-text-body_small">
+                        <p class="slds-truncate text">{custLabel.SFDC_V2_Seg} {record.Segmentation_Net__c}</p>
+                        <p class="slds-truncate text">{custLabel.SFDC_V2_SV} {strategicValueNetSales}</p>
+                        <p class="slds-truncate text">{custLabel.SFDC_Visits_Planned} {record.Total_Visits_Planned__c}</p>
+                </div>
+                <template if:true={showVisionaryFlag}>
+                    <lightning-icon icon-name="utility:opportunity" class="iconMargin Hoya-utility-icon" size="x-small" title={record.Seiko_Network__c}></lightning-icon>
+                </template>
+                <template if:true={showDoNotVisitFlag}>
+                    <lightning-icon icon-name="utility:ban" class="iconMargin red-utility-icon" size="x-small" title={custLabel.Do_Not_Visit}></lightning-icon>
+                </template>
+                <template if:true={showChainsFlag}>
+                    <lightning-icon icon-name="utility:groups" class="iconMargin grey-utility-icon" size="x-small" title={custLabel.SFDC_V2_Chain}></lightning-icon>
+                </template>
+                <template if:true={showProspectFlag}>
+                    <lightning-icon icon-name="utility:target_mode" class="iconMargin grey-utility-icon" size="x-small" title={custLabel.SFDC_V2_Prospect}></lightning-icon>
+                </template>
+                <template if:true={showOccasionalCustomerFlag}>
+                    <lightning-icon icon-name="utility:target_mode" class="iconMargin Hoya-utility-icon" size="x-small" title={custLabel.SFDC_V2_Occasional_Customer}></lightning-icon>
+                </template>
+                <template if:true={showNoRecentContactFlag}>
+                    <lightning-icon icon-name="utility:end_chat" class="iconMargin grey-utility-icon" size="x-small" title={custLabel.SFDC_V2_NoContact}></lightning-icon>
+                </template>
+                <button class="delete-button red-utility-icon" onclick={handleDelete} data-id={record.Id} title={custLabel.SFDC_V2_RemoveAcc}>
+                    <span class="delete-icon red-utility-icon" data-id={record.Id}>×</span>
+                </button>
+            </article>
+        </li>
+    </template>
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">{custLabel.tabLabelClose}</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">{custLabel.Confirm_Action}</h2>
+                </header>
+
+                <!-- Modal/Popup Body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <p>{custLabel.SFDC_V2_ModalConf} {record.Name} {custLabel.SFDC_V2_ModalConf1}</p>
+                </div>
+
+                <!-- Modal/Popup Footer -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal}>{custLabel.ButtonCancel}</button>
+                    <button class="slds-button slds-button_brand" onclick={confirmDelete}>{custLabel.SFDC_V2_Confirm}</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

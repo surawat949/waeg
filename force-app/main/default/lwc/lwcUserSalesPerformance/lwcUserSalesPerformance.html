@@ -1,0 +1,117 @@
+<template>
+    <template if:true={budget}>
+        <lightning-card title="Team (or User) Sales Performance">
+            <div class="table-responsive">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped">
+                    <thead>
+                        <tr class="slds-text-title_caps">
+                            <th scope="col">Monthly Performance</th>
+                            <th scope="col">APR</th>
+                            <th scope="col">MAY</th>
+                            <th scope="col">JUN</th>
+                            <th scope="col">JUL</th>
+                            <th scope="col">AUG</th>
+                            <th scope="col">SEP</th>
+                            <th scope="col">OCT</th>
+                            <th scope="col">NOV</th>
+                            <th scope="col">DEC</th>
+                            <th scope="col">JAN</th>
+                            <th scope="col">FEB</th>
+                            <th scope="col">MAR</th>
+                            <th scope="col">TOT YTD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Quota FY</td>
+                            <td>{budget.Quota1CY__c}</td>
+                            <td>{budget.Quota2CY__c}</td>
+                            <td>{budget.Quota3CY__c}</td>
+                            <td>{budget.Quota4CY__c}</td>
+                            <td>{budget.Quota5CY__c}</td>
+                            <td>{budget.Quota6CY__c}</td>
+                            <td>{budget.Quota7CY__c}</td>
+                            <td>{budget.Quota8CY__c}</td>
+                            <td>{budget.Quota9CY__c}</td>
+                            <td>{budget.Quota10CY__c}</td>
+                            <td>{budget.Quota11CY__c}</td>
+                            <td>{budget.Quota12CY__c}</td>
+                            <td>{budget.Quota_YTD__c}</td>
+                        </tr>
+                        <tr>
+                            <td>Sales FY</td>
+                            <td>{budget.LocalSales1CY__c}</td>
+                            <td>{budget.LocalSales2CY__c}</td>
+                            <td>{budget.LocalSales3CY__c}</td>
+                            <td>{budget.LocalSales4CY__c}</td>
+                            <td>{budget.LocalSales5CY__c}</td>
+                            <td>{budget.LocalSales6CY__c}</td>
+                            <td>{budget.LocalSales7CY__c}</td>
+                            <td>{budget.LocalSales8CY__c}</td>
+                            <td>{budget.LocalSales9CY__c}</td>
+                            <td>{budget.LocalSales10CY__c}</td>
+                            <td>{budget.LocalSales11CY__c}</td>
+                            <td>{budget.LocalSales12CY__c}</td>
+                            <td>{budget.Local_Sales_YTD__c}</td>
+                        </tr>
+                        <tr>
+                            <td>% Quota Achievement</td>
+                            <td>{budget.Quota_Ach_April__c}%</td>
+                            <td>{budget.Quota_Ach_May__c}%</td>
+                            <td>{budget.Quota_Ach_June__c}%</td>
+                            <td>{budget.Quota_Ach_July__c}%</td>
+                            <td>{budget.Quota_Ach_August__c}%</td>
+                            <td>{budget.Quota_Ach_September__c}%</td>
+                            <td>{budget.Quota_Ach_October__c}%</td>
+                            <td>{budget.Quota_Ach_November__c}%</td>
+                            <td>{budget.Quota_Ach_December__c}%</td>
+                            <td>{budget.Quota_Ach_January__c}%</td>
+                            <td>{budget.Quota_Ach_February__c}%</td>
+                            <td>{budget.Quota_Ach_March__c}%</td>
+                            <td>{budget.Quota_Ach_YTD__c}%</td>
+                        </tr>
+                        <tr>
+                            <td>Sales Last FY</td>
+                            <td>{budget.LocalSales1LY__c}</td>
+                            <td>{budget.LocalSales2LY__c}</td>
+                            <td>{budget.LocalSales3LY__c}</td>
+                            <td>{budget.LocalSales4LY__c}</td>
+                            <td>{budget.LocalSales5LY__c}</td>
+                            <td>{budget.LocalSales6LY__c}</td>
+                            <td>{budget.LocalSales7LY__c}</td>
+                            <td>{budget.LocalSales8LY__c}</td>
+                            <td>{budget.LocalSales9LY__c}</td>
+                            <td>{budget.LocalSales10LY__c}</td>
+                            <td>{budget.LocalSales11LY__c}</td>
+                            <td>{budget.LocalSales12LY__c}</td>
+                            <td>{budget.Local_Sales_LY_YTD__c}</td>
+                        </tr>
+                        <tr>
+                            <td>% Last year Achievement</td>
+                            <td>{budget.Sales_Apr_vsLY__c}%</td>
+                            <td>{budget.Sales_May_vsLY__c}%</td>
+                            <td>{budget.Sales_Jun_vsLY__c}%</td>
+                            <td>{budget.Sales_Jul_vsLY__c}%</td>
+                            <td>{budget.Sales_Aug_vsLY__c}%</td>
+                            <td>{budget.Sales_Sep_vsLY__c}%</td>
+                            <td>{budget.Sales_Oct_vsLY__c}%</td>
+                            <td>{budget.Sales_Nov_vsLY__c}%</td>
+                            <td>{budget.Sales_Dec_vsLY__c}%</td>
+                            <td>{budget.Sales_Jan_vsLY__c}%</td>
+                            <td>{budget.Sales_Feb_vsLY__c}%</td>
+                            <td>{budget.Sales_Mar_vsLY__c}%</td>
+                            <td>{budget.Sales_YTD_vsLY__c}%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </lightning-card>
+    </template>
+    <template if:false={budget}>
+        <lightning-card title="Team (or User) Sales Performance">
+            <div class="slds-m-around_medium">
+                No data available.
+            </div>
+        </lightning-card>
+    </template>
+</template>

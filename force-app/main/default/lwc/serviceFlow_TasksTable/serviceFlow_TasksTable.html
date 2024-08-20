@@ -1,0 +1,69 @@
+<template>
+
+	<div
+		class="slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none test-headerRegion forceListViewManagerHeader">
+		<div class="slds-grid slds-wrap slds-align_absolute-center">
+			<div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+				<div class="slds-grid">
+					<div class="slds-col slds-has-flexi-truncate firstHeaderRow">
+						<div class="slds-media slds-no-space slds-grow">
+							<div class="highlights-icon-container slds-avatar slds-m-right_small icon"
+								style="background-color: #4BC076">
+								<img src="https://hoya--waeg.sandbox.my.salesforce.com/img/icon/t4v35/standard/task_120.png" alt="" />
+                            </div>
+								<div class="slds-media__body slds-align-middle">
+									<div class="slds-breadcrumb slds-list_horizontal slds-wrap">
+										<div class="slds-breadcrumb__item slds-line-height--reset">
+											<span class="slds-var-p-right_x-small">Tasks</span></div>
+									</div>
+									<h2
+										class="slds-page-header__title listViewTitle slds-text-color--default slds-p-right--x-small slds-truncate">
+										<a href="javascript:void(0);" title="Tasks" class="test-drillin">Task
+											History</a>
+									</h2>
+								</div>
+							</div>
+						</div>
+						<div
+							class="slds-col slds-no-flex slds-grid slds-align-top slds-p-bottom--xx-small test-lvmForceActionsContainer">
+						</div>
+					</div>
+				</div>
+				<div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+
+					<div class="slds-grid slds-wrap">
+						<div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-6 montserratRegular">
+							<lightning-combobox name="Search Option" label="Status" value={searchFieldName}
+								placeholder="Select option" options={fieldOptions} onchange={handleFieldChange}>
+							</lightning-combobox>
+						</div>
+						<div class="slds-col slds-size_1-of-1 slds-medium-size_4-of-6 montserratRegular">
+							<lightning-input type="search" onchange={getSearchkey} onkeypress={handleSearchKeyChange}
+								class="slds-m-bottom_small" label="Search text"></lightning-input>
+						</div>
+					</div>
+				</div>
+			</div>
+			<template if:true={statusAggregate}>
+				<div class="slds-grid slds-wrap">
+					<template for:each={statusAggregate} for:item="aggr">
+						<div key={aggr.stat}
+							class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+							<a class="hrefcss" onclick={handleSearchOptionChange} data-value={aggr.stat}>
+								<div data-id="products"
+									class="slds-box slds-box_x-large slds-text-align_left slds-m-around_x-small boxcustomcss">
+									<b class="montserratBolddahsboard">{aggr.stat}<br/>
+                                <span class="montserratRegulardashboard">{aggr.recordCount}</span></b>
+								</div>
+							</a>
+						</div>
+					</template>
+				</div>
+			</template>
+		</div>
+		<div style="height: 400px;">
+			<lightning-datatable key-field="Id" data={data} columns={columns} load-more-offset="20"
+				onloadmore={handleLoadMore} enable-infinite-loading hide-checkbox-column show-row-number-column>
+			</lightning-datatable>
+		</div>
+</template>

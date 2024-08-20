@@ -1,0 +1,147 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="Ordering Habits">
+            <tr data-id="header1" class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title">{custLabel.OrderingHabits}</h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Manual Orders</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={ManualOrders} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+            
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Real Shape METS</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RealShapePrecal} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">HVC Systems</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={HVCSystems} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+            
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Standard Shape METS</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={StandardShapePrecal} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+        </div>
+        <div class="slds-var-p-left_x-small  slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Other Digital Orders</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={OtherDigitalOrders} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+            
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Boxing METS</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={BoxingPrecal} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+        </div>
+        <br/>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Uncut Lenses</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={UncutLenses} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+            
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Remote Edging</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RemoteEdging} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+            
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Mounting</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={Mounting} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+        
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Frames Provided By HVC</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={FramesByHVC} maximum-fraction-digits="1"></lightning-formatted-number>  %</span></div>
+            
+        </div>
+        <br/>
+    </div>
+    
+    <!--Lenses delayes before shipment-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="Lenses Delays">
+            <tr data-id="header1" class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title">{custLabel.AccountLensDelays}</h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped same day</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedSameDay} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % STOCK shipped same day</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={StockShippedSameDay} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 1 day</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin1Day} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % STOCK shipped in max 1 day</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={StockShippedin1Day} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+        </div>
+         <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 2 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin2Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % STOCK shipped in max 2 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={StockShippedin2Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+        </div>
+            <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 3 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin3Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+           
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % STOCK shipped in max 3 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={StockShippedin3Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 4 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin4Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+           
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % STOCK shipped in max 4 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={StockShippedin4Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 5 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin5Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % STOCK shipped in max 5 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={StockShippedin5Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+           
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 6 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin6Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+           
+            <div class="slds-col slds-size_4-of-12"><span></span></div>
+            <div class="slds-col slds-size_2-of-12"><span></span></div>
+           
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 7 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin7Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+           
+            <div class="slds-col slds-size_4-of-12"><span></span></div>
+            <div class="slds-col slds-size_2-of-12"><span></span></div>
+            
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 8 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin8Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+           
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Shipment average delay in days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={AvgDelay} maximum-fraction-digits="2"></lightning-formatted-number></span></div>
+            
+        </div>
+        <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 9 days</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin9Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+            
+            <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Shipment Stock average delay</label></span></div>
+            <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={StockAvgDelay} maximum-fraction-digits="2"></lightning-formatted-number></span></div>
+            
+        </div>
+            <div class="slds-var-p-left_x-small slds-grid slds-gutters">
+                <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses % RX shipped in max 10 days</label></span></div>
+                <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxShippedin10Days} maximum-fraction-digits="0"></lightning-formatted-number>  %</span></div>
+                
+                <div class="slds-col slds-size_4-of-12"><span><label class="slds-form-element__label">Lenses Shipment RX average delay</label></span></div>
+                <div class="slds-col slds-size_2-of-12"><span><lightning-formatted-number value={RxAvgDelay} maximum-fraction-digits="2"></lightning-formatted-number></span></div>
+            </div>
+            <br/>
+    </div> 
+</template>

@@ -1,0 +1,369 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId"
+    access="public"
+    controller="OpportunityStageLayoutController">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="force:showToast" action="{!c.doInit}" />
+    <aura:attribute name="numberOfVisits" type="Integer"/>
+    <aura:attribute name="opp" type="Opportunity"/>
+    <aura:attribute name="acc" type="Account"/>
+    <aura:attribute name="fields" type="String[]"/>
+    <aura:attribute name="fieldoppList" type="String[]"/>
+    <aura:attribute name="accfields" type="String[]"/>
+    <aura:attribute name="accountId" type="Id"/>
+    <aura:attribute name="userVisitId" type="String" />
+    <aura:attribute name="priceFields" type="String[]"/>
+    <aura:attribute name="visitfields" type="String[]" default="['Assigned_to__c', 'Visit_Reason__c', 'Start_Time__c','End_Time__c']" />
+    <aura:attribute name="seikoData" type="Seiko_Data__c"/>
+    <aura:attribute name="SeikoDataFields" type="String[]" default="['Segmentation__c']"/>
+    <aura:attribute name="accFieldAct1" type="String[]" default="['Name', 'Shop_street__c', 'Shop_Postal_Code__c','Shop_City__c','Phone', 'Last_Visit_date__c']"/>
+    <aura:attribute name="accStep3Act2" type="String[]" default="['Selected_Atol_kickback_RFA__c','Margin_simulation_done__c','Estimated_margin_gain__c','Remaining_blocking_points__c','Atol_Optician_level_of_interest__c']"/>
+    <aura:attribute name="accStep4Act2" type="String[]" default="['Additional_ASM_Discount__c','Type_of_Discount__c']"/>
+    <aura:attribute name="accStep4Act3" type="String[]" default="['Optician_interest_for_SVS__c','Seiko_Vision_Specialist_Offer__c']"/>
+    <aura:attribute name="DataContractRegistrationFields" type="String[]" default="['Onboarding_Customer__c', 'Onboarding_date__c','Seiko_Network__c']"/>
+    <aura:attribute name="svsProgramfields" type="String[]" default="['SVS_Pricelist__c','SVS_Pricelist_activation__c','SVS_Starting_kit__c','Starting_kit_setting_up__c','SVS_Communication_kit__c','SVS_Communication_kit_setting_up__c','SVS_Marketing_campaigns__c','SVS_Marketing_campaigns_activation__c','SVS_Purchase_Registration__c','SVS_Purchase_Registration_activation__c']"/>
+    <aura:attribute name="accStep6Act2" type="String[]" default="['AnnualRevenue', 'Prev_3_months_avg_sls__c', 'Last_month_sales__c', 'Visit_Frequency_Status__c','Last_Visit_date__c']"/>
+    <aura:attribute name="accStep6Act3" type="String[]" default="['X600_mo_already_achieved__c', 'Annual_Expected_Sales__c']"/>
+    
+    <aura:attribute name="companyName" type="String"/>
+
+<!-- STEP 1 -->
+<aura:if isTrue="{!v.opp.StageName=='1. 1st Appointment'}">
+    <div class="slds-theme_default slds-box">      
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 1: Take your first appointment</span>
+            </button>
+        </h3>
+        <lightning:recordForm aura:id="accRecordForm" recordId="{!v.accountId}" objectApiName="Account"
+        fields="{!v.accFieldAct1}" columns="1" mode="readonly"
+         density="auto"/>
+    </div>
+
+    <div class="slds-theme_default slds-box">      
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Segmentation</span>
+            </button>
+        </h3>
+        <lightning:recordForm aura:id="accRecordForm2" recordId="{!v.seikoData.Id}" objectApiName="Seiko_Data__c"
+        fields="{!v.SeikoDataFields}" columns="1" mode="readonly"
+         density="auto"/>
+    </div>
+    <div class="slds-theme_default slds-box">      
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Tacticom</span>
+            </button>
+        </h3>
+        <lightning:recordEditForm aura:id="accTactForm"
+            objectApiName="Account" recordId="{!v.accountId}"
+            onsuccess="{!c.handleTacticomSuccess}"
+        >
+            <aura:if isTrue="{!v.companyName=='SOF'}">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="TACTICOM_SOF__c"/></div>
+                </div>
+                <aura:if isTrue="{!v.acc.TACTICOM_SOF__c==null}"> 
+                    <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning">
+                        Your account is not linked to your TACTICOM. Select a sub-area.
+                    </div>
+                </aura:if><aura:set attribute="else">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-1"><lightning:inputField disabled="true" fieldName="TACTICOM_SOF__c"/></div>
+                    </div>
+                </aura:set>
+            </aura:if>
+
+            <aura:if isTrue="{!v.companyName=='HLFR'}">
+					
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="TACTICOM_HLFR__c"/></div>
+                </div>
+                <aura:if isTrue="{!v.acc.TACTICOM_HLFR__c==null}"> 
+                    <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning">
+                        Your account is not linked to your TACTICOM. Select a sub-area.
+                    </div>
+                </aura:if>
+                <aura:set attribute="else">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-1"><lightning:inputField disabled="true" fieldName="TACTICOM_HLFR__c"/></div>
+                    </div>
+                </aura:set>
+            </aura:if>
+
+            <lightning:button class="slds-m-top_small" type="submit" label="Save" />
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:outputField fieldName="TACTICOM_Owner__c" readonly="true"/></div>
+            </div>
+          </lightning:recordEditForm>
+
+          <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Financial Information</span>
+            </button>
+        </h3>
+        <lightning:recordForm aura:id="accRecordForm4" recordId="{!v.accountId}" objectApiName="Account"
+        fields="{!v.accFieldAct14}" columns="1" mode="readonly"
+         density="auto"/>
+    </div>
+</aura:if>
+
+<!-- STEP 2-->
+<aura:if isTrue="{!v.opp.StageName=='2. Discovery'}">
+       
+        <div class="slds-theme_default slds-box">      
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 1</span>
+                </button>
+            </h3>
+            <lightning:recordForm aura:id="accRecordForm" recordId="{!v.accountId}" objectApiName="Account"
+                fields="{!v.accfields}" columns="2" mode="view"
+                onsubmit="{!c.handleAccountSubmit}" density="auto"
+                />
+        </div>
+        <div class="slds-theme_default slds-box">      
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle3" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 2</span>
+                </button>
+            </h3>
+            <lightning:recordForm aura:id="oppRecordForm" recordId="{!v.recordId}" objectApiName="Opportunity"
+                fields="{!v.fieldoppList}" columns="2" mode="view"
+                onsubmit="{!c.handleSubmitOpp2}" density="auto"
+                />
+        </div>
+    </aura:if>
+<!-- STEP 3-->
+<aura:if isTrue="{!v.opp.StageName=='3. ATOL Agreement'}">
+<div class="slds-theme_default slds-box">      
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 1</span>
+        </button>
+    </h3>
+    
+    <lightning:recordForm aura:id="myRecordForm" recordId="{!v.recordId}" objectApiName="Opportunity"
+    fields="{!v.priceFields}" columns="1" mode="view"
+    onsubmit="{!c.handleSubmit}" density="auto"
+    />
+    
+</div>
+<div class="slds-theme_default slds-box">      
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 2</span>
+        </button>
+    </h3>
+    
+    <lightning:recordForm aura:id="myRecordForm32" recordId="{!v.recordId}" objectApiName="Opportunity"
+    fields="{!v.accStep3Act2}" columns="1" mode="view"
+    onsubmit="{!c.handleSubmit32}" density="auto"
+    onload="{!c.doInit}"/>
+</div>
+</aura:if>
+
+<!-- STEP 4-->
+<aura:if isTrue="{!v.opp.StageName=='4. Contract Optimisation'}">
+<div class="slds-theme_default slds-box">      
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 1</span>
+        </button>
+    </h3>
+    
+    <lightning:recordForm aura:id="myRecordForm" recordId="{!v.recordId}" objectApiName="Opportunity"
+    fields="{!v.priceFields}" columns="1" mode="view"
+    onsubmit="{!c.handleSubmit}" density="auto"
+    />
+</div>
+<div class="slds-theme_default slds-box">      
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 2</span>
+        </button>
+    </h3>
+    
+    <lightning:recordForm aura:id="form42" recordId="{!v.recordId}" objectApiName="Opportunity"
+    fields="{!v.accStep4Act2}" columns="1" mode="view"
+    onsubmit="{!c.handleSubmit42}" density="auto"
+    />
+</div>
+<div class="slds-theme_default slds-box">      
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 3</span>
+        </button>
+    </h3>
+    
+    <lightning:recordForm aura:id="form43" recordId="{!v.recordId}" objectApiName="Opportunity"
+    fields="{!v.accStep4Act3}" columns="1" mode="view"
+    onsubmit="{!c.handleSubmit43}" density="auto"
+    />
+</div>
+</aura:if>
+
+<!-- STEP 5-->
+<aura:if isTrue="{!v.opp.StageName=='5. Brand Activation'}">
+    <div class="slds-theme_default slds-box">      
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 1 - Contract Registration</span>
+            </button>
+        </h3>
+        
+        <lightning:recordForm aura:id="contractRecordForm" recordId="{!v.accountId}" objectApiName="Account"
+        fields="{!v.DataContractRegistrationFields}" columns="2" mode="view"
+         density="auto"/>
+    </div>
+    <div class="slds-theme_default slds-box">      
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 2 - Seiko Services</span>
+            </button>
+        </h3>
+        
+        <lightning:recordForm aura:id="myRecordForm" recordId="{!v.seikoData.Id}" objectApiName="Seiko_Data__c"
+        fields="{!v.fields}" columns="2" mode="view"
+        onsubmit="{!c.handleSubmit}" density="auto"
+        onload="{!c.doInit}"/>
+    </div>
+    
+    <div class="slds-theme_default slds-box">      
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 3 - SVS Program</span>
+            </button>
+        </h3>
+        
+        <lightning:recordForm aura:id="svsProgramForm" recordId="{!v.seikoData.Id}" objectApiName="Seiko_Data__c"
+        fields="{!v.svsProgramfields}" columns="2" mode="view"
+        onsubmit="{!c.SvsProgramSubmit}" density="auto"/>
+    </div>
+</aura:if>
+<!-- STEP 6-->
+<aura:if isTrue="{!v.opp.StageName=='6. Close of Opportunity'}">
+    
+    <div class="slds-theme_default slds-box">      
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 1</span>
+            </button>
+        </h3>
+        
+        <lightning:recordForm aura:id="accountRecordForm" recordId="{!v.accountId}" objectApiName="Account"
+        fields="{!v.accStep6Act2}" columns="2" mode="view"
+         density="auto"/>
+    </div>
+    <div class="slds-theme_default slds-box">      
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Activity 2</span>
+            </button>
+        </h3>
+        
+        <lightning:recordForm aura:id="accountRecordForm" recordId="{!v.recordId}" objectApiName="Opportunity"
+        fields="{!v.accStep6Act3}" columns="2" mode="view"
+         density="auto"/>
+    </div>
+
+    <div class="slds-theme_default slds-box"> 
+            <lightning:recordEditForm aura:id="surveyEditForm"
+                objectApiName="SVS_hunting_opportunity_survey__c"
+                onsuccess="{!c.handleSurveySuccess}">
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate">Activity 3:<br/>What motivated you to work with Seiko?</span>
+                </button>
+            </h3>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="X1_1_Reason_1__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="X1_1_Comment__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="X1_2_Reason_2__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="X1_2_Comment__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="X1_3_Reason_3__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="X1_3_Comment__c"/></div>
+            </div>
+
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate">Activity 4:<br/>Your 3 best experiences with Seiko so far?</span>
+                </button>
+            </h3>
+
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="X2_1_Point_1__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="X2_1_Comment__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="X2_2_Point_2__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="X2_2_Comment__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="X2_3_Point_3__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="X2_3_Comment__c"/></div>
+            </div>
+
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate">Activity 5:<br/>Seiko’s 3 main areas of improvement?</span>
+                </button>
+            </h3>
+
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="X3_1_Point_1__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="X3_1_Comment__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="X3_2_Point_2__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="X3_2_Comment__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="X3_3_Point_3__c"/></div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="X3_3_Comment__c"/></div>
+            </div>
+
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                <button aria-controls="toggle" id="toggle" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate">Activity 6:<br/>Do you validate your SVS trial period?</span>
+                </button>
+            </h3>
+
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Final_decision__c" onchange="{!c.handleDecision}"/> </div>
+                <div class="slds-col slds-size_1-of-2"> <lightning:inputField fieldName="Date_of_decision__c"/></div>
+            </div>
+            <lightning:inputField fieldName="Opportunity__c" value="{!v.opp.Id}"/>
+            <lightning:inputField fieldName="Account__c" value="{!v.accountId}"/>
+
+            <lightning:button class="slds-m-top_small" type="submit" label="Save" />
+        </lightning:recordEditForm>
+    </div>
+
+
+</aura:if>
+</aura:component>

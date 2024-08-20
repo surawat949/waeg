@@ -1,0 +1,40 @@
+<template>
+    <lightning-tabset variant="scoped">
+        <lightning-tab label={custLabel.potentialTab}>    
+            <c-tab-statistics-potential received-id = {recordId} is-german-account = {isGermanyAccount}> </c-tab-statistics-potential>
+        </lightning-tab>
+        <template lwc:if={isGermanyAccount}>
+            <lightning-tab label={custLabel.grossSales}>
+                <c-tab-statistics-gross-sales received-id = {recordId}> </c-tab-statistics-gross-sales>
+            </lightning-tab>
+        </template>
+        <template lwc:else>
+            <lightning-tab label={custLabel.netSales}>
+                <c-tab-statistics-net-sales received-id = {recordId}> </c-tab-statistics-net-sales>
+            </lightning-tab>
+        </template>
+        <template if:true={showAllTab}>
+            <lightning-tab label={custLabel.returns}>
+                <c-tab-statistics-returns received-id = {recordId}></c-tab-statistics-returns>
+            </lightning-tab>
+            <lightning-tab label={custLabel.shipments}>
+                <c-tab-statistics-shipments received-id = {recordId}></c-tab-statistics-shipments>
+            </lightning-tab>
+            <lightning-tab label={custLabel.pdf}>
+                <c-tab-statistics-product-mix-pdf received-id = {recordId}></c-tab-statistics-product-mix-pdf>
+                <!--<div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                    <img src="/projRes/ui-home-private/emptyStates/noTasks.svg" class="slds-illustration__svg" alt=""/>
+                    <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                        <b>UNDER DEVELOPMENT. Nothing to see so far.</b>
+                    </div>
+                </div>-->
+                
+            </lightning-tab>
+        </template>
+        <template if:true ={showSalesChannelTab}>
+        <lightning-tab label="Sales Channel">
+            <c-tab-statistics-sales-channel received-id = {recordId}></c-tab-statistics-sales-channel>
+        </lightning-tab>
+        </template>
+    </lightning-tabset>
+</template>

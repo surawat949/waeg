@@ -1,0 +1,226 @@
+<template>
+    <!--loader-->
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="tabAccountInvoice" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{custLbl.lblCustomerChannel}</p>
+                    </h3>
+                </td>
+                <td>
+                    <p align="right"><lightning-button variant="brand-outline" label="Add Parent Account" onclick={openModal}></lightning-button></p>
+                </td>
+            </tr>
+        </table>
+        <div class="slds-grid slds-m-left_medium slds-m-top_medium slds-m-right_medium">
+            <div class="slds-col slds-size_1-of-2 slds-m-right_medium">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Account_Obj}
+                    fields={fields1}
+                    mode="readonly"
+                    columns="2"
+                ></lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-m-right_medium">
+                <div class="slds-form-element slds-form-element_readonly slds-m-right_xx-large">
+                    <span class="slds-form-element__label">{custLbl.lblNumChild}</span>
+                    <div class="slds-form-element__static">{NumberOfChild}</div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_medium slds-m-top_xx-small slds-m-right_medium slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name="Account"
+                    fields={buyingGrpFields}
+                    mode="readonly"
+                    columns="2"
+                    density="comfy"
+                ></lightning-record-form>
+            </div>
+        </div>
+    </div>
+    <template if:true={showAllTab}>
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+            <table class="slds-table slds-table_bordered" aria-label="tabAccountInvoice" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td>
+                        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                            <p align="left">{custLbl.lblDoor}</p>
+                        </h3>
+                    </td>
+                </tr>
+            </table>
+            <div class="slds-grid slds-m-left_medium slds-m-top_medium slds-m-right_medium slds-m-bottom_small">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name="Account"
+                        fields={DoorFields}
+                        mode="view"
+                        columns="2"
+                        density="comfy"
+                    ></lightning-record-form>
+                </div>
+            </div>
+        </div>
+    </template>
+    <!--This is for modal pop-up content -->
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">{custLbl.lblClose}</span>
+                    </button>
+                   
+                    <p class="slds-m-left_medium slds-m-right_medium">
+                        <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                            <lightning-progress-step label={custLbl.lblAddParent} value="1"></lightning-progress-step>
+                            <lightning-progress-step label={custLbl.lblCreateTask} value="2"></lightning-progress-step>
+                        </lightning-progress-indicator>
+                    </p>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <div class="stepOne">
+                        <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                            <div class="slds-col slds-size_1-of-1">
+                                <span class="slds-form-element__label"></span>
+                                <div class="slds-form-element__control slds-has-divider--bottom">
+                                    <span class="slds-form-element__static">
+                                        <label class="slds-form-element__label" for="form-input-0">
+                                            <abbr class="slds-required" title="required">*</abbr>
+                                            {custLbl.lblParent}
+                                        </label>
+                                        <c-custom-lookup-parent icon-name="standard:account" s-object-api-name="account" label="" id="form-input-0"
+                                            onlookupupdate={handleLookupSelectionWhatId} placeholder="...Search Account..." default-record-id={receivedId} received-id={receivedId}>
+                                        </c-custom-lookup-parent>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium">
+                            <div class="slds-col slds-size_1-of-1 slds-hide">
+                                <lightning-input type="text" name="form-input-1" data-my-id="form-input-1" label="Hoya Account Id" onchange={HoyaAccountIdCH}></lightning-input>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium">
+                            <div class="slds-col slds-size_1-of-1 slds-hide">
+                                <lightning-input type="text" name="form-input-2" data-my-id="form-input-2" label="Account Name" onchange={AccNameCH}></lightning-input>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium">
+                            <div class="slds-col slds-size_1-of-1"><br><br></div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_large">
+                            <div class="slds-col slds-size_1-of-1">
+                                <p class="slds-p-horizontal_medium" align="right">
+                                    <lightning-button variant="brand" label={custLbl.lblNext} onclick={gotoStepTwo} icon-name="utility:jump_to_right"></lightning-button>&nbsp;
+                                    <lightning-button variant="brand-outline" label={custLbl.lblClose} onclick={closeModal}></lightning-button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stepTwo slds-hide">
+                        <div class="slds-form-element__control">
+                            <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium">
+                                <div class="slds-col slds-size_1-of-1">
+                                    <span class="slds-form-element__label"></span>
+                                    <div class="slds-form-element__control slds-has-divider--bottom">
+                                        <span class="slds-form-element__static">
+                                            <label class="slds-form-element__label" for="form-input-3">
+                                                <abbr class="slds-required" title="required" aria-disabled="true">*</abbr>
+                                                {custLbl.lblrelatedTo}
+                                            </label>
+                                        </span>
+                                        <c-custom-lookup-account icon-name="standard:account" s-object-api-name="account" label="" id="form-input-3" disabled="true" data-my-id="form-input-3"
+                                            onlookupupdate={handleLookupRelatedTo} placeholder="...Search Account..." default-record-id={receivedId} received-id={receivedId}>
+                                        </c-custom-lookup-account>
+                                    </div>
+                                    <lightning-input type="text" value={receivedId} data-my-id="form-input-6" name="form-input-6" class="slds-hide" onchange={whatIdCH}></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_small">
+                                <div class="slds-col slds-size_1-of-1">
+                                    <c-custom-lookup-contact icon-name="standard:contact" s-object-api-name="contact" label={custLbl.lblAccContact} id="form-input-4" data-my-id="form-input-4"
+                                        onlookupupdate={handleLookupSelectionAccounContact} placeholder={custLbl.lblsearchContact} received-id={receivedId}>
+                                    </c-custom-lookup-contact>
+                                    <lightning-input type="text" class="slds-hide" value={ContactName} name="form-input-11" data-my-id="form-input-11" onchange={contactCH}></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_small">
+                                <div class="slds-col slds-size_1-of-1">
+                                    <lightning-input type="text" label={custLbl.lblSubject} required="true" name="form-input-5" data-my-id="form-input-5" value={defaultSubjectValue} onchange={subjectCH}></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_small">
+                                <div class="slds-col slds-size_1-of-1">
+                                    <lightning-textarea label={custLbl.lblInstruction} name="form-input-5" data-my-id="form-input-5" value={defaultComment} onchange={descriptionCH}></lightning-textarea>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_small">
+                                <div class="slds-col slds-size_1-of-1">
+                                    <label class="slds-form-element__label" for="form-input-7">
+                                        <abbr class="slds-required" title="required">*</abbr>{custLbl.lblassignedTo}
+                                    </label>
+                                    <c-custom-lookup-user icon-name="standard:user" s-object-api-name="user" label=""
+                                        onlookupupdate={handleLookupSelectionOwnerId} placeholder={custLbl.lblSearchUsr} id="form-input-7">
+                                    </c-custom-lookup-user>
+                                    <lightning-input type="text" class="slds-hide" onchange={ownerIdCH} id="form-input-8" data-my-id="form-input-8"></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_small">
+                                <div class="slds-col slds-size_1-of-1">
+                                    <lightning-input type="date" label={custLbl.lblDuedate} id="form-input-9" data-my-id="form-input-9" onchange={duedateCH}></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_small">
+                                <div class="slds-col slds-size_1-of-1">
+                                    <c-custom-lookup-user icon-name="standard:user" s-object-api-name="user" label={custLbl.lblCopyTo}
+                                        onlookupupdate={handleLookupSelectionCopiedTo} placeholder={custLbl.lblSearchUsr}>
+                                    </c-custom-lookup-user>
+                                    <lightning-input type="text" class="slds-hide" name="form-input-10" data-my-id="form-input-10" onchange={copyToCH}></lightning-input>
+                                </div>
+                            </div>
+							<div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_small">
+                                <div class="slds-col slds-size_1-of-1">
+                                    <lightning-combobox
+                                        name="Status"
+                                        label={custLbl.lblStatus}
+                                        value={value}
+                                        placeholder="Select Status"
+                                        options={StatusOptions}
+                                        required="true"
+                                        onchange={statusCH}
+                                    ></lightning-combobox>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium">
+                                <div class="slds-col slds-size_1-of-1">
+                                    <p class="slds-p-horizontal_medium" align="right"> 
+                                        <lightning-button variant="brand-outline" label={custLbl.lblBack} onclick={goBackToStepOne} icon-name="utility:jump_to_left"></lightning-button>&nbsp;
+                                        <lightning-button variant="brand" label={custLbl.lblSave} onclick={handledCreateTask} icon-name="utility:save"></lightning-button>&nbsp;
+                                        <lightning-button variant="brand-outline" label={custLbl.lblClose} onclick={closeModal}></lightning-button>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!--End Modal Section-->
+</template>

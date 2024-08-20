@@ -1,0 +1,81 @@
+<apex:page standardController="Account" extensions="AccountSeikoDataPageController" showHeader="false" lightningStylesheets="true"  docType="html-5.0" >
+<apex:messages />
+<div class="slds">
+    <apex:form >
+        <apex:pageBlock mode="maindetail">
+            <apex:pageBlockButtons location="top" >
+                <apex:commandButton value="Save" action="{!save}" id="saveButton" />
+            </apex:pageBlockButtons>
+
+            <table class="list" >
+                <thead>
+                    <tr class="headerRow">
+                        <th>&nbsp;</th>
+                        <th colspan="2" style="text-align:center;">Morning</th>
+                        <th colspan="2" style="text-align:center;">Afternoon</th>
+                    </tr>
+                    <tr class="headerRow">
+                        <th>&nbsp;</th>
+                        <th style="text-align:center;">Open</th>
+                        <th style="text-align:center;">Close</th>
+                        <th style="text-align:center;">Open</th>
+                        <th style="text-align:center;">Close</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="dataRow">
+                        <th>Monday</th>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Mon_AM_open__c}" style="widht:100px;"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Mon_AM_close__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Mon_PM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Mon_PM_close__c}"/></td>
+                    </tr>
+                    <tr class="dataRow">
+                        <th>Tuesday</th>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Tue_AM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Tue_AM_close__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Tue_PM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Tue_PM_close__c}"/></td>
+                    </tr>
+                    <tr class="dataRow">
+                        <th>Wednesday</th>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Wed_AM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Wed_AM_close__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Wed_PM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Wed_PM_close__c}"/></td>
+                    </tr>
+                    <tr class="dataRow">
+                        <th>Thursday</th>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Thu_AM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Thu_AM_close__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Thu_PM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Thu_PM_close__c}"/></td>
+                    </tr>
+                    <tr class="dataRow">
+                        <th>Friday</th>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Fri_AM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Fri_AM_close__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Fri_PM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Fri_PM_close__c}"/></td>
+                    </tr>
+                    <tr class="dataRow">
+                        <th>Saturday</th>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Sat_AM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Sat_AM_close__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Sat_PM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Sat_PM_close__c}"/></td>
+                    </tr>
+                    <tr class="dataRow">
+                        <th>Sunday</th>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Sun_AM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Sun_AM_close__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Sun_PM_open__c}"/></td>
+                        <td style="text-align:center;"><apex:inputField type="time" value="{!data.Sun_PM_close__c}"/></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </apex:pageBlock>
+    </apex:form>
+</div>
+</apex:page>

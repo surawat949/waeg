@@ -1,0 +1,8 @@
+<!--
+ - Created by thomas.schnocklake on 10.01.18.
+ -->
+
+<aura:event type="COMPONENT" description="FullCalendarViewChangeEvent">
+    <aura:attribute name="start" type="Datetime"/>
+    <aura:attribute name="end" type="Datetime"/>
+</aura:event>

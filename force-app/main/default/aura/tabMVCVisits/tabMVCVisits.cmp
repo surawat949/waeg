@@ -1,0 +1,31 @@
+<aura:component controller="tabChatterProfileUserDetail"  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" 
+access="global"
+description="MVCVisitsComp">
+<aura:attribute name='showTab' type='String' default='false'/>
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+<lightning:tabset variant="scoped">
+    <lightning:tab label="{!$Label.c.Tacticom}">
+        <c:tabMVCVisitsTacticom receivedId = "{!v.recordId}"></c:tabMVCVisitsTacticom>
+    </lightning:tab>
+    <aura:if isTrue="{!v.showTab}" >
+    <lightning:tab label="{!$Label.c.tabCampOpp}">
+        <c:tabMVCVisitsCampOpp receivedId = "{!v.recordId}"></c:tabMVCVisitsCampOpp>
+    </lightning:tab>
+    </aura:if>
+    <lightning:tab label="{!$Label.c.tabAccountClinicVisitReport}">
+        <c:tabMVCVisitsReports receivedId = "{!v.recordId}"></c:tabMVCVisitsReports>
+    </lightning:tab>
+    <lightning:tab label="{!$Label.c.tabAccountClinicVisitTraining}">
+        <c:tabMVCVisitsTraining receivedId = "{!v.recordId}"></c:tabMVCVisitsTraining>
+    </lightning:tab>
+    <!--lightning:tab label="{!$Label.c.Account_label_Showpad}">
+        <c:tabMVCVisitsShowpadApp ></c:tabMVCVisitsShowpadApp>
+    </lightning:tab-->
+    <lightning:tab label="{!$Label.c.tabContactNearby}">
+        <c:tabMVCVisitsContactNearby receivedId = "{!v.recordId}"></c:tabMVCVisitsContactNearby>
+    </lightning:tab>
+</lightning:tabset>
+
+
+</aura:component>

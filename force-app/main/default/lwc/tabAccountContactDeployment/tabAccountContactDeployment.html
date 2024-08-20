@@ -1,0 +1,259 @@
+<template>
+    <lightning-card>
+        <lightning-modal-header label="New Contact"></lightning-modal-header>
+        <div class="slds-is-relative slds-m-around_large slds-align_absolute-center" style="min-height: 100px;" 
+                if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+        </div>
+        <div if:true={errors} class="slds-notify slds-notify_alert slds-alert_error">
+            {errors}
+        </div>
+        <template if:false={isLoading}>
+            <header>
+                <p class="slds-m-left_medium slds-m-right_medium">
+                    <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                        <lightning-progress-step label={labelContactName} value="1"></lightning-progress-step>
+                        <lightning-progress-step label={labelContactProfile} value="2"></lightning-progress-step>
+                        <lightning-progress-step label={labelContactCommunication} value="3"></lightning-progress-step>
+                        <lightning-progress-step label={labelContactPortal} value="4" class="slds-hide" data-my-id="stepPortal" id="stepPortal"></lightning-progress-step>
+                    </lightning-progress-indicator>
+                </p>    
+            </header>
+        </template>
+        <lightning-messages></lightning-messages>
+        <br>
+            <div class="stepOne">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-1"><p class="slds-m-left_medium">{labelStep1}<br><font color="#FF3333"><strong>*</strong></font>&nbsp;<strong>{labelMessage1}</strong></p></div>
+                </div><br>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-6"><p class="slds-m-left_medium"><lightning-input type="radio" name="salutation" id="mr" data-my-id="mr" label={labelMr} onclick={handleClickCheck1} onchange={handleClickCheck1}></lightning-input></p></div>
+                    <div class="slds-col slds-size_1-of-6"><p class="slds-m-left_medium"><lightning-input type="radio" name="salutation" id="mrs" data-my-id="mrs" label={labelMrs} onclick={handleclickCheck2} onchange={handleClickCheck2}></lightning-input></p></div>
+                    <div class="slds-col slds-size_1-of-6"><p class="slds-m-left_medium"><lightning-input type="radio" name="salutation" id="miss" data-my-id="miss" label={labelMiss} onclick={handleClikCheck5} onchange={handleClikCheck5}></lightning-input></p></div>
+                    <div class="slds-col slds-size_1-of-6"><p class="slds-m-left_medium"><lightning-input type="radio" name="salutation" id="dr" data-my-id="dr" label={labelDr} onclick={handleClickCheck3} onchange={handleClickCheck3}></lightning-input></p></div>
+                    <div class="slds-col slds-size_1-of-6"><p class="slds-m-left_medium"><lightning-input type="radio" name="salutation" id="prof" data-my-id="prof" label={labelProf} onclick={handleClickCheck4} onchange={handleClickCheck4}></lightning-input></p></div>
+                    <div class="slds-col slds-size_1-of-6 slds-m-right_medium">
+                        <p class="slds-m-right_large">
+                            <lightning-combobox
+                                    data-my-id="OtherSalutation"
+                                    name="salutation"
+                                    value={value}
+                                    onchange={handleDropDownListChange}
+                                    placeholder={labelOthSalutPlace}
+                                    options={options}
+                                    label={labelOthSalut}>
+                            </lightning-combobox>
+                        </p>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-3">
+                        <p class="slds-m-left_medium"><lightning-input type="text" label={labelFirstname} id="form-input-01" name="form-input-01" data-my-id="form-input-01" required="true" onchange={handleFirstNameChange}></lightning-input></p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <p class="slds-m-right_medium"><lightning-input type="text" label={labelLastname} id="form-input-02" name="form-input-02" data-my-id="form-input-02" required="true" onchange={handleLastNameChange}></lightning-input></p>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-3">
+                        <p class="slds-m-left_medium"><lightning-input type="text" label={labelTitle} id="form-input-03" name="form-input-03" data-my-id="form-input-03" onchange={handleTitleChange}></lightning-input></p>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-1">
+                        <p class="slds-m-right_medium slds-m-bottom_small" align="right"><lightning-button class="slds-m-top_small" label={labelNext} onclick={goToStepTwo} variant="brand"></lightning-button></p>
+                    </div>
+                </div>
+            </div>
+            <div class="stepTwo slds-hide">
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-1 slds-m-left_small">{labelStep2}<br><strong>{labelMessage2}</strong>
+                    </div>
+                </div><br>
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-1 slds-m-left_small">{labelLastname}<br>
+                        <strong>{salut_value}&nbsp;{firstname}&nbsp;{lastname}, {title}</strong>
+                    </div>
+                </div><br>
+                <div class="slds-form-element slds-form-element_vertical slds-m-left_small">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-4">
+                            <p class="slds-m-left_medium slds-m-top_medium"><strong><font color="#FF3333">*</font></strong>&nbsp;<strong><lightning-formatted-text value={labelRole}></lightning-formatted-text>&nbsp;:&nbsp;</strong></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <ul class="slds-list_vertical">
+                                <template for:each={ShopOwnerRecType} for:item="rt">
+                                    <span key={rt.values}>
+                                        <li class="slds-m-top_medium"><lightning-input type="radio" name="recordtype" data-my-id="recordtypeid" data-key="recordtypeid" value={rt.values} label={rt.label} onclick={handleClickRcordType} onchange={handleClickRcordType}></lightning-input></li>
+                                    </span>
+                                </template>
+                                <template for:each={EmployeeRecType} for:item="rt">
+                                    <span key={rt.values}>
+                                        <li class="slds-m-top_medium"><lightning-input type="radio" name="recordtype" data-my-id="recordtypeid" data-key="recordtypeid" value={rt.values} label={rt.label} onclick={handleClickRcordType} onchange={handleClickRcordType}></lightning-input></li>
+                                    </span>
+                                </template>
+                                <template for:each={OpthalRecType} for:item="rt">
+                                    <span key={rt.values}>
+                                        <li class="slds-m-top_medium"><lightning-input type="radio" name="recordtype" data-my-id="recordtypeid" data-key="recordtypeid" value={rt.values} label={rt.label} onclick={handleClickRcordType} onchange={handleClickRcordType}></lightning-input></li>
+                                    </span>
+                                </template>
+                                <li class="slds-m-top_medium"><lightning-input type="radio" name="recordtype" data-my-id="otherrectype" label={labelOthRecType} onclick={handleOtherRecordType}></lightning-input></li>
+                            </ul>
+                            <div class="OtherRecType slds-hide">
+                                <ul class="slds-list_vertical">
+                                    <li>
+                                        <lightning-combobox
+                                            label={labelOthRecType}
+                                            placeholder={labelOthRecTypePlace}
+                                            value={value}
+                                            options={statusOptions}
+                                            data-my-id="comborectype"
+                                            onchange={handleRecordDropdown}
+                                        ></lightning-combobox>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <p class="slds-m-left_medium slds-m-top_medium"><strong><font color="#FF3333">*</font></strong>&nbsp;<strong><lightning-formatted-text value={labelEducation}></lightning-formatted-text>&nbsp;:&nbsp;</strong></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <ul class="slds-list_vertical">
+                                <template for:each={items4} for:item="rt">
+                                    <span key={rt.value}>
+                                        <li class="slds-m-top_medium"><lightning-input type="radio" name="Edulist" data-my-id="Edulist" data-key="Edulist" label={rt.label} value={rt.value} onclick={handleEducationClick}></lightning-input></li>
+                                    </span>
+                                </template>
+                                <li class="slds-m-top_medium"><lightning-input type="radio" name="Edulist" data-my-id="EdulistOth" data-key="Edulist" label={labelOthEducation} onclick={handleOptOthEducationClick}></lightning-input></li>
+                                <div class="stepEducation slds-hide">
+                                    <li class="slds-m-top_medium slds-m-right_medium">
+                                        <lightning-combobox
+                                            data-my-id="OthEducation"
+                                            name="education"
+                                            value={value}
+                                            placeholder={labelOthEducationPlace}
+                                            onchange={handleOptEducationChange}
+                                            options={EducationOptRest}
+                                            label={labelOthEducation}
+                                        ></lightning-combobox>
+                                    </li>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div><br>
+
+                <div class="slds-grid slds-gutters slds-m-top_medium">
+                    <div class="slds-col slds-size_1-of-1 slsd-m-bottom_large slsd-m-tom_medium">
+                        <p class="slds-m-left_medium slds-m-bottom_large" align="right">
+                            <lightning-button class="slds-m-top_large slds-m-bottom-large slds-m-right_medium" label={labelPrev} onclick={goBackToStepOne}></lightning-button>
+                            <lightning-button class="slds-m-top_large slds-m-bottom-large slsd-m-left_medium slds-m-right_medium" label={labelNext} onclick={goToStepThree} variant="brand"></lightning-button>
+                        </p>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="stepThree slds-hide">
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-1 slds-m-left_small">
+                        {labelStep3}<br><strong>{labelMessage3}</strong>
+                    </div>
+                </div><br>
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-1 slds-m-left_small">
+                        {labelLastname}<br>
+                        <strong>{salut_value}&nbsp;{firstname}&nbsp;{lastname}, {title}, {RecordTypeLabel}</strong>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-form-element_vertical slds-m-left_medium slds-m-top_medium slds-m-right_medium">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-3 slds-m-left_small">
+                            <lightning-input type="tel" id="phone" name="phone" data-my-id="phone" label={labelPhone} onchange={handlePhoneChange}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-input type="tel" id="mobile" name="mobile" data-my-id="mobile" label={labelMobile} onchange={handleMobileChange}></lightning-input>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-3 slds-m-left_small">
+                            <lightning-input type="email" id="email" name="email" data-my-id="email" label={labelEmail} onchange={handleEmailChange} required={req}></lightning-input>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters slds-m-top_medium">
+                    <div class="slds-col slds-size_1-of-1 slsd-m-bottom_large slds-m-top_medium">
+                        <p class="slds-m-left_medium slds-m-bottom_large" align="right">                
+                            <lightning-button class="slds-m-top_large slds-m-bottom_large slds-m-right_medium" label={labelPrev} onclick={goBackToStepTwo} disabled={disabledButton}></lightning-button>
+                            <lightning-button class="slsd-m-top_large slds-m-bottom_large slds-m-right_medium slds-hide" label={labelSave} variant="brand" onclick={handleCreatNewContact} data-my-id="Commu" disabled={disabledButton}></lightning-button>
+                            <lightning-button class="slds-m-top_large slds-m-bottom-large slsd-m-left_medium slds-m-right_medium slds-hide" label={labelNext} onclick={goToStepFour} variant="brand" data-my-id="laststep" id="laststep" name="laststep" disabled={disabledButton}></lightning-button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="stepFour slds-hide">
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-1 slds-m-left_small">
+                        {labelstep4}<br><strong>{labelMessage4}</strong>
+                    </div>
+                </div><br>
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-1 slds-m-left_small">
+                        {labelLastname}<br>
+                        <strong>{salut_value}&nbsp;{firstname}&nbsp;{lastname}, {title}, {RecordTypeLabel}</strong>
+                    </div>
+                </div><br>
+                <div class="slds-form-element slds-form-element_vertical slds-m-left_medium slds-m-top_medium slds-m-right_medium">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-3 slds-m-left_small">
+                            <lightning-combobox
+                                data-my-id="AccTemplate"
+                                name="AccTemplate"
+                                value={value}
+                                placeholder={labelAccTemplatePlace}
+                                options={AccTemplateOptions}
+                                onchange={handleAccTemplate}
+                                label={labelAccTemplate}
+								disabled={IsDisabled}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-combobox
+                                data-my-id="language"
+                                name="language"
+                                value={value}
+                                placeholder={labelLanguagePlace}
+                                options={LanguagePickOption}
+                                label={labelLanguage}
+                                onchange={handleLanguageChange}
+                            ></lightning-combobox>
+                        </div>
+                    </div>
+					<template lwc:if={IsAccountTemplate}>
+                        <div class="slds-grid slds-gutters slds-m-top_medium">
+                            <div class="slds-col slds-size_1-of-2 slds-m-left_small">
+                                <p style="color: #F70606">{labelNoAccountTemplate}</p>
+                            </div>
+                        </div>
+                    </template>
+                    <div class="SendEmail slds-grid slds-gutters slds-m-top_medium slds-hide">
+                        <div class="slds-col slds-size_1-of-3 slds-m-left_small">
+                            <lightning-input type="checkbox" label={labelSendEmailImm} data-my-id="SendInviteImm" id="SendInviteImm" name="SendInviteImm" onclick={handleSendInviteEmail}></lightning-input>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters slds-m-top_medium">
+                    <div class="slds-col slds-size_1-of-1 slds-m-bottom_large slds-m-top_medium">
+                        <p class="slds-m-left_medium slds-m-bottom_large" align="right">
+                            <lightning-button class="slds-m-top_large slds-m-bottom-large slds-m-right_medium" label={labelPrev} onclick={goBackToStepThree} disabled={disabledButton}></lightning-button>
+                            <lightning-button class="slds-m-top_large slds-m-bottom-large slds-m-right_medium" label={labelSave} onclick={handleCreatNewContact} variant="brand" disabled={disabledButton}></lightning-button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        <lightning-modal-footer>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"></div>
+            </div>
+        </lightning-modal-footer>
+    </lightning-card>
+</template>

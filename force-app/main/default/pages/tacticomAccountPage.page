@@ -1,0 +1,21 @@
+<apex:page standardController="Account" extensions="TacticomAccountPageController" lightningStylesheets="true">
+<apex:slds />
+    <!--sof=<apex:outputText value="{!sofTacticom}"/>
+                    ,hlfr=<apex:outputText value="{!hlfrTacticom}"/>-->
+<div class="table-responsive">
+   <table class="list" width="100%">
+       <thead>
+           <tr>
+               <th>Hoya (<apex:outputText value="{!hoyaAccountNumber}"/>)</th>
+               <th>Seiko (<apex:outputText value="{!seikoAccountNumber}"/>)</th>
+           </tr>
+       </thead>
+       <tbody>
+           <tr>
+               <td><apex:outputText value="{!hlfrTacticom}"/></td>
+               <td><apex:outputText value="{!sofTacticom}"/></td>
+           </tr>
+       </tbody>
+   </table>
+</div>
+</apex:page>

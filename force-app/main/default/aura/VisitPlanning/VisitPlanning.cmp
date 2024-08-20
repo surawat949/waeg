@@ -1,0 +1,30 @@
+<!--
+ - Created by thomas.schnocklake on 20.02.18.
+ -->
+
+<aura:component description="VisitPlanning" implements="flexipage:availableForAllPageTypes" controller="VisitPlanningController">
+    <aura:attribute name="visit" type="Visits__c" />
+    <aura:attribute name="companyName" type="String" />
+
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:attribute name="translations" type="Object"/>
+
+    <lightning:tabset>
+        <lightning:tab label="Visits">
+            <div class="slds slds-grid">
+                <div class="slds-col slds-size--2-of-5"><c:VisitPlanningList translations="{!v.translations}"/></div>
+                <div class="slds-col slds-size--3-of-5"><c:VisitPlanningCalendar translations="{!v.translations}"/></div>
+            </div>
+        </lightning:tab>
+
+        <!-- SSU 2021-08-16 Added - Need to add for this statement in case limit for acc.campaign in APAC only see for this map -->
+        <aura:if isTrue="{!v.companyName=='HVC' || v.companyName=='HAPL' || v.companyName=='HOLK' || v.companyName=='HOLM' || v.companyName=='ILENS' || v.companyName=='THAI' || v.companyName=='HLSI' || v.companyName=='HLSH' || v.companyName=='SOC' || v.companyName=='HLPH' || v.companyName=='HLID' || v.companyName=='HOTA' || v.companyName=='HLIN' || v.companyName=='HOLI'}">
+        <lightning:tab label="Campaign Map">
+            <div class="slds slds-grid">
+              <!--  <div class="slds-col slds-size_1-of-1"><c:APACAccountCampaign /></div>-->
+            </div>
+        </lightning:tab>
+        <aura:set attribute="else">&nbsp;</aura:set>
+        </aura:if>
+    </lightning:tabset>
+</aura:component>

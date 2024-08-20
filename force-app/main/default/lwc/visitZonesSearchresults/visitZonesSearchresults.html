@@ -1,0 +1,86 @@
+<template>
+    <lightning-card>
+        <template if:true={showResults}>
+            <div class="table-wrapper">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th scope="col">
+                                <div class="slds-truncate" title="Account Name">Account Name</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Hoya Account ID">Hoya Account ID</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Account Status">Account Status</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Postal Code">Postal Code</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="City">City</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="State">State</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Channel">Channel</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Segmentation (Net)">Segmentation (Net)</div>
+                            </th>
+                            <!--<th scope="col">
+                                <div class="slds-truncate" title="HVC Loyalty Program">HVC Loyalty Program</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Strategic Value (Net)">Strategic Value (Net)</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Lenses Net Sales L12Mo">Lenses Net Sales L12Mo</div>
+                            </th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={results} for:item="row">
+                            <tr key={row.Id} class="draggable-item" draggable="true" ondragstart={handleDragStart}>
+                                <td>
+                                    <div class="slds-truncate" title={row.Name}>{row.Name}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={row.Hoya_Account_ID__c}>{row.Hoya_Account_ID__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={row.Account_Status__c}>{row.Account_Status__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={row.Shop_Postal_Code__c}>{row.Shop_Postal_Code__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={row.Shop_City__c}>{row.Shop_City__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={row.Shop_State__c}>{row.Shop_State__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={row.channel}>{row.channel}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={row.Segmentation_Box__c}>{row.Segmentation_Box__c}</div>
+                                </td>
+                                <!--<td>
+                                    <div class="slds-truncate" title={row.hvcLoyaltyProgram}>{row.hvcLoyaltyProgram}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={row.strategicValue}>{row.strategicValue}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate" title={row.lensesNetSales}>{row.lensesNetSales}</div>
+                                </td>-->
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+    </lightning-card>
+</template>

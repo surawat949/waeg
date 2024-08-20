@@ -1,0 +1,48 @@
+<template>
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+    <!-- Referring Opticians -->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Referring Opticians">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container"><p align="left"><lightning-icon icon-name="custom:custom86" alternative-text="doctore" size="small"></lightning-icon> &nbsp;{custLabel.ReferringOpticians}</p></h3></td>
+                <td>
+                    <p align="right">
+                    <template if:true={showAllTab}>
+                        <lightning-button label={custLabel.Add} variant="brand-outline" onclick={showPopUp}></lightning-button>&NonBreakingSpace;&NonBreakingSpace;
+                    </template>
+                        <lightning-button label={custLabel.pdfList} onclick={openModal} variant="brand-outline"></lightning-button>
+                    </p>
+                </td>
+            </tr>     	        
+        </table><br>
+        <c-tab-contact-create-reffering-optician-modal received-id={receivedId} onsavesuccess={performRefresh}></c-tab-contact-create-reffering-optician-modal>
+        <template lwc:if ={isDataExists}>
+            <template lwc:if={showAllTab}>
+                <template if:true={data}>
+                    <lightning-datatable data={data} columns={Columns} key-field="id" hide-checkbox-column="true" onrowaction={handleRowAction}> </lightning-datatable>           
+                </template>
+            </template>
+            <template lwc:else>
+                <template if:true={data}>
+                    <lightning-datatable data={data} columns={ColumnsChatter} key-field="id" hide-checkbox-column="true" onrowaction={handleRowAction}> </lightning-datatable>           
+                </template>   
+            </template>
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div>
+        </template>
+    </div>
+    <!--Opticians Near By-->
+    <div class="slds-grid">
+        <div class="slds-col slds-size_1-of-1">
+            <c-tab-m-v-c-visits-optician-nearby received-id={receivedId}></c-tab-m-v-c-visits-optician-nearby>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,10 @@
+<design:component label="Home Page Custome Template">
+    <flexipage:template >
+        <flexipage:region name="header1" defaultWidth="Small" />
+        <flexipage:region name="header2" defaultWidth="Small" />
+        <flexipage:region name="header3" defaultWidth="Small" />
+        <flexipage:region name="header4" defaultWidth="Small" />
+        <flexipage:region name="column1" defaultWidth="Large" />
+        <flexipage:region name="column2" defaultWidth="Small" />
+    </flexipage:template>
+</design:component>

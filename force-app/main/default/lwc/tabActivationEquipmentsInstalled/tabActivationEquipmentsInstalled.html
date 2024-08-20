@@ -1,0 +1,20 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title">{CustLabel.Instruments_In_Shop}</h3></td>
+            </tr>
+        </table><br>
+          <lightning-datatable data={InstraucInShop} columns={columns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+        <br>
+      </div>
+      <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title">{CustLabel.Software_In_Shop}</h3></td>
+            </tr>
+        </table><br>
+          <lightning-datatable data={SoftwareInShop} columns={columns2} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+        <br>
+      </div>
+</template>

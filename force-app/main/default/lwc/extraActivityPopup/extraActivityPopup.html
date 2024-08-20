@@ -1,0 +1,96 @@
+<template>
+    <lightning-messages data-id='formerror'> </lightning-messages>
+    <lightning-modal-header label="New Event: Extra Activity"></lightning-modal-header>  
+    <lightning-modal-body>
+        <div class="slds-form-element__control">           
+            <div>               
+                <h3 class="slds-section__title">
+                    <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
+                        <span class="slds-truncate" title="Details">Calender Details</span>
+                      </button>
+                </h3>
+                <br>
+            </div> 
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </template>
+           
+             <div class="slds-grid">                   
+                    <div class="slds-col slds-size_1-of-2">                      
+                       <lightning-input class="assignedTo" label="Assigned To" disabled="true" value={assignedTo}  required> </lightning-input>
+                    </div>&nbsp;&nbsp;
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                        name="Status"
+                        label="Type"
+                        value={type}
+                        placeholder="Select Type"
+                        options={typeOptions}
+                        onchange={handleType}
+                        ></lightning-combobox>                  
+                  </div>
+                </div>
+                <div class="slds-grid">                   
+                    <div class="slds-col slds-size_1-of-2">                      
+                        <lightning-combobox
+                        name="Subject"
+                        class ="Subject"
+                        label='Subject'
+                        value={subject}
+                        placeholder="Select Subject"
+                        options={subjectOptions}
+                        required="true"
+                        onchange={handleSubject}
+                        ></lightning-combobox>                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                    </div>
+                </div>
+                <br/>
+                <h3 class="slds-section__title">
+                    <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
+                        <span class="slds-truncate" title="Schedule">{CustLabel.schedule}</span>
+                      </button>
+                </h3>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">                       
+                        <lightning-input class="start" type="datetime"
+                        required
+                        label="Start Date"
+                        value={start}
+                        onchange={handleStart}> 
+                        </lightning-input>
+                    </div>&nbsp;
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input class="end" type="datetime"
+                        required
+                        label="End Date"
+                        value={end}
+                        onchange={handleEnd}> 
+                        </lightning-input>                    
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">&nbsp;</div>
+                    <div class="slds-col slds-size_1-of-2">&nbsp;</div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">                       
+                        <lightning-input type="checkbox" label="All-Day Event" value={isAllDay} onchange={handleAllDay}></lightning-input>
+                    </div>               
+                    <div class="slds-col slds-size_1-of-2">
+                       <lightning-input type="checkbox" label="Private" value={isPrivate} onchange={handlePrivate}></lightning-input>
+                    </div>
+                </div>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-button name="Submit" id="Submit" label={CustLabel.label_save} variant="brand" onclick={handleCreateEvent}></lightning-button>
+            </div>
+            <div class="slds-grid slds-size_1-of-2">
+                <lightning-button name="Cancel" id="Cancel" label={CustLabel.cancel} value="brand-outline" onclick={closePopup}></lightning-button>
+            </div>
+        </div>
+    </lightning-modal-footer>
+</template>

@@ -1,0 +1,98 @@
+<template>
+    <!--loader-->
+    <lightning-modal-header label={labelNewTask}></lightning-modal-header>
+    <lightning-modal-body>
+        <div if:true={errors} class="slds-notify slds-notify_alert slds-alert_error">
+            {errors}
+        </div>
+        <div class="slds-form-element__control">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <span class="slds-form-element__label"></span>
+                    <div class="slds-form-element__control slds-has-divider--bottom">
+                        <span class="slds-form-element__static">
+                            <label class="slds-form-element__label" for="form-input-0">
+                                <abbr class="slds-required" title="required">*</abbr>
+                                {labelRelatedTo}
+                            </label>
+                        
+                        <c-search-lookup-account icon-name="standard:account" s-object-api-name="account" label="" id="form-input-0" disabled="true" data-my-id="form-input-0"
+                            onlookupupdate={handleLookupSelectionWhatId} placeholder="...Search Account..." default-record-id={receivedId} received-id={receivedId}>
+                        </c-search-lookup-account>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-hide"><lightning-input type="text" value={receivedId} label="Related To" name="form-input-1" data-my-id="form-input-1" onchange={whatIdCH}></lightning-input></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <c-custom-lookup icon-name="standard:contact" s-object-api-name="contact" label={labelAccContact}
+                        onlookupupdate={handleLookupSelectionAccounContact} placeholder={labelSearchContact} record-criteria=" AND AccountId!=''" received-id={receivedId}>
+                    </c-custom-lookup>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-hide"><lightning-input type="text" label={labelAccContact} value={ContactName} name="form-input-2" data-my-id="form-input-2" onchange={contactCH}></lightning-input></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning-input type="text" label={labelSubject} name="form-input-3" id="form-input-3" onchange={subjectCH} required="true"></lightning-input></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning-textarea label={labelInstruction} name="form-input-4" id="form-input-4" onchange={descriptionCH} maxlength="255"></lightning-textarea></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <label class="slds-form-element__label" for="data-input-assigned">
+                        <abbr class="slds-required" title="required">*</abbr>{labelAssignedTo}
+                    </label>
+                    <c-custom-lookup icon-name="standard:user" s-object-api-name="user" label=""
+                        onlookupupdate={handleLookupSelectionOwnerId} placeholder={labelSearchUser} id="data-input-assigned" record-criteria=" AND (IsActive=true) AND (NOT(Profile.Name LIKE '%Customer Community%'))">
+                    </c-custom-lookup>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-hide"><lightning-input type="text" label={labelAssignedTo} value={userId} name="form-input-5" data-my-id="form-input-5" onchange={ownerIdCH}></lightning-input></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning-input type="date" label={labelDueDate} name="form-input-6" id="form-input-6" onchange={activityDateCH}></lightning-input></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <c-custom-lookup icon-name="standard:user" s-object-api-name="user" label={labelCopyTo}
+                        onlookupupdate={handleLookupSelectionCopiedTo} placeholder={labelSearchUser} record-criteria=" AND (IsActive=true) AND (NOT(Profile.Name LIKE '%Customer Community%'))">
+                    </c-custom-lookup>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-hide"><lightning-input type="text" label={labelCopyTo} value={copiedtoId} name="form-input-7" data-my-id="form-input-7" onchange={copyToCH}></lightning-input></div>
+            </div>
+            
+			 <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-combobox
+                        name="Status"
+                        label={labelStatus}
+                        value={value}
+                        placeholder="Select Status"
+                        options={StatusOptions}
+                        required="true"
+                        onchange={statusCH}
+                    ></lightning-combobox>
+                </div>
+            </div>
+			
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-button name="Submit" id="Submit" label={labelSave} variant="brand" onclick={handleCreateTask}></lightning-button>
+            </div>
+            <div class="slds-grid slds-size_1-of-2">
+                <lightning-button name="Closed" id="Closed" label={labelClose} value="brand-outline" onclick={closePopup}></lightning-button>
+            </div>
+        </div>
+    </lightning-modal-footer>
+</template>

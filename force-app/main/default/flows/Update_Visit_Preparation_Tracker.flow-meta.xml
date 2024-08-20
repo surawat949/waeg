@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>60.0</apiVersion>
+    <assignments>
+        <description>When Visit is updated if Status is completed or cancelled , Assign Preparation Tracker as prepared</description>
+        <name>Assign_Preparation_Tracker_as_prepared</name>
+        <label>Assign Preparation Tracker as prepared</label>
+        <locationX>666</locationX>
+        <locationY>539</locationY>
+        <assignmentItems>
+            <assignToReference>PlanningTracker</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Prepared</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Check_the_Planned_Tracker</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Planned_Tracker</name>
+        <label>Planned Tracker</label>
+        <locationX>303</locationX>
+        <locationY>1289</locationY>
+        <assignmentItems>
+            <assignToReference>PlannedTracker</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Planned by NSM</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Visit_Tacticom_Tracker</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Planned_Tracker_as_Not_Planned</name>
+        <label>Planned Tracker as Not Planned</label>
+        <locationX>567</locationX>
+        <locationY>1289</locationY>
+        <assignmentItems>
+            <assignToReference>PlannedTracker</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Not Planned by NSM</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Visit_Tacticom_Tracker</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Update_Tacticom_Tracker_As_Inside_Tacticom</name>
+        <label>Update Tacticom Tracker As Inside Tacticom</label>
+        <locationX>303</locationX>
+        <locationY>1589</locationY>
+        <assignmentItems>
+            <assignToReference>TacticomTracker</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Inside Tacticom</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_Is_New_For_Update</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Update_Tacticom_Tracker_As_Ouside_Tacticom</name>
+        <label>Update Tacticom Tracker As Ouside Tacticom</label>
+        <locationX>567</locationX>
+        <locationY>1589</locationY>
+        <assignmentItems>
+            <assignToReference>TacticomTracker</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Outside Tacticom</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_Is_New_For_Update</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Updates_as_Not_prepared</name>
+        <label>Updates as Not prepared</label>
+        <locationX>567</locationX>
+        <locationY>1073</locationY>
+        <assignmentItems>
+            <assignToReference>PlanningTracker</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>Not Prepared</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_the_Planned_Tracker</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Updates_assignment_as_Prepared</name>
+        <label>Updates assignment as Prepared</label>
+        <locationX>50</locationX>
+        <locationY>647</locationY>
+        <assignmentItems>
+            <assignToReference>PlanningTracker</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>Prepared</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Check_the_Planned_Tracker</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Check_Is_New_For_Update</name>
+        <label>Check Is New For Update</label>
+        <locationX>567</locationX>
+        <locationY>1781</locationY>
+        <defaultConnector>
+            <targetReference>Copy_1_of_Update_Not_Prepated</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>CheckNewRecord</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>IsNew</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Not_Prepated</targetReference>
+            </connector>
+            <label>CheckNewRecord</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Objective_Notes</name>
+        <label>Check Objective Notes</label>
+        <locationX>182</locationX>
+        <locationY>539</locationY>
+        <defaultConnector>
+            <targetReference>Updates_as_Not_prepared</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_Objective_Notes_Is_Not_Blank</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Visit_Objective_follow_up_notes__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Updates_assignment_as_Prepared</targetReference>
+            </connector>
+            <label>Check Objective Notes Is Not Blank</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>If a visit record is updated where status is completed or cancelled Then the tracker should not be changed</description>
+        <name>Check_Planned_status_Prior_Value</name>
+        <label>Check Planned status Prior Value</label>
+        <locationX>798</locationX>
+        <locationY>431</locationY>
+        <defaultConnector>
+            <targetReference>Updates_as_Not_prepared</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_Planned_status</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Visit_Preparation_Tracker__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Prepared</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Preparation_Tracker_as_prepared</targetReference>
+            </connector>
+            <label>Check Planned status</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_the_Planned_Tracker</name>
+        <label>Check the Planned Tracker</label>
+        <locationX>567</locationX>
+        <locationY>1181</locationY>
+        <defaultConnector>
+            <targetReference>Visit_Tacticom_Tracker</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Total_Visit_Planned_is_Greater_Than_0</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Account__r.Total_Visits_Planned__c</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>IsNew</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Planned_Tracker</targetReference>
+            </connector>
+            <label>Total Visit Planned is Greater Than 0</label>
+        </rules>
+        <rules>
+            <name>Total_Visit_planned_is_less_than_0</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Account__r.Total_Visits_Planned__c</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>IsNew</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Planned_Tracker_as_Not_Planned</targetReference>
+            </connector>
+            <label>Total Visit planned is less than 0</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Visit_Status</name>
+        <label>Check Visit Status</label>
+        <locationX>567</locationX>
+        <locationY>323</locationY>
+        <defaultConnector>
+            <targetReference>Check_Planned_status_Prior_Value</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_Visits_Status</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Visit_Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Complete</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Visit_Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Cancelled</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Decision_2</targetReference>
+            </connector>
+            <label>Check Visits Status</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Decision_2</name>
+        <label>Decision 2</label>
+        <locationX>336</locationX>
+        <locationY>431</locationY>
+        <defaultConnector>
+            <targetReference>Updates_as_Not_prepared</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Outcome_1_of_Decision_2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Visit_Reason__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Objective_Notes</targetReference>
+            </connector>
+            <label>Check Visit Main Objective</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Visit_Tacticom_Tracker</name>
+        <label>Visit Tacticom Tracker</label>
+        <locationX>567</locationX>
+        <locationY>1481</locationY>
+        <defaultConnector>
+            <targetReference>Check_Is_New_For_Update</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_account_tacticom_Sub_Area_Not_blank</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Account__r.TACTICOM_SOF__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+            </conditions>
+            <conditions>
+                <leftValueReference>IsNew</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Account__r.TACTICOM_SOF__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Not Selected</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Tacticom_Tracker_As_Inside_Tacticom</targetReference>
+            </connector>
+            <label>Check account tacticom(Sub-Area) Not blank</label>
+        </rules>
+        <rules>
+            <name>Check_account_tacticom_Sub_Area_blank</name>
+            <conditionLogic>2 AND (1 OR 3)</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Account__r.TACTICOM_SOF__c</leftValueReference>
+                <operator>EqualTo</operator>
+            </conditions>
+            <conditions>
+                <leftValueReference>IsNew</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Account__r.TACTICOM_SOF__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Not Selected</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Tacticom_Tracker_As_Ouside_Tacticom</targetReference>
+            </connector>
+            <label>Check account tacticom(Sub-Area) blank</label>
+        </rules>
+    </decisions>
+    <description>Updates Visit Preparation Tracker as Prepared/ Not prepared based on scenarios</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>IsNew</name>
+        <dataType>Boolean</dataType>
+        <expression>ISNEW()</expression>
+    </formulas>
+    <interviewLabel>Update Visit Preparation Tracker {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Update Visit Preparation Tracker</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Copy_1_of_Update_Not_Prepated</name>
+        <label>Copy 1 of Update Not Prepated</label>
+        <locationX>699</locationX>
+        <locationY>1889</locationY>
+        <inputAssignments>
+            <field>Visit_Preparation_Tracker__c</field>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Not_Prepated</name>
+        <label>Update Not Prepated</label>
+        <locationX>435</locationX>
+        <locationY>1889</locationY>
+        <inputAssignments>
+            <field>Visit_Planned_Tracker__c</field>
+            <value>
+                <elementReference>PlannedTracker</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Visit_Preparation_Tracker__c</field>
+            <value>
+                <elementReference>PlanningTracker</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Visit_Tacticom_Tracker__c</field>
+            <value>
+                <elementReference>TacticomTracker</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>441</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_Visit_Status</targetReference>
+        </connector>
+        <object>Visits__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>PlannedTracker</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Used to store Planning tracker details</description>
+        <name>PlanningTracker</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>TacticomTracker</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

@@ -1,0 +1,199 @@
+<aura:component implements="force:hasRecordId,force:lightningQuickAction,lightning:actionOverride"
+                controller="APACCreateNewProductFormController"
+                access="global">
+    
+    <aura:attribute name="message" type="String" />
+    <aura:attribute name="reloadForm" type="boolean" default="true" />
+    <aura:attribute name="displayModal" type="boolean" default="true" />
+    <lightning:spinner aura:id="spinner" variant="brand" />
+    <aura:attribute name="displaySection" type="String" default="" />
+    <aura:attribute name="displayInvent" type="String" default="" />
+    <lightning:navigation aura:id="navService"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:html tag="style">
+        @media (max-height: 800px){
+           .slds-modal__content {
+               height: 800px !important;
+           }
+        }
+        @media screen and (max-height: 720px) { 
+           .slds-modal__content {
+                height: 800px !important;
+           }
+        }
+        @media (max-height: 560px){
+           .slds-modal__content {
+               height: 800px !important;
+           }
+        }
+       @media (max-height: 460px){
+           .slds-modal__content {
+               height: 800px !important;
+           }
+       }
+
+    </aura:html>
+    <aura:if isTrue="{!v.displayModal}">
+        <div class="slds-m-around_xx-large">
+            <div class="slds-modal__container">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">New Product</h2>
+                            <aura:if isTrue="{!v.message!= null}">
+                                <ui:message title="Error" severity="error" closable="true">{!v.message}</ui:message>
+                            </aura:if>
+                    </header>
+                        <lightning:recordEditForm aura:id="CreateProductApprovalForm"
+                            objectApiName="APAC_Product__c"
+                            onload="{!c.handleLoad}"
+                            onsuccess="{!c.handleSuccess}">
+
+                                <aura:if isTrue="{!v.reloadForm}">
+                                    <div class="slds-modal__content slds-p-around_medium alignLeft" id="modal-content-id-1">
+                                        <div class="slds-theme_shade slds-box slds-box_xx-small"><p>General Information</p></div><br/>
+                                            <div class="slds-theme_defaul slds-box">
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Company_Entity__c" required="true" aura:id="CompanyName" /></div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="OwnerId" /></div>
+                                                </div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Name" aura:id="ReferenceNumber" disabled="true" /></div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Request_Type__c" required="true" aura:id="RequestType" onchange="{!c.RequestTypeChange}"/></div>
+                                                </div>
+                                            </div><br/>
+                                        <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Product Information</p></div><br/>
+                                            <div class="slds-theme_default slds-box">
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="APAC_Product_Name_Comm__c" aura:id="CommName" /></div>
+                                                </div>
+                                            </div><br/>
+                                        <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Product description and reference</p></div><br/>
+                                            <div class="slds-theme_default slds-box">
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Name__c" required="true" aura:id="ProductName" /></div>
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Code__c" required="true" aura:id="ProductCode" /></div>
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Coating__c" required="true" aura:id="ProductCoat" /></div>
+                                                </div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Name_2__c" aura:id="ProductName2" /></div>
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Code_2__c" aura:id="ProductCode2" /></div>
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Coating_2__c" aura:id="ProductCoat2" /></div>
+                                                </div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Name_3__c" aura:id="ProductName3" /></div>
+                                                    <div class="slsd-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Code_3__c" aura:id="ProductCode3" /></div>
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Coating_3__c" aura:id="ProductCoat3" /></div>
+                                                </div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Name_4__c" aura:id="ProductName4" /></div>
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Code_4__c" aura:id="ProductCode4" /></div>
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Coating_4__c" aura:id="ProductCoat4" /></div>
+                                                </div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Name_5__c" aura:id="ProductName5" /></div>
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Code_5__c" aura:id="ProductCode5" /></div>
+                                                    <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="APAC_Product_Coating_5__c" aura:id="ProductCoat5" /></div>
+                                                </div>
+                                            </div><br/>
+                                        <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Production Product and Product lenses</p></div><br/>
+                                            <div class="slds-theme_default slds-box">
+                                                <!--
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="APAC_Rx__c" /></div>
+                                                </div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Local_Production__c" aura:id="LocalProduction" /></div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Supplier_1__c" aura:id="Supplier1" /></div>
+                                                </div>
+                                                -->
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Oversea_Production__c" aura:id="OverseaProduct" /></div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Supplier_2__c" aura:id="Supplier2" /></div>
+                                                </div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Local_Production__c" aura:id="LocalProduction" /></div>
+                                                </div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Rx__c" /></div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Supplier_3__c" aura:id="Supplier3" /></div>
+                                                </div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_FSV__c" aura:id="FSV" /></div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Supplier_4__c" aura:id="Supplier4"/></div>
+                                                </div>
+                                                <!--
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Stock__c" aura:id="Stock" /></div>
+                                                    <div class="slds-col slds-size-1-of-2"><lightning:inputField fieldName="APAC_Supplier_3__c" aura:id="Supplier3" /></div>
+                                                </div>
+                                                -->
+                                                <div class="{!if(v.displaySection == 'section1','slds-show','slds-hide')}" aura:id="firstsection">
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Target_Launch_Date__c" aura:id="TargetLaunch" /></div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Detail_Launch_Schedule__c" aura:id="LaunchSchedule" /></div>
+                                                </div>
+                                            </div>
+                                            <div class="{!if(v.displaySection == 'section2','slds-show','slds-hide')}" aura:id="secondsection">
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Target_Discountinue_Date__c" aura:id="Discountinue" /></div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Detail_Launch_Schedule__c" aura:id="LaunchSchedule" /></div>
+                                                </div>
+                                            </div>
+                                            <div class="{!if(v.displaySection == 'section3','slds-show','slds-hide')}" aura:id="thirdsection">
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Propose_Product_Testing_Date__c" aura:id="ProposeDate" /></div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Detail_Launch_Schedule__c" aura:id="LaunchSchedule" /></div>
+                                                </div>
+                                            </div>
+                                            <div class="{!if(v.displaySection == '','slds-show','slds-hide')}" aura:id="nullsection">
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2">&nbsp;</div>
+                                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Detail_Launch_Schedule__c" aura:id="LaunchSchedule" /></div>
+                                                </div>
+                                            </div>
+                                            </div><br/>
+                                        <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Product or/and Price Registration</p></div><br/>
+                                        <div class="slds-theme_default slds-box">
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Ax_System__c" aura:id="Ax" /></div>
+                                                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_VO_System__c" aura:id="VO" /></div>
+                                            </div>
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_System_Change_Request__c" aura:id="SystemChange" /></div>
+                                                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Others__c" aura:id="Others" /></div>
+                                            </div>
+                                        </div>
+                                            <div class="{!if(v.displayInvent == 'section1','slds-show','slds-hide')}" aura:id="forthction">
+                                                <div class="slds-theme_shade slds-box slds-box_xx-small"><p>EXISTING INVENTORY DETAILS</p></div>
+                                                    <div class="slds-theme_default slds-box">
+                                                        <div class="slds-grid">
+                                                            <div class="slds-col slds-size-1-of-2"><lightning:inputField fieldName="APAC_Stock_On_Hand__c" aura:id="StockOnHand" /></div>
+                                                            <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="APAC_Month_on_Hand__c" aura:id="MonthOnHand" /></div>
+                                                        </div>
+                                                        <div class="slds-grid">
+                                                            <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="APAC_Phase_out_plan_attached__c" aura:id="PhaseOut" /></div>
+                                                        </div>
+                                                    </div>
+                                                </div><br/>
+                                            <div class="slds-theme_shade slds-box slds-box_xx-small"><p>Description</p></div>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="APAC_Description__c" aura:id="description" /></div>
+                                                </div>
+                                        </div>
+                                <aura:set attribute="else">
+                                    Saving...
+                                </aura:set>
+                                </aura:if>
+                            <footer class="slds-modal__footer">
+                                <lightning:button value="brand" name="Close" label="Close" onclick="{!c.gotoList}" />
+                                <!--<lightning:button value="boolean" name="Cancel" label="Cancel" onclick="{!c.cancelButton}" />-->
+                                <lightning:button variant="brand" type="submit" name="Save" label="Save" />
+                            </footer>
+                        </lightning:recordEditForm>
+                    </section>
+                </div>
+            </div>
+        </aura:if>
+</aura:component>

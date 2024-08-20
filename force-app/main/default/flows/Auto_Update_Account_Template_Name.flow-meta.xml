@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <environments>Default</environments>
+    <formulas>
+        <name>AccountTemplateName</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Master_Template__r.Name} + &apos; - &apos; + {!$Record.Account__r.Hoya_Account_ID__c}</expression>
+    </formulas>
+    <interviewLabel>Auto Update Account Template Name {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Auto Update Account Template Name</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Name</name>
+        <label>Update Name</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>Master_Template__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>a0x0Q000002ApBkQAK</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Master_Template__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>a0x0Q000002TSsEQAW</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>AccountTemplateName</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Name</targetReference>
+        </connector>
+        <object>Account_Template__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

@@ -1,0 +1,70 @@
+<template>
+    
+    <!--{receivedId} + {brand}-->
+    <template lwc:if={isHoyaAcc}>
+        <lightning-tabset variant="scoped">
+            <lightning-tab label={custLabel.TabRegistration}>
+                <c-tab-activation-portal-registration received-id = {receivedId}></c-tab-activation-portal-registration>
+            </lightning-tab>
+            <!--<lightning-tab label={custLabel.TabSocialMediaM}>
+                <c-tab-activation-portal-social-media received-id = {receivedId}></c-tab-activation-portal-social-media>
+            </lightning-tab>-->
+            <lightning-tab label={custLabel.Hoya_iLog}>
+                <c-tab-activation-portal-hoyailog received-id = {receivedId}></c-tab-activation-portal-hoyailog>
+            </lightning-tab>
+            <template if:true={showAllTab}>
+                <lightning-tab label="Track & Trace">
+                    <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                        <img src="/projRes/ui-home-private/emptyStates/noTasks.svg" class="slds-illustration__svg" alt=""/>
+                        <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                            <b>UNDER DEVELOPMENT. Nothing to see so far.</b>
+                        </div>
+                    </div>
+                </lightning-tab>
+                <lightning-tab label={custLabel.Store_Finder}>
+                    <c-tab-activation-portal-store-finder received-id = {receivedId}></c-tab-activation-portal-store-finder>
+                </lightning-tab>
+                <lightning-tab label={custLabel.Hoyanet}>
+                    <c-tab-activation-portal-hoyanet received-id = {receivedId}></c-tab-activation-portal-hoyanet>
+                </lightning-tab>
+            </template>
+        </lightning-tabset>
+    </template>
+    <!--FOR SEIKO-->
+    <template lwc:else>
+        <lightning-tabset variant="scoped">
+            <lightning-tab label={custLabel.TabRegistration}>
+                <c-tab-activation-portal-registration received-id = {receivedId}></c-tab-activation-portal-registration>
+            </lightning-tab>
+            <lightning-tab label={custLabel.TabSocialMediaM}>
+                <c-tab-activation-portal-social-media received-id = {receivedId} seiko-data-id = {seikoData}></c-tab-activation-portal-social-media>
+            </lightning-tab>
+            <template if:true={showAllTab}>
+                <lightning-tab label={custLabel.Store_Finder}>
+                    <c-tab-activation-portal-store-finder received-id = {receivedId}></c-tab-activation-portal-store-finder>
+                </lightning-tab>
+            </template>
+            <lightning-tab label={custLabel.TabXtranet}>
+                <c-tab-activation-portal-xtranet received-id = {receivedId}></c-tab-activation-portal-xtranet>
+            </lightning-tab>
+            <template if:true={showAllTab}>
+                <lightning-tab label="Track & Trace">
+                    <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                        <img src="/projRes/ui-home-private/emptyStates/noTasks.svg" class="slds-illustration__svg" alt=""/>
+                        <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                            <b>UNDER DEVELOPMENT. Nothing to see so far.</b>
+                        </div>
+                    </div>     
+                </lightning-tab>
+            </template>
+            <lightning-tab label={custLabel.ConsumerProgram}>
+                <c-tab-activation-portal-loyalty-program received-id = {receivedId} seiko-data = {seikoData}></c-tab-activation-portal-loyalty-program>
+            </lightning-tab>
+            <template if:true={showAllTab}>
+                <lightning-tab label={custLabel.TabAcademy}>
+                    <c-tab-activation-portal-academy received-id = {receivedId}></c-tab-activation-portal-academy>
+                </lightning-tab>
+            </template>
+        </lightning-tabset>
+    </template>
+</template>

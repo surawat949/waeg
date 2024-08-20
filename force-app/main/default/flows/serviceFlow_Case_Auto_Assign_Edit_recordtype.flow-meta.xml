@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>53.0</apiVersion>
+    <assignments>
+        <description>Assigining serviceFlow Edit recordtype so that the layout will be switched automatically to display Subject and Sub-Subject</description>
+        <name>Assigning_serviceFlow_Edit_Recordtype</name>
+        <label>Assigning serviceFlow Edit Recordtype</label>
+        <locationX>578</locationX>
+        <locationY>671</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.RecordTypeId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>getRecordtypeName.Id</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <description>Assigining serviceFlow Edit recordtype so that the layout will be switched automatically to display Subject and Sub-Subject</description>
+        <name>Assigning_serviceFlow_Edit_Recordtype_0</name>
+        <label>Assigning serviceFlow Edit Recordtype</label>
+        <locationX>50</locationX>
+        <locationY>791</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.RecordTypeId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Italy_Record_Type_Details.Id</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <description>Assigining serviceFlow Edit recordtype so that the layout will be switched automatically to display Subject and Sub-Subject</description>
+        <name>Assigning_serviceFlow_South_Africa_RecordType</name>
+        <label>Assigning serviceFlow South Africa RecordType</label>
+        <locationX>314</locationX>
+        <locationY>791</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.RecordTypeId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>South_Africa_RecordType_Info.Id</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <description>verifying the weather the recordtype came in is service flow recordtype or not</description>
+        <name>recordtype_check</name>
+        <label>recordtype check</label>
+        <locationX>710</locationX>
+        <locationY>431</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>is_ServiceFlow_Create_Recordtype</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ServiceFlow_Case_Create</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>serviceFlow_Italy_User_Process</targetReference>
+            </connector>
+            <label>is ServiceFlow Create Recordtype?</label>
+        </rules>
+        <rules>
+            <name>is_NOT_ServiceFlow_Create_Recordtype</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ServiceFlow_Case_Create</stringValue>
+                </rightValue>
+            </conditions>
+            <label>is NOT ServiceFlow Create Recordtype?</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>serviceFlow_Italy_User_Process</name>
+        <label>serviceFlow Italy User Process</label>
+        <locationX>314</locationX>
+        <locationY>551</locationY>
+        <defaultConnector>
+            <targetReference>Assigning_serviceFlow_Edit_Recordtype</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_Italy_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.User_country__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Italy</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Italy_Record_Type_Details</targetReference>
+            </connector>
+            <label>Is Italy User ?</label>
+        </rules>
+        <rules>
+            <name>Is_South_Africa_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.User_country__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>South Africa</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>South_Africa_RecordType_Info</targetReference>
+            </connector>
+            <label>Is South Africa User ?</label>
+        </rules>
+    </decisions>
+    <description>Case Before Insert Trigger/Flow</description>
+    <environments>Default</environments>
+    <interviewLabel>serviceFlow Auto Assign Edit Case recordtype {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>serviceFlow Case - Auto Assign Edit recordtype</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <description>Fetching Case Record types to switch to edit recordtype automatically</description>
+        <name>getRecordtypeName</name>
+        <label>getRecordtypeName</label>
+        <locationX>710</locationX>
+        <locationY>311</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>recordtype_check</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SobjectType</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Case</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>ServiceFlow_Case_Edit</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <sortField>DeveloperName</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Italy_Record_Type_Details</name>
+        <label>Italy Record Type Details</label>
+        <locationX>50</locationX>
+        <locationY>671</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assigning_serviceFlow_Edit_Recordtype_0</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>ServiceFlow_Case_Edit_Italy</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>ServiceFlow_Case_Edit_Italy</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>South_Africa_RecordType_Info</name>
+        <label>South Africa RecordType Info</label>
+        <locationX>314</locationX>
+        <locationY>671</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assigning_serviceFlow_South_Africa_RecordType</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>ServiceFlow_Case_Edit_SouthAfrica</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>ServiceFlow_Case_Edit_SouthAfrica</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>584</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>getRecordtypeName</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>SFlow_Subject__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>SFlow_Sub_Subject__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Case</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

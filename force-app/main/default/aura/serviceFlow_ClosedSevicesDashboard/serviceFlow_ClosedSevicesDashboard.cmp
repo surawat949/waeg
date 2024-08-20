@@ -1,0 +1,29 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+                Controller="serviceFlow_ServicesOperations" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="recordId" type="String" />    
+    <aura:attribute name="dashboardDetails" type="Object" />
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+            <a class="hrefcss" onclick="{!c.handleFilters}" data-value="callsClosed">
+                <div data-id="callsClosed" aura:id="callsClosed" class="slds-box slds-box_x-large slds-text-align_left slds-m-around_x-small" style="border-left-width: thick;border-left-color: cadetblue;height: 75px;">
+                    <b class="montserratBolddahsboard">Calls closed<br/>{!v.dashboardDetails.callsClosed}</b>
+                </div>
+            </a>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+            <a class="hrefcss" onclick="{!c.handleFilters}" data-value="totalCases">
+                <div data-id="totalCases" aura:id="totalCases" class="slds-box slds-box_x-large slds-text-align_left slds-m-around_x-small" style="border-left-width: thick;border-left-color: cadetblue;height: 75px;">
+                    <b class="montserratBolddahsboard">Closed cases<br/>{!v.dashboardDetails.closedCases}</b>
+                </div>
+            </a>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+            <a class="hrefcss" onclick="{!c.handleFilters}" data-value="tasksClosed">
+                <div data-id="tasksClosed" aura:id="tasksClosed" class="slds-box slds-box_x-large slds-text-align_left slds-m-around_x-small" style="border-left-width: thick;border-left-color: cadetblue;height: 75px;">
+                    <b class="montserratBolddahsboard">Tasks closed<br/>{!v.dashboardDetails.tasksClosed}</b>
+                </div>
+            </a>
+        </div>  
+    </div>
+</aura:component>

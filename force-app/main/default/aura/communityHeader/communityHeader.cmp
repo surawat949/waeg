@@ -1,0 +1,28 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <aura:attribute name="contactLabel" type="String" required="false" default="Contact Us" />
+    <aura:attribute name="contactUrl" type="String" required="false" />
+    <aura:attribute name="helpLabel" type="String" required="false" default="Help" />
+    <aura:attribute name="helpUrl" type="String" required="false" />
+
+    <aura:handler event="c:urlsAndLabels" action="{!c.handleUrlsAndLabels}" />
+    <!--<div id="header">
+        <div class="social-popout">
+            <div class="slds-grid slds-grid_align-end">
+                <div class="slds-col">
+                    <a class="social_me" href="{!v.contactUrl}" target="_blank">
+                        <img src="{!$Resource.appiuscontact}" />
+                    </a>
+                    <br/>
+                    <ui:outputText value="{!v.contactLabel}"/>
+                </div>
+                <div class="slds-col">
+                    <a class="social_me" href="{!v.helpUrl}" target="_blank">
+                        <img src="{!$Resource.appiushelp}" id="helpIcon"/>
+                    </a>
+                    <br/>
+                    <ui:outputText value="{!v.helpLabel}"/>
+                </div>
+            </div>            
+        </div>
+    </div>-->
+</aura:component>

@@ -1,0 +1,15 @@
+<template>
+    <p align="left">Just Testing ! {receivedId}&nbsp;{defaultRecordId}</p>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <div class="slds-grid slds-m-top_medium slds-m-left_medium slds-m-bottom_medium slds-m-right_medium">
+            <div class="slds-col slds-size_1-of-1">
+                <c-custom-lookup-competitor icon-name="standard:picklist_choice" s-object-api-name="account" label="First Competitor Local Name"
+                    placeholder="Search" id="form-input-1" onlookupupdate={handleLookupSelectCompValue} default-record-id={defaultRecordId}>
+                </c-custom-lookup-competitor>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+            <div class="slds-col slds-size_1-of-1"><lightning-input type="text" onchange={handleChangeCompetitor} name="form-input-2" id="form-input-2" data-my-id="form-input-2" class="slds-hide" value={defaultValue}></lightning-input></div>
+        </div>
+    </div>
+</template>

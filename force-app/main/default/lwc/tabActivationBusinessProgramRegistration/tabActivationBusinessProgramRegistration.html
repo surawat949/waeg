@@ -1,0 +1,110 @@
+<template>
+    <template lwc:if={showLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+    </template>
+    <div class="slds-box slds-grid">
+        <div class="slds-col slds-size_1-of-5">
+            MKTG Program
+            <br>
+            <div>
+                <img style="height: 40px; width: 40px;" src={HVCIndicator} title={HVCProgramFlagMeaning}>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-5">
+            Portal
+            <br>
+            <div>
+                <img style="height: 40px; width: 40px;" src={portalIndicator} title={PortalFlagMeaning}>
+            </div>
+        </div>
+       
+        <div class="slds-col slds-size_1-of-5">
+            Digital Orders 
+            <br>
+            <img style="height: 40px; width: 40px;" src={DataOrderIndicator} title={DataOrdersFlagMeaning}>
+        </div>
+        <div class="slds-col slds-size_1-of-5">
+            Remote Edging
+            <br>
+            <img style="height: 40px; width: 40px;" src={RemoteEdgingIndicator} title={RemotEdgingFlagMeaning}>
+        </div>
+        <div class="slds-col slds-size_1-of-5">
+            Mounting
+            <br>
+            <img style="height: 40px; width: 40px;" src={MountingIndicator} title={MountingFlagMeaning}>
+        </div>
+    </div>
+    <template lwc:if={isIndependentChannel}>
+        <!--Visionary Alliance-->
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+            <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+                <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.LoyaltyProgram}</h3></td>
+                    <template lwc:if={onBoarding}>
+                        <td><p align="right"><lightning-button label={custLabel.stopOnboardingProcess} variant="brand-outline" onclick={stopOnboardingProcess}></lightning-button></p></td>
+                    </template>
+                    <template lwc:else>
+                        <td><p align="right"><lightning-button label={custLabel.startOnboardingProcess} variant="brand-outline" onclick={startOnboardingProcess}></lightning-button></p></td>
+                    </template>
+                </tr>
+            </table>
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={objectapiname}
+                        fields={visionaryAllianceFields}
+                        mode="view"
+                        columns="2"
+                        >
+                    </lightning-record-form>                     
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">                      
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={objectapiname}
+                        fields={AccountOnBoarding}
+                        mode="readonly"
+                        columns="2"
+                        >
+                    </lightning-record-form>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+            <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+                <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.CommunityProgram}</h3></td>
+                </tr>
+            </table>
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-record-form
+                                record-id={receivedId}
+                                object-api-name={objectapiname}
+                                fields={LoyaltyProgram}
+                                mode="view"
+                                columns="2"
+                                >
+                            </lightning-record-form>                        
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                        </div>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </template>
+    <template lwc:else>
+        <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+            <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+            <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                <b>This feature is only available for Independent accounts. Current Account is {accChannel}</b>
+            </div>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,5 @@
+<apex:page standardController="Account" showheader="false" sidebar="false">
+    <apex:iframe src="https://app.powerbi.com/reportEmbed?reportId=4500acc9-788e-47ab-8b6a-e41921b601e6&autoAuth=true&ctid=bf781f77-403a-41b0-bc8d-aef742fcc54e&$filter=Magasin/Code_Client eq '{!Account.Legacy_Account_Number__c}'" height="850px" width="100%" frameborder="0"></apex:iframe>
+    <br/>
+     <!--Current Year: {!YEAR(TODAY())}<br/> -->
+</apex:page>

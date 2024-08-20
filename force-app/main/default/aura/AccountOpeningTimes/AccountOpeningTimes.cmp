@@ -1,0 +1,95 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+access="public" controller="AccountSalesTabComponentController">
+<aura:attribute name="recordId" type="String" />
+
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+<aura:attribute name="OAM1" type="String" default="08:00"/>
+<aura:attribute name="OAM2" type="String" default="08:00"/>
+<aura:attribute name="OAM3" type="String" default="08:00"/>
+<aura:attribute name="OAM4" type="String" default="08:00"/>
+<aura:attribute name="OAM5" type="String" default="08:00"/>
+<aura:attribute name="OAM6" type="String" default="08:00"/>
+<aura:attribute name="OAM7" type="String" default="08:00"/>
+<aura:attribute name="CAM1" type="String" default="12:00"/>
+<aura:attribute name="CAM2" type="String" default="12:00"/>
+<aura:attribute name="CAM3" type="String" default="12:00"/>
+<aura:attribute name="CAM4" type="String" default="12:00"/>
+<aura:attribute name="CAM5" type="String" default="12:00"/>
+<aura:attribute name="CAM6" type="String" default="12:00"/>
+<aura:attribute name="CAM7" type="String" default="12:00"/>
+<aura:attribute name="OPM1" type="String" default="14:00"/>
+<aura:attribute name="OPM2" type="String" default="14:00"/>
+<aura:attribute name="OPM3" type="String" default="14:00"/>
+<aura:attribute name="OPM4" type="String" default="14:00"/>
+<aura:attribute name="OPM5" type="String" default="14:00"/>
+<aura:attribute name="OPM6" type="String" default="14:00"/>
+<aura:attribute name="OPM7" type="String" default="14:00"/>
+<aura:attribute name="CPM1" type="String" default="20:00"/>
+<aura:attribute name="CPM2" type="String" default="20:00"/>
+<aura:attribute name="CPM3" type="String" default="20:00"/>
+<aura:attribute name="CPM4" type="String" default="20:00"/>
+<aura:attribute name="CPM5" type="String" default="20:00"/>
+<aura:attribute name="CPM6" type="String" default="20:00"/>
+<aura:attribute name="CPM7" type="String" default="20:00"/>
+<table class="slds-table slds-table_bordered slds-table_striped 
+        slds-table_fixed-layout records-table" style="border: 1px solid rgb(217, 219, 221);"> 
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+            <th>Sunday</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Open AM</th>
+            <td><lightning:input type="time" value="{!v.OAM1}"/></td>
+            <td><lightning:input type="time" value="{!v.OAM2}"/></td>
+            <td><lightning:input type="time" value="{!v.OAM3}"/></td>
+            <td><lightning:input type="time" value="{!v.OAM4}"/></td>
+            <td><lightning:input type="time" value="{!v.OAM5}"/></td>
+            <td><lightning:input type="time" value="{!v.OAM6}"/></td>
+            <td><lightning:input type="time" value="{!v.OAM7}"/></td>
+        </tr>
+        <tr>
+            <th>Close AM</th>
+            <td><lightning:input type="time" value="{!v.CAM1}"/></td>
+            <td><lightning:input type="time" value="{!v.CAM2}"/></td>
+            <td><lightning:input type="time" value="{!v.CAM3}"/></td>
+            <td><lightning:input type="time" value="{!v.CAM4}"/></td>
+            <td><lightning:input type="time" value="{!v.CAM5}"/></td>
+            <td><lightning:input type="time" value="{!v.CAM6}"/></td>
+            <td><lightning:input type="time" value="{!v.CAM7}"/></td>
+        </tr>
+        <tr>
+            <th>Open PM</th>
+            <td><lightning:input type="time" value="{!v.OPM1}"/></td>
+            <td><lightning:input type="time" value="{!v.OPM2}"/></td>
+            <td><lightning:input type="time" value="{!v.OPM3}"/></td>
+            <td><lightning:input type="time" value="{!v.OPM4}"/></td>
+            <td><lightning:input type="time" value="{!v.OPM5}"/></td>
+            <td><lightning:input type="time" value="{!v.OPM6}"/></td>
+            <td><lightning:input type="time" value="{!v.OPM7}"/></td>
+        </tr>
+        <tr>
+            <th>Close AM</th>
+            <td><lightning:input type="time" value="{!v.CPM1}"/></td>
+            <td><lightning:input type="time" value="{!v.CPM2}"/></td>
+            <td><lightning:input type="time" value="{!v.CPM3}"/></td>
+            <td><lightning:input type="time" value="{!v.CPM4}"/></td>
+            <td><lightning:input type="time" value="{!v.CPM5}"/></td>
+            <td><lightning:input type="time" value="{!v.CPM6}"/></td>
+            <td><lightning:input type="time" value="{!v.CPM7}"/></td>
+        </tr>
+    </tbody>
+</table>
+<div class="slds-grid">
+    <div class="slds-col slds-size_1-of-2"><lightning:button variant="brand" label="{!$Label.c.Save}" onclick="{!c.handleSave}"/></div>
+</div>
+</aura:component>

@@ -1,0 +1,897 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
+    <description>Calculate / Recalculate the score of the survey</description>
+    <formulas>
+        <name>BenefitScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!BenefitScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>BusinessAcumenAVGScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>({!IndustryScoreCalc}+{!DriversScoreCalc}+{!ProfitScoreCalc}+{!FunctionScoreCalc}+{!RoleScoreCalc})/5</expression>
+        <scale>1</scale>
+    </formulas>
+    <formulas>
+        <name>ClosingScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!ClosingScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>CollaborativeScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!CollaborativeScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>CollectionScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!CollectionScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>CommitmentsScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!CommitmentsScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>CompetitorsScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!CompetitorsScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>DriversScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!DriversScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>ExclusiveScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!ExclusiveScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>FeatureScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!FeatureScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>FunctionScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!FunctionScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>IndustryScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!IndustryScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>NegotiateScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!NegotiateScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>OpeningScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!OpeningScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>PartnerScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!PartnerScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>PlanningScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!PlanningScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>PresentScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!PresentScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>ProductMixScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!ProductMixScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>ProductServiceKnowledgeAVGScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>({!BenefitScoreCalc}+{!FeatureScoreCalc}+{!CompetitorsScoreCalc}+{!ExclusiveScoreCalc})/4</expression>
+        <scale>1</scale>
+    </formulas>
+    <formulas>
+        <name>ProfitScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!ProfitScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>ProspectScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!ProspectScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>RecordingScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!CompetitorsScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>RelationshipScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!RelationshipScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>ResolvingScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!ResolvingScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>RespondingScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!RespondingScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>RoleScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!RoleScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>SalesProcessAVGScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>({!PlanningScoreCalc}+{!RecordingScoreCalc}+{!CommitmentsScoreCalc}+{!SFDCScoreCalc}+{!OpeningScoreCalc}+{!RespondingScoreCalc}+{!UsingScoreCalc}+{!ProductMixScoreCalc}+{!SatisfyingScoreCalc}+{!ResolvingScoreCalc}+{!ClosingScoreCalc}+{!NegotiateScoreCalc}+{!PresentScoreCalc}+{!PartnerScoreCalc}+{!CollectionScoreCalc}+{!ProspectScoreCalc}+{!CollaborativeScoreCalc}+{!RelationshipScoreCalc})/18</expression>
+        <scale>1</scale>
+    </formulas>
+    <formulas>
+        <name>SatisfyingScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!SatisfyingScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>SFDCScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!SFDCScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>UserGlobalSurveyAVGScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>((({!BenefitScoreCalc}+{!FeatureScoreCalc}+{!CompetitorsScoreCalc}+{!ExclusiveScoreCalc})/4)+(({!PlanningScoreCalc}+{!RecordingScoreCalc}+{!CommitmentsScoreCalc}+{!SFDCScoreCalc}+{!OpeningScoreCalc}+{!RespondingScoreCalc}+{!UsingScoreCalc}+{!ProductMixScoreCalc}+{!SatisfyingScoreCalc}+{!ResolvingScoreCalc}+{!ClosingScoreCalc}+{!NegotiateScoreCalc}+{!PresentScoreCalc}+{!PartnerScoreCalc}+{!CollectionScoreCalc}+{!ProspectScoreCalc}+{!CollaborativeScoreCalc}+{!RelationshipScoreCalc})/18)+(({!IndustryScoreCalc}+{!DriversScoreCalc}+{!ProfitScoreCalc}+{!FunctionScoreCalc}+{!RoleScoreCalc})/5))/3</expression>
+        <scale>1</scale>
+    </formulas>
+    <formulas>
+        <name>UsingScoreCalc</name>
+        <dataType>Number</dataType>
+        <expression>CASE(({!UsingScore}),
+&quot;E&quot;,4,
+&quot;M&quot;,3,
+&quot;P&quot;,2,
+&quot;N&quot;,1,
+0)</expression>
+        <scale>0</scale>
+    </formulas>
+    <interviewLabel>SurveyScoreCalculation {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>SurveyScoreCalculation</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Open_CI_survey</name>
+        <label>Open CI survey</label>
+        <locationX>175</locationX>
+        <locationY>91</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>ScoreUpdate</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varID_CI_score</elementReference>
+            </value>
+        </filters>
+        <object>Coaching_Issues__c</object>
+        <outputAssignments>
+            <assignToReference>BenefitScore</assignToReference>
+            <field>Benefit__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ClosingScore</assignToReference>
+            <field>Closing__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>CollaborativeScore</assignToReference>
+            <field>Collaborative__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>CollectionScore</assignToReference>
+            <field>Collection__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>CommitmentsScore</assignToReference>
+            <field>Commitments__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>CompetitorsScore</assignToReference>
+            <field>Competitors__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>DriversScore</assignToReference>
+            <field>Drivers__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ExclusiveScore</assignToReference>
+            <field>Exclusive__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FeatureScore</assignToReference>
+            <field>Feature__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>FunctionScore</assignToReference>
+            <field>Function__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>IndustryScore</assignToReference>
+            <field>Industry__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>NegotiateScore</assignToReference>
+            <field>Negotiate__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>OpeningScore</assignToReference>
+            <field>Opening__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>PartnerScore</assignToReference>
+            <field>Partner__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>PlanningScore</assignToReference>
+            <field>Planning__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>PresentScore</assignToReference>
+            <field>Present__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ProductMixScore</assignToReference>
+            <field>ProductMix__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ProfitScore</assignToReference>
+            <field>Profit__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ProspectScore</assignToReference>
+            <field>Prospect__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>RecordingScore</assignToReference>
+            <field>Recording__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>RelationshipScore</assignToReference>
+            <field>Relationships__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>ResolvingScore</assignToReference>
+            <field>Resolving__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>RespondingScore</assignToReference>
+            <field>Responding__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>RoleScore</assignToReference>
+            <field>Role__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>SFDCScore</assignToReference>
+            <field>SFDC__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>SatisfyingScore</assignToReference>
+            <field>Satisfying__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>UsingScore</assignToReference>
+            <field>Using__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordUpdates>
+        <name>ScoreUpdate</name>
+        <label>ScoreUpdate</label>
+        <locationX>179</locationX>
+        <locationY>316</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varID_CI_score</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Benefits_Score__c</field>
+            <value>
+                <elementReference>BenefitScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Business_Acumen_AVG_Score__c</field>
+            <value>
+                <elementReference>BusinessAcumenAVGScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ClosingScore__c</field>
+            <value>
+                <elementReference>ClosingScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Coaching_Issue_AVG_Score__c</field>
+            <value>
+                <elementReference>UserGlobalSurveyAVGScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>CollaborativeScore__c</field>
+            <value>
+                <elementReference>CollaborativeScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>CollectionScore__c</field>
+            <value>
+                <elementReference>CollectionScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>CommitmentScore__c</field>
+            <value>
+                <elementReference>CommitmentsScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>CompetitorsScore__c</field>
+            <value>
+                <elementReference>CompetitorsScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>DriversScore__c</field>
+            <value>
+                <elementReference>DriversScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ExclusiveScore__c</field>
+            <value>
+                <elementReference>ExclusiveScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>FeatureScore__c</field>
+            <value>
+                <elementReference>FeatureScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>FunctionScore__c</field>
+            <value>
+                <elementReference>FunctionScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>IndustryScore__c</field>
+            <value>
+                <elementReference>IndustryScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>NegotiateScore__c</field>
+            <value>
+                <elementReference>NegotiateScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OpeningScore__c</field>
+            <value>
+                <elementReference>OpeningScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>PartnerScore__c</field>
+            <value>
+                <elementReference>PartnerScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>PlanningScore__c</field>
+            <value>
+                <elementReference>PlanningScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>PresentScore__c</field>
+            <value>
+                <elementReference>PresentScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ProductMixScore__c</field>
+            <value>
+                <elementReference>ProductMixScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Product_Solution_Knowledge_AVG_Score__c</field>
+            <value>
+                <elementReference>ProductServiceKnowledgeAVGScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ProfitScore__c</field>
+            <value>
+                <elementReference>ProfitScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ProspectScore__c</field>
+            <value>
+                <elementReference>ProspectScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RecordingScore__c</field>
+            <value>
+                <elementReference>RecordingScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RelationshipScore__c</field>
+            <value>
+                <elementReference>RelationshipScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ResolvingScore__c</field>
+            <value>
+                <elementReference>ResolvingScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RespondingScore__c</field>
+            <value>
+                <elementReference>RespondingScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RoleScore__c</field>
+            <value>
+                <elementReference>RoleScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SFDCScore__c</field>
+            <value>
+                <elementReference>SFDCScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Sales_Process_AVG_Score__c</field>
+            <value>
+                <elementReference>SalesProcessAVGScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SatisfyingScore__c</field>
+            <value>
+                <elementReference>SatisfyingScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>UsingScore__c</field>
+            <value>
+                <elementReference>UsingScoreCalc</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Coaching_Issues__c</object>
+    </recordUpdates>
+    <startElementReference>Open_CI_survey</startElementReference>
+    <status>Active</status>
+    <variables>
+        <name>AVGScoreBusinessAcumen</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>1</scale>
+        <value>
+            <elementReference>BusinessAcumenAVGScoreCalc</elementReference>
+        </value>
+    </variables>
+    <variables>
+        <name>AVGScoreProductServiceKnowledge</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>1</scale>
+        <value>
+            <elementReference>ProductServiceKnowledgeAVGScoreCalc</elementReference>
+        </value>
+    </variables>
+    <variables>
+        <name>AVGScoreSellingProcess</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>1</scale>
+        <value>
+            <elementReference>SalesProcessAVGScoreCalc</elementReference>
+        </value>
+    </variables>
+    <variables>
+        <name>BenefitScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <elementReference>BenefitScoreCalc</elementReference>
+        </value>
+    </variables>
+    <variables>
+        <name>ClosingScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>CollaborativeScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>CollectionScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>CommitmentsScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>CompetitorsScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>DriversScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ExclusiveScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>FeatureScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <elementReference>FeatureScoreCalc</elementReference>
+        </value>
+    </variables>
+    <variables>
+        <name>FunctionScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>IndustryScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>NegotiateScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>OpeningScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>PartnerScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>PlanningScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>PresentScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ProductMixScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ProfitScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ProspectScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <elementReference>ProspectScoreCalc</elementReference>
+        </value>
+    </variables>
+    <variables>
+        <name>RecordingScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>RelationshipScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ResolvingScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>RespondingScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>RoleScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>SatisfyingScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>SFDCScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>UsingScore</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>varID_CI_score</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

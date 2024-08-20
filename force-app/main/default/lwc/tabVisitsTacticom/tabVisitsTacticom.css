@@ -1,0 +1,10 @@
+.slds-form-element_edit .slds-form-element__static{
+    width:100%;
+}
+.slds-modal__container{
+    max-width: 60% !important;
+    width: 60% !important;
+}
+:host {
+    --slds-c-textarea-sizing-min-height: 150px;
+}

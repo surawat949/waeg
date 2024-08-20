@@ -1,0 +1,32 @@
+<template>
+      <!--In Store Trianings and Webinars Realted List-->
+      <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="Visits Training">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title">{custLabel.InstoreTrainingandWebinars} ({recCount})</h3></td>
+                <!--<td style="padding: 3px;"><p align="right"><lightning-button label="Certificate" variant="brand-outline" onclick={generateCertificate} disabled="true"></lightning-button></p></td>-->
+            </tr>
+        </table><br>
+        <template if:true={isDataExist}>
+            <template if:true={inStoreTrainingLst}>
+            <lightning-datatable data={inStoreTrainingLst} columns={columns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+            <br>
+            </template>
+        </template>   
+    </div>
+    <c-training-certificate-modal if:true={showTrainingCertificate}></c-training-certificate-modal>
+    <!-- Hoya Faculty-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="Hoya Faculty">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title">{custLabel.Hoya_Faculty_section}</h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+            <img src="/projRes/ui-home-private/emptyStates/noTasks.svg" class="slds-illustration__svg" alt=""/>
+            <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                <b>UNDER DEVELOPMENT. Nothing to see so far.</b>
+            </div>
+        </div>
+    </div>
+</template>

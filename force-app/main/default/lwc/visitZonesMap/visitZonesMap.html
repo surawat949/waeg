@@ -1,0 +1,157 @@
+<template>
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." size="medium" class="spinshow" variant="brand"></lightning-spinner>
+    </div>
+    <div class="slds-box slds-m-top_medium slds-m_bottom_medium slds-m-right_medium">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-6 slds-m-right_small">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Sub-area" style="width: 100%;">
+                    <tbody>
+                        <tr class="slds-line-height_reset" style="cursor: pointer;" onclick={handleClickSubarea1} data-id="sub_area_1">
+                            <td data-label="Sub-area 1" >
+                                <div class="slds-truncate" title="Sub-area 1">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:yellow;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 1" >
+                                <div class="slds-truncate" title="Sub-area 1">{subArea1}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" style="cursor: pointer;" onclick={handleClickSubarea2} data-id="sub_area_2">
+                            <td data-label="Sub-area 2">
+                                <div class="slds-truncate" title="Sub-area 2">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#fcb207;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 2" >
+                                <div class="slds-truncate" title="Sub-area 2">{subArea2}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" style="cursor: pointer;" onclick={handleClickSubarea3} data-id="sub_area_3">
+                            <td data-label="Sub-area 3">
+                                <div class="slds-truncate" title="Sub-area 3">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#ec1717;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 3" >
+                                <div class="slds-truncate" title="Sub-area 3">{subArea3}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" style="cursor: pointer;" onclick={handleClickSubarea4} data-id="sub_area_4">
+                            <td data-label="Sub-area 4" title="Sub-area 4">
+                                <div class="slds-truncate" title="Sub-area 4">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#13cddc;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 4" title="Sub-area 4" >
+                                <div class="slds-truncate" title="Sub-area 4">{subArea4}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" style="cursor: pointer;" onclick={handleClickSubarea5} data-id="sub_area_5">
+                            <td data-label="Sub-area 5" title="Sub-area 5">
+                                <div class="slds-truncate" title="Sub-area 5">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#58bd08;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Sub-area 5" title="Sub-area 5" >
+                                <div class="slds-truncate" title="Sub-area 5">{subArea5}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset" style="cursor: pointer;" onclick={handleClickSubarea6} data-id="sub_area_6"><!--This is Not Selected tacticom-->
+                            <td data-label="Not Selected" title="Not Selected">
+                                <div class="slds-truncate" title="Not Selected">
+                                    <svg version="1.1" baseProfile="full" viewBox="0 0 40 40" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z"
+                                        style="fill:#000F2E;stroke:none;stroke-width:1.3px"></path>
+                                    </svg>
+                                </div>
+                            </td>
+                            <td data-label="Not Selected" title="Not Selected">
+                                <div class="slds-truncate" title="Not Selected">{notSelected}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td data-label="Last 7 days visits" title="Last 7 days visits" >
+                                <div class="slds-truncate" title="Last 7 days visits">
+                                    <!--span style="vertical-align: middle;display: inline-block;">
+                                        &nbsp;-->                     
+                                        <svg version="1.1" baseProfile="full" viewBox="0 0 100 100" width="13" y="30" xmlns="http://www.w3.org/2000/svg">
+                                            <circle r="45" cx="50" cy="50" fill="white" stroke="black" stroke-width="5px" />
+                                        </svg>
+                                        <!--br>&nbsp;
+                                    </span-->
+                                </div>
+                            </td>
+                            <template lwc:if={iscustomerReviewtab}>
+                                <td data-label="Last 30 days visits" title="Last 30 days visits">
+                                <div class="slds-truncate" style="padding-top: 0.3rem; padding-bottom: 0.3rem;white-space: normal !important;" title="Last 30 days visits">
+                                    <div class="slds-truncate" title="Last 30 days visits" style="white-space: normal !important;">{Last_30_days_visits}</div>
+                                </div>
+                            </td>
+                            </template>
+                            <template lwc:else>
+                                <td data-label="Last 7 days visits" title="Last 7 days visits">
+                                    <div class="slds-truncate" style="padding-top: 0.3rem; padding-bottom: 0.3rem;white-space: normal !important;" title="Last 7 days visits">
+                                        <div class="slds-truncate" title="Last 7 days visits" style="white-space: normal !important;">{Last_7_days_visits}</div>
+                                        <!--span style="vertical-align: middle;display: inline-block;">Last 7 days visits<br>&nbsp;</span-->
+                                    </div>
+                                </td>
+                            </template>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_header-hidden" style="width: 100%;">
+                    <tbody>
+                        <tr class="slds-line-height_reset">
+                            <td style="white-space: normal !important;">
+                                <div class="checkbox-container">
+                                    <lightning-input type="checkbox" label="Exclude Not Selected Customers" name="Not_Selected" 
+                                    id="Not_Selected" data-id="Not_Selected" 
+                                    onchange={hanndledCheckboxChanged} checked={IsCheckBoxChecked}></lightning-input>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-line-height_reset">
+                            <td>
+                            </br>
+                                <lightning-button name="refreshData" variant="brand" label="Refresh" icon-name="utility:refresh" icon-position="left" onclick={handleRefreshData} title="Refresh Visit Zone Data"></lightning-button>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slds-col slds-size_5-of-6 slds-m-right_medium">
+                <lightning-layout>
+                    <lightning-layout-item flexibility="auto">
+                        <template lwc:if={showMap}>
+                            <lightning-map
+                                map-markers={mapMaker}
+                                markers-title={mapMakerTitle}
+                                zoom-level={zoomLevel}
+                                center={vCenter}
+                                list-view={displayListView}
+                            ></lightning-map>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </div>
+    </div>
+</template>

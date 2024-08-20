@@ -1,0 +1,275 @@
+/**
+ * @Name : TabMVAVisitsCertificateController
+ * @Component Type : Lightning Web Component
+ * @Description : The controller for TabMVAVisitsTraining - to generate the certificate
+ * @Author : Surawat Sakulmontreechai
+ * @Created Date : 2023-10-12
+ * @Created By : Surawat Sakulmontreechai
+ * @Email : surawat.sakulmontreechai@hoya.com
+ */
+
+public with sharing class TabMVAVisitsCertificateController {
+
+    public String deliveredTo {get; set;}
+    public String accountNumber {get; set;}
+    public String address1 {get; set;}
+    public String address2 {get; set;}
+    public String address3 {get; set;}
+    public String trainingDate {get; set;}
+    public String trainingType {get; set;}
+    public String duration {get; set;}
+    public String trainersName {get; set;}
+    public String trainingIdvf {get; set;}
+    public static String trainingTopics {get; set;}
+    public static String trainingTopicsRow2 {get; set;}
+    public static String ShopName {get;set;}
+    public static List<String> attendeesList {get; set;}
+    public static List<String> attendeesList2 {get; set;}
+    public static final String SEPARATOR = ' / ';
+    public static final string ELLIPSIS = '...';
+
+    public TabMVAVisitsCertificateController() {
+        deliveredTo = ApexPages.currentPage().getParameters().get('deliveredTo');
+        accountNumber = ApexPages.currentPage().getParameters().get('accountNumber');
+        address1 = ApexPages.currentPage().getParameters().get('address1');
+        address2 = ApexPages.currentPage().getParameters().get('address2');
+        address3 = ApexPages.currentPage().getParameters().get('address3');
+        trainingDate = ApexPages.currentPage().getParameters().get('trainingDate');
+        trainingType = ApexPages.currentPage().getParameters().get('trainingType');
+        duration = ApexPages.currentPage().getParameters().get('duration');
+        trainersName = ApexPages.currentPage().getParameters().get('trainersName');
+        trainingIdvf = ApexPages.currentPage().getParameters().get('trainingIdvf');
+        trainingTopics = ApexPages.currentPage().getParameters().get('trainingTopics');
+        trainingTopicsRow2 = ApexPages.currentPage().getParameters().get('trainingTopicsRow2');
+        ShopName = ApexPages.currentPage().getParameters().get('ShopName');
+        attendeesList = new List<String>();
+        attendeesList2 = new List<String>();
+        if (!Test.isRunningTest()) {
+         	attendeesList.addAll(ApexPages.currentPage().getParameters().get('attendeesList').split(';'));
+        	attendeesList2.addAll(ApexPages.currentPage().getParameters().get('attendeesList2').split(';'));   
+        }
+    }
+
+    @AuraEnabled 
+    public static String generateCertificate(String trainingId, String attendeeId) {
+        String returnMsg = 'Success';
+
+        try {
+            
+            Boolean isIndividual = false;
+            Id mergeFieldContact;
+            List<String> emailAddresses = new List<String>();
+            List<String> ccAddresses = new List<String>();
+            Id trId = Id.valueOf(trainingId);
+            ECP_Training__c trainingDetails = [SELECT Name, Account__c,Account__r.Name,Account__r.Seiko_local_customer_nr__c,Account__r.Shop_Street__c,Account__r.Shop_Postal_Code__c,
+                                                Account__r.Shop_City__c,Account__r.Shop_State__c,Account__r.Shop_Country__c,start__c,Account__r.Owner.Email,Type__c,
+                                                Training_duration__c,Assigned_to__r.Name, Assigned_to__r.Email, Training_ID__c,Training__c, Account__r.Shop_Name__c, Account__r.Clinic_Name__c, 
+                                                Account__r.Hoya_Account_ID__c FROM ECP_Training__c where Id =:trId];
+
+            
+            if(trainingDetails.Assigned_to__r.Email==null){
+                //ccAddresses.add(trainingDetails.Account__r.Owner.Email);        //account owner
+                String currentUserMail = UserInfo.getUserEmail();               
+                ccAddresses.add(currentUserMail);
+            }else{
+                //ccAddresses.add(trainingDetails.Account__r.Owner.Email);        //account owner
+                String currentUserMail = UserInfo.getUserEmail();               
+                ccAddresses.add(currentUserMail);
+                ccAddresses.add(trainingDetails.Assigned_to__r.Email);
+            }  
+            
+
+            //ccAddresses.add('xavier.lacroix@seikovision.com'); // added temp for monitoring feature
+            List<ECP_Training_Member__c> memberList = new List<ECP_Training_Member__c>();
+            
+            attendeesList = new List<String>();
+            attendeesList2 = new List<String>();
+            trainingTopics = '';
+            trainingTopicsRow2 = '';
+            
+            if (attendeeId == null) {
+                // certificate for All attendees
+                
+                memberList = [select contact__c, name, training__c from ECP_Training_Member__c where training__c=:trId];
+                if (memberList.isEmpty()) {
+                    //No attendee found
+                    returnMsg = 'AttendeeError';
+                    return returnMsg;
+                }
+                // this wont be used anywhere in email template but needs to set 
+                mergeFieldContact = memberList[0].contact__c;
+                Set<Id> contactIdSet = new Set<Id>();
+                for (ECP_Training_Member__c member : memberList) {
+                    contactIdSet.add(member.contact__c);
+                }
+                List<Contact> contactList = [select Id, Name, firstname, lastname, recordType.Name, Email, salutation, Account.Owner.Email from contact where AccountId =:trainingDetails.Account__c and Id IN :contactIdSet];
+                for (Contact eachCon : contactList) {
+                    if (attendeesList.size() < 5) {
+                        attendeesList.add(eachCon.Name);    
+                    } else if (attendeesList2.size() < 5) {
+                        attendeesList2.add(eachCon.Name);
+                    } else {
+                        //max 10 attendees and 2 columns only
+                        break;
+                    }
+                    /*
+                    if (eachCon.recordType.Name == 'Shop Owner') {
+                        emailAddresses.add(eachCon.Email);
+                    }*/
+                    emailAddresses.add(eachCon.Account.Owner.Email);
+                }
+            } else {
+                //certificate for Individual attendee
+                
+                isIndividual = true;
+                Id attId = Id.valueOf(attendeeId);
+                memberList = [select Id, contact__c,contact__r.Name,contact__r.email, name, training__c, contact__r.Account.Owner.Email from ECP_Training_Member__c where Id=:attId];
+                // this will be used in email template
+                mergeFieldContact = memberList[0].contact__c;
+                attendeesList.add(memberList[0].contact__r.Name);
+                emailAddresses.add(memberList[0].contact__r.Account.Owner.Email);
+            }
+            
+            PageReference pdfPage = Page.HoyaMVACertificatePage;
+            pdfPage.getParameters().put('deliveredTo', trainingDetails.Account__r.Clinic_Name__c);
+            pdfPage.getParameters().put('accountNumber', trainingDetails.Account__r.Hoya_Account_ID__c);
+            pdfPage.getParameters().put('ShopName', trainingDetails.Account__r.Shop_Name__c);
+            String tempAddr1 = trainingDetails.Account__r.Shop_Street__c + ',' + trainingDetails.Account__r.Shop_Postal_Code__c;
+            pdfPage.getParameters().put('address1', tempAddr1);
+            tempAddr1 = '';
+            tempAddr1 = trainingDetails.Account__r.Shop_City__c + ',' + trainingDetails.Account__r.Shop_State__c;
+            pdfPage.getParameters().put('address2', tempAddr1);
+            tempAddr1 = '';
+            tempAddr1 = trainingDetails.Account__r.Shop_Country__c;
+            pdfPage.getParameters().put('address3', tempAddr1);
+            pdfPage.getParameters().put('trainingDate',  String.valueOfGmt(trainingDetails.start__c));
+            pdfPage.getParameters().put('trainingType', trainingDetails.Type__c);
+            pdfPage.getParameters().put('duration',  String.valueOf(trainingDetails.Training_duration__c));
+            pdfPage.getParameters().put('trainersName', trainingDetails.Assigned_to__r.Name);
+            pdfPage.getParameters().put('trainingIdvf', trainingDetails.Name);
+            for (String eachTopic : trainingDetails.Training__c.split(';')) {
+                if (trainingTopics.length() + eachTopic.length() + SEPARATOR.length() < 66) {
+                    trainingTopics += eachTopic + SEPARATOR; 
+                } else if (trainingTopicsRow2.length() + eachTopic.length() + SEPARATOR.length() < 66) {
+                    trainingTopicsRow2 += eachTopic + SEPARATOR;      
+                } else {
+                    trainingTopicsRow2 += ELLIPSIS;
+                    break;
+                }
+            }
+            pdfPage.getParameters().put('trainingTopics', trainingTopics);
+            pdfPage.getParameters().put('trainingTopicsRow2', trainingTopicsRow2);
+            pdfPage.getParameters().put('attendeesList', String.join(attendeesList, ';'));
+            pdfPage.getParameters().put('attendeesList2', String.join(attendeesList2, ';'));
+
+            returnMsg = sendEmail(pdfPage, emailAddresses, ccAddresses, trainingDetails.Name, mergeFieldContact, isIndividual);
+            
+        } catch (Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+        return returnMsg;
+    }
+
+    public static String sendEmail(PageReference pdfPage, List<String> emailAddresses, List<String> ccAddresses, String  trainingCode, Id conId, Boolean isIndividual) {
+        String returnMsg = 'Success';
+        try {
+
+            Messaging.EmailFileAttachment attach = new Messaging.EmailFileAttachment();
+            attach.setContentType('application/pdf');
+            attach.setFileName('Hoya Education Training Certificate ' + trainingCode + '.pdf');
+            attach.setInline(false);
+            if(!test.isRunningTest()){
+                attach.Body = pdfPage.getContent();
+            }else{
+                attach.Body = blob.valueof('TEST');
+            }
+
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            List<OrgWideEmailAddress> orgWideEmail = [SELECT Id, Address, DisplayName, IsAllowAllProfiles, Purpose FROM OrgWideEmailAddress WHERE Address = 'salesforce@hoya.eu'];
+            
+            mail.setOrgWideEmailAddressId(orgWideEmail[0].Id);
+            mail.setUseSignature(false);
+            mail.setToAddresses(emailAddresses);
+            mail.setCcAddresses(ccAddresses);
+            List<EmailTemplate> emailTemplate;
+            if (isIndividual) {
+                emailTemplate =[Select Id, Subject, Description, HtmlValue, DeveloperName,Body from EmailTemplate where DeveloperName ='Hoya_Training_Certificate_MVA'];
+            } else {
+                emailTemplate =[Select Id, Subject, Description, HtmlValue, DeveloperName,Body from EmailTemplate where DeveloperName ='Hoya_Training_Certificate_MVA'];
+            }
+            
+            if (!emailTemplate.isEmpty()) {
+                mail.setTemplateID(emailTemplate[0].Id);    
+            } else {
+                returnMsg = 'templateError';
+                return returnMsg;
+            }
+            mail.setTargetObjectId(conId); // required for template.
+            mail.setTreatTargetObjectAsRecipient(false); // dont send mail to above Id
+            mail.setFileAttachments(new Messaging.EmailFileAttachment[] { attach }); 
+            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            
+           
+        } catch (Exception ex) {
+            
+            throw new AuraHandledException(ex.getMessage());
+        }
+        return returnMsg;
+    }
+
+    @AuraEnabled
+    public static List<ECP_Training__c> getECPTrainings(String accountId){
+        List<ECP_Training__c> lstEcpTraining = new List<ECP_Training__c>();
+        try {
+            if(accountId!=null){
+                Id accId = Id.valueOf(accountId);
+                lstEcpTraining = [SELECT Id, Name, 
+                                    Hoya_Account_ID__c, Training__c, 
+                                    Type__c, start__c, Assigned_to__r.Name,
+                                    Training_duration__c,Account__r.Name 
+                                    FROM ECP_Training__c WHERE (Account__c =:accId) 
+                                    AND (Training_status__c = 'Completed')
+                                    ORDER BY createdDate DESC];
+                
+            }
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+        return lstEcpTraining;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<ECP_Training_Member__c> getAttendee(String trainingId){
+        try {
+            Id trainId = Id.valueOf(trainingId);
+            List<ECP_Training_Member__c> attendees = [SELECT Id, Contact__c, Contact__r.RecordType.Name,
+                                                        Contact__r.Name, Name, Training__c 
+                                                        FROM ECP_Training_Member__c 
+                                                        WHERE Training__c=:trainId];
+            return attendees;
+        } catch (Exception e) {
+            
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static attendeeNums getAttendeeNumber(String trainingId){
+        try {
+            attendeeNums a = new attendeeNums();
+            AggregateResult[] nums = [SELECT COUNT(Id) attendeeNumber FROM ECP_Training_Member__c WHERE Training__c=:trainingId];
+            for(AggregateResult ar:nums){
+                a.AttendeeNumber = (Double)ar.get('attendeeNumber');
+            }
+            return a;
+            
+        } catch (Exception e) {
+            
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    public class attendeeNums{
+        @AuraEnabled public double AttendeeNumber{get;set;}
+    }
+}

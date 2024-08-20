@@ -1,0 +1,15 @@
+<template>
+    <div class="slds-theme_default slds-box">
+        <h3 class="slds-section__title test-id__section-header-container">
+            <button aria-controls="toggle" id="toggle2" aria-expanded={isExpanded}
+                class="slds-button slds-section__title-action" onclick={toggleSection}>
+                <lightning-icon icon-name={iconName} class="slds-p-right_x-small" size="x-small"
+                    alternative-text="Expand"></lightning-icon>
+                <span class="test-id__section-header-title slds-truncate" title={inputTitle}>{inputTitle}</span>
+            </button>
+        </h3>
+        <lightning-datatable if:true={isExpanded} data={contactList} columns={mycolumns} key-field="id"
+            hide-checkbox-column="true">
+        </lightning-datatable>
+    </div>
+</template>

@@ -1,0 +1,7 @@
+/* ThreeColumnLayout.css */
+.container {
+    display: grid;
+    gap: 2px; /* Gap between rows */
+}
+
+/* Adjust styles as needed */

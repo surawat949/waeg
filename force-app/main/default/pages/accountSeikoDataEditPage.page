@@ -1,0 +1,141 @@
+<apex:page standardController="Account" extensions="AccountSeikoDataPageController"
+    showHeader="false" 
+    >
+    <apex:messages />
+<div >
+    <apex:form >
+        <apex:pageBlock mode="maindetail">
+            <apex:pageBlockButtons location="top" >
+                <apex:commandButton value="Save" action="{!save}" id="saveButton" style="display:none"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Distribution Network" columns="2">
+                <apex:outputField value="{!account.Seiko_Network__c}"/>
+                <apex:outputField value="{!account.SVS_sign_in__c}"/>
+                
+                <apex:outputField value="{!data.SVS_Pricelist__c}"/>
+                <apex:outputField value="{!data.SVS_Pricelist_activation__c}"/>
+                
+                <apex:outputField value="{!account.SEIKO_Customer_Classification__c}"/>
+                <apex:outputField value="{!account.Actual_Classification__c}"/>
+                
+                <apex:outputField value="{!account.Onboarding_Customer__c}"/>
+                <apex:outputField value="{!account.Onboarding_date__c}"/>
+
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="SEIKO Services" columns="2">
+                <apex:outputField value="{!data.SEIKO_Catalogues__c}" styleClass="form-control"/>
+                <apex:outputField value="{!data.SEIKO_catalogues_training__c}" styleClass="form-control"/>
+
+                <apex:outputField value="{!data.SEIKO_Products_1rst_training__c}" styleClass="form-control"/>
+                <apex:outputField value="{!data.SEIKO_Products_1rst_training_date__c}" styleClass="form-control"/>
+                
+                <apex:outputField value="{!data.Seiko_track_trace_daily_email__c}"/>
+                <apex:outputField value="{!data.Seiko_track_trace_email_activation__c}"/>
+                
+                <apex:outputField value="{!data.SEIKO_Track_Trace__c}"/>
+                <apex:outputField value="{!data.SEIKO_Track_Trace_activation__c}"/>
+
+                <apex:outputField value="{!data.SVS_Sample_boxes__c}"/>
+                <apex:outputField value="{!data.SVS_Sample_boxes_setting_up__c}"/>
+                
+                <apex:outputField value="{!data.SVS_Newsletters__c}"/>
+                <apex:outputField value="{!data.SVS_Newsletters_activation__c}"/>
+
+                <apex:outputField value="{!data.SVS_Store_locator__c}"/>
+                <apex:outputField value="{!data.SVS_Store_locator_activation__c}"/>
+
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="SEIKO Technologies" columns="2">
+            
+                <apex:outputField value="{!data.SEIKO_Xtranet__c}"/>
+                <apex:outputField value="{!data.SEIKO_Xtranet_training__c}"/>
+
+                <apex:outputField value="{!data.SEIKO_Vision_Xperience_iPAD__c}"/>
+                <apex:outputField value="{!data.SEIKO_Vision_Xperience_iPAD_training__c}"/>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:outputField value="{!data.SVX_iPad_Ending_Licence__c}"/>
+
+                <apex:outputField value="{!data.SEIKO_Vision_Xperience_column__c}"/>
+                <apex:outputField value="{!data.SEIKO_Vision_Xperience_column_training__c}"/>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:outputField value="{!data.SVX_Column_Ending_Licence__c}"/>
+
+                <apex:outputField value="{!data.SEIKO_Vision_Simulator__c}"/>
+                <apex:outputField value="{!data.SEIKO_Vision_Simulator_training__c}"/>
+
+                <apex:outputField value="{!data.SEIKO_Tracer__c}"/>
+                <apex:outputField value="{!data.SEIKO_Tracer_installation__c}"/>
+
+                <apex:outputField value="{!data.SEIKO_Xchanger__c}"/>
+                <apex:outputField value="{!data.SEIKO_Xchanger_training__c}"/>
+
+                <apex:outputField value="{!data.Seiko_Shop_in_Shop__c}"/>
+                <apex:outputField value="{!data.Seiko_Shop_in_Shop_installation__c}"/>
+                
+                <apex:outputField value="{!data.Miyosmart__c}"/>
+                <apex:outputField value="{!data.MiyoSmart_training__c}"/>
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="SVS Program" columns="2">
+            
+                <apex:outputField value="{!data.SVS_Starting_kit__c}"/>
+                <apex:outputField value="{!data.Starting_kit_setting_up__c}"/>
+
+                <apex:outputField value="{!data.SVS_Communication_kit__c}"/>
+                <apex:outputField value="{!data.SVS_Communication_kit_setting_up__c}"/>
+
+                <apex:outputField value="{!data.SVS_Marketing_campaigns__c}"/>
+                <apex:outputField value="{!data.SVS_Marketing_campaigns_activation__c}"/>
+
+
+                <apex:outputField value="{!data.SVS_Purchase_Registration__c}"/>
+                <apex:outputField value="{!data.SVS_Purchase_Registration_activation__c}"/>
+                <apex:outputField value="{!data.SVS_Digital_communication_platform__c}"/>
+                <apex:outputField value="{!data.SVS_Digital_com_platform_activation__c}"/>
+                <apex:outputField value="{!data.SVS_FB_Page__c}"/>
+                <apex:outputField value="{!data.SVS_Digital_com_Platform_radius__c}"/>
+                <apex:outputField value="{!data.WS_error__c}"/>
+                <apex:outputLink value="{!data.SVS_FB_Page__c}"/>
+            </apex:pageBlockSection>
+                        
+            <apex:pageBlockSection title="Local activities" columns="2">
+                <apex:outputField value="{!data.Local_initiative_1__c}"/>
+                <apex:outputField value="{!data.Local_initiative_1_activation__c}"/>
+                
+                <apex:outputField value="{!data.Local_initiative_2__c}"/>
+                <apex:outputField value="{!data.Local_initiative_2_activation__c}"/>
+                
+                <apex:outputField value="{!data.Local_initiative_3__c}"/>
+                <apex:outputField value="{!data.Local_initiative_3_activation__c}"/>
+                
+                <apex:outputField value="{!data.Local_initiative_4__c}"/>
+                <apex:outputField value="{!data.Local_initiative_4_activation__c}"/>
+                
+                <apex:outputField value="{!data.Local_initiative_5__c}"/>
+                <apex:outputField value="{!data.Local_initiative_5_activation__c}"/>
+                
+                <apex:outputField value="{!data.Local_initiative_6__c}"/>
+                <apex:outputField value="{!data.Local_initiative_6_activation__c}"/>
+                
+                <apex:outputField value="{!data.Local_initiative_7__c}"/>
+                <apex:outputField value="{!data.Local_initiative_7_activation__c}"/>
+                
+                <apex:outputField value="{!data.Local_initiative_8__c}"/>
+                <apex:outputField value="{!data.Local_initiative_8_activation__c}"/>
+                
+                <apex:outputField value="{!data.Local_initiative_9__c}"/>
+                <apex:outputField value="{!data.Local_initiative_9_activation__c}"/>
+                
+                <apex:outputField value="{!data.Local_initiative_10__c}"/>
+                <apex:outputField value="{!data.Local_initiative_10_activation__c}"/>
+            </apex:pageBlockSection>
+            <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton" hideOnEdit="editButton" />
+            <apex:pageBlockButtons location="bottom" >
+                <apex:commandButton value="Save" action="{!save}" id="saveButton" style="display:none"/>
+            </apex:pageBlockButtons>
+        <apex:pageMessages />
+        </apex:pageBlock>
+    </apex:form>
+    
+</div>
+</apex:page>

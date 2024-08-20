@@ -1,0 +1,24 @@
+<template>
+     <!--Customer Satisfaction Indicator Section-->
+    <div class="slds-box slds-grid">
+        <!--div class="slds-col slds-size_1-of-6">
+            {custLabel.presentations}
+            <br>
+            <div>
+                <img style="height: 40px; width: 40px;" src={presentationIndicator}>
+            </div>
+        </div-->
+        <div class="slds-col slds-size_1-of-6">
+            {custLabel.sharing}
+            <br>
+            <div>
+                <img style="height: 40px; width: 40px;" src={sharingIndicator}  title={sharingIndicatorgMeaning}>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-6">
+            {custLabel.viewing}
+            <br>
+            <img style="height: 40px; width: 40px;" src={viewingIndicator} title={viewingIndicatorMeaning}>
+        </div>
+    </div>
+</template>

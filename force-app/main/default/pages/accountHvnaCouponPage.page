@@ -1,0 +1,78 @@
+<apex:page standardController="Account" extensions="AccountHvnaCouponController" cache="true" expires="600">
+<apex:slds />
+    <div class="detailList">
+    <apex:form >
+        <apex:pageBlock mode="maindetail">
+            <apex:pageBlockSection columns="2">
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupon_PY__c}"/>
+                <apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupon_Cnt_PY__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <table width="100%" class="list">
+            <thead class="rich-table-thead">
+                <tr class="headerRow">
+                    <th class="headerRow"><apex:outputLabel value="Monthly Coupons" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Apr" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="May" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Jun" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Jul" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Aug" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Sep" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Oct" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Nov" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Dec" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Jan" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Fev" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="Mar" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="TOTAL" style="font-weight:bold"/></th>
+                    <th class="headerRow"><apex:outputLabel value="%" style="font-weight:bold"/></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="dataRow">
+                    <td class="headerRow"><apex:outputLabel value="$" style="font-weight:bold"/></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_APR__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_MAY__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_JUN__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_JUL__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_AUG__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_SEP__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_OCT__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_NOV__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_DEC__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_JAN__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_FEB__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_MAR__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon_YTD_Total__c,0)}"/></apex:outputText></td>
+                    <td class="dataCell"><apex:outputText value="{0,number, ###,###,##0}"><apex:param value="{!ROUND(account.Additionnal_account_data__r.HOLA_Coupon__c,0)}"/></apex:outputText></td>
+                </tr>
+                <tr class="dataRow">
+                    <td class="headerRow"><apex:outputLabel value="Qty" style="font-weight:bold"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_APR__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_MAY__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_JUN__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_JUL__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_AUG__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_SEP__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_OCT__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_NOV__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_DEC__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_JAN__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_FEB__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_MAR__c}"/></td>
+                    <td><apex:outputField value="{!account.Additionnal_account_data__r.HOLA_Coupons_Total_YTD__c}"/></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+ 
+        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton" hideOnEdit="editButton" />
+        <apex:pageBlock mode="mainDetail">
+            <apex:pageBlockButtons location="bottom" >
+                <apex:commandButton value="Save" action="{!save}" id="saveButton" style="display:none"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    </div>
+</apex:page>

@@ -1,0 +1,101 @@
+.slds-box{
+    padding: 1px;
+}
+.table-container {
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: 69%;
+}
+.dropdown{
+    left: 13.35rem;
+    min-width: 0 !important;
+    width: 22.5rem !important;
+    max-width: 100% !important;
+}
+.sortable {
+    cursor: pointer;
+}
+.sortIcon {
+    content: '\\25b2';
+}
+.sortIconDesc {
+    content: '\\25bc';
+}
+.upicon{
+    position: relative;
+    top: -1.75rem;
+    left: 3rem;
+}
+.hidden {
+    display: none;
+}
+.middle{
+    top: 1.5rem;
+    left: 2rem;
+}
+.pagination {
+    margin-top: 10px;
+}
+.custom-table {
+    width: 100%;
+}
+.custom-table th, .custom-table td {
+    border: 1px solid #ddd; /* Define border style */
+    padding: 8px; /* Add padding inside cells */
+}
+.table-container {
+    margin-top: 20px; /* Add margin to the table container */
+}
+.keepRight{
+    left: 100%;
+    position: sticky;
+}
+.keepMiddle{
+    position: relative;
+    left: 38%;
+}
+.sticky-column {
+    position: sticky;
+    left: 0;
+
+    background-color: #f5f5f5;
+}
+.fixed-header-container {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+    border-bottom: 1px solid #ddd; /* Optional: Add border below headers */
+    /* Additional styling for fixed header container */
+}
+.index2{
+    z-index: 2;
+}
+.index3{
+    z-index: 3;
+}
+.fit{
+    height: 50rem;
+}
+.position{
+    position: relative;
+    top: 1.6rem;
+}
+.slds-box1{
+    padding-bottom: 1rem;
+    border: var(--lwc-colorBorder, rgb(229, 229, 229)) var(--lwc-borderWidthThin, 1px) solid;
+}
+.heightset{
+    height: -webkit-fill-available;
+}
+.colormatch{
+    border: none;
+    color: #0B5CAB;
+    background-color: #f5f5f5;
+}
+
+.custom-col-2 {
+    flex: 2; 
+}
+.custom-col-3{
+    flex: 1;
+  }

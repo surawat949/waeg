@@ -1,0 +1,34 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-m-horizontal_none">
+        <table class=" slds-table slds-table_bordered" aria-label="Ordering System" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{custLabel.RegHoyaILog}</p>
+                    </h3>
+                </td>
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-3" > 
+                <lightning-record-view-form record-id={receivedId} object-api-name={Contact_Obj}>
+                    <lightning-output-field field-name="HoyaIlog_Allowed__c" > </lightning-output-field>
+                </lightning-record-view-form> 
+            </div>
+            <div class="slds-col slds-size_1-of-3" > 
+                <lightning-record-view-form record-id={receivedId} object-api-name={Contact_Obj}>
+                    <lightning-output-field field-name="Track_Trace_Subscription__c" > </lightning-output-field>
+                </lightning-record-view-form> 
+            </div>
+            <div class="slds-col slds-size_1-of-3" > 
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={accountCatalog}
+                    mode="readOnly" 
+                    columns = "1" >
+                </lightning-record-form>
+            </div>
+        </div>
+    </div>
+</template>

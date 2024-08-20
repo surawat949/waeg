@@ -1,0 +1,4 @@
+<apex:page standardController="Account" showheader="false" sidebar="false">
+  <apex:iframe src="https://app.powerbi.com/reportEmbed?reportId=7755672a-9370-4cec-a6de-0d56c16c8b10&autoAuth=true&ctid=bf781f77-403a-41b0-bc8d-aef742fcc54e&$filter=QV_Sales__c/HOYA_Account_ID__c eq '{!Account.Hoya_Account_ID__c}'" height="540px" width="100%" frameborder="0">
+  </apex:iframe>
+</apex:page>

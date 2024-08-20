@@ -1,0 +1,24 @@
+<template>
+    <div if:true={hasFields}>
+        <div class="formContent embeddedServiceSidebarForm">
+            <div class="slds-var-p-around_medium">
+                <template for:each={fields} for:item="field">
+                    <div key={field.name} class="slds-var-p-bottom_small">
+                        <lightning-input name={field.name} type={field.type} label={field.label} variant="label-hidden"
+                            class="slds-input text-align" value={field.value} required={field.required}>
+                        </lightning-input>
+                    </div>
+                </template>
+            </div>
+        </div>
+        <div class="buttonWrapper embeddedServiceSidebarForm">
+            <button type="button" onclick={handleStartChat}
+                class="slds-button slds-button--neutral startButton uiButton--default uiButton embeddedServiceSidebarButton">
+                <span class="label bBody">{startChatLabel}</span>
+            </button>
+        </div>
+        <button class="minimizedContainer" onclick={handleClick}>
+        <div class="messageContent">{message}</div> 
+    </button> 
+    </div>
+</template>

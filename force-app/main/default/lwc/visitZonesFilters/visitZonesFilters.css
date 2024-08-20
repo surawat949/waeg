@@ -1,0 +1,134 @@
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    min-width: 100%;
+}
+
+.slds-box{
+    padding: 1px;
+}
+.table-container {
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: 69%;
+}
+.dropdown{
+    left: 10.6rem;
+    width: 17rem;
+}
+.sortable {
+    cursor: pointer;
+}
+.sortIcon {
+    content: '\\25b2';
+}
+.sortIconDesc {
+    content: '\\25bc';
+}
+.upicon{
+    position: relative;
+    top: -1.75rem;
+    left: 3rem;
+}
+.hidden {
+    display: none;
+}
+.middle{
+    top: 1.5rem;
+    left: 2rem;
+}
+.last{
+    top: 1.5rem;
+}
+.pagination {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.custom-table {
+    width: 100%;
+}
+.custom-table th{
+    border: 1px solid #ddd; /* Define border style */
+    padding: 4px; /* Add padding inside cells */
+}
+.custom-table td {
+    border: 1px solid #ddd; /* Define border style */
+    padding: 4px; /* Add padding inside cells */
+}
+.table-container {
+    margin-top: 2px; /* Add margin to the table container */
+    min-height:250px;
+}
+.keepRight{
+    left: 100%;
+    position: sticky;
+}
+.keepMiddle{
+    position: relative;
+    left: 38%;
+}
+.sticky-column {
+    position: sticky;
+    left: 0;
+
+    background-color: #f5f5f5;
+}
+.fixed-header-container {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+    border-bottom: 1px solid #ddd; /* Optional: Add border below headers */
+    /* Additional styling for fixed header container */
+}
+.index2{
+    z-index: 2;
+}
+.index3{
+    z-index: 3;
+}
+.fit{
+    height: 50rem;
+}
+.position{
+    position: relative;
+    top: 1.6rem;
+}
+.slds-box1{
+    padding-bottom: 1rem;
+    border: var(--lwc-colorBorder, rgb(229, 229, 229)) var(--lwc-borderWidthThin, 1px) solid;
+}
+.heightset{
+    height: -webkit-fill-available;
+}
+.colormatch{
+    border: none;
+    color: #0B5CAB;
+    background-color: #f5f5f5;
+}
+
+.lastelem{
+    top: 1.5 rem;
+}
+.pright5{
+    padding-right: 0.25rem;
+}
+.pleft5{
+    padding-left: 0.25rem;
+}
+.pbottom5{
+     padding-bottom: 0.25rem;
+}
+.ptop10{
+     padding-top: 0.5rem;
+}
+.backdrop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(8, 7, 7, 0.5); /* background color while spinner onscreen */
+    z-index: 15000; /* set z-index always high */
+  }

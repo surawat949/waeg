@@ -1,0 +1,310 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:isUrlAddressable" 
+                access="global"
+                description="VisitPlanningVisitEditMobileForm"
+                controller="VisitPlanningController">
+    <lightning:spinner aura:id="spinner" variant="brand" />
+    <aura:attribute name="AccountId" type="String" />
+    <aura:attribute name="account" type="Account" />
+    <aura:attribute name="visit" type="Visits__c"/>
+    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="companyName" type="String"/>
+    <aura:attribute name="profileName" type="String"/>
+    <aura:attribute name="regionname" type="String" />
+    <aura:attribute name="usename" type="String" />
+    <aura:attribute name="campaignId" type="String" />
+    <aura:attribute name="opportunityId" type="String" />
+    <aura:attribute name="campaignName" type="String" />
+    <aura:attribute name="memberFields" type="String[]" default="['Campaign_Presented__c', 'Level_interest__c', 'Contract_Value__c', 'Not_interested_Reason__c', 'Comments__c']" />
+    <aura:attribute name="memberFieldsEU" type="String[]" default="['Campaign_Presented__c', 'Date_of_presentation__c', 'Campaign_Priority__c', 'Level_interest__c', 'Not_ineterested_Reason__c', 'Not_interested_Reason__c', 'Other_information__c', 'Signed_Contract__c', 'Contract_Signature_Date__c', 'Contract_Value__c']" />
+    <aura:attribute name="campaignFields" type="String[]" default="['Name', 'StartDate', 'Status', 'Type']" />
+    <aura:attribute name="oppFields" type="String[]" default="['Name', 'StageName','CloseDate','NextStep', 'Monthly_Incremental_Sales_FY21__c']"/>
+    <aura:attribute name="oppFieldsEU" type="String[]" default="['Name', 'StageName', 'CloseDate', 'NextStep', 'Description', 'Monthly_Incremental_Sales_FY21__c', 'Days_in_the_current_Stage__c']" />
+    <aura:attribute name="latitude" type="Double" default=""/>
+    <aura:attribute name="longitude" type="Double" default=""/>
+    <aura:attribute name="specificMkgSection" type="String" />
+    <aura:attribute name="displayStartStop" type="Boolean" default="false"/>
+    <aura:attribute name="hasOpportunity" type="Boolean" default="false" />
+    <aura:attribute name="ListCampaignMember" type="Object[]" />
+    <aura:attribute name="isHVNA" type="Boolean" default="false"/>
+    <aura:attribute name="displaySection" type="String" default="" />
+    
+	  <aura:attribute name="isRequired" type="Boolean" default="true"/>
+	
+    <lightning:navigation aura:id="navService"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <aura:attribute name="url" type="String"/>
+    
+	
+	<aura:attribute name="stopNavigationStartStop" type="Boolean" default="false"/>
+    <aura:attribute name="startNavigationStartStop" type="Boolean" default="false"/>
+	
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="aura:locationChange" action="{!c.doInit}"/>
+
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.onPageReferenceChanged}" />
+    
+    <div class="slds-theme_default slds-box">
+        <lightning:recordEditForm aura:id="visitEditForm"
+                    objectApiName="Visits__c" recordId="{!v.visit.Id}"
+                    onsuccess="{!c.handleSuccess}"
+                    onload="{!c.handleLoad}">
+ 
+        <lightning:messages />
+        <lightning:button class="slds-var-m-top_small" type="submit" label="Save" onclick="{!c.handleclickSave}"/>
+        <aura:if isTrue="{!v.displayStartStop==true}">
+            <aura:if isTrue="{!and(v.visit.Start_location_time__c==null,v.visit.Id!=null)}">
+                <lightning:button class="slds-var-m-top_small" variant="success" type="submit" label="Start Visit" onclick="{!c.startVisit}"/> 
+            </aura:if>
+            <aura:if isTrue="{!and(v.visit.Stop_Location_Time__c==null, v.visit.Start_location_time__c!=null)}">
+                <lightning:button class="slds-var-m-top_small" variant="destructive" type="submit" label="Stop Visit" onclick="{!c.stopVisit}"/> 
+            </aura:if>
+        </aura:if>
+        <lightning:button class="slds-var-m-top_small" variant="brand" label="{!$Label.c.Cancel}" onclick="{!c.backToVPM}"/>
+
+        <!-- START HEADER -->
+        <div class="slds-grid">
+            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                Visit
+                    <aura:if isTrue="{!not(empty(v.visit.Id))}">
+                        <lightning:formattedUrl value="{!'/'+v.visit.Id}" label="{!v.visit.Name}" target="_blank"/>
+                    </aura:if>
+                    ,
+                    &nbsp;{!v.account.Hoya_Account_ID__c}&nbsp;{!v.account.name}
+                </h2>
+                <aura:if isTrue="{!v.message!= null}">
+                    <ui:message title="Error" severity="error" closable="true">
+                        {!v.message}
+                    </ui:message>
+                </aura:if>
+        </div>
+        <!-- END HEADER -->
+            <!--value="{!v.account.Id}-->
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Account__c" value="{!v.visit.Account__c}"/></div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Assigned_to__c" value="{!v.visit.Assigned_to__c}" aura:id="Assigned_To" /></div>
+        </div>
+        <!--
+        <div class="slds-hidden">
+            <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_assigned_to__c" value="{!v.usename}" aura:id="Visit_Assign_To" /></div>
+        </div>
+        -->
+        <aura:if isTrue="{!v.isHVNA==false}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Contact__c" value="{!v.visit.Contact__c}" /></div>
+            </div>
+        </aura:if>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Start_Time__c" aria-required="" aura:id="StartTime" onchange="{!c.handleStartTimeChange}"/></div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="End_Time__c" aura:id="StopTime" /></div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_Status__c" aura:id="vstatus" onchange="{!c.handleSendEmail}" required="{!v.isRequired}" /></div>
+        </div>
+        <aura:if isTrue="{!v.companyName=='HLSH'}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_Type__c" required="true" /></div>
+            </div>
+            <aura:set attribute="else">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_Type__c" required="true" /></div>
+                </div>
+            </aura:set>
+        </aura:if>
+        <aura:if isTrue="{!and(v.companyName!='HOLA',v.companyName!='HLCA')}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Visited_but_not_seen__c"/></div>
+            </div>
+        </aura:if>
+
+        <aura:if isTrue="{!v.companyName=='HLAT' || v.companyName=='HLBE' || v.companyName=='HLCH' || v.companyName=='HLCZ' || v.companyName=='HLFR' || v.companyName=='HLHU' || v.companyName=='HLIB' || v.companyName=='HLNL' || v.companyName=='HLPO' || v.companyName=='HLRO' || v.companyName=='HLRU' || v.companyName=='HLSA' || v.companyName=='HLSE' || v.companyName=='HLTR' || v.companyName=='HLUK' || v.companyName=='HODG' || v.companyName=='HOLD' || v.companyName=='HOLF' || v.companyName=='HOLI' || v.companyName=='HVC' || v.companyName=='HVEU' || v.companyName=='MENA' || v.companyName=='SOB' || v.companyName=='SOE' || v.companyName=='SOES' || v.companyName=='SOF' || v.companyName=='SOG' || v.companyName=='SOHU' || v.companyName=='SOI' || v.companyName=='SOPL' || v.companyName=='SORU' || v.companyName=='SOSA' || v.companyName=='SOT' || v.companyName=='SOUK'}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Coaching_Visit__c" /></div>
+            </div>
+        </aura:if>
+
+        <aura:if isTrue="{!and(v.companyName!='HOLA',v.companyName!='HLCA')}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Visit_Reason__c" required="true" /></div>
+            </div>
+        </aura:if>
+
+        <!--aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH'|| v.companyName=='HLSI' || v.companyName=='HAPL' || v.companyName=='HOLK' || v.companyName=='HLHK' || v.companyName=='HOLM' || v.companyName=='ILENS' || v.companyName=='THAI' || v.companyName=='HLPH' || v.companyName=='HLID' || v.companyName=='HOTA' || v.companyName=='HLIN'}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_Reason_APAC__c" required="true" /></div>
+            </div>
+        <aura:set attribute="else">
+            <aura:if isTrue="{!and(v.companyName!='HOLA',v.companyName!='HLCA')}">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Visit_Reason__c" required="true" /></div>
+                </div>
+            </aura:if>
+        </aura:set>
+        </aura:if-->
+        <aura:if isTrue="{!or(v.companyName=='HOLA',v.companyName=='HLCA',v.companyName=='VEUS')}">
+        <!-- specific hvna section -->
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="HVNA_Subject__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="HVNA_Visit_Type__c" /></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="HVNA_Visit_Objective__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Secondary_Tactic__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="HVNA_Customer_Goal__c"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="HVNA_Appointment__c"/></div>
+            </div>
+        </aura:if>
+        
+		<aura:if isTrue="{!v.companyName=='HLIB'|| v.companyName=='SOES'}">
+              <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Visit_Objective_follow_up_notes__c"/></div>
+              </div>        
+          </aura:if>
+		
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Visit_Notes__c"/></div>
+        </div>
+         
+            
+        <div class="{!if(v.displaySection == 'section1','slds-show','slds-hide')}" aura:id="firstsection">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Send_Email__c" aura:id="SendEmail" /></div>
+            </div>
+        </div>
+        <aura:if isTrue="{!v.isHVNA==true || v.companyName == 'HOLK' || v.companyName=='HAPL' || v.companyName=='HLHK' || v.companyName=='HOLM' || v.companyName=='ILENS' || v.companyName=='THAI' || v.companyName=='HLSI' || v.companyName=='HLSH' || v.companyName=='SOC' || v.companyName=='HLPH' || v.companyName=='HLID' || v.companyName=='HOTA' || v.companyName=='HLIN' || v.companyName=='HVC'}">
+            <!--SSU | 20211214 - added for APAC areas need to see for Call_To_Action_Notes__c field -->
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Call_To_Action_Notes__c"/></div>
+            </div>
+        </aura:if>
+        
+            <aura:if isTrue="{!and(v.companyName!='HOLA',v.companyName!='HLCA',v.companyName!='HAPL',v.companyName!='HOLK',v.companyName!='HLHK',v.companyName!='HOLM',v.companyName!='ILENS',v.companyName!='THAI',v.companyName!='HLSI', v.companyName!='HLSH', v.companyName!='SOC', v.companyName!='HLID', v.companyName!='HLPH', v.companyName!='HLIN', v.companyName!='HOTA', v.companyName!='HVC')}">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Actions_executed__c"/></div>
+                </div>
+            </aura:if>
+            
+            <!-- STANDARD GLOBAL FIELD -->
+            <!-- APAC need for outcome field below -->
+            <!--aura:if isTrue="{!v.companyName=='HAPL'|| v.companyName=='HOLK' || v.companyName=='HLHK' || v.companyName=='HOLM' || v.companyName=='ILENS' || v.companyName=='THAI' || v.companyName=='HLSI' || v.companyName=='HLSH' || v.companyName=='SOC' || v.companyName=='HLPH' || v.companyName=='HLID' || v.companyName=='HOTA' || v.companyName=='HLIN' || v.companyName=='HVC'}" -->
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Call_To_Action__c"/></div>
+                </div>
+                <!--Display for campaign member. Right now only available for APAC Countries-->
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Opportunity__c" value="{!v.visit.Opportunity__c}" onchange="{!c.handleOpportunityChange}" /></div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1">
+                        <aura:if isTrue="{!and(v.opportunityId!=null,v.opportunityId!='')}">
+                            <aura:if isTrue="{!v.regionname=='EMEA'}">
+                                <div style="border-top : 1px inset;">
+                                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate slds-align_absolute-center">
+                                        <lightning:formattedUrl value="{!'/'+v.opportunityId}" label="Opportunity" target="_blank"/>
+                                    </h2>
+                                </div>
+                                <!--Display only if EMEA user region for more files in opportunity object-->
+                                <lightning:recordForm aura:id="opportunityEditForm2"
+                                    objectApiName="Opportunity" recordId="{!v.opportunityId}"
+                                    fields="{!v.oppFieldsEU}" 
+                                    columns="1" density="comfy"
+                                />
+                            <aura:set attribute="else">
+                                <div style="border-top : 1px inset;">
+                                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate slds-align_absolute-center">
+                                        <lightning:formattedUrl value="{!'/'+v.opportunityId}" label="Opportunity" target="_blank"/>
+                                    </h2>
+                                </div>
+                                <!--Not EMEA User region-->
+                                <lightning:recordForm aura:id="opportunityEditForm"
+                                    objectApiName="Opportunity" recordId="{!v.opportunityId}"
+                                    fields="{!v.oppFields}" 
+                                    columns="1" density="comfy"
+                                />
+                            </aura:set>
+                            </aura:if>
+                        </aura:if>
+                    </div>
+                </div>
+                <aura:if isTrue="{!v.isHVNA==false}">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-1">
+                            <aura:if isTrue="{!v.regionname=='EMEA'}">
+                                <aura:iteration var="member" items="{!v.ListCampaignMember}">
+                                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate slds-align_absolute-left">
+                                        <lightning:formattedUrl value="{!'/'+member.Id}" label="{!member.Name +'-'+ member.Campaign_Name__c}" target="_blank"/>
+                                    </h2>
+                                    <!--{!member.Name} + {!member.Id}-->
+                                    <lightning:recordForm aura:id="{!member.Name}"
+                                        objectApiName="Account_Campaing_Member__c" recordId="{!member.Id}"
+                                        fields="{!v.memberFieldsEU}" 
+                                        columns="1" density="compact"
+                                    />
+                                </aura:iteration>
+                            <aura:set attribute="else">
+                                <aura:iteration var="member" items="{!v.ListCampaignMember}">
+                                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate slds-align_absolute-left">
+                                        <lightning:formattedUrl value="{!'/'+member.Id}" label="{!member.Name +'-'+ member.Campaign_Name__c}" target="_blank"/>
+                                    </h2>
+                                    <!--{!member.Name} + {!member.Id}-->
+                                    <lightning:recordForm aura:id="{!member.Name}"
+                                        objectApiName="Account_Campaing_Member__c" recordId="{!member.Id}"
+                                        fields="{!v.memberFields}" 
+                                        columns="1" density="compact"
+                                    />
+                                </aura:iteration>
+                            </aura:set>
+                            </aura:if>
+                        </div>
+                    </div>
+                </aura:if>
+            <!--
+            <aura:set attribute="else">
+                &nbsp;
+            </aura:set>
+            </aura:if>
+        -->
+
+        <lightning:button class="slds-var-m-top_small" type="submit" label="Save" onclick="{!c.handleclickSave}"/>
+
+        <!--aura:if isTrue="{!v.companyName=='HAPL' || v.companyName=='HOLK' || v.companyName=='HLHK' || v.companyName=='HOLM' || v.companyName=='ILENS' || v.companyName=='THAI' || v.companyName=='HLSI' || v.companyName=='HLSH' || v.companyName=='SOC' || v.companyName=='HLPH' || v.companyName=='HLID'}" -->
+            
+        <aura:if isTrue="{!v.displayStartStop==true}">
+            <aura:if isTrue="{!and(v.visit.Start_location_time__c==null,v.visit.Id!=null)}">
+        	    <lightning:button class="slds-var-m-top_small" variant="success" type="submit" label="Start Visit" onclick="{!c.startVisit}"/> 
+   		    </aura:if>
+            <aura:if isTrue="{!and(v.visit.Stop_Location_Time__c==null, v.visit.Start_location_time__c!=null)}">
+                <lightning:button class="slds-var-m-top_small" variant="destructive" type="submit" label="Stop Visit" onclick="{!c.stopVisit}"/> 
+            </aura:if>
+        </aura:if>
+
+        <lightning:button class="slds-var-m-top_small" variant="brand" label="{!$Label.c.Cancel}" onclick="{!c.backToVPM}"/> 
+        <div class="slds-hidden">
+            <lightning:inputField  fieldName="Start_location_time__c" aura:id="vstarttime"/>
+            <lightning:inputField  fieldName="Stop_Location_Time__c" aura:id="vstoptime"/>
+            <lightning:inputField  fieldName="Start_Location_Latitude__c" aura:id="vstartLat"/>
+            <lightning:inputField  fieldName="Start_Location_Longitude__c" aura:id="vstartLong"/>
+            <lightning:inputField  fieldName="Stop_Location_Latitude__c" aura:id="vstopLat"/>
+            <lightning:inputField  fieldName="Stop_Location_Longitude__c" aura:id="vstopLong"/>
+            <lightning:inputField  fieldName="Original_Start_Plan__c" aura:id="original_start_plan" />
+            <lightning:inputField  fieldName="Original_End_Plan__c" aura:id="original_end_plan" />
+        </div>
+        <!-- hidden form -->
+        <div class="slds-grid slds-hidden">
+            <div class="slds-col slds-size_1-of-1"><lightning:input aura:id="UserCompany" label="CompanyName" value="{!v.companyName}" type="text"/></div>
+        </div>
+
+        </lightning:recordEditForm>
+    </div>
+</aura:component>

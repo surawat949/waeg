@@ -1,0 +1,27 @@
+<template>
+    <!--p> {seikoDataa} </p-->
+    <lightning-tabset variant="scoped">
+        <lightning-tab label={custLabel.TabRegistration}>
+            <c-tab-activation-business-program-registration received-id = {receivedId} seiko-data = {seikoData} acc-brand = {brand} acc-channel = {channel}> </c-tab-activation-business-program-registration>
+        </lightning-tab>
+        <template if:true={showAllTab}>
+            <lightning-tab label="Services">
+                <!--c-tab-activation-business-program-services received-id = {receivedId}> </c-tab-activation-business-program-services-->
+                <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                    <img src="/projRes/ui-home-private/emptyStates/noTasks.svg" class="slds-illustration__svg" alt=""/>
+                    <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                        <b>UNDER DEVELOPMENT. Nothing to see so far.</b>
+                    </div>
+                </div>
+            </lightning-tab>
+        </template>
+        <lightning-tab label={custLabel.TabLoyaltyPoints}>
+            <c-tab-activation-business-program-loyalty-points received-id = {receivedId} loyalty-points={loyaltyPoints} acc-brand = {brand}> </c-tab-activation-business-program-loyalty-points>
+        </lightning-tab>
+        <template if:true={showAllTab}>
+            <lightning-tab label={custLabel.TabStoreInfo}>
+                <c-tab-activation-business-program-store-info received-id = {receivedId}> </c-tab-activation-business-program-store-info>
+            </lightning-tab>
+        </template>
+    </lightning-tabset>
+</template>

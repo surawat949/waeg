@@ -1,0 +1,49 @@
+<!--
+Created by Cedric Dupre
+Display a visit form creation, with calendar that adapt to user assigned to visit
+Used on opportunity management screen
+-->
+
+<aura:component controller="VisitPlanningController" access="global"
+    implements="flexipage:availableForAllPageTypes,force:hasRecordId"
+    extensible="true"
+    >
+    <aura:attribute name="translations" type="Object"/>
+    <aura:attribute name="events" type="Object[]"/>
+    <aura:attribute name="userId" type="Id"/>
+    <aura:attribute name="accountId" type="Id"/>
+    <aura:attribute name="opportunityId" type="Id"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:method name="reload" action="{!c.onViewChange}" access="PUBLIC"/>
+
+    <ltng:require styles="{!$Resource.fullcalendar + '/fullcalendar.min.css'}"
+                  scripts="{!join(',',
+                          $Resource.fullcalendar + '/moment.min.js',
+                          $Resource.fullcalendar + '/moment-timezone-with-data.min.js'
+                          )}"
+                  afterScriptsLoaded="{!c.jsLoaded}"/>
+
+    <div class="slds-theme_default slds-box">   
+            <lightning:recordEditForm aura:id="recordEditForm"
+                                    objectApiName="Visits__c"
+                                    density="compact"
+                                    onsuccess="{!c.handleSuccess}">
+                <lightning:messages />
+                <lightning:inputField fieldName="Assigned_to__c" onchange="{!c.onViewChange}" aura:id="userId"/>
+                <lightning:inputField fieldName="Account__c" value="{!v.accountId}"/>
+                <lightning:inputField fieldName="Visit_Type__c" value="Visit" readonly="readonly"/>
+                <lightning:inputField fieldName="Visit_Reason__c" value="Acquisition"/>
+                <lightning:inputField fieldName="Visit_Status__c" value="Planned"/>
+                <lightning:inputField fieldName="Start_Time__c" />
+                <lightning:inputField fieldName="End_Time__c" />
+                <lightning:inputField fieldName="Opportunity__c" value="{!v.opportunityId}"/>
+                
+                <lightning:button class="slds-m-top_small" type="submit" label="Create new" />
+            </lightning:recordEditForm>
+
+        <c:FullCalendar events="{!v.events}"
+                        viewChange="{!c.onViewChange}" aura:id="uCalendar"
+        ></c:FullCalendar>
+    </div>
+</aura:component>

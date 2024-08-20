@@ -1,0 +1,206 @@
+<template>
+    <div class="slds-grid slds-grid_vertical maxheight">
+        <div class="filterSection flex-container">
+            <!--div class="marquee-container marquee-text">Warning: Only accounts belonging to Tacticom are visible on this page. Must be attached to each Tacticom: All Clients and a maximum of 20 prospects per ASM.</div-->         
+            <div class="slds-grid heightsize">
+                <div class="slds-col slds-size_1-of-12">
+                    <button class="toggle-btn slds-button slds-button_outline-brand filterButton" onclick={toggleSlide}>{custLabel.Filter}</button>
+                </div>
+                <div class="slds-col slds-size_11-of-10">
+                    <div class={buttonContainerClass}>
+                        <div class="slds-grid slds-gutters">
+                            <template if:true={companyOptions.length}>
+                                <lightning-combobox class="slds-size_1-of-6 slds-col" name="company" label={custLabel.Company} options={companyOptions} placeholder={custLabel.Select_Company} onchange={handleCompanyChange} disabled={isCompanyDisabled}></lightning-combobox>
+                            </template>
+                            <lightning-combobox class="slds-size_1-of-6 slds-col" name="salesManager" label={custLabel.Sales_Manager} options={salesManagerOptions} placeholder={custLabel.Select_Sales_Manager} onchange={handleSalesManagerChange} value={selectedSalesManagerId} disabled={isSalesManagerDisabled}></lightning-combobox>
+                            <lightning-combobox class="slds-size_1-of-6 slds-col" name="representative" label={custLabel.Representative} options={representativeOptions} placeholder={custLabel.Select_Representative} disabled={isRepresentativeDisabled} value={selectedRepresentativeId} onchange={handleRepresentativeChange}></lightning-combobox>
+                            <template if:true={showLegendtoggle}>
+                                <button class="slds-button slds-size_1-of-6 slds-button_brand slds-col displayButton" onclick={toggleVisitView}>{visitViewButtonLabel}</button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="datePosition">
+            <template if:true={showDateFields}>
+                <div class="slds-box slds-theme_default">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_4-of-12">
+                            <div class="slds-grid slds-gutters date-section">
+                                <lightning-input type="date" class="slds-col slds-size_1-of-3 keepMiddle" label={custLabel.Start_Date} value={startDate} disabled></lightning-input>
+                                <lightning-input type="date" class="slds-col slds-size_1-of-3 keepMiddle" label={custLabel.End_Date} value={endDate} disabled></lightning-input>
+                                <button class="slds-button slds-button_brand dateControl" onclick={handlePreviousWeek}>&lt;</button>
+                                <button class="slds-button slds-button_brand dateControl" onclick={handleNextWeek}>&gt;</button>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_7-of-12 centerAlign">
+                            <template if:true={showVisitZone}>
+                                <div>
+                                    <div class="slds-col slds-size_1-of-1">
+                                        <table aria-label="Sub-area">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="cursor: pointer;" onclick={handleClickSubarea} data-id="Sub-area 1">
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 1">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:yellow;stroke: black;stroke-width: 1px;"></path>
+                                                            </svg>
+                                                            {subArea1}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickSubarea} data-id="Sub-area 2">
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 2">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#fcb207;stroke: black;stroke-width: 1.3px;"></path>            
+                                                            </svg>
+                                                            {subArea2}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickSubarea} data-id="Sub-area 3">
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 3">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#ec1717;stroke: black;stroke-width:1.3px"></path>
+                                                            </svg>
+                                                            {subArea3}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickSubarea} data-id="Sub-area 4">
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 4">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#13cddc;stroke: black;stroke-width:1.3px"></path>
+                                                            </svg>
+                                                            {subArea4}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickSubarea} data-id="Sub-area 5">
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 5">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#58bd08;stroke: black;stroke-width:1.3px"></path>
+                                                            </svg>
+                                                            {subArea5}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickSubarea} data-id="not_Selected"><!--This is Not Selected tacticom-->
+                                                        <div class="slds-truncate tableBorder" title="Not Selected">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#000F2E;stroke: black;stroke-width:1.3px"></path>
+                                                            </svg>
+                                                            {notSelected}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>         
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={showVisitDays}>
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-1">
+                                        <table aria-label="Sub-area">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="cursor: pointer;" onclick={handleClickOnDays} data-id={custLabel.Monday}>
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 1">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:yellow;stroke: black;stroke-width: 1.3px;"></path>
+                                                            </svg>
+                                                            {custLabel.Monday}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickOnDays} data-id={custLabel.Tuesday}>
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 1">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#fcb207;stroke: black;stroke-width: 1.3px;"></path>
+                                                            </svg>
+                                                            {custLabel.Tuesday}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickOnDays} data-id={custLabel.Wednesday}>
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 1">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#ec1717;stroke: black;stroke-width: 1.3px;"></path>
+                                                            </svg>
+                                                            {custLabel.Wednesday}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickOnDays} data-id={custLabel.Thursday}>
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 1">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#13cddc;stroke: black;stroke-width: 1.3px;"></path>
+                                                            </svg>
+                                                            {custLabel.Thursday}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickOnDays} data-id={custLabel.Friday}>
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 1">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#58bd08;stroke: black;stroke-width: 1.3px;"></path>
+                                                            </svg>
+                                                            {custLabel.Friday}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickOnDays} data-id={custLabel.Saturday}>
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 1">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#e412cc;stroke: black;stroke-width: 1.3px;"></path>
+                                                            </svg>
+                                                            {custLabel.Saturday}
+                                                        </div>
+                                                    </td>
+                                                    <td style="cursor: pointer;" onclick={handleClickOnDays} data-id={custLabel.Sunday}>
+                                                        <div class="slds-truncate tableBorder" title="Sub-area 1">
+                                                            <svg version="1.1" baseProfile="full" viewBox="0 0 30 30" width="35" y="30" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                                                                style="fill:#000F2E;stroke: black;stroke-width: 1.3px;"></path>
+                                                            </svg>
+                                                            {custLabel.Sunday}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>          
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="slds-col slds-size_1-of-12 zeroPadding">
+                            <p align="right">
+                                <template if:true={isDisplayList}>
+                                    <lightning-button label={custLabel.Display_list} onclick={handleListViewShow} variant="brand"></lightning-button>
+                                </template>
+                                <template if:false={isDisplayList}>
+                                    <lightning-button label={custLabel.Hide_list} onclick={handleListViewHide} variant="brand"></lightning-button>
+                                </template>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <div class="slds-grid slds-m_top_medium">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-map
+                    map-markers={mapMaker}
+                    markers-title={mapMakerTitle}
+                    zoom-level={zoomLevel}
+                    center={vCenter}
+                    list-view={displayListView}
+                ></lightning-map>
+            </div>
+        </div>
+    </div>
+</template>

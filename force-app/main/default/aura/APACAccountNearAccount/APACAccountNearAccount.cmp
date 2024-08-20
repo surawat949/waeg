@@ -1,0 +1,80 @@
+<aura:component access="public" implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" controller="APACAccountNearAccountController">
+
+    <aura:attribute name="mapMarkers" type="Object[]"/>
+    <aura:attribute name="distance" type="Double" default="5"/>
+    <aura:attribute name="potentialMin" type="Double"/>
+    <aura:attribute name="potentialMax" type="Double"/>
+    <aura:attribute name="globalCompetitor" type="String"/>
+    <aura:attribute name="secondCompetitor" type="String" />
+    <aura:attribute name="segmentation" type="String" />
+    <aura:attribute name="displayListView" type="String" default="hidden"/>
+    <aura:attribute name="selectedMarkerValue" type="String" default="SF1" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="slds-theme_default slds-box">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-4 slds-float_right slds-align_absolute-center">
+                <label class="slds-form-element__label">{!$Label.c.APACECPNearby1stGlobalCompetitor}</label>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning:select value="{!v.globalCompetitor}" onchange="{!c.init}" name="select">
+                        <option value=""></option>
+                        <option value="Essilor">{!$Label.c.APACECPNearbyEssilor}</option>
+                        <option value="Zeiss">{!$Label.c.APACECPNearbyZeiss}</option>
+                        <option value="Rodenstock">{!$Label.c.APACECPNearbyRodenstock}</option>
+                        <option value="Local">{!$Label.c.APACECPNearbyLocal}</option>
+                        <option value="Other Supplier">{!$Label.c.APACECPNearbyOtherSupplier}</option>
+                        <option value="Unknown">{!$Label.c.APACECPNearbyUnknown}</option>
+                </lightning:select>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align_absolute-center">
+                <label class="slds-form-element__label">{!$Label.c.APACECPNearbyCompNearby}</label>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-center">
+                <lightning:select value="{!v.distance}" onchange="{!c.init}" name="select">
+                    <option value="5">5Km</option>
+                    <option value="10">10Km</option>
+                    <option value="25">25Km</option>
+                    <option value="50">50Km</option>
+                </lightning:select>
+            </div>
+        </div>
+
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align_absolute-center">
+                <label class="slds-form-element__label">{!$Label.c.APACECPNearbySegment}</label>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-center">
+                <lightning:select value="{!v.segmentation}" onchange="{!c.init}" name="select">
+                    <option value=""></option>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="A3">A3</option>
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                    <option value="B3">B3</option>
+                    <option value="C1">C1</option>
+                    <option value="C2">C2</option>
+                    <option value="C3">C3</option>
+                </lightning:select>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align_absolute-center">
+                <label class="slds-form-element__label">&nbsp;<br/></label>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-center">
+                <br/>
+                <aura:if isTrue="{!v.displayListView=='hidden'}"><lightning:button label="Display list" variant="brand" onclick="{!c.displayList}"/></aura:if>
+                <aura:if isTrue="{!v.displayListView=='visible'}"><lightning:button label="Hide list" variant="brand" onclick="{!c.hideList}"/></aura:if>
+            </div>
+        </div>
+    </div>
+
+    <lightning:map
+        mapMarkers="{!v.mapMarkers}"
+        markersTitle="Competitors"
+        selectedMarkerValue="{!v.selectedMarkerValue}"
+        center="{!v.center}"
+        listView="{!v.displayListView}"
+        zoomLevel="12"/>
+</aura:component>

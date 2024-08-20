@@ -1,0 +1,49 @@
+<template>
+    <div class="slds-grid slds-grid_vertical maxheight">
+        <div class="filterSection slds-col flex-container">
+            <!--div class="marquee-container marquee-text">Warning: Only accounts belonging to Tacticom are visible on this page. Must be attached to each Tacticom: All Clients and a maximum of 20 prospects per ASM.</div-->         
+            <div class="slds-grid slds-gutters heightsize">
+                <div class="slds-col slds-size_1-of-12">
+                    <button class="toggle-btn slds-button slds-button_outline-brand filterButton" onclick={toggleSlide}>{custLabel.Filter}</button>
+                </div>
+                <div class="slds-col slds-size_11-of-12">
+                    <div class={buttonContainerClass}>
+                        <div class="slds-grid slds-gutters">
+                            <template if:true={companyOptions.length}>
+                                <lightning-combobox class="slds-size_1-of-6 slds-col" name="company" label={custLabel.Company} options={companyOptions} placeholder={custLabel.Select_Company} onchange={handleCompanyChange} disabled={isCompanyDisabled}></lightning-combobox>
+                            </template>
+                            <lightning-combobox class="slds-size_1-of-6 slds-col" name="salesManager" label={custLabel.Sales_Manager} options={salesManagerOptions} placeholder={custLabel.Select_Sales_Manager} onchange={handleSalesManagerChange} value={selectedSalesManagerId} disabled={isSalesManagerDisabled}></lightning-combobox>
+                            <lightning-combobox class="slds-size_1-of-6 slds-col" name="representative" label={custLabel.Representative} placeholder={custLabel.Select_Representative} options={representativeOptions}  disabled={isRepresentativeDisabled} value={selectedRepresentativeId} onchange={handleRepresentativeChange}></lightning-combobox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+    <div class="calendarbody slds" id="calendarbodyId">
+        <div class="slds-grid slds-var-p-around_x-small">            
+            <div class="slds-col slds-var-p-top_x-small slds-size_1-of-3" >
+                &nbsp;
+                <lightning-button-group>
+                    <lightning-button icon-name="utility:chevronleft" onclick={prev}></lightning-button>
+                    <lightning-button icon-name="utility:chevronright" onclick={next}></lightning-button>
+                    <lightning-button label={custLabel.Today} onclick={today}></lightning-button>
+                </lightning-button-group>
+            </div>
+            <div class="slds-col slds-align_absolute-center slds-size_1-of-3">
+                <div>{headerDate}</div>
+            </div>
+            <div class="slds-col slds-var-p-top_x-small slds-size_1-of-3" style="text-align: right;">
+                <lightning-button-group class="slds-grid_align-end slds-wrap">
+                    <lightning-button label={custLabel.Month} onclick={month}></lightning-button>
+                    <lightning-button label={custLabel.Week} onclick={basicWeek}></lightning-button>
+                    <lightning-button label={custLabel.Day} onclick={listDay}></lightning-button>
+                </lightning-button-group>
+            </div>
+        </div>
+        <div id="calendar" class="fullcalendarjs"></div>
+    </div>
+</template>

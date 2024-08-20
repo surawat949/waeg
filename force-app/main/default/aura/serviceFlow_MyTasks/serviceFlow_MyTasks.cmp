@@ -1,0 +1,33 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <div class="slds-page-header--object-home slds-page-header_joined slds-page-header_bleed slds-page-header slds-shrink-none test-headerRegion forceListViewManagerHeader" >
+        <div class="slds-grid" data-aura-rendered-by="3037:0">
+            <div class="slds-col slds-has-flexi-truncate firstHeaderRow">
+                <div class="slds-media slds-no-space slds-grow">
+                    <div class="highlights-icon-container slds-avatar slds-m-right_small icon" style="background-color: #4BC076">
+                        <img src="https://hoya--waeg.sandbox.my.salesforce.com/img/icon/t4v35/standard/task_120.png" alt=""/>
+                    </div>
+                    <div class="slds-media__body slds-align-middle">
+                        <div class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                            <div class="slds-breadcrumb__item slds-line-height--reset"><span class="slds-var-p-right_x-small">Tasks</span></div>
+                        </div>
+                        <h2 class="slds-page-header__title listViewTitle slds-text-color--default slds-p-right--x-small slds-truncate">
+                            <a href="javascript:void(0);" title="My Assigned Tasks or Calls" class="test-drillin">My Assigned Tasks or Calls</a>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-no-flex slds-grid slds-align-top slds-p-bottom--xx-small test-lvmForceActionsContainer">                
+            </div>
+        </div>
+        <div class="slds-grid " data-aura-rendered-by="3065:0">
+            <div class="slds-col slds-align-bottom">
+                <p class="slds-text-body--small">
+                    <div>
+                        <span class="countSortedByFilteredBy">30+ items</span>
+                        <span>Updated a minute ago</span>
+                    </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</aura:component>

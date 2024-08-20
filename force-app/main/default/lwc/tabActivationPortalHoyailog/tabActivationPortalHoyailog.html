@@ -1,0 +1,47 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{CustLabel.HoyaIlog}
+                </h3></td>
+            </tr>
+        </table>
+        <lightning-layout>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={objectapiname}
+                    fields={hoyaILogFields}
+                    columns="2"
+                    >
+                </lightning-record-form>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div class="slds-var-m-left_xx-small slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{CustLabel.HoyaiLog_Last_Usage}</span>
+                    <div class="slds-form-element__static" >{LastUsageDate}</div>            
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{CustLabel.HoyaiLog_Last_Training}</span>
+                    <div class="slds-form-element__static" >{LastTraningDate}</div>            
+                </div>   
+            </div>
+        </div>
+    <br/>
+    </div>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{CustLabel.HoyaIlogOrders}
+                </h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+          <canvas class="chartHoyaIlog" height="270"></canvas>
+        </div>
+    </div> 
+</template>

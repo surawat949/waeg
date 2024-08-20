@@ -1,0 +1,99 @@
+<template> 
+    <lightning-messages data-id='formerror'> </lightning-messages>
+    <lightning-modal-header label={CustLabel.visitPopup}></lightning-modal-header>   
+    <lightning-modal-body>
+        <div class="slds-form-element__control">           
+            <div>  
+                <table class="slds-table slds-table_bordered" aria-label="Visit Preparation" style="background-color: #aacbff;">
+                    <tr class="row" style="background-color: #aacbff;">
+                        <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{CustLabel.visitDetail}</p></h3></td>
+                    </tr>
+                </table>
+            </div> 
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </template>
+            <lightning-record-edit-form object-api-name="Visits__c" onsuccess={handleSuccess} onerror={handleError} >
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input-field field-name="Account__c" value={accountId} disabled="true" ></lightning-input-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input-field class="visitType" field-name="Visit_Type__c" value={visitType} onchange={handleVisitType} required ></lightning-input-field>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            name="Contact"
+                            label="Contact"
+                            value={contact}
+                            placeholder="Select Contact"
+                            options={contactList}
+                            onchange={handleContactChange} >
+                        </lightning-combobox>            
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">                      
+                        <lightning-input-field class="assignedTo" field-name="Assigned_to__c" disabled="true" value={assignedTo}  required> </lightning-input-field>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">                   
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning-input-field field-name="Coaching_Visit__c" value={coachingVisit} onchange={handleCoachingVisit} ></lightning-input-field>
+                    </div>             
+                </div>
+                <div>  
+                    <table class="slds-table slds-table_bordered" aria-label="Visit Preparation" style="background-color: #aacbff;">
+                        <tr class="row" style="background-color: #aacbff;">
+                            <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{CustLabel.schedule}</p></h3></td>
+                        </tr>
+                    </table>
+                </div>                
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1">                       
+                        <lightning-input-field field-name="Start_Time__c" value={start} onchange={handleStart} required ></lightning-input-field>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1">
+                       <lightning-input-field field-name="End_Time__c" value={end} onchange={handleEnd} required ></lightning-input-field>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-input-field field-name="Is_All_Day_Event__c" value={isAllDay} onchange={handleAllDayEvent}></lightning-input-field>
+                    </div>
+                </div>
+                <div>  
+                    <table class="slds-table slds-table_bordered" aria-label="Visit Preparation" style="background-color: #aacbff;">
+                        <tr class="row" style="background-color: #aacbff;">
+                            <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{CustLabel.visit_Preparation}</p></h3></td>
+                        </tr>
+                    </table>
+                </div>                
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1">                      
+                        <lightning-input-field class="reason" field-name="Visit_Reason__c" onchange={handleVisitReason} value={visitReason} required></lightning-input-field>
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-input-field field-name="Visit_Objective_follow_up_notes__c" value={notes} onchange={handleNotes}></lightning-input-field>
+                    </div>
+                </div> 
+            </lightning-record-edit-form>                     
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-button name="Submit" id="Submit" label={CustLabel.label_save} variant="brand" onclick={handleCreateVisit}></lightning-button>
+            </div>
+            <div class="slds-grid slds-size_1-of-2">
+                <lightning-button name="Cancel" id="Cancel" label={CustLabel.cancel} value="brand-outline" onclick={closePopup}></lightning-button>
+            </div>
+        </div>
+    </lightning-modal-footer>
+</template>

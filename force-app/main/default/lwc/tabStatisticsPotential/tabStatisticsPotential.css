@@ -1,0 +1,10 @@
+.slds-modal__container{
+    max-width: 60% !important;
+    width: 60% !important;
+}:host {
+    --slds-c-textarea-sizing-min-height: 100px;
+}
+.custom-record-edit-form {
+    color: rgb(149, 149, 151); /* Replace with your desired background color */
+    /* Add other styling as needed */
+}

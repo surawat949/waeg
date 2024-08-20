@@ -1,0 +1,22 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+access="public" controller="AccountSalesTabComponentController">
+<aura:attribute name="mycolumns" type="List"/>
+<aura:attribute name="accountList" type="AccountContactRelation[]"/>
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+<div class="slds-theme_default slds-box" >
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountReferringOpticians}</span>
+        </button>
+    </h3>
+    
+    <lightning:datatable data="{!v.accountList}"
+                        columns="{!v.mycolumns}"
+                        keyField="id"
+                        hideCheckboxColumn="true"/>
+    
+    </div>
+
+</aura:component>

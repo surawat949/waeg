@@ -1,0 +1,24 @@
+<apex:page standardController="Account" sidebar="false" lightningStylesheets="true" showHeader="false" standardStylesheets="false">
+    <apex:includeLightning />
+    <div class="slds">
+        <div id="lightningContainer" class="slds-scope"></div>
+    </div>
+    <script>
+        var getMessage = function(event){
+            console.log('coucou ' + event) ;
+        };
+        $Lightning.use("c:ActiveCampaignMemberApp", function() {
+            $Lightning.createComponent("c:ActiveCampaignMemberList",
+            {
+                "recordId" : "{!$CurrentPage.parameters.id}"
+            },
+            "lightningContainer",
+            function(){
+                $A.eventService.addHandler({"event":"c:updatePresented", "handler":getMessage});
+                console.log("component initialized");
+            });
+        });
+
+    </script>
+
+</apex:page>

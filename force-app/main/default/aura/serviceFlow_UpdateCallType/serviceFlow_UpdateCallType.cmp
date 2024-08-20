@@ -1,0 +1,68 @@
+<aura:component controller="serviceFlow_UpdateCallType"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="isLoading" type="boolean" default="false" />
+    <aura:attribute name="pageReference" type="Object" />
+    <aura:attribute name="currentUser" type="User" />
+    <aura:attribute name="recTypeId" type="String" />
+    <aura:attribute name="selectRecordId" type="String" default=""/>
+    <aura:attribute name="selectRecordName" type="String"/>
+    <aura:attribute name="taskRTId" type="String" />
+    <aura:attribute name="fieldMapping" type="Object" />
+    <aura:attribute name="taskRecordData" type="Object" />
+    
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+    </aura:html>
+    
+    <div class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading--medium">Changing Call Type to {!v.taskRecordData.CallType == 'Inbound' ? 'Outbound' : 'Inbound'}</h4>
+    </div>
+    <div class="slds-m-around_xx-large">
+        <aura:if isTrue="{!v.isLoading}">
+            <div class="demo-only demo-only_viewport">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        <lightning:recordEditForm aura:id="recordEditForm" objectApiName="Case" onsubmit="{!c.handleSubmit}"
+                                  onsuccess="{!c.handleSuccess}" recordTypeId="{!v.recTypeId}">
+            <lightning:messages />
+            <lightning:inputField aura:id="Country" fieldName="User_country__c"
+                                  value="{!v.currentUser.Country_for_Customer_Support__c}" disabled="true" class="slds-hide" />
+            <label for="Subject"><span style="color:red">* </span>Subject</label>
+            <lightning:inputField 
+                                  aura:id="Subject" 
+                                  fieldName="{!v.taskRecordData.CallType == 'Inbound' ? v.fieldMapping.uiSubject : v.fieldMapping.subject}"
+                                  required="true"
+                                  value="{!v.taskRecordData.SFlow_Subject__c}" 
+                                  variant="label-hidden"/>
+            <br />
+            <label for="SubSubject">Sub-Subject</label>
+            <lightning:inputField aura:id="SubSubject" 
+                                  fieldName="{!v.taskRecordData.CallType == 'Inbound' ? v.fieldMapping.uiSubSubject : v.fieldMapping.subSubject}"
+                                  required="false" 
+                                  variant="label-hidden"
+                                  value="{!v.taskRecordData.SFlow_Sub_Subject__c}"
+                                  />
+        </lightning:recordEditForm>
+    </div>
+    <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+        <lightning:button variant="Brand" class="slds-button" label="Update" onclick="{!c.handleSubmit}"/>
+        <lightning:button variant="Neutral" class="slds-button" label="Close" onclick="{!c.handleClose}"/>
+    </div>
+</aura:component>

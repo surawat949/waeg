@@ -1,0 +1,219 @@
+<aura:component controller="serviceFlow_EndChatController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <lightning:conversationToolkitAPI aura:id="conversationKit"/>
+    <lightning:workspaceAPI aura:id="workspace"/>   
+    <aura:handler event="lightning:conversationChatEnded" action="{!c.onChatEnded}" /> 
+    <aura:attribute name="pageReference" type="Object" />
+    <aura:attribute name="currentUserId" type="String"/>
+    <aura:attribute name="currentUser" type="User" />
+    <aura:attribute name="currentAccount" type="Account" />
+    <aura:attribute name="isCall" type="boolean" default="false" />
+    <aura:attribute name="isCreateRecord" type="boolean" default="false" />
+    <aura:attribute name="options" type="List" default="[]" />
+    <lightning:navigation aura:id="navService"/>
+    <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    <aura:attribute name="callStatus" type="List" default="[]" />
+    <aura:attribute name="defaultCallStatus" type="String" default="{!$Label.c.serviceFlow_Closed}" />
+    <aura:attribute name="selectedCallStatus" type="String" default="Closed" />
+    <aura:attribute name="defaultRadio" type="String" default="{!$Label.c.serviceFlow_Inbound}" />
+    <aura:attribute name="selectedCallType" type="String" />
+    <aura:attribute name="selectedSubSubject" type="String" />
+    <aura:attribute name="recTypeId" type="String" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="isLoading" type="boolean" default="false" />
+    <aura:attribute name="subjectRequired" type="boolean" default="false" />
+    <aura:attribute name="subSubjectRequired" type="boolean" default="false" />
+    <aura:attribute name="originRequired" type="boolean" default="false" />
+    <aura:attribute name="selectedBound" type="String" default="Inbound" />
+    <aura:attribute name="isTempPicklist" type="boolean" default="false" />
+    <aura:attribute name="picklistLoad" type="boolean" default="false" />
+    <aura:attribute name="isBoundSelected" type="boolean" default="false" />
+    <aura:attribute name="isBoundSelectedDisabled" type="boolean" default="true" />
+    <aura:attribute name="openCaseList" type="Object" />
+    
+    <aura:attribute name="isProceedWithNewCaseSelected" type="boolean" default="false" />
+    <aura:attribute name="isProceedWithExistingCaseSelected" type="boolean" default="false" />
+    <aura:attribute name="selecteCaseRecordId" type="String" />
+    
+    <aura:attribute name="isRadioButtonSelectedForUpdate" type="boolean" default="false" />
+    <lightning:pageReferenceUtils aura:id="pageRefUtils" />    
+    <aura:attribute name="accept" type="List" default="['.jpg', '.jpeg','.pdf','.csv','.xlsx']"/>  
+    <aura:attribute name="selectedFileName" type="String" default=""/>
+    <aura:attribute name="selectedDocumentId" type="String"/>
+    
+    <aura:attribute name="fieldMapping" type="Object" />
+    <aura:html tag="style"> 
+        .slds-modal__container{ 
+        height: 102%;
+        width: 93%;
+        max-width: 377vh !important;
+        max-height: 300vh !important; 
+        } 
+        .modal-body{ 
+        height : 500vh !important; 
+        max-height: 1000vh !important; 
+        } 
+        .slds-modal__footer{ 
+        display: inline !important; 
+        }
+        .toastMessage.forceActionsText{
+        white-space : pre-line !important;
+        }
+    </aura:html>
+    <aura:if isTrue="{!v.isModalOpen}">        
+        <section class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <aura:if isTrue="{!v.isLoading}">
+                    <div aura:id="spinnerId" class="slds-spinner_container">
+                        <div class="slds-spinner--brand  slds-spinner slds-spinner--medium slds-is-relative" role="alert">
+                            <span class="slds-assistive-text">Loading...</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </aura:if>
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{!c.closeModel}"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          size="large"
+                                          class="slds-modal__close"/>
+                    <h2 class="slds-text-heading_medium slds-hyphenate"><b>Convert Chat Interactions into Cases</b></h2>
+                    <div class="slds-p-around_small">
+                        <p><b>Streamline customer support: Convert chat discussions into actionable cases for efficient issue resolution and tracking.</b></p>
+                    </div>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="margin">   
+                        <aura:if isTrue="{!!v.isProceedWithNewCaseSelected}">
+                            <aura:if isTrue="{!not(empty(v.openCaseList))}">
+                                <div class="slds-card slds-modal__content">
+                                    <div class="slds-page-header__row slds-page-header__row_gutters">
+                                        <div class="slds-page-header__col-details" style="font-size: small !important;"><br/>
+                                            <div class="">
+                                                <div class="table-scrollslds-theme–default">
+                                                    <div>
+                                                        <div class="table-scroll tableFixHead">
+                                                            <table  class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-table slds-table_bordered slds-table_striped">
+                                                                <thead style="height: 2.3rem !important;">
+                                                                    <tr>
+                                                                        <th>Update</th>
+                                                                        <th>Case Number</th>
+                                                                        <th>Status</th>
+                                                                        <th>Subject</th>
+                                                                        <th>Sub-Subject</th>
+                                                                        <th>Hoya Account ID</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <aura:iteration items="{!v.openCaseList}" var="caseRec">
+                                                                        <tr>
+                                                                            <td><lightning:input type="radio" name="selectCase" value="{!caseRec.Id}" onchange="{!c.handleRadioChange}"/></td>
+                                                                            <td>{!caseRec.CaseNumber}</td>
+                                                                            <td>{!caseRec.Status}</td>
+                                                                            <td>{!caseRec.SFlow_Subject__c}</td>
+                                                                            <td>{!caseRec.SFlow_Sub_Subject__c}</td>
+                                                                            <td>{!caseRec.Account.Hoya_Account_ID__c}</td>
+                                                                        </tr>
+                                                                    </aura:iteration>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </aura:if>
+                            
+                            <aura:if isTrue="{!empty(v.openCaseList)}">
+                                <center>There are no existing open cases..Please proceed with new case creation process.</center>
+                            </aura:if>
+                        </aura:if>
+                        <aura:if isTrue="{!v.isProceedWithNewCaseSelected}">
+                            <lightning:recordEditForm aura:id="recordEditForm" objectApiName="Case" onsubmit="{!c.handleSubmit}"
+                                                      onsuccess="{!c.handleSuccess}" recordTypeId="{!v.recTypeId}">
+                                <lightning:messages />
+                                <aura:if isTrue="{!v.picklistLoad}">
+                                    <lightning:spinner alternativeText="Loading, Please Wait..." title="Loading, Please Wait..."
+                                                       variant="brand" size="large" />
+                                </aura:if>
+                                <lightning:input aura:id="ecpPatient" label="{!v.currentUser.Country_for_Customer_Support__c == 'USA' ? 'Patient Name' : 'Patient reference'}"/>
+                                <lightning:input aura:id="hoyaRef" label="{!v.currentUser.Country_for_Customer_Support__c == 'USA' ? 'Invoice Number' : 'Reference number'}"/>
+                                
+                                <lightning:inputField aura:id="Description" fieldName="Description" />
+                                <lightning:inputField aura:id="Country" fieldName="User_country__c"
+                                                      value="{!v.currentUser.Country_for_Customer_Support__c}" disabled="true" class="hide" />
+                                
+                                <aura:renderIf isTrue="{!!v.isTempPicklist}">
+                                    <label for="Subject"><span style="color:red">* </span>Subject</label>
+                                    <lightning:inputField aura:id="Subject" fieldName="{!v.fieldMapping.subject}" required="true"
+                                                          onchange="{!c.resetErrors}" value="" variant="label-hidden"/>
+                                    <aura:renderIf isTrue="{!v.subjectRequired}">
+                                        <div class="slds-text-color_error">Subject is required to proceed.</div>
+                                    </aura:renderIf>
+                                    <label for="SubSubject">Sub-Subject</label>
+                                    <lightning:inputField aura:id="SubSubject" fieldName="{!v.fieldMapping.subSubject}"
+                                                          required="{!!v.isBoundSelected}" onchange="{!c.resetErrors}" variant="label-hidden"/>
+                                    <aura:renderIf isTrue="{!v.subSubjectRequired}">
+                                        <div class="slds-text-color_error">Sub-Subject is required to proceed.</div>
+                                    </aura:renderIf>
+                                </aura:renderIf>
+                                
+                                <aura:renderIf isTrue="{!v.isTempPicklist}">
+                                    <label for="UISubject"><span style="color:red">* </span>Subject</label>
+                                    <lightning:inputField aura:id="UISubject" fieldName="{!v.fieldMapping.uiSubject}" required="true"
+                                                          value="" variant="label-hidden" />
+                                    <aura:renderIf isTrue="{!v.subjectRequired}">
+                                        <div class="slds-text-color_error">Subject is required to proceed.</div>
+                                    </aura:renderIf><br />
+                                    <label for="UISubSubject">Sub-Subject</label>
+                                    <lightning:inputField aura:id="UISubSubject" fieldName="{!v.fieldMapping.uiSubSubject}"
+                                                          value="" variant="label-hidden" />
+                                    <aura:renderIf isTrue="{!v.subSubjectRequired}">
+                                        <div class="slds-text-color_error">Sub-Subject is required to proceed.</div>
+                                    </aura:renderIf><br />
+                                </aura:renderIf>
+                                <aura:if isTrue="{!v.currentUser.Country_for_Customer_Support__c == 'USA'}">                	
+                                    <lightning:input aura:id="Number_of_Jobs" label="Number of jobs" pattern="[0-9]*" messageWhenPatternMismatch="You have entered an invalid number"/>
+                                </aura:if>
+                                <lightning:inputField aura:id="Origin" fieldName="serviceFlow_Origin__c" required="true" value="Chat"
+                                                      onchange="{!c.resetErrors}" />
+                                
+                                <aura:renderIf isTrue="{!v.originRequired}">
+                                    <div class="slds-text-color_error">Case Origin is required to proceed.</div>
+                                </aura:renderIf>
+                                <lightning:inputField aura:id="Status" fieldName="Status" value="New"/>
+                                <lightning:fileUpload label="Upload files" multiple="false"   
+                                                      accept="{!v.accept}" 
+                                                      fileFieldName="serviceFlow_fileupload__c"
+                                                      fileFieldValue="serviceFlow"                                      
+                                                      onuploadfinished="{!c.UploadFinished}" /> 
+                                <aura:if isTrue="{!v.selectedFileName != ''}">
+                                    <div style="color:red;">{!v.selectedFileName}</div>
+                                </aura:if>
+                            </lightning:recordEditForm>
+                        </aura:if>
+                    </div>
+                </div> 
+                <footer class="slds-modal__footer"> 
+                    <aura:if isTrue="{!!v.isProceedWithNewCaseSelected}">
+                    	<lightning:button label="Proceed With New Case" onclick="{!c.handleProceedWithNewCase}" variant="brand"/>
+                    </aura:if>
+                    <aura:if isTrue="{!v.isProceedWithNewCaseSelected}">
+                        <lightning:button label="Previous" onclick="{!c.handlePrevious}" variant="brand"/>
+                        
+                        <aura:if isTrue="{!!v.isProceedWithExistingCaseSelected}">
+                    		<lightning:button label="Submit New Case" onclick="{!c.handleNewCase}" variant="brand"/>
+                        </aura:if>
+                        <aura:if isTrue="{!v.isProceedWithExistingCaseSelected}">
+                    		<lightning:button label="Update Existing Case" onclick="{!c.handleExistingCase}" variant="brand"/>
+                        </aura:if>
+                    </aura:if>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>

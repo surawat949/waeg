@@ -1,0 +1,140 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Myopia Control Potential">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{label.MiyosmartAuthorizedDealers}</h3></td>
+            </tr>     	        
+        </table><br>
+        <lightning-layout>
+             <lightning-layout-item flexibility="auto" >
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-3"> 
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={ObjectApiNameAccount}
+                            fields={PotentialFields}
+                            mode="view" 
+                            columns = "3" >
+                        </lightning-record-form>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <div style="padding-left:15px;" >
+                            <span> <label class="slds-form-element__label">{label.IsMiyoSmartTrainingCompleted}</label>
+                            </span><br/>
+                            <div class="slds-form-element__control">
+                                <lightning-input  class="slds-var-p-left" type="checkbox" checked={isTrainingComplete} disabled readonly></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <div style="padding-left:5px;" >
+                            <label class="slds-form-element__label">{label.LastMiyoSmartTrainingDate}</label><br/>
+                            <div class="slds-form-element__control">{LastTraningDate}</div>  
+                             </div>                  
+                        </div> 
+                </div>
+                <div class="slds-grid slds-m-left_small">
+                    <div class="slds-col slds-size_1-of-1"> 
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={ObjectApiNameAccount}
+                            fields={notes_comments}
+                            mode="view" 
+                            columns = "1" >
+                        </lightning-record-form>
+                    </div>
+                </div>
+                <br/>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Myopia Control Potential">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{label.MiyoSmartPotential}</h3></td>
+            </tr>     	        
+        </table><br>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_2-of-3"> 
+                <lightning-record-form
+                    record-id={salesStatsId}
+                    object-api-name={ObjectApiName_Last_Sales}
+                    fields={Last_Sales_Statistics_Fields}
+                    mode={isViewMode} 
+                    columns = "3" >
+                </lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_1-of-3"> 
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={ObjectApiNameAccount}
+                    fields={Kids_corner}
+                    mode="view" 
+                    columns = "2" >
+                </lightning-record-form>
+            </div>
+        </div>
+
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-record-form
+                    record-id={salesStatsId}
+                    object-api-name={ObjectApiName_Last_Sales}
+                    fields={formulaFields}
+                    mode={isViewMode} 
+                    columns = "2" >
+                </lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <div class="stepOne">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr class="row">
+                            <td class="cell">
+                                <lightning-record-form
+                                    object-api-name={ObjectApiNameAccount}
+                                    record-id={receivedId}
+                                    fields={MiopiaControl}
+                                    mode="readonly"
+                                    columns="1"
+                                ></lightning-record-form>
+                            </td>
+                            <td class="cell" align="left">
+                                <p align="left"><lightning-button variant="base" icon-name="utility:edit" onclick={handleEditMiopia} title="Edit"></lightning-button></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="stepTwo slds-hide">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr class="row">
+                            <td class="cell">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="form-input-1">Main Competitor Myopia Control</label>
+                                    <lightning-helptext icon-name="utility:info" content="Main competitor for myopia control lens"></lightning-helptext>
+                                    <c-custom-lookup-myopia-control icon-name="standard:picklist_choice" s-object-api-name="account" label=""
+                                        placeholder="Search" id="form-input-1" name="form-input-1" data-my-id="form-input-1" onlookupupdate={handleLookupMainCompetitorChange} 
+                                        default-record-id={defaultRecordValue}>
+                                    </c-custom-lookup-myopia-control>
+                                </div>
+                            </td>
+                            <td class="cell">
+                                <lightning-button variant="base" name="textundo" id="textundo" data-my-id="textundo" icon-name="utility:undo" onclick={handleGobackMiopia} title="Undo"></lightning-button>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="cell">
+                                <br>
+                                <lightning-button label={label.LabelCancel} variant="netural" title={label.LabelCancel} onclick={handleGobackMiopia}></lightning-button>&nbsp;&nbsp;
+                                <lightning-button label={label.LabelSave} variant="brand" title={label.LabelSave} onclick={handleUpdateMainMyopiaControl}></lightning-button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                
+
+             
+</template>

@@ -1,0 +1,38 @@
+<apex:page standardController="Visits__c" extensions="VisitCreationPageController"
+    docType="html-5.0" id="visitLocationPage" lightningStylesheets="true">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Salesforce Lightning Design System Trailhead Module</title>
+    <meta name="Visit creation page" content="width=device-width, initial-scale=1" />
+    <!-- Import the Design System style sheet -->
+    <apex:slds />
+</head>
+
+<body>
+<!-- call url should be https://hoya--pcpy.lightning.force.com/one/one.app#/alohaRedirect/apex/VisitCreationPage?ent=001b000003z4lNbAAI -->
+<p class="slds-text-heading--label slds-m-bottom--small">
+        Welcome {!user.firstName} {!user.lastName} on visit creation screen for account {!acc.name}
+</p>
+
+<apex:form >
+    <apex:pageBlock >
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><apex:outputField value="{!visit.Account__c}"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><label>Start Time</label></div>
+                <div class="slds-col slds-size_1-of-2"><apex:inputField type="datetime" value="{!visit.Start_Time__c}" required="required"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2"><label>End Time</label></div>
+                <div class="slds-col slds-size_1-of-2"><apex:inputField type="datetime" value="{!visit.End_Time__c}" required="required"/></div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1"><apex:commandButton action="{!save}" Value="Save Visit"/></div>
+            </div>
+    </apex:pageBlock>
+    </apex:form>
+</body>
+<!-- End Default Content REMOVE THIS -->
+</apex:page>

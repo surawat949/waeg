@@ -1,0 +1,180 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+access="public" controller="PurchaseRegistrationController">
+
+<aura:attribute name="checkCode" type="String" default=""/>
+<aura:attribute name="checkResult" type="String" default=""/>
+<aura:attribute name="country" type="String" default=""/>
+<aura:attribute name="countryFilter" type="String" default=""/>
+<aura:attribute name="countryCheck" type="String" default=""/>
+<aura:attribute name="month" type="String" default=""/>
+<aura:attribute name="year" type="String" default=""/>
+<aura:attribute name="network" type="String" default=""/>
+<aura:attribute name="buyingGroup" type="String" default=""/>
+
+<aura:attribute name="mycolumns" type="List"/>
+<aura:attribute name="winnerList" type="Purchase_Registration__c[]"/>
+    
+    
+<!--Special Context Start INC-11219-->
+    
+<aura:attribute name="countryInSpecialContest" type="String" default=""/>
+<aura:attribute name="monthInSpecialContest" type="String" default=""/>
+<aura:attribute name="yearInSpecialContest" type="String" default=""/>   
+<aura:attribute name="emailInSpecialContest" type="String" default=""/>  
+    
+<!--Special Context End INC-11219-->    
+
+<aura:attribute name="countryList" type="List" default="[]"/>
+<aura:attribute name="networkList" type="List" default="[]"/>
+<aura:attribute name="monthList" type="List" default="[]"/>
+<aura:attribute name="yearList" type="List" default="[]"/>
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+
+<div class="slds-theme_default slds-box">
+    
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.PurchaseRegistrationPickWinner}</span>
+        </button>
+    </h3>
+    <div class="slds-grid slds-grid_vertical-align-end">
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:select label="Country"
+                                value="{!v.country}" name="countrySelect">
+                <aura:iteration items="{!v.countryList}" var="option">
+                    <option value="{!option.Id}" text="{!option.Name}"></option>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:select name="monthSelect" label="Month" aura:id="monthSelect" value="{!v.month}">
+                <aura:iteration items="{!v.monthList}" var="item">
+                    <option text="{!item.label}" value="{!item.value}" selected="{!item.selected}"/>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:select name="yearSelect" label="year" aura:id="yearSelect" value="{!v.year}">
+                <aura:iteration items="{!v.yearList}" var="item">
+                    <option text="{!item.label}" value="{!item.value}" selected="{!item.selected}"/>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:select name="networkSelect" label="Network" aura:id="networkSelect" value="{!v.network}">
+                <aura:iteration items="{!v.networkList}" var="option">
+                    <option text="{!option.Id}" value="{!option.Name}"/>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:input name="buyingGroup" label="{!$Label.c.PurchaseRegistrationBuyingGroup}" value="{!v.buyingGroup}"/>
+        </div>
+        <div class="slds-form-element slds-size_1-of-6" >
+            <lightning:button value="Pick a Winner" label="Pick a Winner" onclick="{!c.pickaWinner}"/>
+        </div>
+    </div>
+
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.PurchaseRegistrationWinnerList}</span>
+        </button>
+    </h3>
+    <div class="slds-grid slds-grid_vertical-align-end">
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:select label="CountryFilter"
+                                value="{!v.countryFilter}" name="CountryFilter"
+                                onchange="{!c.countryFilter}">
+                <aura:iteration items="{!v.countryList}" var="option">
+                    <option value="{!option.Id}" text="{!option.Name}"></option>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+    </div>
+    <lightning:datatable data="{!v.winnerList}"
+                        columns="{!v.mycolumns}"
+                        keyField="id"
+                        hideCheckboxColumn="true"
+                        onrowaction="{!c.handleRowAction}"/>
+    
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.PurchaseRegistrationCheckRegistration}</span>
+        </button>
+    </h3>
+    <div class="slds-grid slds-grid_vertical-align-end">
+        <div class="slds-form-element slds-size_1-of-4">
+            <lightning:select label="Country"
+                                value="{!v.countryCheck}" name="countryCheck">
+                <aura:iteration items="{!v.countryList}" var="option">
+                    <option value="{!option.Id}" text="{!option.Name}"></option>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+        <div class="slds-form-element slds-size_1-of-4">
+            <lightning:input name="code" label="{!$Label.c.PurchaseRegistrationRegistrationCode}" value="{!v.checkCode}"/>
+        </div>
+        <div class="slds-form-element slds-size_1-of-4">
+            <lightning:button value="{!$Label.c.PurchaseRegistrationCheckButton}" label="{!$Label.c.PurchaseRegistrationCheckButton}" 
+            onclick="{!c.checkRegistration}"/>
+        </div>
+    </div>
+    
+    <div class="slds-grid slds-grid_vertical-align-end">
+        <div class="slds-form-element slds-size_1-of-1">
+            <div aura:id="checkStyle">{!v.checkResult}</div>
+        </div>
+    </div>
+    
+    <!--Special Context Start INC-11219-->
+    
+    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+        <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+            <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.SPECIAL_LOCAL_CONTEST}</span>
+        </button>
+    </h3>
+    
+    
+    <div class="slds-grid slds-grid_vertical-align-end">
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:select label="Country"
+                                value="{!v.countryInSpecialContest}" name="countrySelect">
+                <aura:iteration items="{!v.countryList}" var="option">
+                    <option value="{!option.Id}" text="{!option.Name}"></option>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:select name="monthSelect" label="Month" aura:id="monthSelect" value="{!v.monthInSpecialContest}">
+                <aura:iteration items="{!v.monthList}" var="item">
+                    <option text="{!item.label}" value="{!item.value}" selected="{!item.selected}"/>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:select name="yearSelect" label="year" aura:id="yearSelect" value="{!v.yearInSpecialContest}">
+                <aura:iteration items="{!v.yearList}" var="item">
+                    <option text="{!item.label}" value="{!item.value}" selected="{!item.selected}"/>
+                </aura:iteration>
+            </lightning:select>
+        </div>
+      
+        <div class="slds-form-element slds-size_1-of-6">
+            <lightning:input name="emailInSpecialContest" label="Email" value="{!v.emailInSpecialContest}"/>
+        </div>
+        
+        <div class="slds-form-element slds-size_1-of-6" >
+            <lightning:button value="Pick a Winner" label="Send contest resumé" onclick="{!c.specialContest}"/>
+        </div>
+    </div>
+    
+     <!--Special Context End INC-11219-->
+    
+</div>
+
+</aura:component>

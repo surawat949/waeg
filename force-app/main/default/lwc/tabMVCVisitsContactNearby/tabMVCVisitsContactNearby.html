@@ -1,0 +1,121 @@
+<template>
+    <!--Work In progress! {receivedId}<br>-->
+    <!--Loading Section-->
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+    <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_small">
+        <div class="slds-col slds-size_1-of-1">
+            <lightning-map
+                    map-markers={mapMarkers}
+                    markers-title={markersTitle}
+                    zoom-level={zoomlevel}
+                    center={vcenter}
+                    list-view={displayListView}
+            ></lightning-map>
+        </div>
+    </div>
+    <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_medium">
+        <div class="slds-col slds-size_6-of-7"></div>
+        <div class="slds-col slds-size_1-of-7">
+            <template if:true={isDisplayList}>
+                <lightning-button label="Display List" onclick={handleListViewShow} variant="brand"></lightning-button>
+            </template>
+            <template if:false={isDisplayList}>
+                <lightning-button label="Hide List" onclick={handleListViewHide} variant="brand"></lightning-button>
+            </template>
+        </div>
+    </div>
+    <div class="slds-box slds-p-around_none slds-m-bottom_small">
+        <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.lblMyoAttitude}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning-combobox
+                    id="picklistMyoSmart"
+                    name="picklistMyoSmart"
+                    value={MyoSmartAttitude}
+                    options={picklistMyoAttitude}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.lblPreferredContact}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning-combobox
+                    id="picklistPreferredContact"
+                    name="picklistPreferredContact"
+                    value={PreferredContactMethod}
+                    options={picklistPreferredContact}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.lblDistance}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning-slider id="distance" name="distance" value={distanceSlider} min="1" max="30" onchange={handleKeyChange}></lightning-slider>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.lblPrescription}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning-combobox
+                    id="picklistPotential"
+                    name="picklistPotential"
+                    value={PrescriptionPotential}
+                    options={picklistPrescriptionPotential}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.lblFirstSpeciality}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning-combobox
+                    id="FirstSpeciality"
+                    name="FirstSpeciality"
+                    value={FirstSpeciality}
+                    options={picklistSpciality}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium"></div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">               
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-2 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">Preferred Contact Day-time</div>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-float_left slds-align-middle">
+                <lightning-dual-listbox
+                    id="PreferredContactDayTime"
+                    name="PreferredContactDayTime"
+                    source-label="Available Options"
+                    selected-label="Selected Options"
+                    options={picklistPreferredDayTime}
+                    onchange={handleKeyChange}
+                ></lightning-dual-listbox>
+                
+                <!--<lightning-dual-listbox
+                    id="PreferredContactDayTime"
+                    name="PreferredContactDayTime"
+                    source-label="Available"
+                    selected-label="Selected"
+                    value={PreferrredContactDayTimeType}
+                    options={picklistPreferredDayTime}
+                    onchange={handleKeyMap}
+                ></lightning-dual-listbox>-->
+            </div>
+        </div>
+    </div>
+</template>

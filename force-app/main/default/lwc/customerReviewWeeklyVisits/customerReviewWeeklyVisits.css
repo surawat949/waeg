@@ -1,0 +1,103 @@
+.toggle-btn {
+    cursor: pointer;
+}
+.heightsize{
+    height: 3rem;
+}
+.button-container {
+    transition: max-height 0.5s ease;
+}
+.button {
+    padding: 10px 20px;
+    background-color: #0176D3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+.slide-in {
+    max-height: 1000px; /* Adjust to your content's height */
+    transform: translateX(0px);
+    -webkit-animation: slide 0.5s forwards;
+    -webkit-animation-delay: 2s;
+    animation: slide 0.5s forwards;
+    animation-delay: 2s;
+    position: relative;
+    animation: animateleft 0.4s;
+    visibility: collapse;
+}
+.slide-out {
+    max-height: 0;
+    -webkit-animation: slide 0.5s forwards;
+    -webkit-animation-delay: 2s;
+    animation: slide 0.5s forwards;
+    animation-delay: 2s;
+    position: relative;
+    animation: animateright 0.4s;
+}
+.filterSection{
+    border-bottom: 0.5rem;
+    padding-bottom: 1rem;
+    border:1px solid #C9C9C9;
+    background: #F3F3F3;
+}
+.filterButton{
+    position: relative;
+    top: 1.5rem;
+    left: 1.5rem;
+}
+.dateControl{
+    position: relative;
+    top: 1rem;
+    left: 0.25rem;
+    height: 2rem;
+}
+.datePosition{
+    border: 1px solid #C9C9C9;
+    padding: 0.25rem;
+    height: 100%;
+}
+.keepMiddle{
+    position: relative;
+    bottom: 0.5rem;
+}
+.displayButton{
+    top: 1.5rem;
+    height: fit-content;
+}
+.traverseButton{
+    position: relative;
+    top: 1rem;
+    width: 3rem;
+}
+.slds-box {
+    padding: .2rem;
+    border-radius: .5rem;
+}
+.centerAlign{
+    align-self: center;
+}
+.zeroPadding{
+    padding: 0;
+    right: .8rem;
+    top: .5rem;
+    position: relative;
+}
+
+.selected {
+    background-color: #aacbff;
+}
+.notSelected {
+    background-color: none;
+}
+td:hover {
+    background-color: #aacbff !important;
+}
+td {
+    background-color: transparent;
+}
+
+.tableBorder{
+    height: 2rem;
+    font-size: smaller;
+}

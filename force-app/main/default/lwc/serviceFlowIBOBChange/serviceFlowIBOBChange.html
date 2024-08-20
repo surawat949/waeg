@@ -1,0 +1,67 @@
+<template>
+    <br />
+    <template if:true={taskList}>
+        <div style="height: 300px;">
+            <div class="slds-page-header">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-opportunity" title="Task Table">
+                                    <span class="slds-assistive-text">Task Table</span>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-page-header__name">
+                                    <div class="slds-page-header__name-title">
+                                        <h1>
+                                            <span class="slds-page-header__title slds-truncate" title="Task Table">Task Table</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                                <p class="slds-page-header__name-meta">
+                                    Change the type &nbsp;&nbsp;&nbsp;
+                                    <lightning-button-icon icon-name="utility:back" variant="bare" onclick={close} size="medium" alternative-text="Back">
+                                    </lightning-button-icon>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <lightning-datatable data={taskList} columns={columns} key-field="Id" show-row-number-column hide-checkbox-column default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy} onsort={onHandleSort}>
+            </lightning-datatable>
+        </div>
+    </template>
+
+    <template if:false={taskList}>
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-opportunity" title="Task Table">
+                                <span class="slds-assistive-text">Selected Records</span>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate" title="Task Table">Selected Records</span>
+                                    </h1>
+                                </div>
+                            </div>
+                            <p class="slds-page-header__name-meta">
+                                Please select atleast one record to proceed further &nbsp;&nbsp;&nbsp;
+                                <lightning-button-icon icon-name="utility:back" variant="bare" onclick={close} size="medium" alternative-text="Back">
+                                </lightning-button-icon>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</template>

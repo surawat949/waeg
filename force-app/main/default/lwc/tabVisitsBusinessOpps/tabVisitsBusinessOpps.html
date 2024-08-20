@@ -1,0 +1,143 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
+        <table class="slds-table slds-table_bordered" aria-label="Identified Business opportunities" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.IdentifiedBusinessOpp} ({oppCount})</p></h3></td>
+                <td><p align="right"><lightning-button label={label.label_new} variant="brand-outline" onclick={showOppCreatePage}></lightning-button></p></td>
+            </tr>
+        </table><br>
+        <lightning-datatable data={OppRecord} columns={businessOppColumns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+        <template if:true={displayIdentifiedOppViewAllButton}>
+            <br><p align="center"><lightning-button label={label.label_viewall} onclick={navigateToRelatedOppList}></lightning-button></p><br>
+        </template> 
+    </div>
+    <template if:true={showAllTab}>
+        <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+            <table class="slds-table slds-table_bordered" aria-label="Opportunities" style="background-color: #215ca0;">
+                <tr class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.opportunitiesSec} ({opportunityCount})</p></h3></td>
+                    <td><p align="right"> 
+                        <lightning-button label={label.label_new} variant="brand-outline" onclick={navigateOppCreatePage}></lightning-button> &nbsp;
+                        </p></td>
+                </tr>
+            </table><br>
+            <lightning-datatable data={opportunities} columns={oppColumns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+        
+            <template if:true={displayOppViewAllButton}>
+                <br><p align="center">
+                <lightning-button label={label.label_viewall} onclick={navigateToOppRelatedList}></lightning-button></p></br>
+            </template>
+        </div>
+    </template>
+<!--Modal Pop up for creating Identified Business Oppotunity-->
+
+<!-- modal start -->      
+<template if:true={isModalOpen}>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">         
+            <header class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closePopup}>
+                    <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small" ></lightning-icon>
+                    <span class="slds-assistive-text">{label.label_Close}</span>
+                </button>
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{label.headingIBO}</h2>
+            </header>         
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <div class="slds-is-relative slds-m-around_large slds-align_absolute-center" style="min-height: 100px;" 
+                if:true={showSpinner}>
+                    <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+                </div>
+                <div if:true={errors} class="slds-notify slds-notify_alert slds-alert_error">
+                    {errors}
+                </div>
+    
+                <div class="slds-form-element__control">
+                    <table class="slds-table slds-table_bordered" aria-label="New IBO" style="background-color: #215ca0;">
+                        <tr class="row" style="background-color: #aacbff;">
+                        <td><h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.Project_Description}</p></h3></td>
+                        </tr>
+                    </table><br>
+        
+                        <div class="slds-grid slds-var-m-left_medium">
+                            <div class="slds-form-element slds-form-element_stacked slds-size_1-of-2">
+                                <lightning-input type="text" label={label.Name} value={projectName} onchange={projectNameCH} required="true"></lightning-input>
+                            </div>
+                        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-2">
+                                <lightning-combobox
+                                name="Category"
+                                label={label.label_category}
+                                value={value}
+                                placeholder="Select Category"
+                                options={categoryOptions}
+                                required="true"
+                                onchange={categoryCH}></lightning-combobox>                    
+                            </div>             
+                        </div>
+        
+                        <div class="slds-grid slds-var-m-left_medium">
+                            <div class="slds-form-element slds-form-element_stacked slds-size_1-of-1">
+                                <lightning-input type="text" label={label.description} value={description} onchange={descriptionCH} required="true"></lightning-input>
+                            </div>              
+                        </div>
+        
+                        <div class="slds-grid slds-var-m-left_medium">
+                            <div class="slds-form-element slds-form-element_stacked slds-size_1-of-1">
+                                <lightning-input type="text" label={label.Next_Steps} value={nextSteps} onchange={nextStepsCH}></lightning-input>
+                            </div>              
+                        </div>
+        
+                        <div class="slds-grid slds-var-m-left_medium">
+                            <div class="slds-form-element slds-form-element_stacked slds-size_1-of-2">
+                                <lightning-combobox
+                                name="Status"
+                                label={label.label_status}
+                                value={value}
+                                placeholder="Select Status"
+                                options={statusOptions}
+                                required="true"
+                                onchange={statusCH}></lightning-combobox>                    
+                            </div> 
+                            <div class="slds-form-element slds-form-element_stacked slds-size_1-of-2">
+                                <lightning-combobox
+                                name="Level"
+                                label={label.Priority_Level}
+                                value={value}
+                                required="true"
+                                placeholder="Select Level"
+                                options={levelOptions}
+                                onchange={levelCH}></lightning-combobox>                    
+                            </div>                
+                        </div>
+                    <br>
+                        <!--section header-->
+                    <table class="slds-table slds-table_bordered" aria-label="Incremental Sales" style="background-color: #215ca0;">
+                        <tr class="row" style="background-color: #aacbff;">
+                        <td><h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.Expected_Incremental_Sales}</p></h3></td>
+                        </tr>
+                    </table><br>
+        
+                    <div class="slds-grid slds-var-m-left_medium">
+                        <div class="slds-form-element slds-form-element_stacked slds-size_1-of-2">
+                            <lightning-input type="number" label={label.Monthly_Incremental} value={monthlyInc} onchange={monthlyIncCH}
+                            step=".01" formatter="currency"></lightning-input>
+                        </div>              
+                    </div> 
+                </div>
+            </div>
+            <!-- Modal/Popup Box LWC footer starts here class="slds-align_absolute-center" -->
+            <footer class="slds-modal__footer">
+                <div style="text-align: center;">
+                <lightning-button variant="brand" label={label.label_save} onclick={onSave}></lightning-button> &nbsp;&nbsp;
+                <lightning-button onclick={closePopup} label={label.cancel} variant="brand-outline"></lightning-button>
+                </div>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+
+<!--Modal Pop up End-->
+</template>

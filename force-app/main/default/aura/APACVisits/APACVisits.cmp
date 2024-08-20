@@ -1,0 +1,75 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+access="public"  controller="APACSalesTabController">
+
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="accountLensSupplierFields" type="String[]" default="['First_Competitor_global_name__c', 'Second_Competitor_global_name__c', 'First_Competitor_local_name__c', 'Second_Competitor_Local_Name__c', 'First_Competitor_SOW__c', 'Second_Competitor_SOW__c','Potential__c', 'Target_List__c', 'Segmentation_Box__c', 'Manual_Segment__c', 'Share_of_Wallet__c', 'Support_Status__c', 'Forecast_current_year__c', 'Forecast_YTD_test__c', 'Sales_Total_Current_Year__c', 'Sales_Total_Last_Year__c', 'Actual_Sales_versus_Budget__c', 'Sales_CY_vs_LY_YTD__c']"/>
+    <aura:attribute name="accountSegmentation1Fields" type="String[]" default="['Potential__c', 'Share_of_Wallet__c', 'Segmentation_Box__c', 'Manual_Segment__c']"/>
+    <aura:attribute name="accountSegmentation2Fields" type="String[]" default="['Segmentation_Box__c','Last_Visit_date__c','Last_Digital_Visit_Date__c','Total_Visits_Achieved__c','Visit_Frequency_Status__c', 'Digital_Visits_Frequency__c', 'Total_Visits_Planned__c', 'Agreed_Visits__c','Agreed_No_of_Digital_Visits__c']" />
+    <aura:attribute name="accountTargetList" type="String[]" default="['Target_List__c', 'Visit_Frequency_Flag__c']" />
+    <aura:attribute name="accountTacticomSeikoFields" type="String[]" default="['TACTICOM_SOF__c', 'TACTICOM_Owner__c']"/>
+    <aura:attribute name="accountTacticomHoyaFields" type="String[]" default="['Zonal__c', 'TACTICOM_HLFR__c', 'TACTICOM_SOF__c', 'TACTICOM_PENTAX__c']"/>
+    <!--<aura:attribute name="accountVisitFreFieldFlag" type="String[]" default="['Visit_Frequency_Flag__c']" /> -->
+    <aura:attribute name="account" type="Account" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div class="slds-theme_default slds-box">
+        <!--
+        <div class="slds-grid">
+            <div class="slds-col slds-text-align_right slds-size_1-of-1">
+                <lightning:recordViewForm objectApiName="Account" recordId="{!v.recordId}">
+                    <lightning:outputField fieldName="Visit_Frequency_Flag__c" variant="label-hidden" />
+                </lightning:recordViewForm>
+            </div>
+        </div>
+        -->
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+                    <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                        <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                            <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACVisitVisitSummary}</span>
+                    </button>
+                </h3>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:recordForm aura:id="accountSegmentationForm" mode="readonly" 
+                    recordId="{!v.recordId}" objectApiName="Account" 
+                    fields="{!v.accountSegmentation2Fields}" columns="3" density="auto" />
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:recordForm aura:id="accountTargetList" mode="view"
+                    recordId="{!v.recordId}" objectApiName="Account"
+                    fields="{!v.accountTargetList}" columns="2" density="auto" />
+            </div>
+        </div>
+        <!--
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.AccountVisitTabSegmentation}</span>
+            </button>
+        </h3>
+        
+        <lightning:recordForm aura:id="accountSegmentation2Form" mode="view" 
+            recordId="{!v.recordId}" objectApiName="Account"
+            fields="{!v.accountLensSupplierFields}" columns="2" density="auto"/>
+        -->
+    </div>
+    <br/>
+    <div class="slds-theme_default slds-box" >
+        <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">    
+            <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                    <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">{!$Label.c.APACVisitTacticom}</span>
+            </button>
+        </h3>
+        <lightning:recordForm aura:id="TacticomFields" mode="view" recordId="{!v.recordId}" 
+            objectApiName="Account" fields="{!v.accountTacticomHoyaFields}" columns="2" density="auto"/>
+    </div>
+
+</aura:component>

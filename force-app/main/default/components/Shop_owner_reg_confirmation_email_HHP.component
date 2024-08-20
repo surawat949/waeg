@@ -1,0 +1,136 @@
+<apex:component controller="Email_Controller" access="global">
+    <apex:attribute name="Target_User" type="User" description="This is the Id of the contact" access="global" />
+   
+<html>
+<head>
+    <meta charset="UTF-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+<title>Hoya</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet"></link>
+<style type="text/css">
+  @media screen and (max-width:600px) {
+      .mfontsize {
+        font-size: 20px !important;
+        line-height: 34px !important;
+      }
+      .tw100 {
+        width: 100% !important;
+      }
+      .loginbtn {
+        width: 200px;
+        height: auto;
+      }
+  } 
+</style>
+</head>
+<body style="background-color:#fff;padding: 0 0 25px;margin: 0;">
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center"><table align="center" width="600" border="0" cellspacing="0" cellpadding="0" style="background-color:#fff;">
+        <!-- Main TR Start-->
+        <tr>
+          <td align="center"><table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td><a href="#/"><img src="{!staticResourceBaseURI}Hoya_Canada_Email_Images/images/header.png" alt="Hoya" width="600" height="65" border="0" style="display:block;"></img></a></td>
+            </tr>
+            </table></td>
+        </tr>
+        <!-- Main TR End-->
+
+
+        <!-- Main TR Start-->
+        <tr>
+          <td align="center"><table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td align="left" width="300" valign="middle" style="background:#0057bc;">
+                  <table width="100%" style="border-collapse: collapse;">
+                      <tr>
+                        <td valign="top" style="padding:0 25px;font-size:0;">
+                          <span style=" font-family: Arial, Helvetica, sans-serif;font-weight:bold;font-size:20px;line-height:26px;color:#fff;text-align:left;display:block;">
+                            <apex:outputText value="{!$Label.x2021_HPP_confirmation_part1}" escape="false" />
+                            </span>
+                        </td>
+                      </tr>
+                  </table>
+              </td>
+              <td align="left" width="300" valign="top">
+                  <img src="{!staticResourceBaseURI}Hoya_Canada_Email_Images/images/banner-half.jpg" width="300" height="300" border="0" style="display:block;"></img>
+              </td>
+            </tr>
+            </table></td>
+        </tr>
+        <!-- Main TR End-->
+
+        <!-- Main TR Start-->
+        <tr>
+          <td align="center" style="background-color:#ffffff;padding:30px 30px 0px 30px;"><table align="center" width="540" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td align="left" valign="top">
+                  <span style="font-family: Arial, Helvetica, sans-serif;font-weight:400;font-size:14px;line-height:22px;color:#050505;text-align:left;display:block;" class="mfontsize">
+                    <apex:outputText value="{!$Label.x2021_HPP_confirmation_part2}" escape="false" />
+                    
+                </span></td>
+              </tr><tr>
+                <td align="left" valign="top">
+                  <span style="font-family: Arial, Helvetica, sans-serif;font-weight:400;font-size:14px;line-height:22px;color:#050505;text-align:left;display:block;" class="mfontsize">
+                    <apex:outputText value="{!SUBSTITUTE($Label.x2021_HPP_invitation_part2_1,'{USERNAME}',Target_User.CommunityNickname)}" escape="false" />
+                    
+                </span></td>
+              </tr>
+
+            </table></td>
+        </tr>
+
+        
+
+        <!-- Main TR Start-->
+        <tr>
+          <td align="center" style="background-color:#fff;padding:20px 30px 20px 30px;"><table align="center" width="540" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td align="left" valign="top">
+                  <table width="100%" style="border-collapse: collapse;">
+                    <tr>
+                      <td valign="top" align="left" style="font-size:14px;padding:10px 44px;width: 1%;white-space: nowrap;background:#0056bb;border:1px solid #0056bb;">
+                        <a href="http://hoyahonours.ca/" target="_blank" style="display:inline-block;color:#fff;text-decoration:none;padding:5px 30px;border:1px solid #0056bb;"><apex:outputText value="{!$Label.Login_Now}" escape="false" /></a>
+                      </td>
+                      <td valign="top"></td>
+                     </tr>
+                 </table>
+
+                </td>
+              </tr>
+
+            <tr>
+              <td align="left" valign="top"><span style="font-family: Arial, Helvetica, sans-serif;font-weight:400;font-size:14px;line-height:22px;color:#050505;text-align:left;display:block;" class="mfontsize">
+                  <br></br>
+                
+                  <apex:outputText value="{!$Label.x2021_HPP_confirmation_part3}" escape="false" />
+                
+              </span></td>
+            </tr>
+
+            </table></td>
+        </tr>
+        <!-- Main TR End-->
+
+
+
+        
+
+
+        <!-- Main TR Start-->
+        <tr>
+          <td align="center"><table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td><img src="{!staticResourceBaseURI}Hoya_Canada_Email_Images/images/footer.png" alt="Hoya" width="600" height="52" border="0" style="display:block;"></img></td>
+            </tr>
+            </table></td>
+        </tr>
+        <!-- Main TR End-->
+
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
+</apex:component>

@@ -1,0 +1,48 @@
+<template>   
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+       <!--GDPR-->
+       <table class="slds-table slds-table_bordered" aria-label="GDPR">
+        <tr class="row" style="background-color: #aacbff;">
+            <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.GDPR}</h3></td>
+        </tr>     	        
+    </table><br>
+    <lightning-layout>
+        <lightning-layout-item flexibility="auto" padding="around-small">
+             <lightning-record-form
+                record-id={receivedId}
+                object-api-name={ObjectApiName}
+                fields={GDPR_Fields1}
+                mode="view" 
+                columns = "2" >
+            </lightning-record-form> 
+        </lightning-layout-item>
+        </lightning-layout>
+        <div class="slds-grid slds-var-m-left_medium">
+            <div class="slds-col slds-size_1-of-2">
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={ObjectApiName}
+                    fields={GDPR_Fields2}
+                    mode="view" 
+                    columns = "1" >
+                </lightning-record-form> 
+            </div>
+        </div>
+        <div class="slds-grid slds-var-m-left_medium">
+            <div class="slds-col slds-size_1-of-2">
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={ObjectApiName}
+                    fields={GDPR_Fields3}
+                    mode="view" 
+                    columns = "1" >
+                </lightning-record-form> 
+            </div>
+        </div>
+       <br/>
+    </div>
+</template>

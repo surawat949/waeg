@@ -1,0 +1,400 @@
+<template>
+    <!--Sales Targets-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="Sales Targets">
+            <tr data-id="header1" class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title">{custLabel.SalesTarget}</h3></td>
+            </tr>
+        </table><br>      
+        <div>           
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={ObjectApiName}
+                    fields={field}
+                    mode="view" 
+                    columns = " 2"   
+                    onsubmit={doRefresh}           
+                    >
+                </lightning-record-form>
+            </lightning-layout-item>
+            </lightning-layout>
+            </div>     
+            <div class="slds-grid slds-gutters" style="margin-left:2px;">
+                <div class="slds-col slds-size_1-of-2" >
+                  <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{custLabel.MonthlyObjective}</span>
+                    <div class="slds-form-element__control">
+                      <div class="slds-form-element__static"><lightning-formatted-number value={MonthlyObjective} maximum-fraction-digits ="0" format-style='currency' currency-code={CurrencyCode}></lightning-formatted-number></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="slds-col slds-size_1-of-2 " style="width:47%">
+                  <div class="slds-form-element slds-form-element_readonly">
+                    <span class="slds-form-element__label">{custLabel.Last12MoVsObjective}</span>
+                    <div class="slds-form-element__control">
+                      <div class="slds-form-element__static"><lightning-formatted-number value={Last12MoVsObjective} maximum-fraction-digits ="0"></lightning-formatted-number>%</div>
+                    </div>
+                  </div>
+                </div> 
+            </div>   
+        <br/>        
+    </div>
+    
+    <!--Monthly Net Sales Figures-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+    <table class="slds-table slds-table_bordered " aria-label="Monthly Net Sales">
+        <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+            <td><h3 class="slds-section__title">{custLabel.MonthlyNetSales}</h3></td>
+        </tr>
+    </table><br>
+    <!--chart-->
+    <div class="slds-grid slds-scrollable_x" style="padding-bottom: 10px;">
+        <div class="slds-col slds-size_1-of-2">
+            <!--<canvas class="chartNetSales" lwc:dom="manual" style="height:150px;"></canvas>-->
+            <template if:true={config}>
+                <c-chart-renderercmp chart-config={config} height="150px"></c-chart-renderercmp>
+            </template>
+        </div>       
+        <div class="slds-col slds-size_1-of-2">
+             <template if:true={configVol}>
+                <c-chart-renderercmp chart-config={configVol} height="150px"></c-chart-renderercmp>
+            </template>
+            <!--<canvas class="volumeChart" lwc:dom="manual" style="height:150px;"></canvas>-->
+        </div>
+    </div>
+    <!--tables-->
+    <div class="slds-scrollable_x" style="width:100%">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+        <thead>
+            <tr>
+                <th class="fix"><div class="slds-truncate">{custLabel.NetSales} {custLabel.CurrencyIn} {CurrencyCode} {custLabel.FiscalYear}</div></th>
+                <template for:each={MonthColumns} for:item="column">
+                    <th key={column} style="text-align:right;"><div class="slds-truncate">{column}</div></th>
+                </template>
+            </tr>
+        </thead>
+        <tbody>
+            <!--Lenses-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.Lenses}</td>
+                <template for:each={LensesSalesCFY} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>
+                    </td>                  
+                </template> 
+            </tr>
+            <!--Frames-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.Frames}</td>
+                <template for:each={FramesSalesCFY} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>
+                    </td>                  
+                </template> 
+            </tr>
+            <!--ContactLens-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.ContactLenses}</td>
+                <template for:each={ContactLensesSalesCFY} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>
+                    </td>                  
+                </template> 
+            </tr>
+            <!--Instruments-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.Instruments}</td>
+                <template for:each={InstrumentsSalesCFY} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>
+                    </td>                  
+                </template> 
+            </tr>                
+            <!--Others-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.Others}</td>
+                <template for:each={OthersSalesCFY} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>
+                    </td>                  
+                </template> 
+            </tr>
+            <!--Total FY-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.TotalFY}</td>
+                <template for:each={TotalSalesCFY} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>
+                    </td>                  
+                </template> 
+            </tr>
+            <!--Total LFY-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.TotalLFY}</td>
+                <template for:each={TotalSalesLFY} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>
+                    </td>                  
+                </template> 
+            </tr>
+            <!--Total Variation-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.Variation}</td>
+                <template for:each={TotalVariation} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>%
+                    </td>                  
+                </template> 
+            </tr>
+            <tr class="rowSize">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+            </tr>
+            <!--Lenses LFY-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.LensesLFY}</td>
+                <template for:each={LensesSalesLFY} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>
+                    </td>                  
+                </template> 
+            </tr>
+            <!--Lenses Variation-->
+            <tr class="slds-text-title_caps">
+                <td class="fix">{custLabel.LensesVariation}</td>
+                <template for:each={LensesVariation} for:item="item" for:index="index"> 
+                    <td style="text-align:right;" key={item}>
+                        <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                    </lightning-formatted-number>%
+                    </td>                  
+                </template> 
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    <br/>
+    <!--Volumes Table-->
+    <div class="slds-scrollable_x" style="width:100%">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <thead>
+                <tr>
+                    <th class="fix"><div class="slds-truncate">{custLabel.Volumes}</div></th>
+                    <template for:each={MonthColumns} for:item="column">
+                        <th key={column} style="text-align:right;"><div class="slds-truncate">{column}</div></th>
+                    </template>
+                </tr>
+            </thead>
+            <tbody>
+                <!--Lenses-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.Lenses}</td>
+                    <template for:each={LensesCFYQty} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>
+                <!--Frames-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.Frames}</td>
+                    <template for:each={FramesCFYQty} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>
+                <!--ContactLens-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.ContactLenses}</td>
+                    <template for:each={ContactLensesCFYQty} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>
+                <!--Instruments-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.Instruments}</td>
+                    <template for:each={InstrumentsCFYQty} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>                
+                <!--Others-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.Others}</td>
+                    <template for:each={OthersCFYQty} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>
+                <!--Total FY-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.TotalFY}</td>
+                    <template for:each={TotalQtyCFY} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>
+                <!--Total LFY-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.TotalLFY}</td>
+                    <template for:each={TotalQtyLFY} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>
+                <!--Total Variation-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.Variation}</td>
+                    <template for:each={TotalQtyVaraition} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>%
+                        </td>                  
+                    </template> 
+                </tr>
+                <tr class="rowSize">
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                    <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                </tr>
+                <!--Lenses LFY-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.LensesLFY}</td>
+                    <template for:each={LensesLFYQty} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">%
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>
+                <!--Lenses Variation-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">{custLabel.LensesVariation}</td>
+                    <template for:each={TotalLensQtyVariation} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>%
+                        </td>                  
+                    </template> 
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+    <!--Average Sales Price-->
+    <c-tab-statistics-average-sales-price received-id={receivedId} type="Net"></c-tab-statistics-average-sales-price>
+
+    <!--Lenses Net Sales and Volume Trends-->
+    <c-tab-statistics-lenses-net-sales received-id={receivedId} type="Net"></c-tab-statistics-lenses-net-sales>
+    
+    <!-- Lens Sales Forecast-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
+    <table class="slds-table slds-table_bordered" aria-label="LensSalesForecast" >
+        <tr class="row" style="background-color: #aacbff;">
+            <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.LensSalesForecast}</h3></td>
+        </tr>
+    </table><br>
+    <div class="slds-scrollable_x" style="width:100%">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <thead>
+                <tr>
+                    <th class="fix"><div class="slds-truncate">{custLabel.NetSales} {custLabel.CurrencyIn} {CurrencyCode}</div></th>
+                    <template for:each={MonthColumns} for:item="column">
+                        <th key={column} style="text-align:right;"><div class="slds-truncate">{column}</div></th>
+                    </template>
+                </tr>
+            </thead>
+            <tbody>
+                <!--Forecast Fiscal year-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">FORECAST FISCAL YEAR</td>
+                    <template for:each={forecastCFY} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>
+                    <!--Last Fiscal year-->                    
+                    <tr class="slds-text-title_caps">
+                    <td class="fix">LAST FISCAL YEAR</td>
+                    <template for:each={LensesSalesLFY} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>
+                <!--Forecast vs LFY-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">FORECAST VS LFY</td>
+                    <template for:each={ForecastvsLFY} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>%
+                        </td>                  
+                    </template> 
+                </tr> 
+                <!--Current Fiscal year-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">CURRENT FISCAL YEAR</td>
+                    <template for:each={LensesSalesCFY} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>
+                        </td>                  
+                    </template> 
+                </tr>                    
+                <!--CFY vs Forecast-->
+                <tr class="slds-text-title_caps">
+                    <td class="fix">CFY VS FORECAST</td>
+                    <template for:each={CFYvsForecastVariation} for:item="item" for:index="index"> 
+                        <td style="text-align:right;" key={item}>
+                            <lightning-formatted-number value={item} maximum-fraction-digits="0">
+                                        </lightning-formatted-number>%
+                        </td>                  
+                    </template> 
+                </tr> 
+            </tbody>
+        </table>
+    </div> 
+    </div>      
+
+    <!-- Parent Account Net Sales trends-->
+    <!--<c-tab-statistics-related-net-sales received-id={receivedId} type="Net"></c-tab-statistics-related-net-sales>-->
+
+    <!--Local Consolidation key sales trends-->
+        <c-tab-statistics-local-consolidation-sales received-id={receivedId} type="Net"></c-tab-statistics-local-consolidation-sales>
+</template>

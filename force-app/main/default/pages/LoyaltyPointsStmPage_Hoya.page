@@ -1,0 +1,83 @@
+<apex:page controller="LoyaltyPointsStmtController" renderAs="pdf" applyHtmlTag="false" showHeader="false" cache="true" readOnly="true">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <style>
+            @page {
+                margin: 0.0in; size: 25.9in 37.2in;
+            }
+        </style>
+    </head>
+    <body style="background-image:url('{!$Resource.LoyaltyPointsStmt_Hoya_Template}'); background-size:100% 100%; background-position:center center;">
+        <h1>
+            <div style="position:absolute; color:#FFFFFF; font-size:55px; padding-left:28em; padding-top:8em;font-family:Arial Unicode MS;">  
+                {!$Label.your_marketing}<br></br>         
+                {!$Label.points_statement}
+            </div> 
+        </h1>
+        <div style="position:absolute; color:White; font-size:166%; padding-left:58.2em; padding-top:23.5em;font-family:Arial Unicode MS;"> 
+            <span>{!$label.account_number} : </span>{!accountNumber}<br></br>
+            <span>{!$label.shop_name} : </span>{!accountName}<br></br>
+            <span>{!$label.Address} : </span> {!street}<br></br>
+            <span>{!$label.city} : </span>{!city}<br></br>
+        </div>
+        <div style="position:absolute; color:BLACK; font-size:37px; padding-left:7.1em; padding-top:35em;font-family:Arial Unicode MS;"> 
+            <span>{!$label.your_points_balance}</span>
+        </div>
+
+        <table style ="font-family:Arial Unicode MS;padding-left:16em;padding-top:89.5em;">
+            <tbody>
+                <tr>
+                    <td style="width:350px;font-size:30px;">{!$Label.date_of_the_balance} :</td>
+                    <td style="width:483px;font-size:30px;">{!today}</td>
+                    <td style="width:425px;font-size:30px;">{!$Label.current_balance} :</td>
+                    <td style="width:300px;font-size:30px;">{!totalPoints} points</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="position:absolute; color:BLACK; font-size:37px; padding-left:7.1em; padding-top:6.5em;font-family:Arial Unicode MS;"> 
+            <span>{!$label.transaction_history}</span>
+        </div>
+
+        <table style ="font-family:Arial Unicode MS;padding-left:16em;padding-top:26em;">
+            <tbody>
+                <tr>
+                    <td style="width:280px;font-size:30px;">{!$label.starts_date} :</td>
+                    <td style="width:640px;font-size:30px;">{!dateStart}</td>
+                    <td style="width:311.8px;font-size:30px;">{!$label.ends_date} :</td>
+                    <td style="width:180px;font-size:30px;">{!dateEnd}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <table style ="font-family:Arial Unicode MS;padding-left:16em;padding-top:4.8em;">
+            <tbody>
+                <tr>
+                    <td style="width:280px;font-size:30px;">{!$label.Lp_name}</td>
+                    <td style="width:850px;font-size:30px;">{!$label.Lp_description}</td>
+                    <td style="width:180px;font-size:30px;">{!$label.Lp_points}</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr></hr>
+        <table style ="font-family:Arial Unicode MS;padding-left:16em;padding-top:1.5em;">
+            <apex:repeat value="{!accs}" var="a">
+                <tr>
+                    <td style="width:280px;font-size:30px;">
+                        <apex:outputField value="{!a.Date_of_transaction__c}"/>
+                    </td>
+                    <td style="width:850px;font-size:30px;">{!a.Description__c}</td>
+                    <td style="width:180px;font-size:30px;">{!a.Points__c}</td>
+                </tr>
+            </apex:repeat>
+        </table>
+
+        <div style="color:#FFFFFF;font-size:27.5px; position:absolute; left:850px; top:3485px; font-family:Arial Unicode MS;">
+            <span>{!footer}</span>
+        </div>
+
+
+    </body>
+</html>
+</apex:page>

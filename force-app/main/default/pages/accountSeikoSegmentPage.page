@@ -1,0 +1,41 @@
+<apex:page standardController="Account" extensions="AccountSeikoDataPageController" 
+    showHeader="false" docType="html-5.0">
+<div >
+    <apex:form >
+        <apex:pageBlock mode="maindetail">
+            <apex:pageBlockButtons location="top" >
+                <apex:commandButton value="Save" action="{!save}" id="saveButton" style="display:none"/>
+            </apex:pageBlockButtons>
+
+                <apex:pageBlockSection title="Segmentation" columns="2">
+                    
+                    <apex:outputField value="{!account.Potential__c}"/>
+                    <apex:outputField value="{!account.Share_of_Wallet__c}"/>
+                    
+                    <apex:outputField value="{!account.Segmentation_Box__c}"/>
+                    <apex:outputField value="{!account.Manual_Segment__c}"/>
+                </apex:pageBlockSection>
+
+                <apex:pageBlockSection title="Seiko recommandation" columns="2">
+                    <apex:outputField value="{!data.Segmentation__c}"/>
+                    <apex:outputField value="{!data.SVS_Total_Visits_achieved__c}"/>
+                    
+                    <apex:outputText value="{0, number, ##0}" label="{!$ObjectType.Seiko_Data__c.fields.SVS_recommended_number_of_visits__c.label}">
+                        <apex:param value="{!data.SVS_recommended_number_of_visits__c}"/>
+                    </apex:outputText>
+                    <apex:outputField value="{!data.SVS_Physical_Visit_Frequency__c}"/>
+                    
+                    <apex:outputText value="{0, number, ##0}" label="{!$ObjectType.Seiko_Data__c.fields.SVS_Number_of_digital_visits__c.label}">
+                        <apex:param value="{!data.SVS_Number_of_digital_visits__c}"/>
+                    </apex:outputText>
+                    <apex:outputField value="{!data.SVS_Digital_visit_frequency__c}"/>
+                </apex:pageBlockSection>
+                <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton" hideOnEdit="editButton" />
+                <apex:pageBlockButtons location="bottom" >
+                    <apex:commandButton value="Save" action="{!save}" id="saveButton" style="display:none"/>
+                </apex:pageBlockButtons>
+
+            </apex:pageBlock>
+        </apex:form>
+</div>
+</apex:page>

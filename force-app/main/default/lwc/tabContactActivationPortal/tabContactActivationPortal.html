@@ -1,0 +1,173 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+        <table class="slds-table slds-table_bordered" aria-label="Portal" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{custLabel.PortalSetting}</p></h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={fields1}
+                    mode="readOnly"
+                    columns="3"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={fields2}
+                    mode="view"
+                    columns="3"
+                ></lightning-record-form>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={fields3}
+                    mode="view"
+                    columns="2"
+                ></lightning-record-form>
+            </div>
+        </div><br/>
+    </div>
+    
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+        <table class="slds-table slds-table_bordered" aria-label="Portal" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{custLabel.User}</p></h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={portalUser}
+                    mode="readOnly"
+                    columns="1"
+                ></lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-record-form
+                record-id={receivedId}
+                object-api-name={Contact_Obj}
+                fields={Language}
+                mode="view"
+                columns="1"
+                ></lightning-record-form>              
+            </div>
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-record-view-form record-id={receivedId} object-api-name={Contact_Obj}>
+                    <lightning-output-field field-name="Newsletter_Subscription__c" > </lightning-output-field>
+                </lightning-record-view-form> 
+            </div>
+        </div><br/>
+    </div>
+    
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+        <table class="slds-table slds-table_bordered" aria-label="Portal" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{custLabel.Registrations}</p></h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={inviteEmail}
+                    mode="view"
+                    columns="1"
+                ></lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-record-form
+                record-id={receivedId}
+                object-api-name={Contact_Obj}
+                fields={fields4}
+                mode="readOnly"
+                columns="2"
+                ></lightning-record-form>              
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={cmdtReg}
+                    mode="readOnlys"
+                    columns="1"
+                ></lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-record-form
+                record-id={receivedId}
+                object-api-name={Contact_Obj}
+                fields={fields5}
+                mode="readOnly"
+                columns="2"
+                ></lightning-record-form>              
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={cmdtPwdReset}
+                    mode="readOnly"
+                    columns="1"
+                ></lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_2-of-3">
+                <lightning-record-form
+                record-id={receivedId}
+                object-api-name={Contact_Obj}
+                fields={fields6}
+                mode="readOnly"
+                columns="2"
+                ></lightning-record-form>              
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={sendEmail}
+                    mode="view"
+                    columns="1"
+                ></lightning-record-form>
+            </div>
+        </div>        
+        <br/>
+    </div>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none" >
+        <table class="slds-table slds-table_bordered" aria-label="Portal" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{custLabel.RegHoyanet}</p></h3></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid slds-m-left_small">
+            <div class="slds-col slds-size_1-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={hoyaNetLogin}
+                    mode="readOnly"
+                    columns="1"
+                ></lightning-record-form>
+            </div>
+        </div>
+    </div>
+</template>

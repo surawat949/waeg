@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
+    <decisions>
+        <name>Select_specific_user_s</name>
+        <label>Select specific user(s)</label>
+        <locationX>184</locationX>
+        <locationY>100</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Users_selected</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Flow.CurrentDate</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <dateValue>2019-03-22</dateValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Message</targetReference>
+            </connector>
+            <label>Users selected</label>
+        </rules>
+    </decisions>
+    <interviewLabel>Important login message {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Important login message</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Message</name>
+        <label>Message</label>
+        <locationX>187</locationX>
+        <locationY>251</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>texttodisplay</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <stringValue>Dit is een test</stringValue>
+            </defaultValue>
+            <fieldText>texttodisplay</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <startElementReference>Select_specific_user_s</startElementReference>
+    <status>Active</status>
+</Flow>

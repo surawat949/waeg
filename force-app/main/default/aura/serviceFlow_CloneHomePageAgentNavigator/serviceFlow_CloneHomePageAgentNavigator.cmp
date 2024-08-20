@@ -1,0 +1,231 @@
+<!--
+  @description       : 
+  @author            : Fazurulla G (Encora)
+  @group             : 
+  @last modified on  : 14-07-2022
+  @last modified by  : Fazurulla G (Encora) 
+-->
+<aura:component controller="serviceFlow_AgentNavigatorCtrl"
+                implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    <aura:attribute name="pageReference" type="Object" />
+    <aura:attribute name="currentUser" type="User" />
+    <aura:attribute name="currentUserId" type="String"/>
+    <aura:attribute name="currentAccount" type="Account" />
+    <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    <aura:attribute name="isBoundSelectedDisabled" type="boolean" default="true" />
+    <aura:attribute name="isCall" type="boolean" default="false" />
+    <aura:attribute name="isCreateRecord" type="boolean" default="false" />
+    <aura:attribute name="options" type="List" default="[]" />
+    <!--{'label': '{!$Label.c.serviceFlow_Inbound}', 'value': 'Inbound'},
+                                                        {'label': 'Outbound', 'value': 'Outbound'}
+                                                        ]" /-->
+    <aura:attribute name="callStatus" type="List" default="[]" />
+    <!--{'label': 'Closed', 'value': 'Closed'},
+                                                        {'label': 'In Progress', 'value': 'In Progress'},
+                                                        {'label': 'New', 'value': 'New'}
+                                                        ]" /-->
+    <aura:attribute name="defaultCallStatus" type="String" default="{!$Label.c.serviceFlow_Closed}" />
+    <aura:attribute name="selectedCallStatus" type="String" default="Closed" />
+    <aura:attribute name="defaultRadio" type="String" default="{!$Label.c.serviceFlow_Inbound}" />
+    <aura:attribute name="selectedCallType" type="String" />
+    <aura:attribute name="selectedSubSubject" type="String" />
+    <aura:attribute name="recTypeId" type="String" />
+    <aura:attribute name="selectRecordId" type="String" default=""/>
+    <aura:attribute name="selectRecordName" type="String"/>
+    <aura:attribute name="selectAccountRecord" type="object"/>
+    <aura:attribute name="taskRTId" type="String" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="isLoading" type="boolean" default="false" />
+    <aura:attribute name="subjectRequired" type="boolean" default="false" />
+    <aura:attribute name="subSubjectRequired" type="boolean" default="false" />
+    <aura:attribute name="originRequired" type="boolean" default="false" />
+    <aura:attribute name="isAccountRecordIdRequired" type="boolean" default="false" />
+    
+    <aura:attribute name="boundOptions" type="List" default="[
+                                                             {'label': 'Outbound', 'value': 'Outbound'},
+                                                             {'label': 'Inbound', 'value': 'Inbound'},
+                                                             {'label': 'Case/Task', 'value': 'CaseTask'},
+                                                             ]" />
+    <aura:attribute name="selectedBound" type="String" default="Inbound" />
+    <aura:attribute name="isTempPicklist" type="boolean" default="false" />
+    <aura:attribute name="picklistLoad" type="boolean" default="false" />
+    <aura:attribute name="isBoundSelected" type="boolean" default="false" />
+    
+    <aura:attribute name="accept" type="List" default="['.jpg', '.jpeg','.pdf','.csv','.xlsx']"/>  
+	<aura:attribute name="selectedFileName" type="String" default=""/>
+    <aura:attribute name="selectedDocumentId" type="String"/>
+    
+    <lightning:navigation aura:id="navService" />
+    <lightning:pageReferenceUtils aura:id="pageRefUtils" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="closeModal" event="c:SFlow_CloseModalEvt" action="{!c.handleComponentEvent}" />
+    
+    <aura:attribute name="fieldMapping" type="Object" />
+    
+    <aura:attribute name="selectedData" type="Map" default="{
+                                                            Description : '',
+                                                            UserCountry : '',
+                                                            Subject : '',
+                                                            SubSubject : '',
+                                                            CaseOrigin : '',
+                                                            sObjectType : '', 
+                                                            button : '',
+                                                            AccountId : '',
+                                                            fieldSetName : ''
+                                                            }" />
+    
+    <lightning:card>
+        <aura:if isTrue="{!v.isModalOpen}">
+            <c:serviceFlow_Orders isModalOpen="{!v.isModalOpen}" recordId="{!v.selectRecordId}"/>
+        </aura:if>
+        <div class="margin">            
+            <lightning:recordEditForm aura:id="recordEditForm" objectApiName="Case" onsubmit="{!c.handleSubmit}"
+                                      onsuccess="{!c.handleSuccess}" recordTypeId="{!v.recTypeId}">
+                <lightning:messages />
+                <lightning:radioGroup aura:id="radioGroup" name="radioGroup" label="Call Type"
+                                      options="{! v.boundOptions }" value="{! v.selectedBound }" type="button"
+                                      onchange="{!c.invokeTempPicklists}" /><br/>
+                <aura:if isTrue="{!v.picklistLoad}">
+                    <lightning:spinner alternativeText="Loading, Please Wait..." title="Loading, Please Wait..."
+                                       variant="brand" size="large" />
+                </aura:if>
+                
+                <div class="slds-grid" >
+                    <div class="slds-col slds-size_2-of-3 slds-medium-size_2-of-3 montserratRegular">
+                        <c:serviceFlow_AccountLookuputility aura:id="accountLookupValue" 
+                                                    selectRecordId="{!v.selectRecordId}" 
+                                                    selectRecordName="{!v.selectRecordName}"
+                                                    selectAccountRecord="{!v.selectAccountRecord}"
+                                                    />					
+                    </div>&nbsp;
+                    <div class="slds-col slds-size_1-of-3 slds-medium-size_1-of-3 montserratRegular">
+                        <lightning:button variant="brand"
+                                  label="Track &amp; Trace"
+                                  title="Track &amp; Trace"
+                                  onclick="{! c.getOrders }" class="button-search" disabled="{!or(v.selectRecordId == '',v.currentUser.Country_for_Customer_Support__c == 'USA')}"/>					
+                    </div>
+                    
+                </div>
+                <aura:renderIf isTrue="{!v.isAccountRecordIdRequired}">
+                    <div class="slds-text-color_error">Hoya reference id is required</div>
+                </aura:renderIf>
+                <lightning:input aura:id="ecpPatient" label="{!v.currentUser.Country_for_Customer_Support__c == 'USA' ? 'ECP Patient Name' : 'ECP patient / order number'}"/>
+                <!--
+     <lightning:inputField aura:id="ecpPatient" fieldName="serviceFlow_ECP_patient_order_number__c" />
+     <lightning:inputField aura:id="hoyaRef" fieldName="serviceFlow_Hoya_reference_number__c" />
+    -->
+                <lightning:input aura:id="hoyaRef" label="{!v.currentUser.Country_for_Customer_Support__c == 'USA' ? 'Invoice Number' : 'Hoya reference number'}" pattern="[0-9]*" messageWhenPatternMismatch="You have entered an invalid number"/>
+                
+                <lightning:inputField aura:id="Description" fieldName="Description" />                
+                <lightning:inputField aura:id="Country" fieldName="User_country__c"
+                                      value="{!v.currentUser.Country_for_Customer_Support__c}" disabled="true" class="hide" />
+                
+                <aura:renderIf isTrue="{!!v.isTempPicklist}">
+                    <label for="Subject"><span style="color:red">* </span>Subject</label>
+                    <lightning:inputField aura:id="Subject" fieldName="{!v.fieldMapping.subject}" required="true"
+                                          onchange="{!c.resetErrors}" value="" variant="label-hidden"/>
+                    <aura:renderIf isTrue="{!v.subjectRequired}">
+                        <div class="slds-text-color_error">Subject is required to proceed.</div>
+                    </aura:renderIf><br />
+                    <label for="SubSubject">Sub-Subject</label>
+                    <lightning:inputField aura:id="SubSubject" fieldName="{!v.fieldMapping.subSubject}"
+                                          required="{!!v.isBoundSelected}" onchange="{!c.resetErrors}" variant="label-hidden"/>
+                    <aura:renderIf isTrue="{!v.subSubjectRequired}">
+                        <div class="slds-text-color_error">Sub-Subject is required to proceed.</div>
+                    </aura:renderIf>
+                </aura:renderIf>
+                
+                <aura:renderIf isTrue="{!v.isTempPicklist}">
+                    <label for="UISubject"><span style="color:red">* </span>Subject</label>
+                    <lightning:inputField aura:id="UISubject" fieldName="{!v.fieldMapping.uiSubject}" required="true"
+                                          value="" variant="label-hidden" />
+                    <aura:renderIf isTrue="{!v.subjectRequired}">
+                        <div class="slds-text-color_error">Subject is required to proceed.</div>
+                    </aura:renderIf><br />
+                    <label for="UISubSubject">Sub-Subject</label>
+                    <lightning:inputField aura:id="UISubSubject" fieldName="{!v.fieldMapping.uiSubSubject}"
+                                          value="" variant="label-hidden" />
+                    <aura:renderIf isTrue="{!v.subSubjectRequired}">
+                        <div class="slds-text-color_error">Sub-Subject is required to proceed.</div>
+                    </aura:renderIf><br />
+                </aura:renderIf>
+                
+                <aura:if isTrue="{!v.currentUser.Country_for_Customer_Support__c == 'USA'}">                	
+                    <lightning:input aura:id="Number_of_Jobs" label="Number of jobs" pattern="[0-9]*" messageWhenPatternMismatch="You have entered an invalid number"/>
+                </aura:if>
+                <lightning:inputField aura:id="Origin" fieldName="serviceFlow_Origin__c" required="true" value="Telephone"
+                                      onchange="{!c.resetErrors}" />
+                <aura:renderIf isTrue="{!v.originRequired}">
+                    <div class="slds-text-color_error">Case Origin is required to proceed.</div>
+                </aura:renderIf>
+                
+                <lightning:fileUpload label="Upload files" multiple="false"   
+                      accept="{!v.accept}" 
+					  fileFieldName="serviceFlow_fileupload__c"
+					  fileFieldValue="serviceFlow"                                      
+                      onuploadfinished="{!c.UploadFinished}" /> 
+                <aura:if isTrue="{!v.selectedFileName != ''}">
+                    <div style="color:red;">{!v.selectedFileName}</div>
+                </aura:if>
+                <br />
+                <lightning:buttonGroup class="slds-align_absolute-center">
+                    <lightning:button label="{!$Label.c.serviceFlow_Case}" onclick="{!c.createCase}" variant="brand"
+                                      disabled="{!v.isBoundSelectedDisabled}" />&nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <lightning:button label="{!$Label.c.serviceFlow_Call}" onclick="{!c.validateCall}" variant="brand"
+                                      disabled="{!!v.isBoundSelectedDisabled}" />&nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <!--onclick="{!c.handleOpenModal}" /-->
+                    <lightning:button label="{!$Label.c.serviceFlow_Task}" onclick="{!c.createTask}" variant="brand"
+                                      disabled="{!v.isBoundSelectedDisabled}" />
+                </lightning:buttonGroup>
+            </lightning:recordEditForm>
+        </div>
+    </lightning:card>
+    <aura:if isTrue="{!v.isCall}">
+        <div role="dialog" class="slds-modal slds-fade-in-open ">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close"
+                            onclick="{!c.handleCloseModal}">
+                        X
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h1 class="slds-text-heading--medium">Create Call</h1>
+                </div>
+                
+                <div class="slds-modal__content slds-p-around--medium">
+                    <center>
+                        <p><b>
+                            <!--div class="slds-align_absolute-center slds-text-heading_small">
+                                    <h1>Contact Type</h1>
+                                </div>
+                                <lightning:radioGroup name="callType" label="" options="{! v.options }"
+                                    onchange="{! c.handleChange }" type="radio" value="{! v.defaultRadio }" />
+                                <br /><br /-->
+                            <div class="slds-align_absolute-center slds-text-heading_small">
+                                <h1>Status</h1>
+                            </div>
+                            <lightning:radioGroup name="callStatusGroup" label="" options="{!v.callStatus}"
+                                                  value="{!v.defaultCallStatus}" onchange="{! c.handleChangeStatus }" type="button" />
+                            </b>
+                        </p>
+                    </center>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--brand" onclick="{!c.createCall}">Continue</button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </aura:if>
+    <aura:if isTrue="{!v.isLoading}">
+        <div role="dialog" class="slds-modal slds-fade-in-open spinMargin">
+            <div class="slds-modal__container">
+                <div class="slds-is-relative slds-fade-in-open">
+                    <lightning:spinner alternativeText="Loading" variant="brand" />
+                </div>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

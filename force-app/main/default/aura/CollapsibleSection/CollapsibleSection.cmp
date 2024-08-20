@@ -1,0 +1,18 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+	<aura:attribute type="String" name="header" />
+    <aura:attribute name="body" type="Aura.Component[]"/>
+    <aura:attribute name="collpaseText" type="String" default=""/>
+    
+    <div class="slds-section slds-is-open">
+        <h3 class="slds-section__title">
+            <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.ToggleCollapse}">
+            	<lightning:icon class="{!v.collpaseText == 'Show' ? 'slds-hide' : 'slds-show'}" aura:id="articleOne" iconName="utility:chevronright" size="x-small" alternativeText="Indicates add"/>
+                <lightning:icon class="{!v.collpaseText == 'Show' ? 'slds-show' : 'slds-hide'}" aura:id="articleOne" iconName="utility:chevrondown" size="x-small" alternativeText="Indicates dash"/>
+            	<span class="slds-truncate" title="Section Title">{!v.header}</span>
+            </button>
+        </h3>
+        <div class="{!v.collpaseText == 'Show' ? 'slds-show slds-p-around--medium' : 'slds-hide slds-p-around--medium'}" aura:id="articleOne">
+        	{!v.body}  
+        </div>
+   </div>
+</aura:component>

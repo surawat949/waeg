@@ -1,0 +1,1756 @@
+<!--
+ - Created by thomas.schnocklake on 13.02.18.
+ -->
+
+ <aura:component description="VisitPlanningVisitEdit"
+ controller="VisitPlanningController">
+<aura:attribute name="visit" type="Visits__c"/>
+<aura:attribute name="translations" type="Object"/>
+<aura:attribute name="message" type="String"/>
+<aura:attribute name="companyName" type="String"/>
+<aura:attribute name="profileName" type="String"/>
+<aura:attribute name="stageList" type="String" />
+<aura:attribute name="campaignList" type="String"/>
+<aura:attribute name="campaignId" type="String" />
+<aura:attribute name="campaignName" type="String" />
+<aura:attribute name="specificMkgSection" type="Boolean" default="false"/>
+<aura:attribute name="isHVNA" type="Boolean" default="false"/>
+
+<aura:attribute name="contactSelectOptions" type="Object"/>
+<aura:attribute name="objectiveSelectOptions" type="String[]"/>
+
+<aura:attribute name="saving" type="Boolean" default="false"/>
+<aura:attribute name="isdisabled" type="Boolean" default="true"/>
+
+<aura:registerEvent name="decisionresult" type="c:DecisionResultEvent"/>
+
+<!--<aura:attribute name="PicklistValuesVisit_Type__c" type="Object[]"/>-->
+<aura:attribute name="picklists" type="Object"/>
+<aura:attribute name="isChecked" type="boolean" default="false" />
+<!--<aura:attribute name="Opportunity" type="Opportunity[]" />-->
+<!--<aura:attribute name="opportunityList" type="object" />-->
+<aura:attribute name="opportunityList" type="Object" />
+<!--aura:attribute name="opportunityStage" type="Object" />-->
+<!--aura:attribute name="oppCloseDate" type="Object" />-->
+<aura:attribute name="ListOpportunityMember" type="Object[]" />
+<aura:attribute name="accountCampaignList" type="Object" />
+<!--aura:attribute name="ListCampaignMember" type="Object[]" /-->
+<aura:attribute name="hasOpportunity" type="boolean" default="false"/>
+<aura:attribute name="hasCampaign" type="boolean" default="false"/>
+<!--<aura:attribute name="oppDescription" type="Opportunity[]" />-->
+<!--
+<aura:attribute name="newContact" type="Object"/>
+<aura:attribute name="simpleNewContact" type="Object"/>
+<aura:attribute name="newContactError" type="String"/>
+-->
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+<aura:if isTrue="{!not(empty(v.visit))}">
+<div class="mymodal" style="position: absolute; height: 240px;">
+<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+ <div class="slds-modal__container">
+	 <header class="slds-modal__header">
+		 <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+			Visit
+			 <aura:if isTrue="{!not(empty(v.visit.Id))}">
+				 <lightning:formattedUrl value="{!'/'+v.visit.Id}" label="{!v.visit.Name}" target="_blank"/>
+			 </aura:if>
+		 </h2>
+		 <aura:if isTrue="{!v.message!= null}">
+			 <ui:message title="Error" severity="error" closable="true">
+				 {!v.message}
+			 </ui:message>
+		 </aura:if>
+	 </header>
+	 <div class="slds-form slds-form_compound slds-scrollable--y">
+		 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+	 
+	 <aura:if isTrue="{!v.isHVNA==true}">
+					 
+		 <!-- specific HVNA section (log call presentation with specific hvna field -->
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_2-of-2">
+							 <lightning:formattedUrl value="{!'/'+v.visit.Account__c}" label="{!v.visit.Account__r.Name}" target="_blank"/>&nbsp;{!v.visit.Account__r.Hoya_Account_ID__c}
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <ui:inputDateTime disabled="{!v.isdisabled}"
+									 class="slds-input"
+									 labelClass="slds-form-element__label"
+									 label="{!v.translations.Visits__c_Start_Time__c}"
+									 value="{!v.visit.Start_Time__c}"
+									 required="true"
+									 displayDatePicker="true"
+									 format="YYYY/MM/dd HH:mm"/>
+						 </div>
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <ui:inputDateTime disabled="{!v.isdisabled}"
+									 class="slds-input"
+									 labelClass="slds-form-element__label"
+									 label="{!v.translations.Visits__c_End_Time__c}"
+									 value="{!v.visit.End_Time__c}"
+									 required="true"
+									 displayDatePicker="true" />
+
+							 <!--Dont want to launch yet since nobody confrim. This is day-off function	
+							 <lightning:input disabled="{!v.isdisabled}"
+									 label="{!v.translations.Visits__c_Is_All_Day_Event__c}"
+									 checked="{!v.visit.Is_All_Day_Event__c}"
+									 type="checkbox"/>
+							 -->
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <lightning:select disabled="{!v.isdisabled}"
+										 label="Visit Type"
+										 aura:id="field"
+										 value="{!v.visit.HVNA_Visit_Type__c}" >
+									 <aura:iteration items="{!v.translations.picklists.Visits__c_HVNA_Visit_Type__c}" var="option">
+										 <option value="{!option.value}" text="{!option.label}"></option>
+									 </aura:iteration>
+								 </lightning:select>
+						 </div>
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <lightning:select disabled="{!v.isdisabled}"
+								 label="{!v.translations.Visits__c_Visit_Status__c}"
+								 aura:id="field"
+								 value="{!v.visit.Visit_Status__c}" >
+								 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Status__c}" var="option">
+									 <option value="{!option.value}" text="{!option.label}"></option>
+								 </aura:iteration>
+							 </lightning:select>
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+			 
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_2-of-2">
+							 <lightning:textarea disabled="{!v.isdisabled}"
+									 maxlength="100"
+									 label="Subject"
+									 value="{!v.visit.HVNA_Subject__c}">
+							 </lightning:textarea>
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_2-of-2">
+							 <lightning:textarea disabled="{!v.isdisabled}"
+									 label="Comments"
+									 value="{!v.visit.Visit_Notes__c}">
+							 </lightning:textarea>
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__row">
+					 <div class="slds-form-element slds-size_1-of-2">
+						 <lightning:select disabled="{!v.isdisabled}"
+							 label="{!v.translations.Visits__c_HVNA_Visit_Objective__c}"
+							 aura:id="field"
+							 value="{!v.visit.HVNA_Visit_Objective__c}" >
+							 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_HVNA_Visit_Objective__c}" var="option">
+								 <option value="{!option.value}" text="{!option.label}"></option>
+							 </aura:iteration>
+						 </lightning:select>
+					 </div>
+					 <div class="slds-form-element slds-size_1-of-2">
+						 <lightning:select disabled="{!v.isdisabled}"
+							 label="Customer Goal"
+							 aura:id="field"
+							 value="{!v.visit.HVNA_Customer_Goal__c}" >
+							 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_HVNA_Customer_Goal__c}" var="option">
+								 <option value="{!option.value}" text="{!option.label}"></option>
+							 </aura:iteration>
+						 </lightning:select>
+					 </div>
+				 </div>
+				 <div class="slds-form-element__row">
+					 <div class="slds-form-element slds-size_1-of-2">
+						 <lightning:select disabled="{!v.isdisabled}"
+							 label="{!v.translations.Visits__c_Secondary_Tactic__c}"
+							 aura:id="field"
+							 value="{!v.visit.Secondary_Tactic__c}" >
+							 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Secondary_Tactic__c}" var="option">
+								 <option value="{!option.value}" text="{!option.label}"></option>
+							 </aura:iteration>
+						 </lightning:select>
+					 </div>
+					 <div class="slds-form-element slds-size_1-of-2">
+						 <lightning:select disabled="{!v.isdisabled}"
+							 label="{!v.translations.Visits__c_HVNA_Appointment__c}"
+							 aura:id="field"
+							 value="{!v.visit.HVNA_Appointment__c}" >
+							 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_HVNA_Appointment__c}" var="option">
+								 <option value="{!option.value}" text="{!option.label}"></option>
+							 </aura:iteration>
+						 </lightning:select>
+					 </div>
+				 </div>
+			 </fieldset>
+			 
+		 <!-- END SPECIFIC HVNA SECTION-->
+		 <aura:set attribute="else">
+
+		 <!-- GLOBAL SCREEN FORM -->
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <lightning:formattedUrl value="{!'/'+v.visit.Account__c}" label="{!v.visit.Account__r.Name}" target="_blank"/>&nbsp;{!v.visit.Segmentation_Box__c}
+							 <br/>
+							 <a target="_blank" href="{!'/lightning/r/'+v.visit.Account__c+'/related/Campaign_Membership__r/view'}" label="See Active campaign">Marketing campaign</a>
+							 <br/>
+							 <aura:if isTrue="{!v.companyName=='HOLK' || v.companyName=='HAPL' || v.companyName=='HLHK' || v.companyName=='HOLM' || v.companyName=='THAI' || v.companyName=='HLSI' || v.companyName=='HLSH' || v.companyName=='SOC' || v.companyName=='HLPH' || v.companyName=='HLID' || v.companyName == 'HOTA' || v.companyName == 'HLIN'}">
+								 <a target="_blank" href="{!'/lightning/r/Opportunity/'+v.visit.Account__c+'/related/Opportunities/view'}" label="See Opportunities List">Opportunities List</a>
+							 </aura:if>
+						 </div>
+
+						 
+						 <!--
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <aura:if isTrue="{!not(empty(v.opportunityList))}">
+								 <lightning:select disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_Opportunity__c}"
+										 required="false"
+										 value="{!v.visit.Opportunity__c}" >
+									 <aura:iteration items="{!v.opportunityList}" var="option">
+										 <option value="{!option.value}" text="{!option.label}"></option>
+									 </aura:iteration>
+								 </lightning:select>
+							 </aura:if>
+						 </div>
+						 -->
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <aura:if isTrue="{!not(empty(v.contactSelectOptions))}">
+								 <lightning:select disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_Contact__c}"
+										 required="false"
+										 value="{!v.visit.Contact__c}" 
+										 aura:id="VisitContact"
+										 name="VisitContact">
+									 <aura:iteration items="{!v.contactSelectOptions}" var="option">
+
+										 <aura:if isTrue="{!v.visit.Contact__c==option.value}">
+											 <option value="{!option.value}" text="{!option.label}" selected="selected"></option>
+											 <aura:set attribute="else">
+												 <option value="{!option.value}" text="{!option.label}"></option>
+											 </aura:set>
+										 </aura:if>
+
+									 </aura:iteration>
+								 </lightning:select>
+							 </aura:if>
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+
+			 <fieldset class="slds-form-element">
+				 <div class ="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <!--<aura:if isTrue="{!v.companyName=='HOLK' || v.companyName=='HAPL' || v.companyName=='HLHK' || v.companyName=='HOLM' || v.companyName=='THAI' || v.companyName=='HLSI' || v.companyName=='HLSH' || v.companyName=='SOC' || v.companyName=='HLPH' || v.companyName=='HLID' || v.companyName == 'HOTA' || v.companyName == 'HLIN'}">-->
+									 
+									 <!--<aura:set attribute="else">-->
+									 <lightning:select disabled="{!v.isdisabled}" required="{!v.hasOpportunity}"
+										 label="{!v.translations.Visits__c_Opportunity__c}"
+										 value="{!v.visit.Opportunity__c}"
+										 name="ListOpportunity"
+										 aura:id="ListOpportunity"
+										 >
+										 <aura:iteration items="{!v.opportunityList}" var="option">
+											 <aura:if isTrue="{!v.visit.Opportunity__c==option.value}">
+													 <option value="{!option.value}" text="{!option.label}" selected="selected"></option>
+													 <aura:set attribute="else">
+														 <option value="{!option.value}" text="{!option.label}"></option>
+													 </aura:set>
+											 </aura:if>
+											 <!--
+												 <aura:if isTrue="{!v.visit.Opportunity__c!=option.value}"><option value="{!option.value}" text="{!option.label}" selected="{!option.key==v.visit.Opportunity__c}"></option></aura:if>
+											 -->
+										 </aura:iteration>
+									 </lightning:select>
+									 <!--</aura:set>
+								 </aura:if>-->
+							 </div>
+						 
+						 <aura:if isTrue="{!v.companyName=='SOF' || v.companyName=='SOB' || v.companyName=='SOI' || v.companyName=='SOUK' || v.companyName=='SOES' || v.companyName=='SOSA' || v.companyName=='HVC'}">
+							 <div class="slds-form-element slds-size_1-of-2">
+									 <lightning:select disabled="{!v.isdisabled}" 
+									 label="{!v.translations.Visits__c_Campaign__c}"
+									 value="{!v.visit.Campaign__c}"
+									 name="ListCampaign"
+									 aura:id="ListCampaign"
+									 >
+										 <aura:iteration items="{!v.accountCampaignList}" var="option">
+											 <aura:if isTrue="{!v.visit.Campaign__c==option.value}">
+												 <option value="{!option.value}" text="{!option.label}" selected="selected"></option>
+											 <aura:set attribute="else">
+												 <option value="{!option.value}" text="{!option.label}"></option>
+											 </aura:set>
+											 </aura:if>
+										 <!--
+											 <aura:if isTrue="{!v.visit.Opportunity__c!=option.value}"><option value="{!option.value}" text="{!option.label}" selected="{!option.key==v.visit.Opportunity__c}"></option></aura:if>
+										 -->
+										 </aura:iteration>
+									 </lightning:select>
+							 </div>
+						 </aura:if>
+					 </div>
+				 </div>
+			 </fieldset>
+			 <!--
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <lightning:select disabled="{!v.isdisabled}" required="{!v.hasOpportunity}"
+							 label="{!v.translations.Visits__c_StageName__c}"
+							 value="{!v.visit.StageName__c}"
+							 name="ListOpportunityStage"
+							 aura:id="ListOpportunityStage">
+
+							 <aura:iteration items="{!v.OpportunityStageList}" var="option">
+								 <aura:if isTrue="{!v.visit.StageName__c==option.value}">
+									 <option value="{!option.value}" text="{!option.label}" selected="selected"></option>
+								 <aura:set attribute="else">
+									 <option value="{!option.value}" text="{!option.label}"></option>
+								 </aura:set>
+								 </aura:if>
+							 </aura:iteration>
+							 </lightning:select>
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+			 -->
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_1-of-2">
+							<ui:inputDateTime disabled="{!v.isdisabled}"
+									 class="slds-input"
+									 labelClass="slds-form-element__label"
+									 label="{!v.translations.Visits__c_Start_Time__c}"
+									 value="{!v.visit.Start_Time__c}"
+									 required="true"
+									 displayDatePicker="true"/>
+							 
+							 
+							 <!-- We can push this later after confirmed	
+							 <lightning:input disabled="{!v.isdisabled}"
+									 label="{!v.translations.Visits__c_IsDayOff__c}"
+									 aura:id="{!v.translations.Visits__c_IsDayOff__c}"
+									 checked="{!v.visit.IsDayOff__c}"
+									 name="IsDayOff"
+									 onchange="{!c.handledCheck}"
+									 type="checkbox" />
+							 -->
+							 
+							 <label class="slds-checkbox" name="Is Day Off">
+								 <ui:inputCheckbox aura:id="box3" change="{!c.selectall}" />
+							 </label>
+							 
+							 <aura:if isTrue="{!v.companyName=='HLFR' || v.companyName=='SOF'}">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="Co Visit"
+										 checked="{!v.visit.Coaching_Visit__c}"
+										 type="checkbox"/>
+							 </aura:if>
+						 </div>
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <ui:inputDateTime disabled="{!v.isdisabled}"
+									 class="slds-input"
+									 labelClass="slds-form-element__label"
+									 label="{!v.translations.Visits__c_End_Time__c}"
+									 value="{!v.visit.End_Time__c}"
+									 required="true"
+									 displayDatePicker="true" />
+							 
+							 <lightning:input disabled="{!v.isdisabled}"
+									 
+									 label="{!v.translations.Visits__c_Is_All_Day_Event__c}"
+									 checked="{!v.visit.Is_All_Day_Event__c}"
+									 aura:id="{!v.translations.Visits__c_Is_All_Day_Event__c}"
+									 type="checkbox"/>
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <aura:if isTrue="{!and(v.companyName!='HLBR', v.companyName!='HOLA')}">
+							 <lightning:select disabled="{!v.isdisabled}"
+									 label="{!v.translations.Visits__c_Visit_Status__c}"
+									 required="true" aura:id="field"
+									 value="{!v.visit.Visit_Status__c}" >
+								 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Status__c}" var="option">
+									 <option value="{!option.value}" text="{!option.label}"></option>
+								 </aura:iteration>
+							 </lightning:select>
+							 </aura:if>
+                             
+                             <aura:if isTrue="{!v.companyName=='HOLA'}">
+							 <lightning:select disabled="{!v.isdisabled}"
+									 label="{!v.translations.Visits__c_Visit_Status__c}"
+									 required="false" aura:id="field"
+									 value="{!v.visit.Visit_Status__c}" >
+								 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Status__c}" var="option">
+									 <option value="{!option.value}" text="{!option.label}"></option>
+								 </aura:iteration>
+							 </lightning:select>
+							 </aura:if>
+							 
+							 <aura:if isTrue="{!v.companyName=='HLBR'}">
+								 {!v.translations.Visits__c_Visit_Status__c} : {!v.visit.Visit_Status__c}
+							 </aura:if>
+
+
+							 <lightning:input disabled="{!v.isdisabled}"
+									 label="{!v.translations.Visits__c_Cold_call__c}"
+									 checked="{!v.visit.Cold_call__c}"
+									 type="checkbox"/>
+						 </div>
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <aura:if isTrue="{!v.companyName=='HLSH'}">
+								 <lightning:select disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_Visit_Type__c}"
+										 required="true" aura:id="field"
+										 value="{!v.visit.Visit_Type__c}" >
+									 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Type__c}" var="option">
+										 <option value="{!option.value}" text="{!option.label}"></option>
+									 </aura:iteration>
+								 </lightning:select>
+							 <aura:set attribute="else">
+								 <lightning:select disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_Visit_Type__c}"
+										 required="false" aura:id="field"
+										 value="{!v.visit.Visit_Type__c}" >
+									 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Type__c}" var="option">
+										 <option value="{!option.value}" text="{!option.label}"></option>
+									 </aura:iteration>
+								 </lightning:select>
+							 </aura:set>
+							 </aura:if>
+							 
+							 <lightning:input disabled="{!v.isdisabled}"
+									 label="{!v.translations.Visits__c_Visited_but_not_seen__c}"
+									 checked="{!v.visit.Visited_but_not_seen__c}"
+									 type="checkbox"/>
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <!-- For APAC Standardize Visit Objective api name == > [Visit_Reason_APAC__c]-->
+							 <aura:if isTrue="{!v.companyName=='HLHK' || v.companyName=='HOLM' || v.companyName=='THAI' || v.companyName=='HLSI' || v.companyName=='HLSH' || v.companyName=='SOC' || v.companyName=='HLPH' || v.companyName=='HLID' || v.companyName=='HOTA' || v.companyName=='HOLK' || v.companyName=='HAPL' || v.companyName=='ILENS' || v.companyName=='HLIN'}">
+									 <lightning:select disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_Visit_Reason_APAC__c}"
+											 required="true" aura:id="field"
+											 value="{!v.visit.Visit_Reason_APAC__c}" 
+													   >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Reason_APAC__c}" var="option">
+											 <option value="{!option.value}" text="{!option.label}"></option>
+										 </aura:iteration>
+									 </lightning:select>
+								 
+								 <!--
+								 <aura:if isTrue="{!v.profileName=='SOC Area Sales Manager ASM TSM'}">
+									 <lightning:select disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_SOC_Sales_Visit_Reason__c}"
+											 required="true" aura:id="field"
+											 value="{!v.visit.SOC_Sales_Visit_Reason__c}" 
+													   >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_Sales_Visit_Reason__c}" var="option">
+											 <option value="{!option.value}" text="{!option.label}"></option>
+										 </aura:iteration>
+									 </lightning:select>
+								 </aura:if>
+								 -->
+
+								 <!--
+								 <aura:if isTrue="{!v.profileName=='China Area Sales Manager ASM TSM' || v.profileName=='China Local System Administrator'}">
+									 <lightning:select disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_HLSH_Visit_Reason__c}"
+											 required="true" aura:id="field"
+											 value="{!v.visit.HLSH_Visit_Reason__c}" 
+													   >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_HLSH_Visit_Reason__c}" var="option">
+											 <option value="{!option.value}" text="{!option.label}"></option>
+										 </aura:iteration>
+									 </lightning:select>
+								 </aura:if>
+								 -->
+								 <!--
+								 <aura:if isTrue="{!v.companyName=='HLSI'}">
+									 
+								 HLSI Singapore FIELDS 
+									 
+									 <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_HLSI_Visit_Objective2__c}"
+											 aura:id="multiSelectId"
+											 value="{!v.visit.HLSI_Visit_Objective2__c}" >
+										 
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_HLSI_Visit_Objective2__c}" var="option">
+											 <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+										 </aura:iteration>
+									 </ui:inputSelect>
+									 
+									 
+									 <lightning:select disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_HLSI_Visit_Objective2__c}"
+											 required="false" aura:id="field"
+											 value="{!v.visit.HLSI_Visit_Objective2__c}" 
+													   >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_HLSI_Visit_Objective2__c}" var="option">
+											 <option value="{!option.value}" text="{!option.label}"></option>
+										 </aura:iteration>
+									 </lightning:select>
+									
+								 </aura:if>
+								 -->
+								 <aura:set attribute="else">
+									 <!-- STANDARD GLOBAL FIELD -->
+									 <lightning:select disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_Visit_Reason__c}"
+											 required="true" aura:id="field"
+											 value="{!v.visit.Visit_Reason__c}" 
+													   >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_Visit_Reason__c}" var="option">
+											 <option value="{!option.value}" text="{!option.label}"></option>
+										 </aura:iteration>
+									 </lightning:select>
+									 
+								 </aura:set>
+							 </aura:if>
+                              <aura:if isTrue="{!or(v.companyName=='SOES' , v.companyName=='HLIB')}">
+									 <lightning:textarea disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_Visit_Objective_follow_up_notes__c}"
+											 value="{!v.visit.Visit_Objective_follow_up_notes__c}">
+									 </lightning:textarea>
+							 </aura:if>
+							 <lightning:textarea disabled="{!v.isdisabled}"
+									 label="{!v.translations.Visits__c_Visit_Notes__c}"
+									 value="{!v.visit.Visit_Notes__c}">
+							 </lightning:textarea>
+							
+						 </div>
+						 <div class="slds-form-element slds-size_1-of-2">
+							 
+							 <aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH'}">
+								 <!-- CHINA SOC SPECIFIC FIELDS -->
+								 <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}"><!--SOC VCC Manager ASM TSM-->
+									 <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_SOC_VCC_Action_Exectued__c}"
+											 aura:id="multiSelectId"
+											 value="{!v.visit.SOC_VCC_Action_Exectued__c}" 
+													  >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_VCC_Action_Exectued__c}" var="option">
+											 <ui:inputSelectOption label="{!option.label}" text="{!option.value}" ></ui:inputSelectOption>
+										 </aura:iteration>
+									 </ui:inputSelect>
+								 </aura:if>
+								 
+								 <aura:if isTrue="{!v.profileName=='SOC Area Sales Manager ASM TSM'}">
+									 <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_SOC_Sales_Actions_executed__c}"
+											 aura:id="multiSelectId"
+											 value="{!v.visit.SOC_Sales_Actions_executed__c}" 
+													  >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_Sales_Actions_executed__c}" var="option">
+											 <ui:inputSelectOption label="{!option.label}" text="{!option.value}" ></ui:inputSelectOption>
+										 </aura:iteration>
+									 </ui:inputSelect>
+								 </aura:if>
+								 
+								 <aura:if isTrue="{!v.profileName=='China Area Sales Manager ASM TSM'|| v.profileName=='China Local System Administrator'|| v.profileName=='System Administrator'}"><!--China Area Sales Manager ASM TSM-->
+									 <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_HLSH_Action_Excecuted__c}"
+											 aura:id="multiSelectId"
+											 value="{!v.visit.HLSH_Action_Excecuted__c}" 
+													  >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_HLSH_Action_Excecuted__c}" var="option">
+											 <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+										 </aura:iteration>
+									 </ui:inputSelect>
+								 </aura:if>
+								 
+								 <!--
+								 <aura:if isTrue="{!v.companyName=='HLSI'}">
+									 HLSI Singapore FIELDS
+									 <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_HLSI_action_executed__c}"
+											 aura:id="multiSelectId"
+											 value="{!v.visit.HLSI_action_executed__c}" 
+													  >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_HLSI_action_executed__c}" var="option">
+											 <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+										 </aura:iteration>
+									 </ui:inputSelect>
+								 </aura:if>
+								 -->
+								 <aura:set attribute="else">
+									 <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_Actions_executed__c}"
+											 aura:id="multiSelectId"
+											 value="{!v.visit.Actions_executed__c}" 
+													  >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_Actions_executed__c}" var="option">
+											 <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+										 </aura:iteration>
+									 </ui:inputSelect>
+								 </aura:set>
+							 </aura:if>
+							 
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+			 
+			 <fieldset class="slds-form-element">
+				 <div class="slds-form-element__group">
+					 <div class="slds-form-element__row">
+						 <div class="slds-form-element slds-size_1-of-2">
+							 <aura:if isTrue="{!v.companyName=='SOC'}">
+								 <!-- CHINA SOC SPECIFIC FIELDS -->
+								 <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}"><!--SOC VCC Manager ASM TSM-->
+									 <lightning:select disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_SOC_VCC_Call_To_Action__c}"
+											 required="false" aura:id="field"
+													   value="{!v.visit.SOC_VCC_Call_To_Action__c}" >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_VCC_Call_To_Action__c}" var="option">
+											 <option value="{!option.value}" text="{!option.label}"></option>
+										 </aura:iteration>
+									 </lightning:select>
+								 </aura:if>
+								 
+								 <aura:if isTrue="{!v.profileName=='SOC Area Sales Manager ASM TSM'}">
+									 <lightning:select disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_SOC_Sales_Call_To_Action__c}"
+											 required="false" aura:id="field"
+													   value="{!v.visit.SOC_Sales_Call_To_Action__c}" >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_SOC_Sales_Call_To_Action__c}" var="option">
+											 <option value="{!option.value}" text="{!option.label}"></option>
+										 </aura:iteration>
+									 </lightning:select>
+								 </aura:if>
+								 
+								 <!--
+								 <aura:if isTrue="{!v.companyName=='HLSI'}">
+								 HLSI Singapore FIELDS
+									 
+									 <ui:inputSelect multiple="true" class="single" disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_Call_To_Action__c}"
+											 aura:id="multiSelectId"
+											 value="{!v.visit.HLSI_Call_to_action__c}"
+													  >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_HLSI_Call_to_action__c}" var="option">
+											 <ui:inputSelectOption label="{!option.label}" text="{!option.value}"></ui:inputSelectOption>
+										 </aura:iteration>
+									 </ui:inputSelect>
+									 
+									 <lightning:select disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_HLSI_Call_to_action__c}"
+											 required="false" aura:id="field"
+													   value="{!v.visit.HLSI_Call_to_action__c}" >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_HLSI_Call_to_action__c}" var="option">
+											 <option value="{!option.value}" text="{!option.label}"></option>
+										 </aura:iteration>
+									 </lightning:select>
+								 
+								 </aura:if>
+								 -->
+								 <aura:set attribute="else">
+									 <!-- STANDARD GLOBAL FIELD -->
+									 <lightning:select disabled="{!v.isdisabled}"
+											 label="{!v.translations.Visits__c_Call_To_Action__c}"
+											 required="false" aura:id="field"
+													   value="{!v.visit.Call_To_Action__c}" >
+										 <aura:iteration items="{!v.translations.picklists.Visits__c_Call_To_Action__c}" var="option">
+											 <option value="{!option.value}" text="{!option.label}"></option>
+										 </aura:iteration>
+									 </lightning:select>
+								 </aura:set>
+							 </aura:if>
+						 </div>
+						 
+						 <div class="slds-form-element slds-size_1-of-2">
+							 
+							 <lightning:textarea disabled="{!v.isdisabled}"
+									 label="{!v.translations.Visits__c_Call_To_Action_Notes__c}"
+									 value="{!v.visit.Call_To_Action_Notes__c}">
+							 </lightning:textarea>
+						 </div>
+					 </div>
+				 </div>
+			 </fieldset>
+			 
+		 </aura:set>
+		 </aura:if>
+			 
+			 <!-- header section for marketing campaign -->
+			 
+			 <!-- <aura:if isTrue="{!v.companyName!='HLHK'}"> -->
+			 <aura:if isTrue="{!v.companyName!='HLBR'}">
+			 <aura:if isTrue="{!v.companyName!='HOLA'}">
+			 <aura:if isTrue="{!v.companyName!='HLCA'}">
+			 <aura:if isTrue="{!v.companyName!='VEUS'}">
+			 <aura:if isTrue="{!v.companyName!='SRX'}">
+			 <!-- Brazialian + US-SRX users do not need Marketing section -->
+				 <aura:if isTrue="{!!v.specificMkgSection}">
+					 <!-- GLOBAL MKG SECTION -->
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+									 <h3>{!$Label.c.VPM_Hoya_marketing_campaign}</h3>
+							 </div>
+							 <div class="slds-form-element slds-size_1-of-2">
+									 <h3>{!$Label.c.VPM_Seiko_Marketing_Campaign}</h3>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_Orgreen_Yuniku__c}"
+										 checked="{!v.visit.Orgreen_Yuniku__c}"
+										 type="checkbox"/>
+							 </div>
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_SEIKO_VISION_SPECIALIST__c}"
+										 checked="{!v.visit.SEIKO_VISION_SPECIALIST__c}"
+										 type="checkbox"/>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_SUN_Campaign_including_SENSITY__c}"
+										 checked="{!v.visit.MKT_SUN_Campaign_including_SENSITY__c}"
+										 type="checkbox"/>
+							 </div>
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_SEIKO_PREMIUM_PAL__c}"
+										 checked="{!v.visit.SEIKO_PREMIUM_PAL__c}"
+										 type="checkbox"/>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_Sync_III__c}"
+										 checked="{!v.visit.Sync_III__c}"
+										 type="checkbox"/>
+							 </div>
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_SEIKO_EXCELLENCE__c}"
+										 checked="{!v.visit.SEIKO_EXCELLENCE__c}"
+										 type="checkbox"/>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_MySelf__c}"
+										 checked="{!v.visit.MySelf__c}"
+										 type="checkbox"/>
+							 </div>
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_SEIKO_COATING__c}"
+										 checked="{!v.visit.SEIKO_COATING__c}"
+										 type="checkbox"/>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+				 
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_MiyoSmart__c}"
+										 checked="{!v.visit.MiyoSmart__c}"
+										 type="checkbox"/>
+							 </div>
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_MKT_Seiko_Sensity__c}"
+										 checked="{!v.visit.MKT_Seiko_Sensity__c}"
+										 type="checkbox"/>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+				 
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_HLFR_Origine_France_Garantie__c}"
+										 checked="{!v.visit.HLFR_Origine_France_Garantie__c}"
+										 type="checkbox"/>
+							 </div>
+							 
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_SEIKO_BRAND__c}"
+										 checked="{!v.visit.SEIKO_BRAND__c}"
+										 type="checkbox"/>
+							 </div>
+							 
+						 </div>
+					 </div>
+				 </fieldset>
+					 
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_MKT_New_Products__c}"
+										 checked="{!v.visit.MKT_New_Products__c}"
+										 type="checkbox"/>
+							 </div>
+							 
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_SEIKO_LIFESTYLE_PRODUCTS__c}"
+										 checked="{!v.visit.SEIKO_LIFESTYLE_PRODUCTS__c}"
+										 type="checkbox"/>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+				 
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_MKT_PAL_and_Functional_Lens__c}"
+										 checked="{!v.visit.MKT_PAL_and_Functional_Lens__c}"
+										 type="checkbox"/>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_MKT_Incentive_trips_Contracts_assignment__c}"
+										 checked="{!v.visit.MKT_Incentive_trips_Contracts_assignment__c}"
+										 type="checkbox"/>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+				 
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <h3>{!$Label.c.VPM_Alternative_Options}</h3>
+							 </div>
+							 
+						 </div>
+					 </div>
+				 </fieldset>
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_MKT_Local_Campaign__c}"
+										 checked="{!v.visit.MKT_Local_Campaign__c}"
+										 type="checkbox"/>
+							 </div>
+							 
+						 </div>
+					 </div>
+				 </fieldset>
+																		   
+				 <fieldset class="slds-form-element">
+					 <div class="slds-form-element__group">
+						 <div class="slds-form-element__row">
+							 <div class="slds-form-element slds-size_1-of-2">
+								 <lightning:input disabled="{!v.isdisabled}"
+										 label="{!v.translations.Visits__c_MKT_No_campaign_presented__c}"
+										 checked="{!v.visit.MKT_No_campaign_presented__c}"
+										 type="checkbox"/>
+							 </div>
+						 </div>
+					 </div>
+				 </fieldset>
+					 <aura:set attribute="else">
+						 <aura:if isTrue="{!v.companyName=='HLHK' || v.companyName=='HLSI' || v.companyName=='ILENS' || v.companyName=='HAPL' || v.companyName=='HLPH' || v.companyName=='THAI' || v.companyName=='SOC' || v.companyName=='HLSH' || v.companyName=='HLID' || v.companyName=='HOLK' || v.companyName=='HOTA' || v.companyName=='HOLM' || v.companyName=='HLIN'}">
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <h1></h1>
+										 </div>
+									 </div>
+								 </div>
+							 </fieldset>
+						 </aura:if>
+						 
+						 <aura:if isTrue="{!v.companyName=='HLHK' || v.companyName=='HLSI' || v.companyName=='ILENS' || v.companyName=='HAPL' || v.companyName=='HLPH' || v.companyName=='THAI' || v.companyName=='SOC' || v.companyName=='HLSH' || v.companyName=='HLID' || v.companyName=='HOTA' || v.companyName=='HOLK' || v.companyName=='HLIN' || v.companyName=='HOLM'}">
+							 <!--Add for opportunity and campaign section standard only for APAC Countries.
+								 SSU : added 2021-06-10
+							 -->
+							 <!--
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:select disabled="{!v.isdisabled}" required="{!v.hasOpportunity}"
+													 label="{!v.translations.Visits__c_Opportunity__c}"
+												 value="{!v.visit.Opportunity__c}"
+												 name="ListOpportunity"
+												 aura:id="ListOpportunity"
+											 >
+											 <aura:iteration items="{!v.opportunityList}" var="option">
+												 <aura:if isTrue="{!v.visit.Opportunity__c==option.value}">
+													 <option value="{!option.value}" text="{!option.label}" selected="selected"></option>
+													 <aura:set attribute="else">
+														 <option value="{!option.value}" text="{!option.label}"></option>
+												 </aura:set>
+												 </aura:if>
+											 </aura:iteration>
+											 </lightning:select>
+										 </div>
+									 </div>
+									 <aura:if isTrue="{!v.visit.Opportunity__c==null || v.visit.Opportunity__c==''}">
+										 &nbsp;
+									 <aura:set attribute="else">
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <aura:iteration var="ListOppMember" items="{!v.ListOpportunityMember}">
+												 <lightning:input 
+													 class="slds-size1-of-1" 
+													 label="Currest Stage"
+													 value="{!ListOppMember.StageName}"
+													 aura:id="ListStageName"
+													 disabled="true"
+													 required="false"
+													 name="ListStageName"
+												 /><br/>
+												 <ui:inputDate
+													 class="slds-input"
+													 label="Current Close Date"
+													 value="{!ListOppMember.CloseDate}"
+													 aura:id="ListCloseDate"
+													 disabled="true"
+													 required="false"
+												 />
+											 </aura:iteration>
+										 </div>
+										 
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:select
+												 disabled="{!v.disabled}"
+												 label="{!v.translations.Visits__c_Visit_New_Stage_Name__c}"
+												 aura:id="field"
+												 required="false"
+												 value="{!v.visit.Visit_New_Stage_Name__c}"
+											 >	
+											 <aura:iteration var="option" items="{!v.translations.picklists.Visits__c_Visit_New_Stage_Name__c}">
+												 <option value="{!option.value}" text="{!option.label}"></option>
+											 </aura:iteration>
+											 </lightning:select>
+											 <br/>
+											 <ui:inputDate class="slds-input"
+												 disabled="{!v.disabled}"
+												 label="New Close Date"
+												 labelClass="slds-form-element__label"
+												 aura:id="New_visit_opp_close_date"
+												 required="false"
+												 value="{!v.visit.Visit_New_Stage_Name__c}"
+												 displayDatePicker="true"
+											 />
+										 </div>
+									 </div>
+									 </aura:set>
+									 </aura:if>
+								 </div>
+							 </fieldset>
+
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 <aura:iteration var="options" items="{!v.ListCampaignMember}">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input
+													 disabled="true"
+													 class="slds-size1-of-1"
+													 value="{!options.Campaign_Name__c}"
+													 label="Campaign Name"
+													 aura:id="CampaignField"
+												 /><br/>
+												 <lightning:input
+													 disabled="true"
+													 label="Level of interested"
+													 class="slds-size1-of-1"
+													 value="{!options.Level_interest__c}"
+												 /><br/>
+												 <lightning:input type="checkbox"
+													 disabled="true"
+													 label="Campaign Present"
+													 checked="{!options.Campaign_Presented__c}"
+												 />
+											 </div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input
+													 disabled="true"
+													 label="Campaign Id"
+													 class="slds-size1-of-1"
+													 value="{!options.Central_Campaign__c}"
+												 /><br/>
+												 <lightning:select
+													 disabled="{!v.disabled}"
+													 label="{!v.translations.Visits__c_Visit_Campaign_Interested__c}"
+													 aura:id="field"
+													 required="false"
+													 value="{!v.visit.Visit_Campaign_Interested__c}"
+												 >	
+												 <aura:iteration var="option" items="{!v.translations.picklists.Visits__c_Visit_Campaign_Interested__c}">
+													 <option value="{!option.value}" text="{!option.label}"></option>
+												 </aura:iteration>
+												 </lightning:select><br/>
+												 <lightning:input type="checkbox"
+													 disabled="{!v.disabled}"
+													 label="{!v.translations.Visits__c_Visit_Campaign_Present__c}"
+													 aura:id="field"
+													 required="false"
+													 checked="{!v.visit.Visit_Campaign_Present__c}"
+												 />
+											 </div>
+										 </div>
+									 </aura:iteration>
+								 </div>
+							 </fieldset>
+							 -->
+							<!-- Local Marketing campaign present related to Campaign object -->
+							<!--
+							 <fieldset class="slds-form-element">
+								 
+								 <div class="slds-form-element__group">
+								 
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+											 
+											 <lightning:select label="{!$Label.c.VPM_Campaign_Label}" onchange="{!c.search}"
+												 value="{!v.campaignId}" name="XYZ3" aura:id="campaignSelect" >
+												 <aura:iteration items="{!v.campaignList}" var="option">
+													 <option value="{!option.value}" text="{!option.label}"></option>
+												 </aura:iteration>
+											 </lightning:select>
+												
+											 <lightning:input disabled="true" class = "slds-disabled"
+												 label="Campaign Name"
+												 require="false"
+												 value="{!v.campaignName}">
+											 </lightning:input>
+										 </div>
+									 </div>
+								 </div>
+							 </fieldset> -->
+						 </aura:if>
+					  
+					 <!--<aura:if isTrue="{!v.companyName=='HLHK'}"> -->
+					 <!-- HLHK specific marketing section -->
+					 <!-- This section for exist HLHK, but we would like to use for global instead, marketing campaign	
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+											 <h3>Campaign</h3>
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+											 <h3>Product</h3>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_Loyalty_program_Annual_contract__c}"
+												 checked="{!v.visit.HLHK_Loyalty_program_Annual_contract__c}"
+												 type="checkbox"/>
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_Brand__c}"
+												 checked="{!v.visit.HLHK_Brand__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_Joint_Promotion_Incentive_Program__c}"
+												 checked="{!v.visit.HLHK_Joint_Promotion_Incentive_Program__c}"
+												 type="checkbox"/>
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_SV__c}"
+												 checked="{!v.visit.HLHK_SV__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_Coupon__c}"
+												 checked="{!v.visit.HLHK_Coupon__c}"
+												 type="checkbox"/>
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_PAL__c}"
+												 checked="{!v.visit.HLHK_PAL__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_MKT_Local_Campaign__c}"
+												 checked="{!v.visit.MKT_Local_Campaign__c}"
+												 type="checkbox"/>
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_Functional_Lens__c}"
+												 checked="{!v.visit.HLHK_Functional_Lens__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+										 
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_Coating__c}"
+												 checked="{!v.visit.HLHK_Coating__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+										 
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_Sensity__c}"
+												 checked="{!v.visit.HLHK_Sensity__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+										 
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLHK_New_Products__c}"
+												 checked="{!v.visit.HLHK_New_Products__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 </aura:if>
+						 
+						 -->
+					   <!--
+						 <aura:if isTrue="{!v.companyName=='HOLK'}">	
+							  SPECIFIC HOLK MKG SECTION
+							 
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+												 <h3>Campaign</h3>
+										 </div>
+										 <div class="slds-form-element slds-size_1-of-2">
+												 <h3>Product</h3>
+										 </div>
+									 </div>
+								 </div>
+							 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_PAL_Campaign__c}"
+												 checked="{!v.visit.HOLK_Pal_Campaign__c}"
+												 type="checkbox"/>
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_MyStyle__c}"
+												 checked="{!v.visit.HOLK_MyStyle__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_Sun_Campaign__c}"
+												 checked="{!v.visit.HOLK_Sun_Campaign__c}"
+												 type="checkbox"/>
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_LifeStyle__c}"
+												 checked="{!v.visit.HOLK_LifeStyle__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_Chain_Campaign__c}"
+												 checked="{!v.visit.HOLK_Chain_Campaign__c}"
+												 type="checkbox"/>
+									 </div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_Dynamic__c}"
+												 checked="{!v.visit.HOLK_Dynamic__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+							 
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2"></div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_Sensity__c}"
+												 checked="{!v.visit.HOLK_Sensity__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2"></div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_SV__c}"
+												 checked="{!v.visit.HOLK_SV__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2"></div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_EnRoute__c}"
+												 checked="{!v.visit.HOLK_EnRoute__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 <fieldset class="slds-form-element">
+							 <div class="slds-form-element__group">
+								 <div class="slds-form-element__row">
+									 <div class="slds-form-element slds-size_1-of-2"></div>
+									 <div class="slds-form-element slds-size_1-of-2">
+										 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HOLK_OEM__c}"
+												 checked="{!v.visit.HOLK_OEM__c}"
+												 type="checkbox"/>
+									 </div>
+								 </div>
+							 </div>
+						 </fieldset>
+						 </aura:if>
+						 -->
+						 
+						 <!--specified for HLSI specification Marketing campaign-->
+						 <!--
+						 <aura:if isTrue="{!v.companyName=='HLSI'}">
+							 
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+												 <h3>Marketing Campaign</h3>
+										 </div>
+									 
+										 <div class="slds-form-element slds-size_1-of-2">
+												 <h3>Proposal Acceptance</h3>
+												 
+										 </div>
+									 </div>
+								 </div>
+							 </fieldset>
+							 
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLSI_Campaign_1__c}"
+												 checked="{!v.visit.HLSI_Campaign_1__c}"
+												 type="checkbox"/>
+										 </div>
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLSI_Proposal_01__c}"
+												 checked="{!v.visit.HLSI_Proposal_01__c}"
+												 type="checkbox"/>
+										 </div>
+									 </div>
+								 </div>
+							 </fieldset>      
+							 
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLSI_Campaign_2__c}"
+												 checked="{!v.visit.HLSI_Campaign_2__c}"
+												 type="checkbox"/>
+										 </div>
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLSI_Proposal_02__c}"
+												 checked="{!v.visit.HLSI_Proposal_02__c}"
+												 type="checkbox"/>
+										 </div>
+									 </div>
+								 </div>
+							 </fieldset>
+							 
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLSI_Campaign_3__c}"
+												 checked="{!v.visit.HLSI_Campaign_3__c}"
+												 type="checkbox"/>
+										 </div>
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLSI_Proposal_03__c}"
+												 checked="{!v.visit.HLSI_Proposal_03__c}"
+												 type="checkbox"/>
+										 </div>
+									 </div>
+								 </div>
+							 </fieldset>
+							 
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLSI_Campaign_4__c}"
+												 checked="{!v.visit.HLSI_Campaign_4__c}"
+												 type="checkbox"/>
+										 </div>
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLSI_Proposal_04__c}"
+												 checked="{!v.visit.HLSI_Proposal_04__c}"
+												 type="checkbox"/>
+										 </div>
+									 </div>
+								 </div>
+							 </fieldset>
+							 
+							 <fieldset class="slds-form-element">
+								 <div class="slds-form-element__group">
+									 <div class="slds-form-element__row">
+										 <div class="slds-form-element slds-size_1-of-2">
+											 &nbsp;
+										 </div>
+										 <div class="slds-form-element slds-size_1-of-2">
+											 <lightning:input disabled="{!v.isdisabled}"
+												 label="{!v.translations.Visits__c_HLSI_Proposal_05__c}"
+												 checked="{!v.visit.HLSI_Proposal_05__c}"
+												 type="checkbox"/>
+										 </div>
+									 </div>
+								 </div>
+							 </fieldset>
+
+						 </aura:if>
+						 -->
+						 <!-- SPECIFIC SEIKO CHINA SOC SECTION -->
+						 
+							<!--
+						 <aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH'}">
+							 <aura:if isTrue="{!v.profileName=='SOC VCC Manager ASM TSM'}"> SOC VCC Manager ASM TSM
+								 
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_SOC_VCC_Training__c}"
+														 checked="{!v.visit.SOC_VCC_Training__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_SOC_VCC_PromotionIntroduction__c}"
+														 checked="{!v.visit.SOC_VCC_PromotionIntroduction__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_SOC_VCC_Collect_Message__c}"
+														 checked="{!v.visit.SOC_VCC_Collect_Message__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_SOC_VCC_DoubtFull_Handing__c}"
+														 checked="{!v.visit.SOC_VCC_DoubtFull_Handing__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_SOC_VCC_StoreInspection__c}"
+														 checked="{!v.visit.SOC_VCC_StoreInspection__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_SOC_VCC_MakeNewAppointment__c}"
+														 checked="{!v.visit.SOC_VCC_MakeNewAppointment__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 
+							 </aura:if>
+							 <aura:if isTrue="{!v.profileName=='SOC Area Sales Manager ASM TSM'}">
+								 
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_SOC_Sales_APP_Promotion__c}"
+														 checked="{!v.visit.SOC_Sales_APP_Promotion__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_SOC_Sales_StoreEmpowerment__c}"
+														 checked="{!v.visit.SOC_Sales_StoreEmpowerment__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_SOC_Sales_SeikoExpertProgram__c}"
+														 checked="{!v.visit.SOC_Sales_SeikoExpertProgram__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 
+							 </aura:if>
+							 
+							 
+							 <aura:if isTrue="{!v.profileName=='China Area Sales Manager ASM TSM'|| v.profileName=='China Local System Administrator'}"> 
+								 
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2">
+													 <h3>Marketing campaign</h3>
+											 </div>
+											 <div class="slds-form-element slds-size_1-of-2">
+													 <h3>Product</h3>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_HLSH_Campaign_01__c}"
+														 checked="{!v.visit.HLSH_Campaign_01__c}"
+														 type="checkbox"/>
+											 </div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_HLSH_SV__c}"
+														 checked="{!v.visit.HLSH_SV__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_HLSH_Campaign_02__c}"
+														 checked="{!v.visit.HLSH_Campaign_02__c}"
+														 type="checkbox"/>
+											 </div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_HLSH_PAL__c}"
+														 checked="{!v.visit.HLSH_PAL__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_HLSH_Campaign_03__c}"
+														 checked="{!v.visit.HLSH_Campaign_03__c}"
+														 type="checkbox"/>
+											 </div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_HLSH_Functional__c}"
+														 checked="{!v.visit.HLSH_Functional__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_HLSH_Coating__c}"
+														 checked="{!v.visit.HLSH_Coating__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_HLSH_Sensity__c}"
+														 checked="{!v.visit.HLSH_Sensity__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+								 <fieldset class="slds-form-element">
+									 <div class="slds-form-element__group">
+										 <div class="slds-form-element__row">
+											 <div class="slds-form-element slds-size_1-of-2"></div>
+											 <div class="slds-form-element slds-size_1-of-2">
+												 <lightning:input disabled="{!v.isdisabled}"
+														 label="{!v.translations.Visits__c_HLSH_Other__c}"
+														 checked="{!v.visit.HLSH_Other__c}"
+														 type="checkbox"/>
+											 </div>
+										 </div>
+									 </div>
+								 </fieldset>
+							 </aura:if>
+						 </aura:if>
+						 -->
+					 </aura:set>
+				 </aura:if>
+			 </aura:if>
+			 </aura:if>
+			 </aura:if>
+			 </aura:if><!--SRX-->
+			 </aura:if><!--HLBR-->
+		 </div>
+	 </div>
+
+	 <footer class="slds-modal__footer">
+		 <lightning:button variant="brand" label="{!$Label.c.Cancel}" onclick="{! c.handleCancel }" disabled="{!v.saving}" />
+		 <!--
+		 <aura:if isTrue="{!v.visit.Id!=null}">
+			 <lightning:button variant="brand" label="{!$Label.c.Delete}" onclick="{! c.handleDelete }" />
+		 </aura:if>
+		 -->
+		 <lightning:button variant="brand" label="{!$Label.c.Save}" onclick="{! c.handleSave }" disabled="{!v.saving}"/>
+	 </footer>
+ </div>
+</section>
+<div class="slds-backdrop slds-backdrop_open"></div>
+</div>
+</aura:if>
+</aura:component>

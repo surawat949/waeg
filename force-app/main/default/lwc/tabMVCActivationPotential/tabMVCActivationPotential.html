@@ -1,0 +1,75 @@
+<template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+         <!--Total Prescribing Capacity-->
+        <table class="slds-table slds-table_bordered" aria-label="Total Prescribing Potential">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.PrescribingCapacity}</h3></td>
+            </tr>     	        
+        </table><br>
+        
+        <div class="slds-grid slds-var-m-left_medium">
+            <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={ObjectApiName}
+                        fields={PrescriptionsFields1}
+                        mode="view" 
+                        columns = "1">
+                    </lightning-record-form>
+
+            </div>
+            <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+                <label class="slds-form-element__label">{custLabel.IdentifiedRefOpts}</label><br/>
+                <div class="slds-form-element__control">{IdentifiedReferringOpts}</div>
+            </div>
+            <div class="slds-form-element slds-form-element_stacked slds-size_1-of-3">
+                <label class="slds-form-element__label">{custLabel.RefOptsOrderingfromHVC}</label><br/>
+                <div class="slds-form-element__control">{ReferringOptsfromHVC}</div>                    
+            </div>                
+        </div>
+        <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={ObjectApiName}
+                        fields="First_Recommended_Lens_Competitor__c"
+                        mode="view" 
+                        columns = "1" >
+                    </lightning-record-form>
+                </lightning-layout-item>
+            </lightning-layout>    
+        <lightning-layout>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={ObjectApiName}
+                    fields="Comments_On_Prescribing_Potential__c"
+                    mode="view" 
+                    columns = "1" >
+                </lightning-record-form>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>  
+    <!--Total Prescribing manual Segmentation-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Total Prescribing Manual Segmentation">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.PrescribingSegmentation}</h3></td>
+            </tr>     	        
+        </table><br>
+        <div style="width:50%">
+        <lightning-layout>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={ObjectApiName}
+                    fields={Prescription_Potential}
+                    mode="view" 
+                    columns = "3" >
+                </lightning-record-form>
+            </lightning-layout-item>
+        </lightning-layout>
+        </div>      
+    </div>
+</template>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
+    <choices>
+        <name>HBO_optometrie</name>
+        <choiceText>HBO optometrie</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <name>Intern_opgeleid</name>
+        <choiceText>Intern opgeleid</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <name>MBO_Optiek_contactlenzen</name>
+        <choiceText>MBO Optiek/contactlenzen</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <name>Niet_Optiek_Geschoold</name>
+        <choiceText>Niet Optiek Geschoold</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <choices>
+        <name>ROC_MBO</name>
+        <choiceText>ROC/MBO</choiceText>
+        <dataType>String</dataType>
+    </choices>
+    <label>test_pim</label>
+    <processType>Flow</processType>
+    <screens>
+        <name>einde</name>
+        <label>einde</label>
+        <locationX>77</locationX>
+        <locationY>174</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>HLNL_Faculty_training_inventory</name>
+        <label>HLNL Faculty training inventory</label>
+        <locationX>79</locationX>
+        <locationY>50</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>einde</targetReference>
+        </connector>
+        <fields>
+            <name>Niveau</name>
+            <choiceReferences>Niet_Optiek_Geschoold</choiceReferences>
+            <choiceReferences>Intern_opgeleid</choiceReferences>
+            <choiceReferences>ROC_MBO</choiceReferences>
+            <choiceReferences>MBO_Optiek_contactlenzen</choiceReferences>
+            <choiceReferences>HBO_optometrie</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Niveau</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <startElementReference>HLNL_Faculty_training_inventory</startElementReference>
+    <status>Draft</status>
+</Flow>

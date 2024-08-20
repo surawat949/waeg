@@ -1,0 +1,410 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" 
+                controller="APACUserPerformanceController">
+
+    <aura:attribute name="VisitedSegmentation" type="List" />
+    <aura:attribute name="VisitedSubArea" type="List" />
+    <aura:attribute name="markerTitle" type="String" default="Visited List" />
+    <aura:attribute name="displayListView" type="String" default="hidden" />
+    <aura:attribute name="mapMarkers" type="Object[]"/>
+    <aura:attribute name="selectedMarkerValue" type="String" default="SF1" />
+    <aura:attribute name="NoVisitReturn" type="String" />
+    <aura:attribute name="StartDate" type="Double" default="7" />
+    <!--<aura:attribute name="EndDate" type="Double" default="0" />-->
+    <aura:attribute name="datetime1" type="Date" />
+    <aura:attribute name="VisitStatus" type="String" default="Complete"/>
+    <!--<aura:attribute name="datetime2" type="DateTime" />-->
+
+    <aura:attribute name="sObjectName" type="String" default="Visits__c"/>
+    <aura:attribute name="sObjectFieldsNames" type="List" default="Start_Date_Time__c,Related_Account__c,Segmentation_Box__c,Visit_Reason_APAC__c,Visit_Notes__c"/>	
+    <aura:attribute name="data" type="Object[]"/>
+    <aura:attribute name="columns" type="List"/>    
+    <aura:attribute name="allData" type="List" />
+    <aura:attribute name="filteredData" type="List" />
+    <aura:attribute name="pageSize" type="Integer" default="10" />
+    <aura:attribute name="pageSizeOptions" type="Integer[]" default="10,15,20,25,50,100" />
+    <aura:attribute name="LastVisit" type="String" default="LAST_N_DAYS:7" />
+    <aura:attribute name="currentPageNumber" type="Integer" default="1" />
+    <aura:attribute name="totalPages" type="Integer" default="1" />
+    <aura:attribute name="searchVisitStart" type="List" />
+    <aura:attribute name="searchByVisitStart" type="String" />
+    <aura:attribute name="searchPhrase" type="String" />
+    <aura:attribute name="sortedBy" type="String" default="Start_time__c" />
+    <aura:attribute name="sortedDirection" type="String" default="desc" />
+
+    <aura:attribute name="VisitCnt" type="Object" />        <!--Visit Active Counting-->
+    <aura:attribute name="sales" type="Object" />
+    <aura:attribute name="CompletedVisits" type="List" />
+    <aura:attribute name="CompletedVisitsSubArea" type="List" />
+    <aura:attribute name="VisitSum" type="List" />
+
+    <aura:html tag="style">
+        .slds-form-element__label{
+        display:none !important;
+        }
+    </aura:html>
+    
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <ltng:require scripts="{!join(',',
+        $Resource.chartjs2 + '/Chart.min.js',
+        $Resource.chartjs2 + '/Chart.bundle.min.js')}"
+        styles="{!$Resource.chartjs2 + '/Chart.min.css'}" />
+    
+        <div class="container slds-theme_default slds-box">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-4">
+                    <br/>
+                    <aura:if isTrue="{!v.displayListView=='hidden'}"><lightning:button label="Display list" variant="brand" onclick="{!c.displayList}"/></aura:if>
+                    <aura:if isTrue="{!v.displayListView=='visible'}"><lightning:button label="Hide list" variant="brand" onclick="{!c.hideList}"/></aura:if>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <p class="align:left"><strong>Start Date :</strong></p><lightning:input type="date" name="datetime1" label="Start Date" value="{!v.datetime1}" />
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <p class="align:left"><strong>Visit Status :</strong> 
+                        <lightning:select name="select1" aura:id="select1" value="{!v.VisitStatus}" variant="label-hidden">
+                            <option value="Planned">Planned</option>
+                            <option value="Complete">Complete</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Prepared">Prepared</option>
+                        </lightning:select>
+                    </p>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <br/>&nbsp;
+                    <lightning:button label="Search" variant="brand" onclick="{!c.doInit}" />
+                    <div class="exampleHolder"><lightning:spinner aura:id="mySpinner" class="slds-hide"/></div>
+                </div>
+            </div><br/>
+            <div class="slds-grid">
+                <div class="row">
+                    <p class="align:left"><strong>{!v.NoVisitReturn}</strong></p><br/>
+                    <br/>
+                    <!--<p class="align:left">End Date : </p><lightning:input type="datetime" name="datetime2" label="End Date" value="{!v.datetime2}" onchange="{!c.handleDateTimeChange}" />-->
+                    <!--<p class="align:left">{!v.datetime1}</p>-->
+                    <!--<p class="align:left">{!v.VisitStatus}</p>-->
+                    <!--<p class="align:left">{!v.datetime2}</p>-->
+                </div>
+            </div><br/>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <aura:if isTrue="{!empty(v.mapMarkers)}">
+                        &nbsp;
+                    <aura:set attribute="else">
+                        <lightning:map
+                            mapMarkers="{!v.mapMarkers}"
+                            markersTitle="{!v.markerTitle}"
+                            selectedMarkerValue="{!v.selectedMarkerValue}"
+                            center="{!v.center}"
+                            listView="{!v.displayListView}"
+                            zoomLevel="10"/>
+                    </aura:set>
+                    </aura:if>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="container slds-theme_default slds-box">
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">     
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Completed visits</span>
+                </button>
+            </h3><br/>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="slds-scrollable_x" style="width:100%">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_header--fixed">
+                            <thead>
+                                <tr class="slds-text-title_caps slds-line-height_reset">
+                                    <th scope="col">Visits</th>
+                                    <th scope="col">APR</th>
+                                    <th scope="col">MAY</th>
+                                    <th scope="col">JUN</th>
+                                    <th scope="col">JUL</th>
+                                    <th scope="col">AUG</th>
+                                    <th scope="col">SEP</th>
+                                    <th scope="col">OCT</th>
+                                    <th scope="col">NOV</th>
+                                    <th scope="col">DEC</th>
+                                    <th scope="col">JAN</th>
+                                    <th scope="col">FEB</th>
+                                    <th scope="col">MAR</th>
+                                    <th scope="col">TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="slds-text-title_caps slds-line-height_reset">
+                                    <td class="col">Last FY</td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.AprTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.MayTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.JunTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.JulTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.AugTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.SepTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.OctTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.NovTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.DecTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.JanTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.FebTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.MarTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.TotalTotalVisitsLY}" maximumFractionDigits="0" /></td>
+                                </tr>
+                                <tr class="slds-text-title_caps slds-line-height_reset">
+                                    <td class="col">Current FY</td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.AprTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.MayTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.JunTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.JulTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.AugTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.SepTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.OctTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.NovTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.DecTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.JanTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.FebTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.MarTotalVisits}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.VisitCnt.TotalTotalVisits}" maximumFractionDigits="0" /></td>
+                                </tr>
+                                <tr class="slds-text-title_caps slds-line-height_reset">
+                                    <td class="col">Individual days in field</td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Apr}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_May}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Jun}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Jul}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Aug}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Sep}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Oct}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Nov}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Dec}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Jan}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Feb}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Mar}" maximumFractionDigits="0" /></td>
+                                    <td class="col"><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Total}" maximumFractionDigits="0" /></td>
+                                </tr>
+                                <!--
+                                <tr class="slds-text-title_caps">
+                                    <td>%Achive</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.AprTotalVisits/v.VisitCnt.AprTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.MayTotalVisits/v.VisitCnt.MayTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.JunTotalVisits/v.VisitCnt.JunTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.JulTotalVisits/v.VisitCnt.JulTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.AugTotalVisits/v.VisitCnt.AugTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.SepTotalVisits/v.VisitCnt.SepTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.OctTotalVisits/v.VisitCnt.OctTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.NovTotalVisits/v.VisitCnt.NovTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.DecTotalVisits/v.VisitCnt.DecTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.JanTotalVisits/v.VisitCnt.JanTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.FebTotalVisits/v.VisitCnt.FebTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.MarTotalVisits/v.VisitCnt.MarTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                    <td><lightning:formattedNumber value="{!((v.VisitCnt.TotalTotalVisits/v.VisitCnt.TotalTotalVisitsLY)*100)-100}" maximumFractionDigits="0" />%</td>
+                                </tr>
+                                -->
+                            </tbody>
+                            <br/>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="slds-scrollable_x" style="width:100%">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th>&nbsp;</th>
+                                    <th>APR</th>
+                                    <th>MAY</th>
+                                    <th>JUN</th>
+                                    <th>JUL</th>
+                                    <th>AUG</th>
+                                    <th>SEP</th>
+                                    <th>OCT</th>
+                                    <th>NOV</th>
+                                    <th>DEC</th>
+                                    <th>JAN</th>
+                                    <th>FEB</th>
+                                    <th>MAR</th>
+                                    <th>TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="slds-text-title_caps">
+                                    <td>Individual Days In Field</td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Apr}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_May}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Jun}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Jul}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Aug}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Sep}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Oct}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Nov}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Dec}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Jan}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Feb}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Mar}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.Ind_Day_in_field_Total}" maximumFractionDigits="0" /></td>
+                                </tr>
+                                <tr class="slds-text-title_caps">
+                                    <td>Call Rate</td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayApr}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayMay}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayJun}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayJul}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayAug}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDaySep}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayOct}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayNov}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayDec}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayJan}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayFeb}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayMar}" maximumFractionDigits="0" /></td>
+                                    <td><lightning:formattedNumber value="{!v.sales.VisitPerDayTotal}" maximumFractionDigits="0" /></td>
+                                </tr>
+                            </tbody>
+                            <br/>
+                        </table>
+                    </div>
+                </div>
+            </div>-->
+        </div>
+        <br/>
+        <!--
+        <div class="container slds-theme_default slds-box">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                    <canvas aura:id="barchart01" id="barchart01" height="250"></canvas>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <canvas aura:id="barchart02" id="barchart02" height="250"></canvas>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                            <tr class="dataRow">
+                                <th scope="col">Segmentation</th>
+                                <th scope="col"><p align="right">Number of Account(s)</p></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.CompletedVisits}" var="item">
+                                <tr class="dataRow">
+                                    <td class="col"><lightning:formattedText value="{!item.label}" /></td>
+                                    <td class="col"><p align="right"><lightning:formattedNumber value="{!item.Qty}" maximumFractionDigits="0" /></p></td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                            <tr class="dataRow">
+                                <th scope="col">Sub-Area</th>
+                                <th scope="col"><p align="right">Number of Account(s)</p></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.CompletedVisitsSubArea}" var="item">
+                                <tr class="dataRow">
+                                    <td class="col"><lightning:formattedText value="{!item.label}" /></td>
+                                    <td class="col"><p align="right"><lightning:formattedNumber value="{!item.Qty}" maximumFractionDigits="0" /></p></td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div><br/>-->
+        <div class="container slds-theme_default slds-box">
+            <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">     
+                <button aria-controls="toggle" id="toggle2" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggle}" >
+                    <lightning:icon iconName="{!v.IconName}" class="slds-p-right_x-small" aura:id="swithcicon" width="100%" Height="100%" default="utility:chevrondown" size="X-small"  alternativeText="Expand"/>
+                        <span class="test-id__section-header-title slds-truncate" title="{!v.InputTitle}">Visit(s) List</span>
+                </button>
+            </h3><br/>
+            <div class="slds-grid">
+                <!--
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning:formattedText value="Last Visit Date" />
+                    <lightning:select label="Last Visit" value="{!v.LastVisit}">
+                        <option value="LAST_N_DAYS:7">Last 7 Days</option>
+                        <option value="LAST_N_DAYS:30">Last 30 Days</option>
+                    </lightning:select>
+                </div>
+                -->
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning:formattedText value="Visit Stauts" />
+                    <lightning:select label="Visit Status" aura:id="Visit_Status" value="{!v.VisitStatus}">
+                        <option value="Planned">Planned</option>
+                        <option value="Complete">Complete</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Prepared">Prepared</option>
+                    </lightning:select>
+                </div>
+            </div><br/>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning:button label="Search" variant="brand" onclick="{!c.doInit}" />
+                    <div class="exampleHolder">
+                        <lightning:spinner aura:id="mySpinner" class="slds-hide"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    {!v.searchVisitStart}
+                    <lightning:card>
+                        <div class="slds-p-around_small slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+                            <!--
+                            <div>
+                                <lightning:select label="" value="{! v.pageSize }" onchange="{!c.onPageSizeChange}">
+                                    <aura:iteration items="{!v.pageSizeOptions}" var="opt">
+                                        <option text="{!opt}"></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                            -->
+                            <div>
+                                <lightning:button label="First" iconName="utility:left" iconPosition="left" onclick="{! c.onFirst }" disabled="{! v.currentPageNumber == 1 }" />
+                                <lightning:button label="Previous" iconName="utility:chevronleft" iconPosition="left" onclick="{! c.onPrev }" disabled="{! v.currentPageNumber == 1 }" />
+                                <span class="slds-var-p-horizontal_x-small"> Page {! (v.currentPageNumber) } of {! (v.totalPages) } </span>                
+                                <lightning:button label="Next" iconName="utility:chevronright" iconPosition="right" onclick="{! c.onNext }" disabled="{! v.currentPageNumber == v.totalPages }"/>
+                                <lightning:button label="Last" iconName="utility:right" iconPosition="right" onclick="{! c.onLast }" disabled="{! v.currentPageNumber == v.totalPages }" />
+                            </div>
+                            <div class="inline-container">
+                                <span class="padding-right">
+                                    <lightning:select aura:id="select01" name="select01" value="{!v.searchByVisitStart}" onchange="{!c.handleSearch}">
+                                        <option value="">---All Start Date---</option>
+                                        <aura:iteration items="{!v.searchVisitStart}" var="item">
+                                            <option value="{!item}">{!item}</option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                    <!--<lightning:input onkeyup="{! c.handleSearch }" variant="label-hidden" placeholder="Search Account Name" type="search" value="{! v.searchPhrase }" onchange="{! c.onChangeSearchPhrase }" />-->
+                                </span>
+                            </div>
+                        </div>         
+                    </lightning:card> 
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1">
+                    <span style="font-family: sans-serif; font-size:11px;">
+                        <lightning:datatable data="{!v.data }" 
+                            columns="{!v.columns}" 
+                            keyField="id" 
+                            onsort="{!c.sortColumn}"
+                            sortedBy="{!v.sortedBy}"
+                            sortedDirection="{!v.sortedDirection}"
+                            defaultSortDirection="desc"
+                            hideCheckboxColumn="true"/><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+</aura:component>

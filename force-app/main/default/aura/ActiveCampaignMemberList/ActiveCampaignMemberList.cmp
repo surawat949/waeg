@@ -1,0 +1,56 @@
+<aura:component controller="ActiveCampaignMemberControler"
+    implements="force:hasRecordId,force:hasSObjectName,flexipage:availableForAllPageTypes,force:appHostable"
+    access="public">
+
+    <aura:attribute name="memberList" type="List" />
+    <aura:attribute name="recordId" type="String" />
+    <!-- parameter for save method-->
+    <aura:attribute name="presented" type="Boolean" />
+    <aura:attribute name="cmId" type="String" />
+    <!-- -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div class="slds-scrollable" style="height:15rem">
+        <div class="slds-page-header" role="banner">
+                <h1 class="slds-page-header__title slds-m-right_small
+                                slds-truncate slds-align-left">{!$Label.c.Active_campaigns_component_title}
+                </h1>
+        </div>
+        <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+            <thead>
+            <tr class="slds-text-heading_label">
+                <th scope="col"><div class="slds-truncate" >&nbsp;</div></th>
+                <th scope="col"><div class="slds-truncate" title="Member Name">Member Name</div></th>
+                <th scope="col"><div class="slds-truncate" title="Start">Start</div></th>
+                <th scope="col"><div class="slds-truncate" title="End">End</div></th>
+                <th scope="col"><div class="slds-truncate" title="Presented">Presented</div></th>
+            </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.memberList}" var="member">
+                    <tr>
+                        <td colspan="5"><div class="slds-text-title_bold">{!member.Campaign_Name__c}</div></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td><div class="slds-truncate"><lightning:formattedUrl value="{!'/'+member.Id}" label="{!member.Name}" target="_blank"/></div></td>
+                        <!--<td><div class="slds-truncate"><lightning:formattedUrl value="{!'/'+member.Central_Campaign__c}" label="{!member.Campaign_Name__c}" target="_blank"/></div></td>-->
+                        <td><div class="slds-truncate"><lightning:formattedDateTime value="{!member.Campaign_Start_Date_t__c}"/></div></td>
+                        <td><div class="slds-truncate"><lightning:formattedDateTime value="{!member.Campaign_End_Date_t__c}"/></div></td>
+                        <td><div class="slds-truncate">
+                            <form class="slds-form">
+                                <div class="slds-form-element">
+                                    <lightning:input checked="{!member.Campaign_Presented__c}"
+                                    aura:id="checkbox"
+                                    onchange="{!c.updatePresented}"
+                                    type="checkbox"/>
+                                </div>
+                                <lightning:input type="hidden" aura:id="cmId" value="{!member.Id}"/>
+                            </form>
+                        </div></td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+    </div>
+</aura:component>

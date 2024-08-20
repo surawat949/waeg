@@ -1,0 +1,657 @@
+<apex:page standardController="Account" recordsetVar="customers" standardStylesheets="false" showHeader="true" sidebar="false" >
+<apex:stylesheet value="{!URLFOR($Resource.stylesFDV, 'screen.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.stylesFDV, 'displayTag.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.stylesFDV, 'menu.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.stylesFDV, 'themes/cupertino/jquery-ui.css?s2j=3.4.0')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.stylesFDV, 'dragDrop.css')}"/>
+
+    <script type="text/javascript" src="{!URLFOR($Resource.stylesFDV, 'scripts/fdvGlobal.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.stylesFDV, 'scripts/global.js')}"></script>
+    <script src="{!URLFOR($Resource.stylesFDV, 'scripts/utils.js')}" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.stylesFDV, 'scripts/base/jquery-1.8.2.min.js')}" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.stylesFDV, 'scripts/base/jquery.ui.core.min.js?s2j=3.4.0')}" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.stylesFDV, 'scripts/plugins/jquery.subscribe.min.js')}" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.stylesFDV, 'scripts/struts2/jquery.struts2.min.js?s2j=3.4.0')}" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+        jQuery.struts2_jquery.version="3.4.0";
+        jQuery.scriptPath = "/fdv/struts/";
+      jQuery.struts2_jquery.local = "fr";
+      jQuery.struts2_jquery.gridLocal = "fr";
+      jQuery.struts2_jquery.timeLocal = "fr";
+        jQuery.ajaxSettings.traditional = true;
+    
+        jQuery.ajaxSetup ({
+            cache: false
+        });
+        
+        jQuery.struts2_jquery.require("{!URLFOR($Resource.stylesFDV, 'scripts/struts2/jquery.struts2.min.js')}");
+        
+    });
+    </script>
+
+    <script src="{!URLFOR($Resource.stylesFDV, 'scripts/jquery/jquery.alerts-1.1/jquery.alerts.js')}"></script>
+    <script src="{!URLFOR($Resource.stylesFDV, 'scripts/jquery/tooltip.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.stylesFDV, 'scripts/jquery/menu.js')}"></script>
+    <script src="{!URLFOR($Resource.stylesFDV, 'scripts/jquery/jquery.displaytag-ajax-1.2.js')}"></script>
+    <script src="{!URLFOR($Resource.stylesFDV, 'scripts/dragdrop/itemDragDrop.js')}"></script>
+    
+    <script type="text/javascript">
+    object.onload=function(){initDragDropScript};
+    // initialise menu
+    jQuery(function(){jQuery('ul.sf-menu').superfish();});
+    
+    $(document).ready(function() {
+        $(".divDisplayTag").displayTagAjax();
+    });
+    </script>
+
+
+
+    <script type="text/javascript">
+        //jquery code
+        Date.format = 'yyyymmdd';
+        $(document).ready(function() {
+    
+            $("#dragDropContainer div[title]").tooltip({position:"center right", effect:"fade", opacity:0.8});
+            $(".critereGauche a[title]").tooltip({position:"bottom center", effect:"fade", opacity:0.8});
+            
+            $('.datepick').each(function(){
+                $(this).datepicker({maxDate:new Date(),dateFormat:'yymmdd'});
+            });
+
+            var zeDate=null;
+            var num=null;
+            
+            $('#numSemaine').datepicker({onSelect: findWeek, beforeShowDay: disableWeek});
+            function findWeek() {
+                zeDate = $(this).datepicker('getDate');
+                num = $.datepicker.iso8601Week(zeDate);
+                document.getElementById('numSemaine').value=num;
+                document.getElementById('annee').value=zeDate.getFullYear();
+                chargerSemaine();
+            }
+            function disableWeek(date){return [true, ''];}
+        });
+    </script>
+
+    
+<!-- div dragdropContainer, contient les elements drag/droppable -->
+<div id="dragDropContainer" ontouchend="processingRoutine()">
+    <form id="semainierForm" name="semainierForm" action="/fdv/visite/visiteSemainier.action" method="post">
+        <input type="hidden" name="action" value="" id="semainierForm_action"/>
+        <input type="hidden" name="critere.secteur" value="10" id="navsecteur"/>
+        
+        <!-- Navigation, choix semaine/annee -->
+        <div id="navigationSemainier">
+            <input type="image" alt="Submit" src="{!URLFOR($Resource.stylesFDV, 'images/gauche.png')}" id="semainierForm__semainePrecedente" name="method:semainePrecedente" value="Submit" onclick="javascript:patienter('Chargement en cours');"/>
+
+            semaine
+            <input type="text" name="semaine" size="2" value="3" id="numSemaine" onchange="javascript:patienter('Chargement en cours');chargerSemaine();" style="width:20px;"/>
+            /
+            <input type="text" name="annee" size="4" value="2015" id="annee" style="width:30px;"/>
+            <input type="image" alt="Submit" src="{!URLFOR($Resource.stylesFDV, 'images/droite.png')}" id="semainierForm__semaineSuivante" name="method:semaineSuivante" value="Submit" onclick="javascript:patienter('Chargement en cours');"/>
+
+            
+        </div>
+        
+        <!-- TABLE SEMAINIER -->
+        <table id="mainContainer" style="float:left;">
+            <tr>
+                
+                <th>LUNDI&nbsp;12/01</th>
+                
+                <th>MARDI&nbsp;13/01</th>
+                
+                <th>MERCREDI&nbsp;14/01</th>
+                
+                <th>JEUDI&nbsp;15/01</th>
+                
+                <th>VENDREDI&nbsp;16/01</th>
+                
+                <th>SAMEDI&nbsp;17/01</th>
+                
+                <th>DIMANCHE&nbsp;18/01</th>
+                
+            </tr>
+            <tr>
+                
+                    <td><ul id="LUNDI" class="jourSemaine">
+                        
+                    </ul></td>
+                
+                    <td><ul id="MARDI" class="jourSemaine">
+                        
+                    </ul></td>
+                
+                    <td><ul id="MERCREDI" class="jourSemaine">
+                        
+                    </ul></td>
+                
+                    <td><ul id="JEUDI" class="jourSemaine">
+                        
+                    </ul></td>
+                
+                    <td><ul id="VENDREDI" class="jourSemaine">
+                        
+                    </ul></td>
+                
+                    <td><ul id="SAMEDI" class="jourSemaine">
+                        
+                    </ul></td>
+                
+                    <td><ul id="DIMANCHE" class="jourSemaine">
+                        
+                    </ul></td>
+                
+            </tr>
+        </table>
+        <div class="critereGauche">
+            <a id="downloadExcel" href="/fdv/exportExcel.action?type=XLS&amp;content=semaine.3&amp;objet=agenda" title="Exporter le semainier au format excel"><img src="{!URLFOR($Resource.stylesFDV, 'images/excel.png')}"/></a>
+        </div>
+    </form>
+
+
+
+
+
+    <form id="rechercheClientForm" name="rechercheClientForm" action="/fdv/visite/visiteSemainier.action" method="post">
+        <input type="hidden" name="action" value="com.hoya.fr.lvs.web.fdv.visites.action.SemainierAction@10ad64fd" id="rechercheClientForm_action"/>
+        <input type="hidden" name="semaine" value="3" id="rechercheClientForm_semaine"/>
+        <input type="hidden" name="annee" value="2015" id="rechercheClientForm_annee"/>
+
+        
+
+        <!-- criteres de recherche -->
+        <div id="criteres">     
+        
+        <!-- Liste des secteurs, uniquement pour les DR -->
+        
+                <div class="critereGauche">
+                    <label for="recsecteur" >Secteur</label>
+                    <select name="critere.secteur" id="recsecteur" onchange="javascript:chargerSemaine()">
+    <option value="00">00 - COMPTES SPECIAUX *</option>
+    <option value="10" selected="selected">10 - SOUFFI Jérémie</option>
+    <option value="11">11 - FALLAIX Arnaud</option>
+    <option value="12">12 - DURAND Karine</option>
+    <option value="14">14 - TREVILLOT Sophie</option>
+    <option value="15">15 - HAVART Manuela</option>
+    <option value="16">16 - CHALOPIN Ludivine</option>
+    <option value="17">17 - PIERRON Gérald</option>
+    <option value="20">20 - BECART Yves</option>
+    <option value="21">21 - GOMES Philippe</option>
+    <option value="22">22 - DANNEBEY Julie</option>
+    <option value="23">23 - MARTEAU Sandrine</option>
+    <option value="24">24 - MARAUD Thierry</option>
+    <option value="25">25 - FLOURY Mehdi</option>
+    <option value="26">26 - CORREIA David</option>
+    <option value="30">30 - HERVE Antoine</option>
+    <option value="31">31 - VOQUE Dany</option>
+    <option value="32">32 - GANNERIE Mathilde</option>
+    <option value="33">33 - GAUCH Matthieu</option>
+    <option value="34">34 - LEDAIN Philippe</option>
+    <option value="35">35 - SETIAO Eric</option>
+    <option value="36">36 - MARTIN Thibault</option>
+    <option value="97">97 - EXPORT *</option>
+    <option value="98">98 - EXPORT *</option>
+    <option value="99">99 - EXPORT *</option>
+
+
+</select>
+
+                </div>
+                <div class="break"></div>
+        
+        
+        
+         
+            <div class="critereGauche">
+                <label for="codeClient">Code</label>
+                <input type="text" name="critere.client.code" size="7" maxlength="5" value="" id="code"/><br/>
+                <label for="raisonSociale">Nom</label>
+                <input type="text" name="critere.client.raisonSociale" value="" id="raisonSociale"/><br/>
+                <label for="codePostal">Code postal</label>
+                <input type="text" name="critere.client.codePostal" value="" id="codePostal"/><br/>
+                <label for="ville">Ville</label>
+                <input type="text" name="critere.client.ville" size="15" maxlength="25" value="" id="ville"/>
+            </div>
+            
+            <div class="critereGauche">
+                <label for="centrale">Centrale</label>
+                <select name="critere.client.codeCentrale" id="centrale">
+    <option value=""
+    selected="selected"
+    >Toutes</option>
+    <option value="AA_STAT">Afflelou Statistique</option>
+    <option value="AO_STAT">ALLIANCE OPTIQUE STATISTIQUES</option>
+    <option value="C">Regroupement Mutuelles Ind</option>
+    <option value="CDO_STAT">CDO STATISTIQUES</option>
+    <option value="CODI">CODIR</option>
+    <option value="COI">GROUPE ONE</option>
+    <option value="COSM">CLUB OPTICLIBRE &amp; SN MOD</option>
+    <option value="GDOP">GVIS POUR GRANDOPTICAL</option>
+    <option value="GENOP">GENERALE D OPTIQUE</option>
+    <option value="GLF">KRYS GROUP</option>
+    <option value="GVE">GRAND VISION</option>
+    <option value="GVIS">GVIS Statistiques</option>
+    <option value="IND_STAT">Independant</option>
+    <option value="LISSAC">LISSAC</option>
+    <option value="LUZ SAPMM">CENTRALE LUZ SAPMM</option>
+    <option value="LYNXCENT">LYNX CENTRALE FRANCHISES</option>
+    <option value="M">Regroupement Mutoptic</option>
+    <option value="OC_STAT">OPTICAL CENTER STATISTIQUES</option>
+    <option value="OPTA-STAT">OPTALOR CENTRALE</option>
+    <option value="REV_STAT">REV STAT</option>
+    <option value="U">VISAUDIO (Cooptimut)</option>
+
+
+</select>
+
+                <div class="break"></div>
+                        
+                <label for="groupement">Groupement</label>
+                <select name="critere.client.codeGroupement" id="groupement">
+    <option value=""
+    selected="selected"
+    >Tous</option>
+    <option value="AA_BE">AA BELGIQUE</option>
+    <option value="CVEEXPORT">AA EXPORT</option>
+    <option value="AA_NAGE">AA NAGELEISEN</option>
+    <option value="AFFL">ALAIN AFFLELOU  S.A. EXPORT</option>
+    <option value="AAF">ALAIN AFFLELOU CP</option>
+    <option value="AA">ALAIN AFFLELOU FRANCHISEUR SA</option>
+    <option value="AAHC">ALAIN AFFLELOU HC</option>
+    <option value="AOEX">ALLIANCE OPTIQUE EXPORT</option>
+    <option value="AO">ALLIANCE OPTIQUE SA</option>
+    <option value="ALN">ALNOR</option>
+    <option value="ALTOP">ALTOP</option>
+    <option value="APEGO">APEGO</option>
+    <option value="U51">APREVA  R.M</option>
+    <option value="ATOL">ATOL</option>
+    <option value="AUBE">AUBEL</option>
+    <option value="AUCHAN">AUCHAN - DEP OPTIC 092</option>
+    <option value="O2000 EDI">AUDIOPTIC</option>
+    <option value="AUROR">AUROR</option>
+    <option value="M-THIARDA">MAX THIARDA FRANCE SA</option>
+    <option value="M40">M.C.A.S.V.P.A.P</option>
+    <option value="MEDO">MEDOC OPTIQUE</option>
+    <option value="U124">MF PACA</option>
+    <option value="U36">MFA SSAM</option>
+    <option value="U39">MFR SSAM MUTUALITE RHONE U39</option>
+    <option value="M49">MGAS  Mutuelle des Cheminots</option>
+    <option value="M55">MICE MUTUELLE</option>
+    <option value="U27">MNAM OEUVRES MUTUALISTES</option>
+    <option value="U133">MRSM SETE BASSIN DE THAU</option>
+    <option value="U108">MUTUALITE DU LOT</option>
+    <option value="U89">MUTUALITE DU LOT ET GARONNE</option>
+    <option value="U32">MUTUALITE DU PAS-DE-CALAIS    </option>
+    <option value="U06">MUTUALITE DU PUY-DE-DOME      </option>
+    <option value="C14">UMGOS C14</option>
+    <option value="U170">UMT MUTUALITE TERRES D OC</option>
+    <option value="U79">UNION DES MUTUELLES BOULONNAIS</option>
+    <option value="U77">UNION DES MUTUELLES COGERES</option>
+    <option value="U94">UNION DES MUTUELLES DE DUNKERQ</option>
+    <option value="U126">UNION DES MUTUELLES DE FRANCE </option>
+    <option value="U107">UNION DPTALE MUTUELLES DU GERS</option>
+    <option value="U155">UNION MUT. FRANCE MONT BLANC</option>
+    <option value="M52">UNION MUT.PYRENEES ATLANTIQUES</option>
+    <option value="U154">UNION MUTUELLE FRANCE SAVOIE</option>
+    <option value="U129">UNION MUTUELLES CORSE DU SUD</option>
+    <option value="M16">UNION MUTUELLES DE L AVESNOIS </option>
+    <option value="U151">UNION MUTUELLES ILE DE FRANCE</option>
+    <option value="U117">UNION PREVIADE MUTOUEST</option>
+    <option value="U63">UNION THIERNOISE MUTUALISTE   </option>
+    <option value="U111">USM DE ROANNE</option>
+    <option value="U74">UTMIF OPTIQUE</option>
+    <option value="U59">U.T.M.L</option>
+    <option value="U15">U.T.M.L ANTENNE 55    </option>
+    <option value="U106">U.T.M.L ANTENNE 57 </option>
+    <option value="U34">U.T.M.L ANTENNE 88     </option>
+    <option value="U">VISAUDIO (Cooptimut)</option>
+    <option value="VO">Vision Originale</option>
+    <option value="V+">Vision Plus</option>
+    <option value="VISUALSUC">VISUALSUC</option>
+    <option value="VDO">VOGUE DIFFUSION OPTIQUE</option>
+
+
+</select>
+
+                <div class="break"></div>
+                
+                <label for="proprietaire">Propriétaire</label>
+                <select name="critere.client.codeProprietaire" id="proprietaire">
+    <option value=""
+    >Tous</option>
+    <option value="8728">ADAM</option>
+    <option value="1812">ANCENAY</option>
+    <option value="35540">ANDRE</option>
+    <option value="8681">ANGO</option>
+    <option value="27600">ANQUETIL</option>
+    <option value="5293">ANSART</option>
+    <option value="1857">ATELIER</option>
+    <option value="6206">AUBRUN</option>
+    <option value="5015">AUVARD</option>
+    <option value="1946">BARBOT</option>
+    <option value="4933">BARETTE</option>
+
+</select>
+
+            
+            </div>
+                
+            <div class="critereGauche">
+                <label for="segment">Segment</label>
+            <select name="critere.segment2" id="segment">
+    <option value=""
+    selected="selected"
+    >Tous</option>
+    <option value="APPLE">APPLE</option>
+    <option value="DELL">DELL</option>
+    <option value="MIDDLE">MIDDLE</option>
+    <option value="N/A">N/A</option>
+
+
+</select>
+
+            <select name="critere.segmentBf" id="segmentbf">
+    <option value=""
+    selected="selected"
+    >Tous</option>
+    <option value="BFIRST">BFIRST</option>
+    <option value="LECLUB">LECLUB</option>
+
+
+</select>
+
+            
+                <div class="break"></div>
+                    
+                <label for="potentiel">Carré stratégique</label>
+                <select id="potentiel" name="critere.potentiel" class="selectMedium" onchange="javascript:changeStyleSelectPotentiel();">
+                <option value="">-</option>
+                <option value="AB12" class="carre1" >FdC VIP</option>
+                <option value="AB34" class="carre2" >Potentiel dev</option>
+                <option value="CD12" class="carre3" >FdC</option>
+                <option value="CD34" class="carre4" >Gestion eco</option>
+                <option value="AB0" class="carre0" >Prospect à potentiel</option>
+                <option value="CD0" class="carre0b" >Prospect Eco</option>
+            </select>
+                <div class="break"></div>
+                
+                <label for="pasvisitedepuis">Pas visité depuis</label>
+                <input type="text" name="critere.derniereVisite" size="8" maxlength="8" value="" id="pasvisitedepuis" onchange="javascript:checkDateValidAAAMMJJ(this);" class="class java.util.HashMap"/>
+        
+            </div>
+            
+            <div class="valid">
+                <label for="typeRecherche">Type de recherche</label>
+                <select id="typeRecherche" name="typeRecherche">
+                    <!-- option value="MAGASIN" >MAGASIN</option -->
+                    <option value="OPHTALMOLOGISTE" >OPHTALMOLOGISTE</option>
+                    <!-- option value="GROUPEMENT" >GROUPEMENT</option -->
+                    <!-- option value="PROPRIETAIRE" >PROPRIETAIRE</option -->
+                </select>
+                <input type="submit" id="rechercheClientForm__rechercher" name="method:rechercher" value="Rechercher" onclick="javascript:patienter('Recherche en cours');"/>
+
+                <input type="button" name="raz" value="Reinitialiser" onClick="razForm(document.getElementById('rechercheClientForm'));"/>
+                <input type="submit" id="rechercheClientForm__enregistrer" name="method:enregistrer" value="Enregistrer" onclick="javascript:patienter('Enregistrement semaine en cours');"/>
+
+            </div>
+        </div>
+
+    </form>
+
+
+
+    <!-- listOfItems, id utilisé pour le drag&drop (utilisation des balise ul & li dans les cellules 'code') -->
+<div id="listOfItems">
+   <div class="divDisplayTag">
+      <span class="pagebanner"> 437 Résultats trouvés, affichage 1 à 10. </span><span class="pagelinks"> [Début / Précédent] <strong>1</strong>, <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=2" title="Go to page 2">2</a>, <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=3" title="Go to page 3">3</a>, <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=4" title="Go to page 4">4</a>, <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=5" title="Go to page 5">5</a>, <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=6" title="Go to page 6">6</a>, <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=7" title="Go to page 7">7</a>, <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=8" title="Go to page 8">8</a>, <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=9" title="Go to page 9">9</a>, <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=10" title="Go to page 10">10</a> [ <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=2" id="idNext">Suivant</a> / <a href="/fdv/visite/reloadSemainierClientList.action?d-49653-p=44">Fin</a>] </span>
+<table class="displayTag">
+<thead>
+<tr>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=0&amp;d-49653-o=2&amp;d-49653-p=1">Client</a></th>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=1&amp;d-49653-o=2&amp;d-49653-p=1">Raison Sociale</a></th>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=2&amp;d-49653-o=2&amp;d-49653-p=1">Code Grpm</a></th>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=3&amp;d-49653-o=2&amp;d-49653-p=1">Groupement</a></th>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=4&amp;d-49653-o=2&amp;d-49653-p=1">Etat</a></th>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=5&amp;d-49653-o=2&amp;d-49653-p=1">Adresse</a></th>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=6&amp;d-49653-o=2&amp;d-49653-p=1">CP</a></th>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=7&amp;d-49653-o=2&amp;d-49653-p=1">Ville</a></th>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=8&amp;d-49653-o=2&amp;d-49653-p=1">Telephone</a></th>
+<th class="sortable">
+<a href="/fdv/visite/reloadSemainierClientList.action?d-49653-s=9&amp;d-49653-o=2&amp;d-49653-p=1">Email</a></th></tr></thead>
+<tbody>
+<tr class="odd">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR00004069">
+<div id="R00004069" title="Madame CATHERINE Ludivine<br/><br/>CABINET Residence panorama 15 rue chateaubriand<br/>14000 - CAEN" class="initialise">
+R00004069
+<input type="hidden" id="R00004069" value="R00004069" name="null_R00004069"/><a class="liDrag" id="deleteR00004069" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R00004069','null');" onMouseOut="javascript:activeDragDrop('R00004069','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame CATHERINE Ludivine</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>CABINET Residence panorama 15 rue chateaubriand</td>
+<td>14000</td>
+<td>CAEN</td>
+<td>0231952576</td>
+<td><a href="mailto:"></a></td></tr>
+<tr class="even">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR00004069">
+<div id="R00004069" title="Madame CATHERINE Ludivine<br/><br/>CABINET Residence panorama 15 rue chateaubriand<br/>14000 - CAEN" class="initialise">
+R00004069
+<input type="hidden" id="R00004069" value="R00004069" name="null_R00004069"/><a class="liDrag" id="deleteR00004069" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R00004069','null');" onMouseOut="javascript:activeDragDrop('R00004069','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame CATHERINE Ludivine</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>MSP AGNEAUX  5 rue de l oratoire</td>
+<td>50180</td>
+<td>AGNEAUX</td>
+<td></td>
+<td><a href="mailto:"></a></td></tr>
+<tr class="odd">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR03839451">
+<div id="R03839451" title="Madame CHARLET Elisabeth<br/><br/>CABINET OPHTA  10 rue sainte catherine<br/>76200 - DIEPPE" class="initialise">
+R03839451
+<input type="hidden" id="R03839451" value="R03839451" name="null_R03839451"/><a class="liDrag" id="deleteR03839451" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R03839451','null');" onMouseOut="javascript:activeDragDrop('R03839451','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame CHARLET Elisabeth</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>CABINET OPHTA  10 rue sainte catherine</td>
+<td>76200</td>
+<td>DIEPPE</td>
+<td>0235848455</td>
+<td><a href="mailto:"></a></td></tr>
+<tr class="even">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR05131002">
+<div id="R05131002" title="Madame COISNE Veronique<br/><br/>CABINET  4 rue de lessard<br/>76100 - ROUEN" class="initialise">
+R05131002
+<input type="hidden" id="R05131002" value="R05131002" name="null_R05131002"/><a class="liDrag" id="deleteR05131002" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R05131002','null');" onMouseOut="javascript:activeDragDrop('R05131002','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame COISNE Veronique</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>CABINET  4 rue de lessard</td>
+<td>76100</td>
+<td>ROUEN</td>
+<td>0235728631</td>
+<td><a href="mailto:"></a></td></tr>
+<tr class="odd">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR05197552">
+<div id="R05197552" title="Madame COUCHE Eline<br/><br/>CABINET PARAMEDICAL Polyclinique de la baie 1 avenue du quesnoy<br/>50300 - ST MARTIN DES CHAMPS" class="initialise">
+R05197552
+<input type="hidden" id="R05197552" value="R05197552" name="null_R05197552"/><a class="liDrag" id="deleteR05197552" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R05197552','null');" onMouseOut="javascript:activeDragDrop('R05197552','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame COUCHE Eline</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>CABINET PARAMEDICAL Polyclinique de la baie 1 avenue du quesnoy</td>
+<td>50300</td>
+<td>ST MARTIN DES CHAMPS</td>
+<td>0233509086</td>
+<td><a href="mailto:"></a></td></tr>
+<tr class="even">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR02237504">
+<div id="R02237504" title="Madame DE SEPTENVILLE Odile<br/><br/>CABINET PARAMEDICAL  5bis rue chenedolle<br/>14500 - VIRE" class="initialise">
+R02237504
+<input type="hidden" id="R02237504" value="R02237504" name="null_R02237504"/><a class="liDrag" id="deleteR02237504" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R02237504','null');" onMouseOut="javascript:activeDragDrop('R02237504','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame DE SEPTENVILLE Odile</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>CABINET PARAMEDICAL  5bis rue chenedolle</td>
+<td>14500</td>
+<td>VIRE</td>
+<td>0231677787</td>
+<td><a href="mailto:"></a></td></tr>
+<tr class="odd">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR02536591">
+<div id="R02536591" title="Madame DUGATS Marie<br/><br/>CABINET  4 rue de lessard<br/>76100 - ROUEN" class="initialise">
+R02536591
+<input type="hidden" id="R02536591" value="R02536591" name="null_R02536591"/><a class="liDrag" id="deleteR02536591" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R02536591','null');" onMouseOut="javascript:activeDragDrop('R02536591','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame DUGATS Marie</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>CABINET  4 rue de lessard</td>
+<td>76100</td>
+<td>ROUEN</td>
+<td>0235728631</td>
+<td><a href="mailto:"></a></td></tr>
+<tr class="even">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR03264512">
+<div id="R03264512" title="Madame FAVIER Christine<br/><br/>CABINET OPHTA  31 rue d ingouville<br/>76600 - LE HAVRE" class="initialise">
+R03264512
+<input type="hidden" id="R03264512" value="R03264512" name="null_R03264512"/><a class="liDrag" id="deleteR03264512" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R03264512','null');" onMouseOut="javascript:activeDragDrop('R03264512','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame FAVIER Christine</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>CABINET OPHTA  31 rue d ingouville</td>
+<td>76600</td>
+<td>LE HAVRE</td>
+<td>0235417014</td>
+<td><a href="mailto:"></a></td></tr>
+<tr class="odd">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR03624181">
+<div id="R03624181" title="Madame GROUALLE NABET Mireille<br/><br/>CABINET OPHTA 1er etage 9 rue pasteur<br/>14000 - CAEN" class="initialise">
+R03624181
+<input type="hidden" id="R03624181" value="R03624181" name="null_R03624181"/><a class="liDrag" id="deleteR03624181" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R03624181','null');" onMouseOut="javascript:activeDragDrop('R03624181','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame GROUALLE NABET Mireille</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>CABINET OPHTA 1er etage 9 rue pasteur</td>
+<td>14000</td>
+<td>CAEN</td>
+<td>0231866990</td>
+<td><a href="mailto:"></a></td></tr>
+<tr class="even">
+<td><ul onmouseover="initDragDropScript();">
+<li id="liR00005880">
+<div id="R00005880" title="Madame GUINARD Celine<br/>CABINET PARAMEDICAL Residence edmond rostand 36 rue de lion sur mer<br/>14000 - CAEN" class="initialise">
+R00005880
+<input type="hidden" id="R00005880" value="R00005880" name="null_R00005880"/><a class="liDrag" id="deleteR00005880" href="#"  style="display:none" onMouseOver="javascript:desactiveDragDrop('R00005880','null');" onMouseOut="javascript:activeDragDrop('R00005880','null');"><img src="{!URLFOR($Resource.stylesFDV, 'images/supprimerVisite.png')}"/></a></div>
+</li>
+</ul>
+</td>
+<td>Madame GUINARD Celine</td>
+<td></td>
+<td></td>
+<td>OPHTALMOLOGISTE</td>
+<td>CABINET PARAMEDICAL Residence edmond rostand 36 rue de lion sur mer</td>
+<td>14000</td>
+<td>CAEN</td>
+<td>0231948311</td>
+<td><a href="mailto:"></a></td>
+</tr>
+</tbody>
+</table>
+
+<apex:dataTable value="{!customers}" var="pitem" rowClasses="odd,even" > 
+<ul onmouseover="initDragDropScript();">
+<li id="li{!pitem.name}">
+<div id="{!pitem.name}" title="{!pitem.name}" class="initialise">
+<apex:column headerValue="Compte">
+      <apex:outputText value="{!pitem.Hoya_Account_ID__c}"/>
+</apex:column>
+<apex:column headerValue="Nom">
+      <apex:outputText value="{!pitem.name}"/>
+</apex:column>
+<apex:column headerValue="Type">
+      <apex:outputText value="{!pitem.Record_Type_Name__c}"/>
+</apex:column>
+<apex:column headerValue="Ville">
+      <apex:outputText value="{!pitem.Shop_City__c}"/>
+</apex:column>
+<apex:column headerValue="Telephone">
+      <apex:outputText value="{!pitem.phone}"/>
+</apex:column>
+
+</div>
+</li>
+</ul> 
+</apex:dataTable>
+
+            <input type="hidden" name="actionDisplay" value="reload"/>
+        </div>
+        </div>
+</div>
+
+<!-- Element pour le deplacement drag & drop -->
+<ul id="dragContent"></ul>
+<div id="dragDropIndicator">
+    <img src="/HoyaStyle/images/insert.gif"/>
+</div>
+
+ 
+
+
+</apex:page>

@@ -1,0 +1,48 @@
+<template>
+    <template if:true={isSameStage} for:index="index">
+        <div class="slds-p-around_none slds-m-horizontal_none">
+            <lightning-layout multiple-rows>
+                <lightning-layout-item key={record.Id} size="12" small-device-size="6" medium-device-size="4" large-device-size="3" padding="around-small">
+                    <div class ={negativeClass}>
+                        <a href="#" data-id={record.Id} onclick={navigateAccHandler} class={linkClass}>
+                            <span class="slds-p-around_none" data-id={record.Id}>
+                                {record.Account__r.Name}
+                            </span>
+                        </a>
+                        <p class="slds-p-around_none">{record.Account__r.Owner.Name}</p>
+                        <p class="slds-p-around_none">{strategicValue} {record.Account__r.CurrencyIsoCode} (SV)</p>
+                        <p class="slds-p-around_none">{lensesNetSales} {record.Account__r.CurrencyIsoCode} (L12Mo)</p>
+                        <p class="slds-p-around_none">{record.Segmentation__c} (SOW : {record.Current_SOW_L3Mo__c}%)</p>
+                        <template if:true={showVisionaryFlag}>
+                            <lightning-icon icon-name="utility:opportunity" class="iconMargin Hoya-utility-icon" size="x-small" title={record.Account__r.Seiko_Network__c}></lightning-icon>
+                        </template>
+                        <template if:true={addNew}>
+                            <lightning-icon icon-name="utility:new" class="iconMargin Hoya-utility-icon" size="x-small" title={custLabel.On_boarding_Customer}></lightning-icon>
+                        </template>
+                        <template if:true={showDecreasingSalesFlag}>
+                            <lightning-icon icon-name="utility:cart" class="iconMargin red-utility-icon" size="x-small" title={custLabel.Decreasing_Sales}></lightning-icon>
+                        </template>
+                        <template if:true={isFollowUpRatelessthan80}>
+                            <lightning-icon icon-name="utility:travel_and_places" class="iconMargin red-utility-icon" size="x-small" title={custLabel.Follow_up_rate_80}></lightning-icon>
+                        </template>
+                        <template if:true={isFollowUpRatemorethan120}>
+                            <lightning-icon icon-name="utility:travel_and_places" class="iconMargin red-utility-icon" size="x-small" title={custLabel.Follow_up_rate_120}></lightning-icon>
+                        </template>
+                        <template if:true={isAlert}>
+                            <lightning-icon icon-name="utility:alert" class="iconMargin red-utility-icon" size="x-small" title={custLabel.Issue}></lightning-icon>
+                        </template>
+                        <template if:true={isTaskOverDue}>
+                            <lightning-icon icon-name="utility:expired" class="iconMargin red-utility-icon" size="x-small" title={taskStatus}></lightning-icon>
+                        </template>
+                        <template if:true={isSVDisplay}>
+                            <lightning-icon icon-name="utility:moneybag" class="iconMargin red-utility-icon" size="x-small" title={svStatus}></lightning-icon>
+                        </template>
+                        <template if:true={banFlag}>
+                            <lightning-icon icon-name="utility:ban" class="iconMargin red-utility-icon" size="x-small" title="No sub-area selected in Visit Zone"></lightning-icon>
+                        </template>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </template>
+</template>

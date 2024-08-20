@@ -1,0 +1,59 @@
+<template>
+    <template if:true={showSpinner}>
+        <div class="backdrop">
+            <lightning-spinner class="spinshow" size="medium" variant="brand" alternative-text="Loading">
+            </lightning-spinner>
+        </div>
+    </template>
+    <div class="card_Design">
+        <template for:each={pickVals} for:item="item">
+            <div class="slds-tabs--path borderLine"  role="application" key={item}  style = {equalwidthHorizontalAndVertical}>
+                <ul class="slds-tabs--path__nav" role="tablist">
+                    <li class={item.fullClass} role="presentation">
+                        <a class="slds-tabs--path__link slds-button_brand " tabindex="-1" role="tab" >
+                            <span class="slds-tabs--path__title" >
+                                <div class="stage-info">
+                                    <span class="stage-name">{item.zoneTranslate} ({item.noRecords})</span>
+                                </div>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="subCount">
+                    <span class="stage-name">{custLabel.Planned_Visits} <strong class="stg-name">{item.plannedVisitsWeight}</strong></span>
+                </ul>
+                <ul class="subCount borderBottom">
+                    <span class="stage-name">{custLabel.Total_Prospects} <strong class="stg-name">{item.totalProspects}</strong></span>
+                </ul>
+                <c-visit-zones-list records={records} tranlated={item.zoneTranslate} stage={item.zone} showspinner={showSpinner} pickvals={pickVals} onlistitemdrag={handleListItemDrag} onitemdrop={handleItemDrop} ondeletecard={handleCardDelete}></c-visit-zones-list>
+            </div>
+        </template>
+    </div>   
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">{custLabel.tabLabelClose}</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium">{custLabel.Confirm_Action}</h2>
+                </header>
+
+                <!-- Modal/Popup Body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <p>{custLabel.Account_Zone_Change} {dropZoneArea} ?</p>
+                </div>
+
+                <!-- Modal/Popup Footer -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal}>{custLabel.ButtonCancel}</button>
+                    <button class="slds-button slds-button_brand" onclick={confirmDrop}>{custLabel.SFDC_V2_Confirm}</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+</template>

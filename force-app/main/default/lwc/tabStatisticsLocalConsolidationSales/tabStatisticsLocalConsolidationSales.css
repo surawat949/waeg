@@ -1,0 +1,13 @@
+.fixColumn{
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: #f8f8f8;
+ }
+ .slds-modal__container{
+    max-width: 65rem !important;
+    width: 65% !important;
+}
+:host {
+    --slds-c-textarea-sizing-min-height: 150px;
+}

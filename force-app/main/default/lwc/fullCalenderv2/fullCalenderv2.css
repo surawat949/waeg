@@ -1,0 +1,16 @@
+.slds-page-header.flexipageHeader { 
+    display: none;
+}
+.fc-toolbar.fc-header-toolbar{
+    margin-bottom: 0em !important;
+}
+
+.lessopac{
+    z-index: 1;
+}
+/*.fullcalendarjs{
+    padding:2px;
+}*/
+.calendarbody{
+    height:48rem;
+  }

@@ -1,0 +1,132 @@
+<template>
+    <div class="slds-grid slds-m-left_small">
+        <div class="slds-col slds-size_1-of-6">
+            Registration
+            <br>
+            <div>
+                <img style="height: 40px; width: 40px;" src={RegistrationIndicator}>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-6">
+            Track & Trace
+            <br>
+            <div>
+                <img style="height: 40px; width: 40px;" src={TrackAndTraceIndicator} title={TrackAndTraceMeaningIndicator}>
+            </div>
+        </div>
+       
+        <div class="slds-col slds-size_1-of-6">
+            Store Finder
+            <br>
+            <img style="height: 40px; width: 40px;" src={StoreFinderIndicator}>
+        </div>
+        <div class="slds-col slds-size_1-of-6">
+            ilog/Xtranet
+            <br>
+            <img style="height: 40px; width: 40px;" src={InetIndicator}>
+        </div>
+        <div class="slds-col slds-size_1-of-6">
+            Purchase Reg.
+            <br>
+            <img style="height: 40px; width: 40px;" src={PurchaseRegistrationIndicator} title={PurchaseRegistrationMeaningIndicator}>
+        </div>
+        <div class="slds-col slds-size_1-of-6">
+            Loyalty Program
+            <br>
+            <img style="height: 40px; width: 40px;" src={LoyaltyProIndicator} title={LoyaltyProIndicatorMeaningIndicator}>
+        </div>
+    </div>
+
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.label_PortalName}</h3></td>
+            </tr>
+        </table>
+        <lightning-layout>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={objectapiname}
+                    fields={portalAccFields}
+                    mode="view"
+                    columns="3"
+                    >
+                </lightning-record-form>
+            </lightning-layout-item>
+        </lightning-layout>
+		
+		<div class="slds-grid slds-m-left_medium slds-m-bottom_medium">
+			<div class="slds-col slds-size_1-of-3">
+				<div class="slds-form-element slds-form-element_readonly">
+					<span class="slds-form-element__label">Account Template Name</span>
+						<div class="slds-form-element__control">
+							<div class="slds-form-element__static">
+								<a href={AccountTemplateId} style="text-decoration: underline;">{AccountTemplateName}</a>
+							</div>
+						</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <template if:true={showAllTab}>
+            <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+                    <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                        <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.label_ParentAccount}</h3></td>
+                    </tr>
+                </table>
+                <div class="slds-grid slds-m-left_medium slds-m-top_medium">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-record-form
+                            record-id={receivedId}
+                            object-api-name={objectapiname}
+                            fields={parentAccount}
+                            mode="readonly"
+                            columns="1"
+                        ></lightning-record-form>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element slds-form-element_readonly">
+                            <span class="slds-form-element__label">{custLabel.lblNumChild}</span>
+                            <div class="slds-form-element__static">{NumberOfChild}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+                <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+                    <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                        <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.label_PortalLogin}</h3></td>
+                    </tr>
+                </table><br>
+                <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                    <img src="/projRes/ui-home-private/emptyStates/noTasks.svg" class="slds-illustration__svg" alt=""/>
+                    <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                        <b>UNDER DEVELOPMENT. Nothing to see so far.</b>
+                    </div>
+                </div>
+            </div>
+    </template>
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
+            <tr data-id="header1"  class="row" style="background-color: #aacbff;">
+                    <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.label_PortalRegContact} ({conCount})</h3></td>
+            </tr>
+        </table><br>
+        <template lwc:if ={isDataExists}>
+           <lightning-datatable data={registratedContactList} columns={columns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true" sorted-by={sortBy}
+           sorted-direction={sortDirection}
+           onsort={doSorting} ></lightning-datatable>
+        </template>  
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div>
+        </template>
+       
+    </div>
+</template>

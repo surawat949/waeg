@@ -1,0 +1,81 @@
+<aura:component access="public"
+implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable"
+controller="ContactNearAccountController">
+
+
+
+    <aura:attribute name="mapMarkers" type="Object[]"/>
+    <aura:attribute name="distance" type="Double" default="2"/>
+    <aura:attribute name="potentialMin" type="Double"/>
+    <aura:attribute name="potentialMax" type="Double"/>
+    <aura:attribute name="localCompetitor" type="String"/>
+    <aura:attribute name="svsnetwork" type="String"/>
+    <aura:attribute name="displayListView" type="String" default="hidden"/>
+    <aura:attribute name="selectedMarkerValue" type="String" default="SF1" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="slds-theme_default slds-box">
+        <div class="slds-grid slds-wrap">
+
+            <div class="slds-col slds-size_1-of-5 slds-align-middle">
+                <label class="slds-form-element__label">&nbsp;Strategic value Min</label>
+            </div>
+            <div class="slds-col slds-size_1-of-5">
+                <lightning:input type='number' value="{!v.potentialMin}" onchange="{!c.init}" />
+            </div>
+            <div class="slds-col slds-size_1-of-5">
+               &nbsp;
+            </div>
+            <div class="slds-col slds-size_1-of-5 slds-align-middle">
+                <label class="slds-form-element__label">&nbsp;Lens supplier</label>
+            </div>
+            <div class="slds-col slds-size_1-of-5">
+                <lightning:input type="text" value="{!v.localCompetitor}" onchange="{!c.init}" />
+            </div>
+
+            <div class="slds-col slds-size_1-of-5 slds-align-middle">
+                <label class="slds-form-element__label">&nbsp;Strategic value Max</label>
+            </div>
+            <div class="slds-col slds-size_1-of-5">
+                <lightning:input type='number' value="{!v.potentialMax}" onchange="{!c.init}"/>
+            </div>
+
+            <div class="slds-col slds-size_1-of-5">
+                &nbsp;
+             </div>
+            <div class="slds-col slds-size_1-of-5 slds-align-middle">
+                <label class="slds-form-element__label">&nbsp;Seiko Network</label>
+            </div>
+            <div class="slds-col slds-size_1-of-5">
+                <lightning:select value="{!v.svsnetwork}" onchange="{!c.init}" name="select">
+                        <option value=""></option>
+                        <option value="Seiko Vision Specialist">Seiko Vision Specialist</option>
+                        <option value="Retail Partner">Retail Partner</option>
+                        <option value="SVS sub-account (UK)">SVS sub-account (UK)</option>
+                </lightning:select>
+            </div>
+
+            <div class="slds-col slds-size_1-of-4 slds-align-middle">
+                <label class="slds-form-element__label">&nbsp;Distance(km)</label>
+            </div>
+            <div class="slds-col slds-size_2-of-4">
+                <lightning:slider value="{!v.distance}" min="1" max="30" onchange="{!c.init}"/>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-align-bottom">
+                <aura:if isTrue="{!v.displayListView=='hidden'}"><lightning:button label="Display list" variant="brand" onclick="{!c.displayList}"/></aura:if>
+                <aura:if isTrue="{!v.displayListView=='visible'}"><lightning:button label="Hide list" variant="brand" onclick="{!c.hideList}"/></aura:if>
+            </div>
+        </div>
+    </div>
+
+<lightning:map
+    mapMarkers="{!v.mapMarkers}"
+    markersTitle="Opticians"
+    onmarkerselect="{!c.handleMarkerSelect}"
+    selectedMarkerValue="{!v.selectedMarkerValue}"
+    center="{!v.center}"
+    listView="{!v.displayListView}"
+    zoomLevel="13"/>
+
+</aura:component>

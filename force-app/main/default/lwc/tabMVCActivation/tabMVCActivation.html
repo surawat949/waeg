@@ -1,0 +1,17 @@
+<template>
+    <lightning-tabset variant="scoped">
+        <lightning-tab label={custLabel.tabPotential}>
+            <c-tab-m-v-c-activation-potential received-id = {recordId}></c-tab-m-v-c-activation-potential>
+        </lightning-tab>
+        <lightning-tab label={custLabel.tabMiyosmart}>
+            <c-tab-m-v-c-activation-miyosmart received-id = {recordId}></c-tab-m-v-c-activation-miyosmart>
+        </lightning-tab>
+        <lightning-tab label={custLabel.tabReferringOpticians}>
+            <c-tab-m-v-c-activation-referring-opticians received-id = {recordId}></c-tab-m-v-c-activation-referring-opticians>
+        </lightning-tab>
+        <lightning-tab label={custLabel.tabGdprAgreements}>
+            <c-tab-m-v-c-activation-gdpr-agreements received-id = {recordId}></c-tab-m-v-c-activation-gdpr-agreements>
+        </lightning-tab>
+    </lightning-tabset>
+    
+</template>

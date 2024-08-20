@@ -1,0 +1,123 @@
+<apex:page standardController="Visits__c" extensions="VisitLocationController"
+           docType="html-5.0" id="visitLocationPage" lightningStylesheets="true">
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head>
+        <apex:slds />
+        <title>Confirm visit start</title>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript">
+        
+            var options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+            function success(pos) {
+              var crd = pos.coords;
+              document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.userLatitude}").value=pos.coords.latitude;
+              document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.userLongitude}").value=pos.coords.longitude;
+              if(pos.coords.latitude==0 || pos.coords.latitude==null){
+                    document.getElementById("message").innerHTML = 'Por favor, vá nas configurações e ative a localização do seu GPS';
+                    if(document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.startButton}")!=null){
+                      document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.startButton}").style.display='none';
+                    }
+                    if(document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.stopButton}")!=null){
+                        document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.stopButton}").style.display='none';
+                    }
+              }
+              console.log('Latitude : ${crd.latitude}');
+              console.log('Longitude: ${crd.longitude}');
+              //console.log('Plus ou moins ${crd.accuracy} mètres.');
+            };
+            function error(err) {
+                //console.warn('ERROR('+err.code+';'+err.message+')');
+                
+                alert('{!$Label.VisitLocationPage_alertgps}');
+                document.getElementById("message").innerHTML = '{!$Label.VisitLocationPage_alertgps}';
+                if(document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.startButton}")!=null){
+                    document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.startButton}").style.display='none';
+                }
+                if(document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.stopButton}")!=null){
+                    document.getElementById("{!$Component.visitLocationPage.pblock.pblocksection.vlForm.stopButton}").style.display='none';
+                }
+            };
+        
+            $(document).ready(function() {
+                navigator.geolocation.getCurrentPosition(success, error, options);
+            });
+       
+        </script>
+        
+    </head>
+    <body>
+        <div class="slds-scope">
+            <apex:pageBlock id="pblock">
+                <!-- Form field to send currentPosition in request. You can make it
+                     an <apex:inputHidden> field to hide it. -->
+                <p id="message" style="color:red;font-weight:bold;">
+                    
+                </p>
+                <apex:pageBlockSection id="pblocksection" columns="1">
+                    <apex:outputText value="Account: {!account.name}"/><br/>
+                    <apex:outputText value="{!account.shippingStreet}, {!account.shippingPostalCode}, {!account.shippingCity} "/>
+                    <apex:form id="vlForm">
+                        <apex:inputHidden value="{!visit.id}" id="visitId"/>
+                        
+                        <!--
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="currentPosition">Account Location</label>
+                            <div class="slds-form-element__control">
+                                <apex:input size="30" 
+                                     html-placeholder="Attempting to obtain your position..."
+                                     id="currentPosition" styleClass="currentPosition" 
+                                     value="{!currentPosition}" />
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="userLatitude">User Latitude</label>
+                            <div class="slds-form-element__control">
+                                <apex:inputText value="{!userLatitude}" id="userLatitude"/>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="userLongitude">User Longitude</label>
+                            <div class="slds-form-element__control">
+                                <apex:inputText value="{!userLongitude}" id="userLongitude"/>
+                            </div>
+                        </div>
+                        -->
+                        <apex:inputHidden value="{!userLatitude}" id="userLatitude"/>
+                        <apex:inputHidden value="{!userLongitude}" id="userLongitude"/>
+
+                        <apex:outputPanel id="vlPanelStart" rendered="{!visit.Start_Location_Latitude__c == null}">
+                            <apex:commandButton action="{!doStart}" value="Start visit" id="startButton"/>
+                        </apex:outputPanel>
+                        <apex:outputPanel id="vlPanelStop" rendered="{!not(visit.Start_Location_Latitude__c == null) && visit.Stop_Location_Latitude__c == null}">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="visitNote">Visit Notes</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputTextarea value="{!visitNote}" id="visitNote" required="true" cols="50" rows="5"/>
+                                </div>
+                            </div>
+                            <apex:commandButton action="{!doStop}" value="Stop visit" id="stopButton"/>
+                        </apex:outputPanel>
+                    </apex:form>
+                </apex:pageBlockSection>
+                
+                <!-- Map of the results -->
+                <apex:pageBlockSection rendered="{!resultsAvailable}" title="Locations">
+                    <apex:map width="600px" height="400px" zoomLevel="17">
+                        <apex:repeat value="{!locations}" var="pos">
+                            <apex:mapMarker position="{!pos}"/>
+                        </apex:repeat>
+                    </apex:map>
+                </apex:pageBlockSection>
+        
+            </apex:pageBlock>
+        </div>
+    </body>
+</html>
+</apex:page>

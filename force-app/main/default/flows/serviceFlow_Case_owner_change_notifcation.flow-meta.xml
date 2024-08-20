@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Case_Owner_changed_Notification_Indonesia</name>
+        <label>Case Owner changed Notification Indonesia</label>
+        <locationX>50</locationX>
+        <locationY>575</locationY>
+        <actionName>Case.serviceFlow_Alert_serviceFlow_Task_assignment_Email_Indonesia</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Case_Owner_Changed_Notification_USA</name>
+        <label>Case Owner Changed Notification USA</label>
+        <locationX>578</locationX>
+        <locationY>575</locationY>
+        <actionName>Case.serviceFlow_alert_serviceFlow_Case_assignment_Email_USA</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>South_Africa_Alert</name>
+        <label>South Africa Alert</label>
+        <locationX>314</locationX>
+        <locationY>575</locationY>
+        <actionName>Case.serviceFlow_alert_serviceFlow_Case_assignment_Email_South_Africa</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <apiVersion>53.0</apiVersion>
+    <decisions>
+        <name>recordtype_check</name>
+        <label>recordtype check</label>
+        <locationX>776</locationX>
+        <locationY>335</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>is_ServiceFlow_Edit_Recordtype</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ServiceFlow_Case_Edit</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ServiceFlow_Case_Edit_Italy</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ServiceFlow_Case_Edit_SouthAfrica</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>User_Country_Check</targetReference>
+            </connector>
+            <label>is ServiceFlow Edit Recordtype?</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>This decision will help to send different language email tempates</description>
+        <name>User_Country_Check</name>
+        <label>User Country Check</label>
+        <locationX>446</locationX>
+        <locationY>455</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>is_Indonesia_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.User_country__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Indonesia</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Case_Owner_changed_Notification_Indonesia</targetReference>
+            </connector>
+            <label>is Indonesia User</label>
+        </rules>
+        <rules>
+            <name>Is_South_Africa_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.User_country__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>South Africa</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>South_Africa_Alert</targetReference>
+            </connector>
+            <label>Is South Africa User ?</label>
+        </rules>
+        <rules>
+            <name>is_NOT_Indonesia_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.User_country__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Indonesia</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Case_Owner_Changed_Notification_USA</targetReference>
+            </connector>
+            <label>is NOT Indonesia User</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>serviceFlow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>serviceFlow Case owner change notifcation</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>650</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>recordtype_check</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>OwnerId</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>Case</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

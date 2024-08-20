@@ -1,0 +1,126 @@
+<template>
+    <!--All Associated Active Contacts Section-->
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="table_001" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+              <td>
+                 <h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.AllContacts}</p></h3>
+             </td>
+                <td>
+                    <p align="right"><lightning-button label={label.NewBtn} onclick={createNewContactRecord}></lightning-button></p>
+                </td>
+            </tr>
+         </table><br>
+         <div if:true={isContactLstLoading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+        </div>
+        <div class="slds-grid ">
+            <div class="slds-col slds-size_1-of-1">
+                <div style="width: auto;">
+                    <template lwc:if ={isAssociatedConsExist}>
+                        <template if:true={data}>
+                            <lightning-datatable data={data}
+                                    columns={columns}
+                                    key-field="id"
+                                    sorted-by={sortBy}
+                                    sorted-direction={sortDirection}
+                                    onsort={doSorting}
+                                    hide-checkbox-column="true"
+                                    wrap-table-header="true"></lightning-datatable><br>
+                        </template>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                            <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                            <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                                <b>{label.NoData}</b>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+        <template if:true={isModalOpen}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    
+                    <div if:true={isLoading}>
+                        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+                    </div>
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close"
+                                alternative-text="close"
+                                variant="inverse"
+                                size="small" ></lightning-icon>
+                            <span class="slds-assistive-text">{label.CloseButton}</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{label.DeleteButton} {rowName}</h2>
+                    </header>
+                    
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p align="center">{label.DeleteConfirm}</p>
+                    </div>
+                    
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">{label.ButtonCancel}</button>
+                        <button class="slds-button slds-button_brand" onclick={deleteRecord} title="Delete">{label.ButtonDel}</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        
+        <!-- removed from this below component regarding discussed in meeting 2023-07-04 SFDC V.2.0 Project
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                <p align="center"><lightning-button label="View All" onclick={navigateToRelatedList}></lightning-button></p><br>
+            </div>
+        </div>-->
+    </div>
+
+    <!--Validation Request Section-->
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Validation Request" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left">{label.ValidationLabel} ({ValidCount})</p></h3>
+                </td>
+                <td><p align="right"><lightning-button label={label.NewBtn} variant="brand-outline" onclick={navigateToNewRecord}></lightning-button></p></td>
+            </tr>
+        </table><br>
+        <div class="slds-grid ">
+            <div class="slds-col slds-size_1-of-1">
+                <div style="width: auto;">
+                    <template lwc:if ={isValidationReqsExist}>
+                        <template if:true={data}>
+                            <lightning-datatable
+                                data={data}
+                                columns={columns2}
+                                key-field="id"
+                                sorted-by={sortBy}
+                                sorted-direction={sortDirection}
+                                onsort={doSorting}
+                                hide-checkbox-column="true"
+                                onrowaction={handleRowAction}
+                            ></lightning-datatable>
+                        </template>
+                        <div class="slds-grid slds-m-left_small slds-m-top_small slds-m-bottom_small">
+                            <div class="slds-col slds-size_1-of-1">
+                                <p align="center"><lightning-button variant="brand-outline" label={label.ViewAll} onclick={nevigateToRelatedList}></lightning-button></p>
+                            </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                            <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                            <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                                <b>{label.NoData}</b>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

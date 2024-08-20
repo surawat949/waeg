@@ -1,0 +1,79 @@
+<apex:page controller="TabMVAVisitsCertificateController" renderAs="pdf" applyHtmlTag="false" showHeader="false" cache="true" readOnly="true">
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+            <style>
+                @page {
+                    margin: 0.0in; size: 12.49in 8.8in;
+                }
+            </style>
+        </head>
+        <body style="background-image:url('{!$Resource.HoyaMedicalCertificate}');background-position:center; background-size:cover; background-repeat:no-repeat">
+            <table style ="font-family:Arial Unicode MS;padding-left:7.6em;padding-top:7.1em;table-layout:fixed; width:43%">
+                <tbody>
+                    <tr>
+                        <td style="width:135px;font-size:66.667%;vertical-align:top">{!$Label.Delivered_to}</td>
+                        <td style="width:178px;font-size:73.333%;vertical-align:top" colspan="3">{!deliveredTo}</td>
+                    </tr>
+                    <tr>
+                        <td style="width:135px;font-size:66.667%;">{!$Label.Training_Date}</td>
+                        <td style="width:178px;font-size:73.333%;" colspan="3">{!trainingDate} GMT</td>
+                    </tr>
+                    <tr>
+                        <td style="width:135px;font-size:66.667%;">{!$Label.Training_type}:</td>
+                        <td style="width:178px;font-size:73.333%;"> {!trainingType}</td>
+                        <td style="width:25px;font-size:66.667%;">{!$Label.Account_number}:</td>
+                        <td style="width:100px;font-size:73.333%;">{!accountNumber}</td>
+                    </tr>
+                    <tr>
+                        <td style="width:135px;font-size:66.667%;vertical-align:top">{!$Label.Duration}:</td>
+                        <td style="width:178px;font-size:73.333%;vertical-align:top"> {!duration} Minutes</td>
+                        <td style="width:25px;font-size:66.667%;vertical-align:top">{!$Label.Address}:</td>
+                        <td style="width:100px;font-size:73.333%;vertical-align:top">{!address1}</td>
+                    </tr>
+
+                    <tr>
+                        <td style="width:135px;font-size:66.667%;">{!$Label.Trainer_s_name}:</td>
+                        <td style="width:178px;font-size:73.333%;"> {!trainersName}</td>
+                        <td></td>
+                        <td style="width:100px;font-size:73.333%;">{!address2}</td>
+                    </tr>
+
+                    <tr>
+                        <td style="width:135px;font-size:66.667%;">{!$Label.Training_ID}:</td>
+                        <td style="width:178px;font-size:73.333%;"> {!trainingIdvf}</td>
+                        <td></td>
+                        <td style="width:100px;font-size:73.333%;">{!address3}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--Training Topic-->
+            <div style="position:absolute;font-size:100%; left:9em; top:18em; font-family:Arial Unicode MS;">
+                <span style="background-color:white;font-weight:bold;">&nbsp;&nbsp;{!$Label.TRAINING_TOPICS}&nbsp;&nbsp;</span>
+            </div>
+            <div style="position:absolute;font-size:83.333%; left:11.5em; top:24em; font-family:Arial Unicode MS;">
+                <span>{!trainingTopics}</span><br/>
+                <span>{!trainingTopicsRow2}</span>
+            </div>
+
+            <!--Attendees-->
+            <div style="position:absolute; left:9em; top:25em; font-family:Arial Unicode MS;">
+                <span style="background-color:white;">&nbsp;&nbsp;{!$Label.ATTENDEE_S}&nbsp;&nbsp;</span>
+            </div>
+            <table class="list" style="position:absolute; left:9em; top:27em; font-family:Arial Unicode MS;">
+                <apex:repeat value="{!attendeesList}" var="heading">
+                    <tr>
+                        <td style="width:170px;font-size:73.333%;">{!heading}</td>
+                    </tr>
+                </apex:repeat>
+            </table>
+            <table class="list" style="position:absolute; left:27em; top:27em; font-family:Arial Unicode MS;">
+                <apex:repeat value="{!attendeesList2}" var="heading2">
+                    <tr>
+                        <td style="width:170px;font-size:73.333%;">{!heading2}</td>
+                    </tr>
+                </apex:repeat>
+            </table>
+        </body>
+    </html>
+</apex:page>

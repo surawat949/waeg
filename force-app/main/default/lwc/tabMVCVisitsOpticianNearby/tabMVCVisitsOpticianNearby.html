@@ -1,0 +1,147 @@
+<template>
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+    
+    <div class="slds-box slds-p-around_none slds-m-bottom_small">
+        <table class="slds-table slds-table_bordered" aria-label="workingplaces" style="background-color: #aacbff;">
+            <tr class="row" style="background-color: #aacbff;">
+              <td>
+                 <h3  class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">{label.Opticians_Nearby_section}</h3>
+             </td>
+            </tr>
+         </table>
+        <div class="slds-grid slds-m-left_small slds-m-right_small">
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_small">{label.getlblMyoSmartAuthorize}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle slds-m-top_small">
+                <lightning-input type="checkbox" id="IsisMyoSmart" name="IsisMyoSmart" value={isMyoSmart} onchange={handleKeyChange}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.getCustVisionaryAlliance}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning-combobox
+                    id="VisionaryAlliance"
+                    name="VisionaryAlliance"
+                    value={VSValues}
+                    options={VSAllianceValues}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small slds-m-right_small">
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.getlblSegment}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <lightning-combobox
+                    id="Issegmentation"
+                    name="Issegmentation"
+                    value={segmentation}
+                    options={optSegmentation}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.getlblHoyaVisionCenter}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle slds-m-top_small">
+                <lightning-input type="checkbox" id="IsHoyaVisionCenter" name="IsHoyaVisionCenter" value={isHoyaVisionCenter} variant="label-hidden" onchange={handleKeyChange}></lightning-input>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small slds-m-right_small">
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.getlblDistance}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left">
+                <lightning-combobox
+                    id="distance"
+                    name="distance"
+                    value={distanceValue}
+                    options={optDistanceValue}
+                    onchange={handleKeyChange}
+                ></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle">
+                <div class="slds-text-align_left slds-m-left_medium slds-m-top_medium">{label.getlblSeikoVision}</div>
+            </div>
+            <div class="slds-col slds-size_1-of-4 slds-float_left slds-align-middle slds-m-top_small">
+                <lightning-input type="checkbox" id="IsSeikoVision" name="IsSeikoVision" value={isSeikoSpecialist} variant="label-hidden" onchange={handleKeyChange}></lightning-input>
+            </div>
+        </div>
+        <!--<div class="slds-grid slds-m-top_small slds-m-left_small slds-m-right_small">
+            <div class="slds-col slds-size_1-of-1 slds-float_right slds-align-middle">
+                <template if:true={isDisplayList}>
+                    <p align="right">
+                        <lightning-button label="Display List" onclick={handleListViewShow} variant="brand"></lightning-button>
+                    </p>
+                </template>
+                <template if:false={isDisplayList}>
+                    <p align="right">
+                        <lightning-button label="Hide List" onclick={handleListViewHide} variant="brand"></lightning-button>
+                    </p>
+                </template>
+            </div>
+        </div>-->
+        <div class="slds-box slds-m-left_small slds-m-top_medium slds-m-right_small slds-box_xx-small">
+            <div class="slds-grid slds-m-left_small slds-m-right_small slds-m-top_small slds-m-bottom_small">
+                <div class="slds-col slds-size_1-of-4">
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 225 225" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z"
+                            style="fill:#3338FF;stroke:none;stroke-width:3"></path>
+                        </svg>
+                    </span>&nbsp;
+                    <span style="vertical-align: middle;display: inline-block">Clinic Account</span>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:green;stroke:none;stroke-width:3"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">Referring Opticians</span>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:red;stroke:none;stroke-width:3"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">Non-Clinic Account</span>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <template if:true={isDisplayList}>
+                        <p align="right">
+                            <lightning-button label="Display List" onclick={handleListViewShow} variant="brand"></lightning-button>
+                        </p>
+                    </template>
+                    <template if:false={isDisplayList}>
+                        <p align="right">
+                            <lightning-button label="Hide List" onclick={handleListViewHide} variant="brand"></lightning-button>
+                        </p>
+                    </template>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-left_small slds-m-right_small">
+            <div class="slds-col slds-size_1-of-1">
+                <template lwc:if={showMap}>
+                    <lightning-card variant="narrow">
+                        <lightning-map
+                            map-markers={mapMarker}
+                            markers-title={markersTitle}
+                            zoom-level={zoomLevel}
+                            center={vCenter}
+                            list-view={displayListView}
+                    ></lightning-map>
+                    </lightning-card>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

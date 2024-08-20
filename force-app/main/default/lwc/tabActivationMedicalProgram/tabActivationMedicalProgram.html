@@ -1,0 +1,11 @@
+<template>
+    <!--p> {receivedId} </p-->
+    <lightning-tabset variant="scoped">
+        <lightning-tab label="Prescribers">
+            <c-tab-activation-medical-program-prescribers received-id = {receivedId} > </c-tab-activation-medical-program-prescribers>
+        </lightning-tab>
+        <lightning-tab label="MiYOSMART">
+            <c-tab-activation-medical-program-miyosmart received-id = {receivedId} default-record-value = {MainMyopiaControl}> </c-tab-activation-medical-program-miyosmart>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

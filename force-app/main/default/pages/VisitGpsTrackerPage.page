@@ -1,0 +1,35 @@
+<apex:page standardController="Visits__c" extensions="VisitGpsTrackerController"
+           docType="html-5.0" id="visitLocationPage" lightningStylesheets="true">
+    
+    
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <apex:slds />
+        </head>
+        <body>       
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_3-of-4">
+                    <apex:map width="800px" height="400px" zoomLevel="7">
+                        <apex:repeat value="{!startlocations}" var="pos">
+                            <apex:mapMarker position="{!pos}" title="Inicio Position"/>
+                        </apex:repeat>
+                        <apex:repeat value="{!stoplocations}" var="pos">
+                            <apex:mapMarker position="{!pos}" title="Final Position"/>
+                        </apex:repeat>
+                        <apex:repeat value="{!accountLocations}" var="pos">
+                            <apex:mapMarker position="{!pos}" title="Cliente"/>
+                        </apex:repeat>
+                    </apex:map>
+                </div>
+                <div class="slds-col slds-size_1-of-4">     
+                    <p>
+                        Inicio-Shop distance: <apex:outputText value="{!Round(visit.Start_Shop_Distance__c,2)} km"></apex:outputText><br/>
+                        Final-Shop distance: <apex:outputText value="{!Round(visit.Stop_Shop_Distance__c,2)} km"></apex:outputText><br/>
+                        Inicio-Final distance: <apex:outputText value="{!Round(visit.Start_Stop_Distance__c,2)} km"></apex:outputText>
+                    </p>
+                </div>
+            </div>
+        </body>
+    </html>
+</apex:page>

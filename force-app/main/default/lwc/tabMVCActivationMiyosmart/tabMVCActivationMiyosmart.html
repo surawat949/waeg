@@ -1,0 +1,120 @@
+<template>   
+     <!--Myopia Control Potential-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+       <table class="slds-table slds-table_bordered" aria-label="Myopia Control Potential">
+           <tr class="row" style="background-color: #aacbff;">
+               <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.MiyosmartPotential}</h3></td>
+           </tr>     	        
+       </table><br>
+       <lightning-layout>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={ObjectApiName}
+                    fields={PotentialFields}
+                    mode="view" 
+                    columns = "3" >
+                </lightning-record-form>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-record-form
+                        record-id={receivedId}
+                        object-api-name={ObjectApiName}
+                        fields={MiyosmartSegmentation}
+                        mode="view" 
+                        columns = "1" >
+                    </lightning-record-form>
+                </lightning-layout-item>
+        </lightning-layout>
+       <div class="slds-grid slds-var-m-left_medium">
+            <div style="width:30%" class="slds-col slds-form-element slds-form-element_stacked slds-size_1-of-3">
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={ObjectApiName}
+                    fields={MiyoSmartAttitude}
+                    mode="view" 
+                    columns = "1" >
+                </lightning-record-form>
+            </div>
+            <div class="slds-col slds-form-element slds-form-element_stacked slds-size_1-of-3">
+                <div style="padding-left:25px;" >
+                    <span> <label class="slds-form-element__label">{custLabel.IsMiyoSmartTrainingCompleted}</label>
+                        <lightning-helptext content="MiyoSmart Traning Completion Status.It is not Editable field."></lightning-helptext>
+                    </span><br/>
+                    <div class="slds-form-element__control">
+                        <lightning-input  class="slds-var-p-left_xx-large" type="checkbox" checked={isTrainingComplete} ></lightning-input>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-var-p-left_x-small slds-form-element slds-form-element_stacked slds-size_1-of-3">
+                <div style="padding-left:30px;" >
+                    <label class="slds-form-element__label">{custLabel.LastMiyoSmartTrainingDate}</label><br/>
+                    <div class="slds-form-element__control">{LastTraningDate}</div>  
+                </div>                  
+            </div>  
+        </div>  
+        <br/>
+    </div>   
+    <!--Referring Opticians Selling Miyosmart-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+       <table class="slds-table slds-table_bordered" aria-label="Referring Opticians Selling Miyosmart">
+           <tr class="row" style="background-color: #aacbff;">
+               <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.MiyomsmartReferringOpts}</h3></td>
+          
+            </tr>     	        
+       </table><br>
+        <div if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+        </div>
+        <template lwc:if ={isDataExists}>
+            <template lwc:if ={isRefOptDataExist}>
+                <template if:true={data}>
+                    <lightning-datatable data={data}
+                        columns={RefOptsColumns}
+                        key-field="id" hide-checkbox-column="true">
+                    </lightning-datatable>            <br>
+                </template>
+            </template>
+        </template>
+        <template lwc:else>
+            <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+                <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+                    <b>No Data Available at the moment</b>
+                </div>
+            </div>
+        </template>
+    </div>
+     <!--Referring Opticians Miyosmart Sales-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Referring Opticians MiyoSmart Sales" >
+           <tr class="row" style="background-color: #aacbff;">
+               <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.MiyosmartSales}</h3></td>
+           </tr>     	        
+       </table><br>   
+       <div class="slds-illustration slds-illustration_small" aria-hidden="true">
+        <img src="/projRes/ui-home-private/emptyStates/noTasks.svg" class="slds-illustration__svg" alt=""/>
+        <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
+            <b>UNDER DEVELOPMENT. Nothing to see so far.</b>
+        </div>
+    </div>  
+    </div>
+    <!--Orders Miyosmart Related List-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="Orders MiyoSmart">
+           <tr class="row" style="background-color: #aacbff;">
+               <td><h3 class="slds-section__title  test-id__section-header-container">{custLabel.MiyoSmartRelatedList} ({recCount})</h3></td>
+         <!--  <td><p align="right"><lightning-button label={custLabel.NewButton} variant="brand-outline" onclick={createNewOrderMiyoSmart}></lightning-button></p></td> -->
+            </tr>     	        
+       </table><br>
+       <template if:true={isDataExist}>
+            <template if:true={orderMiyoSmartRelatedList}>
+            <lightning-datatable data={orderMiyoSmartRelatedList} columns={columns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+            <br>
+            <p align="center"><lightning-button label={custLabel.ViewAll} variant="brand-outline" onclick={navigateToRelatedList}></lightning-button></p><br>
+        </template>
+      </template> 
+    </div>
+</template>

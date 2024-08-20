@@ -1,0 +1,8 @@
+<!--
+ - Created by thomas.schnocklake on 10.01.18.
+ -->
+
+<aura:event type="COMPONENT" description="FullCalendarDropEvent">
+    <aura:attribute name="droppedData" type="Object"/>
+    <aura:attribute name="date" type="Datetime"/>
+</aura:event>

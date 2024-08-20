@@ -1,0 +1,7 @@
+<template>
+    <ul class="slds-has-dividers_around-space dropZone" style="height:75vh; overflow-y:auto;" ondrop={handleDrop} ondragover={handleDragOver}>
+        <template for:each={records} for:item="recordItem">
+            <c-visit-zones-card tranlated={tranlated} stage={stage} record={recordItem} pickvals={pickvals} key={recordItem.Id} showspinner={showspinner} onitemdrag={handleItemDrag} ondeletecard={handleCardDelete}></c-visit-zones-card> 
+       </template>
+   </ul> 
+</template>

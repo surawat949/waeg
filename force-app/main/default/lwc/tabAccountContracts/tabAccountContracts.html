@@ -1,0 +1,20 @@
+<template>
+    <!--Contract Related List section-->
+    <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">    
+        <table class="slds-table slds-table_bordered" aria-label="Account Address" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td><h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a"><p align="left"></p>{label.label_contractsCustom} ({contractCount})</h3></td>
+                <td><p align="right"><lightning-button label='{label.label_new}' variant="brand-outline" onclick={startNewContract}></lightning-button></p></td>
+            </tr>
+        </table><br>
+        <template if:true={ContractRecord}>
+            <lightning-datatable data={ContractRecord} columns={columns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>
+        </template>
+        <template if:true={error}>
+            {error}
+        </template><br>
+        <template if:true={isContractGreaterThan5}>
+            <p align="center"><lightning-button label='{label.label_viewall}' onclick={navigateToRelatedList}></lightning-button></p><br>
+        </template>
+    </div>
+</template>

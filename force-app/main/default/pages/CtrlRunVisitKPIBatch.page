@@ -1,0 +1,21 @@
+<apex:page controller="CtrlRunVisitKPIBatch" >
+<script language="JavaScript" type="text/javascript"> 
+	var j$ = jQuery.noConflict();
+    function confirmDel(){
+        return confirm("Are you sure?");    
+    }            
+</script>
+<apex:sectionHeader title="Batch Class for updating VisitKPI" />
+
+<apex:form id="batchClsForm">
+	<apex:pageMessages id="messages" /> 
+	<apex:pageBlock mode="edit" >        
+		<apex:pageBlockButtons location="Top">
+	    <apex:commandButton action="{!runVisitKPIBatch}" value="Start" onclick="return confirmDel();" />   
+	    </apex:pageBlockButtons>  
+	    <apex:pageBlockSection columns="1">
+	   	<apex:outputLink value="/apexpages/setup/listAsyncApexJobs.apexp?setupid=AsyncApexJobs&thePage%3AtheTemplate%3Aj_id11%3Afcf=00B20000005y9HX" rendered="{!IF(batchprocessid != '', true, false)}" target="_top" >view Batch Job >></apex:outputLink>                   
+	    </apex:pageBlockSection>  
+	</apex:pageBlock>
+</apex:form>
+</apex:page>

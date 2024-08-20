@@ -1,0 +1,12 @@
+.THIS .slds-modal__close{
+    border: 1px solid white !important;
+}
+.THIS .slds-form-element__label{
+    font-weight:bold !important;
+}
+.THIS .slds-th__action{
+    background: aliceblue !important;
+}
+.THIS .slds-page-css{
+     background: aliceblue !important;
+}

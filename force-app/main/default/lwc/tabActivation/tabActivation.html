@@ -1,0 +1,16 @@
+<template>
+    <lightning-tabset variant="scoped" class="sds-c-tabs-scoped-text-color">
+        <lightning-tab label={custLabel.businessProgramTab}>
+            <c-tab-activation-business-program received-id = {recordId} seiko-data = {seikoData} brand={brand} channel={channel} loyalty-points ={loyaltyPoints} > </c-tab-activation-business-program>
+        </lightning-tab>
+        <lightning-tab label="Medical Program">
+            <c-tab-activation-medical-program received-id = {recordId}> </c-tab-activation-medical-program>
+        </lightning-tab>
+        <lightning-tab label={tabName}>
+            <c-tab-activation-portal received-id = {recordId} brand={brand} seiko-data = {seikoData}> </c-tab-activation-portal>
+        </lightning-tab>
+        <lightning-tab label="Equipments">
+            <c-tab-activation-equipments received-id = {recordId} brand={brand}> </c-tab-activation-equipments>
+        </lightning-tab>
+    </lightning-tabset>
+</template>
