@@ -34,6 +34,7 @@ import Company from '@salesforce/label/c.Company';
 import Sales_Manager from '@salesforce/label/c.Sales_Manager';
 import Select_Representative from '@salesforce/label/c.Select_Representative';
 import Consolidation_Team_Performance from '@salesforce/label/c.Consolidation_Team_Performance';
+import Visits_Per_Day_In_Field from '@salesforce/label/c.Visits_Per_Day_In_Field';
 
 //toast message declaration 
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -106,6 +107,7 @@ export default class CustomerReviewPerformance extends LightningElement {
     @track uniqueDaysCount = [];
     @track accountsVisitedLst = [];
     @track visitsA3 = [];
+    @track visitsPerDayInField = [];
     @track accsVisitedA3 = [];
     @track tableMonths = [];
     @track emptyRow = [];
@@ -123,7 +125,8 @@ export default class CustomerReviewPerformance extends LightningElement {
 		Consolidation_Team_Performance,Monthly_Performance,Sales_Per_Active_Accounts,
 		Active_Accounts,Visits,Prospection_Rate_A3_B3_C3,Greater_than_01,
 		Greater_than_500_USD,Direct_Digital,Days_in_Field,Accounts_Visited,Visits_A3_B3_C3,Accounts_Visited_A3_B3_C3,
-        CustomerReviewAdminAlert,CustomerReviewErrorAlert,Team_or_User_Sales_Performance,Team_or_User_Key_Performance_Indicators		
+        CustomerReviewAdminAlert,CustomerReviewErrorAlert,Team_or_User_Sales_Performance,Team_or_User_Key_Performance_Indicators,
+        Visits_Per_Day_In_Field	
     }
 	
     connectedCallback(){
@@ -285,7 +288,7 @@ export default class CustomerReviewPerformance extends LightningElement {
         let matchingRecord = this.persistantRepData.find(record => record.Id === event.detail.value);        
         this.repUserRecord = matchingRecord;
         let representativeRole = matchingRecord.Sales_Role__c;
-        if(representativeRole === 'NSM' || representativeRole === 'RSM' || representativeRole === 'RMS'){
+        if(representativeRole === 'NSM' || representativeRole === 'RSM' || representativeRole === 'RMS' || representativeRole === 'NMS'){
             this.isTeamPerformanceDisabled = false;
             this.isTeamPerformanceChecked = false;
         }else{
@@ -360,12 +363,15 @@ export default class CustomerReviewPerformance extends LightningElement {
         this.uniqueDaysCount = mapDataWithClass(jsonData.monthList, jsonData.uniqueDaysCount.map(value => Math.round(value)), previousMonthName);
         this.accountsVisitedLst = mapDataWithClass(jsonData.monthList, jsonData.accountsVisitedLst.map(value => Math.round(value)), previousMonthName);
     
-        let visitsA3Temp = jsonData.visitsA3.map(value => parseFloat(value.toFixed(2)));
+        //let visitsA3Temp = jsonData.visitsA3.map(value => parseFloat(value.toFixed(2)));
+        let visitsA3Temp = jsonData.visitsA3.map(value => Math.round(value));        
         this.visitsA3 = mapDataWithClass(jsonData.monthList, visitsA3Temp.map(value => `${value}%`), previousMonthName);
         this.accsVisitedA3 = mapDataWithClass(jsonData.monthList, jsonData.accsVisitedA3.map(value => Math.round(value)), previousMonthName);
     
         this.currencyTitle = jsonData.title;
         this.greaterThan500Currency = jsonData.greaterThan500Currency;
+        this.visitsPerDayInField = mapDataWithClass(jsonData.monthList, jsonData.visitsPerDayInField, previousMonthName);
+        console.log(JSON.stringify(jsonData.visitsPerDayInField));
     }
     
     budgetUtility(budgetDetails){
@@ -374,7 +380,7 @@ export default class CustomerReviewPerformance extends LightningElement {
                 Object.entries(item.values).map(([key, value]) => {
                     let roundedValue = Math.round(value);
                     if(item.metric.includes('%')){
-                        roundedValue = parseFloat(value.toFixed(2))
+                        //roundedValue = parseFloat(value.toFixed(2))
                         roundedValue = `${roundedValue}%`;
                     }
                     return [key, roundedValue];

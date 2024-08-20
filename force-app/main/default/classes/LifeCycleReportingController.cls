@@ -20,7 +20,7 @@ public with sharing class LifeCycleReportingController {
     private static Map<Id, Boolean> visitsFieldMap = new Map<Id, Boolean>();
 
     @AuraEnabled(cacheable=true)
-    public static LifeCycleReportingController.wrapper getAccountLifeCycleRecords(){
+    public static LifeCycleReportingController.wrapper getAccountLifeCycleRecords(Boolean isConsolidatedDataNeeded){
         Map<id,String> mapOfALCIdWithVisitId = new map<id,String>();
         boolean addNewIcon=false;
         LifeCycleReportingController.wrapper wrapperResponse = new LifeCycleReportingController.wrapper();

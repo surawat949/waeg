@@ -36,10 +36,10 @@ public with sharing class CustomerReviewFilterHandler {
         }
         if (currentUser.ProfileId == '00eb0000000lainAAA' || currentUser.Profile.Name == 'SFDC LOCAL ADMIN') {
             if (companyName != null && companyName != '') {
-                managerList.addAll([SELECT Id, Name FROM User WHERE CompanyName = :companyName AND IsActive = TRUE AND (Sales_Role__c = 'NSM' OR Sales_Role__c = 'RSM' OR Sales_Role__c = 'RMS') ORDER BY Name ASC]);
+                managerList.addAll([SELECT Id, Name FROM User WHERE CompanyName = :companyName AND IsActive = TRUE AND (Sales_Role__c = 'NSM' OR Sales_Role__c = 'NMS' OR Sales_Role__c = 'RSM' OR Sales_Role__c = 'RMS') ORDER BY Name ASC]);
             }
         } else if (currentUser.Sales_Role__c != null) {
-            if (currentUser.Sales_Role__c == 'NSM') {
+            if (currentUser.Sales_Role__c == 'NSM' || currentUser.Sales_Role__c == 'NMS') {
                 managerList.add(currentUser);
                 managerList.addAll([SELECT Id, Name FROM User WHERE ManagerId = :currentUserId AND IsActive = TRUE AND (Sales_Role__c = 'RSM' OR Sales_Role__c = 'RMS') ORDER BY Name ASC]);
             } else if (currentUser.Sales_Role__c == 'RSM' || currentUser.Sales_Role__c == 'RMS') {
@@ -59,7 +59,7 @@ public with sharing class CustomerReviewFilterHandler {
     public static List<User> getRepresentativeList(Id selectedManagerId) {
         User selectedManager = [SELECT Id, Sales_Role__c, Name,User_Region__c,defaultCurrencyISOcode,CompanyName FROM User WHERE Id = :selectedManagerId LIMIT 1];
         List<User> representativeList = new List<User>();
-        if (selectedManager.Sales_Role__c == 'NSM') {
+        if (selectedManager.Sales_Role__c == 'NSM' || selectedManager.Sales_Role__c == 'NMS') {
             representativeList.add(selectedManager);
             representativeList.addAll([SELECT Id, Name,Sales_Role__c,User_Region__c,defaultCurrencyISOcode,CompanyName FROM User WHERE ManagerId = :selectedManagerId AND IsActive = TRUE AND Sales_Role__c IN ('ASM', 'KAM', 'AMS', 'RSM', 'RMS') ORDER BY Name ASC]);
         } else if (selectedManager.Sales_Role__c == 'RSM' || selectedManager.Sales_Role__c == 'RMS') {

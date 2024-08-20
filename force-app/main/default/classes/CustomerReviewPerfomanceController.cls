@@ -1,7 +1,9 @@
 public with sharing class CustomerReviewPerfomanceController {
+    public static String defaultCurrencyISOcode;
+    public static Double selectedRepCurrencyRate;
+    public static Double usdCurrencyRate;
     @AuraEnabled
-    public static PerformanceWrapper getPerformanceDetails(User user,Boolean requireConsolidation){  
-        System.debug(user);
+    public static PerformanceWrapper getPerformanceDetails(User user,Boolean requireConsolidation){        
         PerformanceWrapper wrapper = new PerformanceWrapper(); 
         Integer CurrentFiscalyear = Date.today().year();
         Integer month = Date.today().month();
@@ -23,14 +25,13 @@ public with sharing class CustomerReviewPerfomanceController {
         //if rep company name is HODG/SOG show gross sales
         Boolean isNet = true;
         if(user.CompanyName == 'HODG' || user.CompanyName == 'SOG')
-            isNet = false;
-        double conversionRate = 1;
-        List<CurrencyType> currencyLst = [SELECT conversionrate FROM currencytype WHERE isocode =: userCurrency];
-        If (!currencyLst.IsEmpty()) {
-            conversionRate = currencyLst[0].conversionrate;
-        }else {
-           conversionRate = 1;
-        }
+            isNet = false; 
+        
+        defaultCurrencyISOcode = user.defaultCurrencyISOcode;
+        for(CurrencyType currencyValue : [SELECT conversionrate,isocode FROM currencytype WHERE isocode IN ('USD',:user.defaultCurrencyISOcode)]){                
+            selectedRepCurrencyRate = currencyValue.isocode == defaultCurrencyISOcode ? currencyValue.conversionrate : 0;
+            usdCurrencyRate = currencyValue.isocode == 'USD' ? currencyValue.conversionrate : 0;
+        }        
         //get all the users who are reporting to the selected user
         if(requireConsolidation){
             if((userRole == 'NSM' || userRole == 'RSM' || userRole == 'RMS')){
@@ -122,7 +123,7 @@ public with sharing class CustomerReviewPerfomanceController {
         
         MonthlyPerformanceWrapper wrapper3 = new MonthlyPerformanceWrapper();
         wrapper3.metric ='% Quota Achievement';
-        MonthValues values3= addMonthValues(quotaAchievedMap);       
+        MonthValues values3= addMonthValues(quotaAchievedMap);
         if(budgetDataList.size() > 0 && (double)budgetDataList[0].get('quotaAchYTD') != null){
             if(requireConsolidation && values1.TOT_YTD != 0){
                  values3.TOT_YTD = (values2.TOT_YTD/values1.TOT_YTD)*100;
@@ -166,10 +167,9 @@ public with sharing class CustomerReviewPerfomanceController {
         if(isNet){
             sales=[SELECT Id,Lenses_Net_Sales__c,Month__c,Account__c,Fiscal_Year__c from Sales_Statistics__c where Account__r.OwnerId in:userIdLst
                AND (Type__c='0' OR Type__c='1') AND (Fiscal_Year__c =: CurrentFiscalyear OR Fiscal_Year__c =: CurrentFiscalyear-1) AND Lenses_Net_Sales__c > 0 ORDER BY Month__c,Fiscal_Year__c asc];
-        
         }
         else{
-            sales=[SELECT Id,Lenses_Gross_Sales__c,Month__c,Account__c,Fiscal_Year__c from Sales_Statistics__c where Account__r.OwnerId in:userIdLst
+          sales=[SELECT Id,Lenses_Gross_Sales__c,Month__c,Account__c,Fiscal_Year__c from Sales_Statistics__c where Account__r.OwnerId in:userIdLst
             AND (Type__c='0' OR Type__c='1') AND (Fiscal_Year__c =: CurrentFiscalyear OR Fiscal_Year__c =: CurrentFiscalyear-1) AND Lenses_Gross_Sales__c > 0 ORDER BY Month__c,Fiscal_Year__c asc];
         }
         //Get last 12 months based on current month
@@ -202,7 +202,7 @@ public with sharing class CustomerReviewPerfomanceController {
                             if(netOrGrossSales != null && netOrGrossSales > 0)
                                 lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c)+netOrGrossSales;
                             else
-                              lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c);
+                                lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c);  
                             monthSaleMap.put((Integer)salesStat.Month__c,lensTotalSales);
                             monthMapCY.put(salesStat.Account__c,monthSaleMap);
                         }
@@ -213,7 +213,6 @@ public with sharing class CustomerReviewPerfomanceController {
                                 monthSaleMap.put((Integer)salesStat.Month__c,0);
                             monthMapCY.put(salesStat.Account__c,monthSaleMap);
                         }
-                        System.debug(monthSaleMap);
                     }
                     else{
                         Map<Integer,double> monthSaleMap = new Map<Integer,double>();
@@ -223,7 +222,6 @@ public with sharing class CustomerReviewPerfomanceController {
                             monthSaleMap.put((Integer)salesStat.Month__c,0);
                         monthMapCY.put(salesStat.Account__c,monthSaleMap);
                     }
-                    System.debug(monthMapCY);
                 }
                 else{
                   if(monthMapLY.size() > 0 && monthMapLY.containsKey(salesStat.Account__c)){
@@ -233,7 +231,7 @@ public with sharing class CustomerReviewPerfomanceController {
                           if(netOrGrossSales != null && netOrGrossSales > 0)
                               lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c)+netOrGrossSales;
                           else
-                              lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c);
+                              lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c);  
                           monthSaleMap.put((Integer)salesStat.Month__c,lensTotalSales);
                           monthMapLY.put(salesStat.Account__c,monthSaleMap);
                       }
@@ -256,7 +254,7 @@ public with sharing class CustomerReviewPerfomanceController {
                 }               
             }            
         }
-        Map<Integer,Sales> monthlyCountMap = getMonthlyCount(monthMapCY,monthMapLY,Last12MonthLst,conversionRate);
+        Map<Integer,Sales> monthlyCountMap = getMonthlyCount(monthMapCY,monthMapLY,Last12MonthLst);
         List<Object> monthlySales = new List<Object>();
         List<Object> greaterThan0List = new List<Object>();
         List<Object> greaterThan500List = new List<Object>();
@@ -265,6 +263,7 @@ public with sharing class CustomerReviewPerfomanceController {
         List<Object> accountsVisitedLst = new List<Object>();
         List<Object> visitsA3 = new List<Object>();
         List<Object> accsVisitedA3 = new List<Object>();
+        List<Object> visitsPerDayInField = new List<Object>();
         //Visits
         Map<Integer,Integer> DvisitMonthMap = new Map<Integer,Integer>();
         List<Visits__c> visits = [SELECT id,Visit_Type__c,Visit_Status__c,End_Time__c,Account__c,Account__r.Segmentation_Net__c FROM Visits__c WHERE Assigned_to__c in : userIdLst
@@ -391,6 +390,8 @@ public with sharing class CustomerReviewPerfomanceController {
             }
             dVisits.add(dVisitsCount);
             visitsA3.add(prospectionRate);
+            Double visitsPerDayInFieldCount = uniqueDayCount > 0 ? dVisitsCount/uniqueDayCount : 0;
+            visitsPerDayInField.add(visitsPerDayInFieldCount);
         }
         wrapper.greaterThan0 = greaterThan0List;
         wrapper.greaterThan500 = greaterThan500List;
@@ -401,9 +402,10 @@ public with sharing class CustomerReviewPerfomanceController {
         wrapper.accountsVisitedLst = accountsVisitedLst;
         wrapper.visitsA3 = visitsA3;
         wrapper.accsVisitedA3 = accsVisitedA3;
+        wrapper.visitsPerDayInField = visitsPerDayInField;
         wrapper.budgetDetails = monthlyWrapperLst;
         if(isNet)
-            wrapper.title = 'Lenses Net Sales ('+user.defaultCurrencyISOcode+')';
+          wrapper.title = 'Lenses Net Sales ('+user.defaultCurrencyISOcode+')';
         else
             wrapper.title = 'Lenses Gross Sales ('+user.defaultCurrencyISOcode+')';
         return wrapper;
@@ -468,11 +470,7 @@ public with sharing class CustomerReviewPerfomanceController {
          return twelveMonList;
     }
     //get the accountscount and total sales for each month from last 12 months
-    private static Map<Integer,Sales> getMonthlyCount(Map<Id,Map<Integer,double>> monthlyMapCY,Map<Id,Map<Integer,double>> monthlyMapLY, List<String> Last12MonthLst,double conversionRate){
-        System.debug(monthlyMapCY);
-        System.debug(monthlyMapLY);
-         System.debug(monthlyMapLY.get('0010Q00001r3w4MQAQ'));
-        
+    private static Map<Integer,Sales> getMonthlyCount(Map<Id,Map<Integer,double>> monthlyMapCY,Map<Id,Map<Integer,double>> monthlyMapLY, List<String> Last12MonthLst){
         Map<Integer,Sales> monthlySalesCountMap = new Map<Integer,Sales>();
         List<Integer> CYMonList=new List<Integer>();
         List<Integer> LYMonList=new List<Integer>();
@@ -484,21 +482,16 @@ public with sharing class CustomerReviewPerfomanceController {
                     LYMonList.add(Integer.valueOf(month.substringBefore(':')));
             } 
         }
-        Map<Integer,Sales> monthlyCYMap = getCountByYear(monthlyMapCY,CYMonList,conversionRate);
-        System.debug(monthlyCYMap);
-        Map<Integer,Sales> monthlyLYMap = getCountByYear(monthlyMapLY,LYMonList,conversionRate);
-        System.debug(monthlyLYMap);
+        Map<Integer,Sales> monthlyCYMap = getCountByYear(monthlyMapCY,CYMonList);
+        Map<Integer,Sales> monthlyLYMap = getCountByYear(monthlyMapLY,LYMonList);
         monthlySalesCountMap.putAll(monthlyCYMap);
         monthlySalesCountMap.putAll(monthlyLYMap);
-         System.debug(monthlySalesCountMap);
         return monthlySalesCountMap;
     }
-    private static Map<Integer,Sales> getCountByYear(Map<Id,Map<Integer,double>> monthlyMap,List<Integer> monthLst,double conversionRate){
-       System.debug(monthlyMap);
+    private static Map<Integer,Sales> getCountByYear(Map<Id,Map<Integer,double>> monthlyMap,List<Integer> monthLst){
         Map<Integer,Sales> monthlySalesCountMap = new Map<Integer,Sales>();
         if(monthlyMap.size() > 0){
             for(Id accId:monthlyMap.keySet()){ 
-                System.debug(monthlyMap.get(accId));
                 Map<Integer,double> monthMap =  monthlyMap.get(accId);
                 for(Integer mon:monthLst){
                     if(monthlySalesCountMap.size()>0 && monthlySalesCountMap.containsKey(mon)){
@@ -512,8 +505,14 @@ public with sharing class CustomerReviewPerfomanceController {
                                 count500 = monthSale.greaterThan500count;
                             monthSale.totalSales = monthSale.totalSales+monthMap.get(mon);
                             monthSale.greaterThan0count = count0+1;
-                            if(monthMap.get(mon)*conversionRate > 500)
-                                monthSale.greaterThan500count = count500+1;
+                            if(defaultCurrencyISOcode != 'USD'){
+                                Double usdConvertedRate = selectedRepCurrencyRate > 0 ? ((monthMap.get(mon)/selectedRepCurrencyRate)*usdCurrencyRate) : monthMap.get(mon);
+                                if(usdConvertedRate > 500)
+                                    monthSale.greaterThan500count = count500+1;
+                            }else{
+                                if(monthMap.get(mon) > 500)
+                                    monthSale.greaterThan500count = count500+1;
+                            }
                             monthlySalesCountMap.put(mon,monthSale);
                         }
                     }
@@ -521,16 +520,20 @@ public with sharing class CustomerReviewPerfomanceController {
                         Integer accCount = 0;
                         if(monthMap.get(mon) > 0){ 
                             Sales monthSale= new Sales();
-                            monthSale.greaterThan0count = accCount+1;
-                            if(monthMap.get(mon)*conversionRate > 500)
-                                monthSale.greaterThan500count = accCount+1;
+                            monthSale.greaterThan0count = accCount+1;                            
+                            if(defaultCurrencyISOcode != 'USD'){
+                                Double usdConvertedRate = selectedRepCurrencyRate > 0 ? ((monthMap.get(mon)/selectedRepCurrencyRate)*usdCurrencyRate) : monthMap.get(mon);
+                                if(usdConvertedRate > 500)
+                                    monthSale.greaterThan500count = accCount+1;
+                            }else{
+                                if(monthMap.get(mon) > 500)
+                                    monthSale.greaterThan500count = accCount+1;
+                            }   
                             monthSale.totalSales = monthMap.get(mon);
                             monthlySalesCountMap.put(mon,monthSale);
                         }
                     }
-                    System.debug(monthlySalesCountMap);
                 }
-                System.debug(monthlySalesCountMap);
             }
         }
         return monthlySalesCountMap;
@@ -567,13 +570,14 @@ public with sharing class CustomerReviewPerfomanceController {
         @AuraEnabled public List<Object> visitsA3{get;set;}
         @AuraEnabled public List<Object> accsVisitedA3{get;set;}
         @AuraEnabled public List<Object> budgetDetails{get;set;}
+        @AuraEnabled public List<Object> visitsPerDayInField{get;set;}
         @AuraEnabled public String title{get;set;}
     }   
     public class Sales{
         @AuraEnabled public Decimal totalSales{get;set;}
         @AuraEnabled public Integer greaterThan0count{get;set;}
         @AuraEnabled public Integer greaterThan500count{get;set;}
-        public Sales(){
+    public Sales(){
             totalSales=0;
             greaterThan0count=0;
             greaterThan500count=0;

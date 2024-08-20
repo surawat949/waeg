@@ -215,6 +215,16 @@
                                     <td></td>
                                 </tr>
                                 <tr class="slds-text-title_caps">
+                                    <td class="fix">{custLabel.Visits_Per_Day_In_Field}</td>
+                                    <template for:each={visitsPerDayInField} for:item="item"> 
+                                        <td key={item} style="text-align:left;" class={item.class}>
+                                            <lightning-formatted-number value={item.value} maximum-fraction-digits="2" ></lightning-formatted-number>
+                                        </td>                
+                                    </template>
+                                    <td></td>
+                                </tr>
+                                
+                                <tr class="slds-text-title_caps">
                                     <td class="fix" style="background: #dbe7ff !important;width: 2rem !important;"><strong>{custLabel.Prospection_Rate_A3_B3_C3}</strong></td>
                                     <template for:each={emptyRow} for:item="empty">
                                         <td style="background: #f3f3f3 !important;" scope="col" key={empty}>{empty}</td>

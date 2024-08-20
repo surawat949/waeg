@@ -16,13 +16,19 @@
                     <div class={buttonContainerClass}>
                         <div class="slds-grid slds-gutters">
                             <template if:true={isCompanyFilterVisible}>
-                                <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label={custLabel.Company} value={selectedCompanyValue} options={accountCompanyList} onchange={handleCommpanyChange} placeholder={custLabel.Select_Company}> </lightning-combobox>
+                                <lightning-combobox name="dropdown" class="slds-size_1-of-8 slds-col" label={custLabel.Company} value={selectedCompanyValue} options={accountCompanyList} onchange={handleCommpanyChange} placeholder={custLabel.Select_Company}> </lightning-combobox>
                             </template>
-                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label={custLabel.Sales_Manager} value={selectedManagerValue} options={SalesManagerList} onchange={handleSalesManagerChange} placeholder={custLabel.Select_Sales_Manager} disabled={isSalesManagerDisabled}> </lightning-combobox>
-                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label={custLabel.Representative} placeholder={custLabel.Select_Representative} value={selectedOwnerValue} options={OwnerList} onchange={handleAOChange} disabled={isRepresentativeDisabled}> </lightning-combobox>
-                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label={custLabel.Channel} value={selectedChannelValue} options={ChannelList} onchange={handleChannelChange}> </lightning-combobox>
-                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label={custLabel.Segmentation} value={selectedSegmentationValue} options={SegmentationList} onchange={handleSegmentationChange}> </lightning-combobox>
-                            <lightning-combobox name="dropdown" class="slds-size_1-of-6 slds-col" label={custLabel.Visit_Zone} value={selectedTacticomValue} options={TacticomList} onchange={handleTacticomChange}> </lightning-combobox>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-8 slds-col" label={custLabel.Sales_Manager} value={selectedManagerValue} options={SalesManagerList} onchange={handleSalesManagerChange} placeholder={custLabel.Select_Sales_Manager} disabled={isSalesManagerDisabled}> </lightning-combobox>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-8 slds-col" label={custLabel.Representative} placeholder={custLabel.Select_Representative} value={selectedOwnerValue} options={OwnerList} onchange={handleAOChange} disabled={isRepresentativeDisabled}> </lightning-combobox>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-8 slds-col" label={custLabel.Channel} value={selectedChannelValue} options={ChannelList} onchange={handleChannelChange}> </lightning-combobox>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-8 slds-col" label={custLabel.Segmentation} value={selectedSegmentationValue} options={SegmentationList} onchange={handleSegmentationChange}> </lightning-combobox>
+                            <lightning-combobox name="dropdown" class="slds-size_1-of-8 slds-col" label={custLabel.Visit_Zone} value={selectedTacticomValue} options={TacticomList} onchange={handleTacticomChange}> </lightning-combobox>
+                            <div class="slds-form-element slds-size_2-of-8 slds-col" style="padding-top: 12px !important;">
+                                <label class="slds-form-element__label" for="checkbox-unique-id-85"></label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="checkbox" label={custLabel.Consolidation_Team_Performance} onchange={handleCheckboxEvents} checked={isTeamPerformanceChecked} disabled={isTeamPerformanceDisabled}></lightning-input>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

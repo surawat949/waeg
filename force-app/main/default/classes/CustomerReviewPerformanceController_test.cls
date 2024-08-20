@@ -133,7 +133,6 @@ public class CustomerReviewPerformanceController_test {
             visit2.add(v);
         }
         insert visit2;
-        
         CustomerReviewPerfomanceController.getPerformanceDetails(user,true);
         
         Test.StopTest();

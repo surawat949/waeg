@@ -76,15 +76,6 @@ public with sharing class tabMVAVisitsClinicNearbyController {
         @AuraEnabled public Integer PreferredNumberPrescriber{get;set;}
         @AuraEnabled public Integer TotalNumberPrscriber{get;set;}
     }
-
-    @AuraEnabled(cacheable=true)
-    public static List<AccountWrapperClass> getContactsListNearby(String recordId, Double distance,String MiyoSmartAuth, Integer prescribers){
-        try {
-            
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
     
     /*  @AuraEnabled(cacheable=true)
     public static List<optionSet> getAccClinicTypeValue(){

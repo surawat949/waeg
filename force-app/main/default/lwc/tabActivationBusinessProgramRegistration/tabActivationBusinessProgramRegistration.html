@@ -34,7 +34,7 @@
             <img style="height: 40px; width: 40px;" src={MountingIndicator} title={MountingFlagMeaning}>
         </div>
     </div>
-    <template lwc:if={isIndependentChannel}>
+    <!--template lwc:if={isIndependentChannel}-->
         <!--Visionary Alliance-->
         <div class="slds-box slds-p-around_none slds-var-m-top_x-small slds-var-m-bottom_medium slds-m-horizontal_none">
             <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
@@ -98,13 +98,13 @@
                 </lightning-layout-item>
             </lightning-layout>
         </div>
-    </template>
-    <template lwc:else>
+    <!--/template-->
+    <!--template lwc:else>
         <div class="slds-illustration slds-illustration_small" aria-hidden="true">
             <img src="/img/chatter/OpenRoad.svg" class="slds-illustration__svg" alt=""/>
             <div class="slds-align_absolute-center" style="height:5rem;color: #009EDB;">
                 <b>This feature is only available for Independent accounts. Current Account is {accChannel}</b>
             </div>
         </div>
-    </template>
+    </template-->
 </template>

@@ -46,14 +46,9 @@ export default class TabActivationBusinessProgramRegistration extends LightningE
     objectapiname = ACCOUNT_OBJ;
     seikoDataObjapiName = SEIKO_DATA_OBJ;
     visionaryAllianceFields = [COMMERCIAL_NETWORK,VISIONARY_ALLIANCE,NETWORK_SIGN_IN,NETWORK_SIGN_OUT];
-    //totalLoyaltyPoints = [TOTAL_LOYALTY_POINTS];
-    //seikoVisionSpecialistAcc = [COMMERCIAL_NETWORK, TOTAL_LOYALTY_POINTS];
-    //networkFields=[NETWORK_SIGN_IN, NETWORK_SIGN_OUT ];
-    //SeikoDataFields = [SEIKO_CATALOG_LAST_TRAINING, SEIKO_PRODUCT_LAST_TRAINING, SEIKO_BOXES_SETTING, SVS_COMMUNICATION_KIT];
     AccountOnBoarding = [ACCOUNT_ONBOARDING, ACCOUNT_ONBOARDING_DATE];
     LoyaltyProgram = [LOYALTY_PROGRAMS];
     showLoading = false;
-    //isHoyaAccount = false;
     isIndependentChannel = false;
     onBoarding = false;
 
@@ -106,15 +101,6 @@ export default class TabActivationBusinessProgramRegistration extends LightningE
         // passed parameters are not yet received here
     }
     connectedCallback() {
-        /*console.log('child connected call-' + this.receivedId);
-        console.log('child connected call-' + this.seikoData);
-
-        // load grey indicators tempoprarily for demo
-        this.HVCIndicator = AI_Indicators + '/'+ 'GreyLight.png';
-        this.portalIndicator = AI_Indicators + '/'+ 'GreyLight.png';
-        this.DataOrderIndicator = AI_Indicators + '/'+ 'GreyLight.png';
-        this.RemoteEdgingIndicator = AI_Indicators + '/'+ 'GreyLight.png';
-        this.MountingIndicator = AI_Indicators + '/'+ 'GreyLight.png';*/
         
     }
 
@@ -135,13 +121,9 @@ export default class TabActivationBusinessProgramRegistration extends LightningE
     }
 
     renderedCallback() {
-        /*if (this.accBrand != undefined && this.accBrand == 'HOYA') {
-            this.isHoyaAccount = true;
-        }*/
-        console.log('accChannel:'+ this.accChannel);
-        if (this.accChannel != undefined && (this.accChannel === 'Independent' || this.accChannel === 'Independent Seiko' || this.accChannel === 'Chain' || this.accChannel === 'Chain Seiko')) {
+        /*if (this.accChannel != undefined && (this.accChannel === 'Independent' || this.accChannel === 'Independent Seiko' || this.accChannel === 'Chain' || this.accChannel === 'Chain Seiko')) {
             this.isIndependentChannel = true;
-        }
+        }*/
     }
 
     startOnboardingProcess() {
@@ -154,11 +136,9 @@ export default class TabActivationBusinessProgramRegistration extends LightningE
 
     initiateFlip(state) {
         this.showLoading = true;
-        //alert('Button clicked');
         startOnboarding({accountId : this.receivedId, state:state})
         .then(response => {
             setTimeout(() => {
-               // eval("$A.get('e.force:refreshView').fire();");
 			    this.dispatchEvent(new RefreshEvent());
                 this.showLoading = false;
                 if(state){

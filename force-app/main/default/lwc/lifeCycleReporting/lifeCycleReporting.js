@@ -30,7 +30,9 @@ import Lenses_Net_Sales_L12Mo from '@salesforce/label/c.Lenses_Net_Sales_L12Mo';
 import Okay from '@salesforce/label/c.Okay';
 import CustomerReviewActivityModal from '@salesforce/label/c.CustomerReviewActivityModal';
 import Note from '@salesforce/label/c.Note';
+//New Filter UI Update
 import CustomerReviewChartWarning from '@salesforce/label/c.CustomerReviewChartWarning';
+import Consolidation_Team_Performance from '@salesforce/label/c.Consolidation_Team_Performance';
 
 export default class LifeCycleReporting extends LightningElement  {
     @track isChartsVisible = false;
@@ -46,10 +48,22 @@ export default class LifeCycleReporting extends LightningElement  {
     @track currentUserProfile;
     @track isRepresentativeDisabled = true;
     @track profileId;
+
+    //New Filter UI Update
+    @track isTeamPerformanceChecked = false;
+    @track isTeamPerformanceDisabled = true;
+
     custLabel = {
         Filter,Select_Company,Select_Sales_Manager,Visit_Zone,Segmentation,CloseButton,
         Representative,Company,Sales_Manager,Select_Representative,Channel,CustomerReviewChartWarning,
-        Strategic_Value_Net,Lenses_Net_Sales_L12Mo,Okay,CustomerReviewActivityModal,Note
+        Strategic_Value_Net,Lenses_Net_Sales_L12Mo,Okay,CustomerReviewActivityModal,Note,
+        Consolidation_Team_Performance    //New Filter UI Update
+    }
+
+    //New Filter UI Update
+    handleCheckboxEvents(event){
+        this.isTeamPerformanceChecked = event.target.checked;
+        this.fetchAccountRecords();
     }
 
     @wire(getRecord, { recordId: USER_ID, fields: FIELDS })
@@ -69,7 +83,7 @@ export default class LifeCycleReporting extends LightningElement  {
             } else if (this.profileId !== '00eb0000000lainAAA') {
                 this.loadSalesManagerOptions();
             }  
-            this.fetchAccountRecords();
+            //this.fetchAccountRecords();
         } else if (error) {
             this.showToast('Error','Error fetching user data: '+e.message,'error');
         }
@@ -146,9 +160,10 @@ export default class LifeCycleReporting extends LightningElement  {
     get buttonLabel() {
         return this.showFilters ? 'Hide Filters' : 'Show Filters';
     }
+    
     fetchAccountRecords() {
         this.showSpinner = true;
-        getLifeCycleRecords()
+        getLifeCycleRecords({isConsolidatedDataNeeded : this.isTeamPerformanceChecked})
         .then(result => {
             this.recordsMaster = result.lifeCycleWrapperList;
             this.pickVals = result.pickVals;

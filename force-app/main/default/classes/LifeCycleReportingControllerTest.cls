@@ -37,7 +37,7 @@ public class LifeCycleReportingControllerTest {
         insert alc;
         
         Test.startTest();        
-        LifeCycleReportingController.getAccountLifeCycleRecords();
+        LifeCycleReportingController.getAccountLifeCycleRecords(true);
         system.assert(true);
         Test.stopTest();    
     }

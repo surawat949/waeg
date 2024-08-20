@@ -261,7 +261,12 @@ public without sharing class tabAIIndicatorsController {
                     }
                 }   
                 else{
-                    wrapper.strategicValFlag='REDALERT';
+                    wrapper.strategicValFlag='GREEN'; 
+                    if(currAcc.Hoya_Account_ID__c.startsWith('SO4900') || currAcc.Hoya_Account_ID__c.startsWith('SO4990') || currAcc.Owner.CompanyName == 'HODG'){
+                        wrapper.strategicValFlagMeaning = System.Label.get('', 'StrategicValue11', userLanguage);
+                    } else {
+                        wrapper.strategicValFlagMeaning = System.Label.get('', 'StrategicValue13', userLanguage);   
+                    }
                 }
                 //Competitor Flag
                 list<String> listOfFirstCompetitorLocalName = new List<String>();
