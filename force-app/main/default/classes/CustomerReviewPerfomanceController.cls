@@ -1,7 +1,7 @@
 public with sharing class CustomerReviewPerfomanceController {
     public static String defaultCurrencyISOcode;
-    public static Double selectedRepCurrencyRate;
-    public static Double usdCurrencyRate;
+    public static Double selectedRepCurrencyRate = 1;
+    public static Double usdCurrencyRate = 1;
     @AuraEnabled
     public static PerformanceWrapper getPerformanceDetails(User user,Boolean requireConsolidation){        
         PerformanceWrapper wrapper = new PerformanceWrapper(); 
@@ -28,10 +28,17 @@ public with sharing class CustomerReviewPerfomanceController {
             isNet = false; 
         
         defaultCurrencyISOcode = user.defaultCurrencyISOcode;
-        for(CurrencyType currencyValue : [SELECT conversionrate,isocode FROM currencytype WHERE isocode IN ('USD',:user.defaultCurrencyISOcode)]){                
-            selectedRepCurrencyRate = currencyValue.isocode == defaultCurrencyISOcode ? currencyValue.conversionrate : 0;
-            usdCurrencyRate = currencyValue.isocode == 'USD' ? currencyValue.conversionrate : 0;
-        }        
+        system.debug('******'+defaultCurrencyISOcode);
+        Set<String> currencySet = new Set<String>();
+        currencySet.add('USD');
+        currencySet.add(defaultCurrencyISOcode);
+        for(CurrencyType currencyValue : [SELECT conversionrate,isocode FROM currencytype WHERE isocode IN : currencySet]){  
+            if(currencyValue.isocode == defaultCurrencyISOcode)              
+                selectedRepCurrencyRate = currencyValue.conversionrate;
+            if(currencyValue.isocode == 'USD')
+                usdCurrencyRate = currencyValue.conversionrate;
+        }   
+        system.debug(selectedRepCurrencyRate+'*******'+usdCurrencyRate);      
         //get all the users who are reporting to the selected user
         if(requireConsolidation){
             if((userRole == 'NSM' || userRole == 'RSM' || userRole == 'RMS')){
@@ -390,7 +397,7 @@ public with sharing class CustomerReviewPerfomanceController {
             }
             dVisits.add(dVisitsCount);
             visitsA3.add(prospectionRate);
-            Double visitsPerDayInFieldCount = uniqueDayCount > 0 ? dVisitsCount/uniqueDayCount : 0;
+            Double visitsPerDayInFieldCount = uniqueDayCount > 0 ? (dVisitsCount/uniqueDayCount)*100 : 0;
             visitsPerDayInField.add(visitsPerDayInFieldCount);
         }
         wrapper.greaterThan0 = greaterThan0List;
@@ -506,7 +513,9 @@ public with sharing class CustomerReviewPerfomanceController {
                             monthSale.totalSales = monthSale.totalSales+monthMap.get(mon);
                             monthSale.greaterThan0count = count0+1;
                             if(defaultCurrencyISOcode != 'USD'){
+                                system.debug('*******'+monthMap.get(mon));         
                                 Double usdConvertedRate = selectedRepCurrencyRate > 0 ? ((monthMap.get(mon)/selectedRepCurrencyRate)*usdCurrencyRate) : monthMap.get(mon);
+                                system.debug(mon+'****'+usdConvertedRate);
                                 if(usdConvertedRate > 500)
                                     monthSale.greaterThan500count = count500+1;
                             }else{

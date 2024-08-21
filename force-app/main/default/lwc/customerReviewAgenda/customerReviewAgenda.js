@@ -75,6 +75,17 @@ export default class CustomerReviewAgenda extends LightningElement {
     get buttonContainerClass() {
         return this.isSlideVisible ? 'button-container slide-in' : 'button-container slide-out';
     }
+
+    @api 
+    set representativeId(val){
+        this.currentUserId = val;
+        this.updateCalenderEvents();
+    }
+
+    get representativeId(){
+        return this.currentUserId;
+    }
+
     @wire(getRecord, { recordId: userId, fields: [SALES_ROLE_FIELD, USER_NAME_FIELD, PROFILE_NAME_FIELD,USER_COMPANYNAME_FIELD,PROFILE_ID_FIELD] })
     userData({ error, data }) {
         if (data) {
@@ -332,11 +343,13 @@ export default class CustomerReviewAgenda extends LightningElement {
     updateCalenderEvents(){
         this.isLoading = true;
         this.allEvents = [];
-        var view = this.calendar.view;
-        this.calendar.removeAllEvents();
-        this.calendar.addEventSource(this.allEvents);
-        this.calendar.render();
-        this.getAllEvents(view.activeStart,view.activeEnd);  
+        if(this.calendar){
+            var view = this.calendar.view;
+            this.calendar.removeAllEvents();
+            this.calendar.addEventSource(this.allEvents);
+            this.calendar.render();
+            this.getAllEvents(view.activeStart,view.activeEnd);  
+        }
     }
     convertDateToISOWithZeroTime(date,isEnd) {
         const d = new Date(date); 

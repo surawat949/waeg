@@ -217,9 +217,7 @@
                                 <tr class="slds-text-title_caps">
                                     <td class="fix">{custLabel.Visits_Per_Day_In_Field}</td>
                                     <template for:each={visitsPerDayInField} for:item="item"> 
-                                        <td key={item} style="text-align:left;" class={item.class}>
-                                            <lightning-formatted-number value={item.value} maximum-fraction-digits="2" ></lightning-formatted-number>
-                                        </td>                
+                                        <td key={item} style="text-align:left;" class={item.class}>{item.value}</td>                
                                     </template>
                                     <td></td>
                                 </tr>

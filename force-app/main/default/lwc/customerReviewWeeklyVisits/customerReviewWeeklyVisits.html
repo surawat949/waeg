@@ -1,7 +1,6 @@
 <template>
     <div class="slds-grid slds-grid_vertical maxheight">
-        <div class="filterSection flex-container">
-            <!--div class="marquee-container marquee-text">Warning: Only accounts belonging to Tacticom are visible on this page. Must be attached to each Tacticom: All Clients and a maximum of 20 prospects per ASM.</div-->         
+        <!--<div class="filterSection flex-container">
             <div class="slds-grid heightsize">
                 <div class="slds-col slds-size_1-of-12">
                     <button class="toggle-btn slds-button slds-button_outline-brand filterButton" onclick={toggleSlide}>{custLabel.Filter}</button>
@@ -21,12 +20,12 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
         <div class="datePosition">
             <template if:true={showDateFields}>
                 <div class="slds-box slds-theme_default">
                     <div class="slds-grid slds-gutters">
-                        <div class="slds-col slds-size_4-of-12">
+                        <div class="slds-col slds-size_3-of-12">
                             <div class="slds-grid slds-gutters date-section">
                                 <lightning-input type="date" class="slds-col slds-size_1-of-3 keepMiddle" label={custLabel.Start_Date} value={startDate} disabled></lightning-input>
                                 <lightning-input type="date" class="slds-col slds-size_1-of-3 keepMiddle" label={custLabel.End_Date} value={endDate} disabled></lightning-input>
@@ -34,7 +33,10 @@
                                 <button class="slds-button slds-button_brand dateControl" onclick={handleNextWeek}>&gt;</button>
                             </div>
                         </div>
-                        <div class="slds-col slds-size_7-of-12 centerAlign">
+                        <div class="slds-col slds-size_2-of-12" style="text-align:center;">
+                            <button class="slds-button slds-button_brand" style="top: 1rem;" onclick={toggleVisitView}>{visitViewButtonLabel}</button>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 centerAlign">
                             <template if:true={showVisitZone}>
                                 <div>
                                     <div class="slds-col slds-size_1-of-1">

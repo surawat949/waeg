@@ -107,6 +107,12 @@ public with sharing class AccountTriggerHelper {
                     Boolean isConsiderableRecTypeForALC = isConsiderableRecTypeForALC(a.RecordTypeId);
                     if (newMap.get(a.Id).Account_Status__c != oldMap.get(a.Id).Account_Status__c) {
                         if (a.Account_Status__c =='Closed' || a.Account_Status__c =='Blocked' || a.Account_Status__c =='Suspended') {
+                            //if account is closed deactivate Alc
+                            if(a.Account_Status__c =='Closed'){
+                                accLifeCycleList.add(a.Id);
+                                somethingToDo = true;
+                                alcActiveMap.put(a.Id,false); 
+                            }                                
                             blockedAccs.add(a.Id);
                             somethingToDo = true;    
                         } else if(a.Account_Status__c =='Open') {
@@ -114,30 +120,33 @@ public with sharing class AccountTriggerHelper {
                             somethingToDo = true;
                         }  
                     } 
-                    //if Hvc International channel is changed from other to Ind or Chain
-                    
-                    if(isConsiderableRecTypeForALC && newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c != oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c && (oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c !='Ind' && oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c != 'Chain') && (newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Ind' || newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain') ){
-                        if(newMap.get(a.Id).TACTICOM_SOF__c != null && newMap.get(a.Id).TACTICOM_SOF__c != 'none'){
-                            system.debug('>>>here');
+                    if(isConsiderableRecTypeForALC && newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c != oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c && newMap.get(a.Id).TACTICOM_SOF__c != null && newMap.get(a.Id).TACTICOM_SOF__c != 'none' && newMap.get(a.Id).TACTICOM_SOF__c != 'Not Selected' ){
+                        //if Channel is updated from Ind/Chain to Other
+                        if((oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Ind' || oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain') && (newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c !='Ind' && newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c != 'Chain')){
+                            accLifeCycleList.add(a.Id);
+                            somethingToDo = true;
+                            alcActiveMap.put(a.Id,false);
+                        }
+                        //if Hvc International channel is changed from other to Ind or Chain
+                        else if( (oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c !='Ind' && oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c != 'Chain') && (newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Ind' || newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain')){
                             accLifeCycleList.add(a.Id);
                             somethingToDo = true;
                             alcActiveMap.put(a.Id,true);
-                            system.debug('>>>accLifeCycleList'+accLifeCycleList);
-                            system.debug('>>>alcActiveMap'+alcActiveMap);
                         }
                     }
                     if(isConsiderableRecTypeForALC && newMap.get(a.Id).TACTICOM_SOF__c != oldMap.get(a.Id).TACTICOM_SOF__c && (newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Ind' || newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Chain')){
                         //if Tacticom is changed from null or none to not null
-                        if((oldMap.get(a.Id).TACTICOM_SOF__c == null || oldMap.get(a.Id).TACTICOM_SOF__c == 'none') && (newMap.get(a.Id).TACTICOM_SOF__c != null  && newMap.get(a.Id).TACTICOM_SOF__c != 'none') ){
+                        if((oldMap.get(a.Id).TACTICOM_SOF__c == null || oldMap.get(a.Id).TACTICOM_SOF__c == 'none' || oldMap.get(a.Id).TACTICOM_SOF__c == 'Not Selected') && (newMap.get(a.Id).TACTICOM_SOF__c != null  && newMap.get(a.Id).TACTICOM_SOF__c != 'none' && newMap.get(a.Id).TACTICOM_SOF__c != 'Not Selected') ){
                             accLifeCycleList.add(a.Id);
                             somethingToDo = true;
                             alcActiveMap.put(a.Id,true);
                         }
-                        else if((oldMap.get(a.Id).TACTICOM_SOF__c != null && oldMap.get(a.Id).TACTICOM_SOF__c != 'none') && (newMap.get(a.Id).TACTICOM_SOF__c == null  || newMap.get(a.Id).TACTICOM_SOF__c == 'none') ){
+                        //If Tacticom is changed to null or none from not null or not none
+                        else if((oldMap.get(a.Id).TACTICOM_SOF__c != null && oldMap.get(a.Id).TACTICOM_SOF__c != 'none' && newMap.get(a.Id).TACTICOM_SOF__c != 'Not Selected') && (newMap.get(a.Id).TACTICOM_SOF__c == null  || newMap.get(a.Id).TACTICOM_SOF__c == 'none' || newMap.get(a.Id).TACTICOM_SOF__c != 'Not Selected') ){
                             accLifeCycleList.add(a.Id);
                             somethingToDo = true;
                             alcActiveMap.put(a.Id,false);
-                        }//If Tacticom is changed to null or none from not null or not none
+                        }
                     }
                     //if recordType is changed 
                     if(newMap.get(a.Id).RecordTypeId != oldMap.get(a.Id).RecordTypeId){
@@ -146,7 +155,7 @@ public with sharing class AccountTriggerHelper {
                         System.debug(newOneisConsiderable+''+oldOneisConsiderable);
                         //other to considerable rectype for alc
                         if(newOneisConsiderable && !oldOneisConsiderable){
-                            if(newMap.get(a.Id).TACTICOM_SOF__c != null  && newMap.get(a.Id).TACTICOM_SOF__c != 'none' && (newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Ind' || newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain')){
+                            if(newMap.get(a.Id).TACTICOM_SOF__c != null  && newMap.get(a.Id).TACTICOM_SOF__c != 'none' && newMap.get(a.Id).TACTICOM_SOF__c !='Not Selected' && (newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Ind' || newMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain')){
                                 System.debug('Considerable');
                                 accLifeCycleList.add(a.Id);
                                 somethingToDo = true;
@@ -154,7 +163,7 @@ public with sharing class AccountTriggerHelper {
                             }
                         }
                         else if(oldOneisConsiderable && !newOneisConsiderable){//considerable to other deactivate alc if exists
-                            if(oldMap.get(a.Id).TACTICOM_SOF__c != null  && oldMap.get(a.Id).TACTICOM_SOF__c != 'none' && (oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Ind' || oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain')){
+                            if(oldMap.get(a.Id).TACTICOM_SOF__c != null  && oldMap.get(a.Id).TACTICOM_SOF__c != 'none' && oldMap.get(a.Id).TACTICOM_SOF__c !='Not Selected' && (oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c =='Ind' || oldMap.get(a.Id).CHCUSTCLASSIFICATIONID__c == 'Chain')){
                                 System.debug('Not Considerable');
                                 accLifeCycleList.add(a.Id);
                                 somethingToDo = true;
@@ -233,10 +242,14 @@ public with sharing class AccountTriggerHelper {
                 if(triggerEvent == System.TriggerOperation.AFTER_INSERT){
                     Boolean isConsiderableRecTypeForALC = isConsiderableRecTypeForALC(a.RecordTypeId);
                      //collect Account Ids for Account Life Cycle Record
-                    if(isConsiderableRecTypeForALC && (a.CHCUSTCLASSIFICATIONID__c == 'Ind' || a.CHCUSTCLASSIFICATIONID__c == 'Chain') && (a.TACTICOM_SOF__c != null && a.TACTICOM_SOF__c !='none') ){
+                    if(a.Account_Status__c !='Closed' && isConsiderableRecTypeForALC && (a.CHCUSTCLASSIFICATIONID__c == 'Ind' || a.CHCUSTCLASSIFICATIONID__c == 'Chain') && (a.TACTICOM_SOF__c != null && a.TACTICOM_SOF__c !='none' && a.TACTICOM_SOF__c != 'Not Selected') ){
                         accLifeCycleList.add(a.Id);
                         somethingToDo = true;
-                        alcActiveMap.put(a.Id,false);
+                        //Stage should be updated to Start Business if sales<=0 and have Onboarding customer
+                        if(a.Onboarding_Customer__c)
+                            alcActiveMap.put(a.Id,true);
+                        else
+                            alcActiveMap.put(a.Id,false);
                     }
                 }
             }
@@ -1414,8 +1427,13 @@ public with sharing class AccountTriggerHelper {
             if(operation == 'Insert'){
                 for(Id accId:accList){
                     Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
-                    alc.Active__c = false;
-                    alc.Stage__c = 'Discover';
+                    if(alcActiveMap.get(accId)){
+                        alc.Active__c = true;
+                        alc.Stage__c = 'Start Business';//if OnBoarding customer is true
+                    }else{
+                        alc.Active__c = false;
+                        alc.Stage__c = '';//For Inactive ALC no need of stage
+                    }
                     alc.External_Key__c = accId;    
                     alc.Account__c = accId;   
                     alcList.add(alc);
