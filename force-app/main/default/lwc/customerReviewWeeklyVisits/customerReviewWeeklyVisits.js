@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track,api } from 'lwc';
 import getSalesManagerList from '@salesforce/apex/CustomerReviewFilterHandler.getSalesManagerList';
 import getRepresentativeList from '@salesforce/apex/CustomerReviewFilterHandler.getRepresentativeList';
 import getASMManager from '@salesforce/apex/CustomerReviewFilterHandler.getASMManager';
@@ -216,6 +216,25 @@ export default class CustomerReviewFilter extends LightningElement {
         this.isRepresentativeDisabled = false;
         this.showLegendtoggle = true;
         this.fetchVisits();
+    }
+
+
+    @api 
+    set representativeId(val){
+        this.selectedRepresentativeId = val;
+        if(val){
+            this.updateClassNames('');
+            this.showDateFields = true;
+            this.showLegendtoggle = true;
+        }else{
+            this.showDateFields = false;
+            this.showLegendtoggle = false;
+        }
+         this.fetchVisits();
+    }
+
+    get representativeId(){
+        return this.selectedRepresentativeId;
     }
     
     // Load representative options based on selected sales manager

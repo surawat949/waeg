@@ -1,6 +1,7 @@
 import { LightningElement, wire ,track} from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getLifeCycleRecords from '@salesforce/apex/LifeCycleReportingController.getAccountLifeCycleRecords';
+import getAccountLifeCycleRecordsUpdated from '@salesforce/apex/LifeCycleReportingController.getAccountLifeCycleRecordsUpdated';
 import getSalesManagerList from '@salesforce/apex/CustomerReviewFilterHandler.getSalesManagerList';
 import getRepresentativeList from '@salesforce/apex/CustomerReviewFilterHandler.getRepresentativeList';
 import getASMManager from '@salesforce/apex/CustomerReviewFilterHandler.getASMManager';
@@ -52,6 +53,7 @@ export default class LifeCycleReporting extends LightningElement  {
     //New Filter UI Update
     @track isTeamPerformanceChecked = false;
     @track isTeamPerformanceDisabled = true;
+    @track repUserRecord = {};
 
     custLabel = {
         Filter,Select_Company,Select_Sales_Manager,Visit_Zone,Segmentation,CloseButton,
@@ -83,7 +85,7 @@ export default class LifeCycleReporting extends LightningElement  {
             } else if (this.profileId !== '00eb0000000lainAAA') {
                 this.loadSalesManagerOptions();
             }  
-            //this.fetchAccountRecords();
+            this.fetchAccountRecords();
         } else if (error) {
             this.showToast('Error','Error fetching user data: '+e.message,'error');
         }
@@ -95,6 +97,7 @@ export default class LifeCycleReporting extends LightningElement  {
                 this.selectedManagerValue = manager.Id;
                 this.SalesManagerList = [{ label: manager.Name, value: manager.Id }];
                 this.isRepresentativeDisabled = false;
+                this.isTeamPerformanceDisabled = true;
                 this.loadRepresentativeOptionsForASM();
             })
             .catch(error => {
@@ -163,7 +166,7 @@ export default class LifeCycleReporting extends LightningElement  {
     
     fetchAccountRecords() {
         this.showSpinner = true;
-        getLifeCycleRecords({isConsolidatedDataNeeded : this.isTeamPerformanceChecked})
+        getAccountLifeCycleRecordsUpdated({isConsolidatedDataNeeded : this.isTeamPerformanceChecked})
         .then(result => {
             this.recordsMaster = result.lifeCycleWrapperList;
             this.pickVals = result.pickVals;
@@ -178,6 +181,7 @@ export default class LifeCycleReporting extends LightningElement  {
                 this.OwnerList = [
                     { label: 'No Filter', value: 'No Filter' },  // Add this entry as the first item
                     ...result.ownerNameList.map(user => ({
+                        Sales_Role__c: user.Sales_Role__c,
                         label: user.Name,
                         value: user.Id
                     }))
@@ -270,8 +274,19 @@ export default class LifeCycleReporting extends LightningElement  {
     }
     handleAOChange(event) {
         this.selectedOwnerValue = event.detail.value;
+        let matchingRecord = this.OwnerList.find(record => record.value === this.selectedOwnerValue);  
         if(this.selectedOwnerValue == 'No Filter'){
             this.selectedOwnerValue = '';
+        } 
+        let representativeRole = matchingRecord.Sales_Role__c; 
+        if(representativeRole === 'NSM' || representativeRole === 'RSM' || representativeRole === 'RMS' || representativeRole === 'NMS'){
+            this.isTeamPerformanceDisabled = false;
+            this.isTeamPerformanceChecked = false;
+            this.fetchAccountRecords(true);
+        }else{
+            this.isTeamPerformanceDisabled = true;
+            this.isTeamPerformanceChecked = false;
+            this.fetchAccountRecords(false);
         }
         this.filteredRecords();
     }
@@ -322,7 +337,6 @@ export default class LifeCycleReporting extends LightningElement  {
                         value: user.Id
                     }))
                 );                
-                this.filteredRecords();
             })
             .catch(error => {
                 this.showToast('Error','An error occurred during fetching manager ==>'+error.message,'error');
@@ -338,13 +352,12 @@ export default class LifeCycleReporting extends LightningElement  {
                 ].concat(
                     data
                         .map(user => ({
+                            Sales_Role__c: user.Sales_Role__c,
                             label: user.Name,
                             value: user.Id
                         }))
                 );
-                console.log(JSON.stringify(this.OwnerList));
                 this.selectedOwnerValue='';
-                this.filteredRecords();
             })
             .catch(error => {
                 this.showToast('Error','An error occurred during fetching representatives==>'+error.message,'error');

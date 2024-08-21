@@ -1,3 +1,8 @@
 .slds-tabs_scoped__content.slds-show {
     padding: 0.35rem !important;
 }
+
+.fullbgwhite{
+    background-color: #fff;
+   padding: 3px 0px 0px 10px;
+}

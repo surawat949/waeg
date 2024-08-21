@@ -1,4 +1,4 @@
-import { LightningElement,wire} from 'lwc';
+import { LightningElement,wire,api} from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import userId from '@salesforce/user/Id';
@@ -138,6 +138,15 @@ export default class CustomerReviewVisitZones extends LightningElement {
         this.selectedRepresentativeId = event.detail.value;
         this.isRepresentativeDisabled = false;
         this.currentUserId = this.selectedRepresentativeId;
+    }
+
+    @api 
+    set representativeId(val){
+        this.currentUserId = val;
+    }
+
+    get representativeId(){
+        return this.currentUserId;
     }
 
     updateMapData(){

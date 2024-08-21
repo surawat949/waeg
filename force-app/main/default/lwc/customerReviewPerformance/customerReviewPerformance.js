@@ -288,7 +288,7 @@ export default class CustomerReviewPerformance extends LightningElement {
         let matchingRecord = this.persistantRepData.find(record => record.Id === event.detail.value);        
         this.repUserRecord = matchingRecord;
         let representativeRole = matchingRecord.Sales_Role__c;
-        if(representativeRole === 'NSM' || representativeRole === 'RSM' || representativeRole === 'RMS' || representativeRole === 'NMS'){
+        if(representativeRole === 'NSM' || representativeRole === 'RSM' || representativeRole === 'RMS'){
             this.isTeamPerformanceDisabled = false;
             this.isTeamPerformanceChecked = false;
         }else{
@@ -370,7 +370,11 @@ export default class CustomerReviewPerformance extends LightningElement {
     
         this.currencyTitle = jsonData.title;
         this.greaterThan500Currency = jsonData.greaterThan500Currency;
-        this.visitsPerDayInField = mapDataWithClass(jsonData.monthList, jsonData.visitsPerDayInField, previousMonthName);
+        
+        let visitsPerDayInFieldTemp = jsonData.visitsPerDayInField.map(value => parseFloat(value.toFixed(2)));        
+        this.visitsPerDayInField = mapDataWithClass(jsonData.monthList, visitsPerDayInFieldTemp.map(value => `${value}%`), previousMonthName);
+
+        //this.visitsPerDayInField = mapDataWithClass(jsonData.monthList, jsonData.visitsPerDayInField, previousMonthName);
         console.log(JSON.stringify(jsonData.visitsPerDayInField));
     }
     
