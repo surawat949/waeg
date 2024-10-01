@@ -1,26 +1,9 @@
-import { LightningElement, wire, track,api } from 'lwc';
-import getSalesManagerList from '@salesforce/apex/CustomerReviewFilterHandler.getSalesManagerList';
-import getRepresentativeList from '@salesforce/apex/CustomerReviewFilterHandler.getRepresentativeList';
-import getASMManager from '@salesforce/apex/CustomerReviewFilterHandler.getASMManager';
-import getCompanies from '@salesforce/apex/CustomerReviewFilterHandler.getCompanies';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import USER_ID from '@salesforce/user/Id';
-import SALES_ROLE_FIELD from '@salesforce/schema/User.Sales_Role__c';
-import USER_NAME_FIELD from '@salesforce/schema/User.Name';
+import { LightningElement, track,api } from 'lwc';
 import getVisitsForRepresentative from '@salesforce/apex/CustomerReviewFilterHandler.getVisitsForRepresentative';
-import USER_COMPANYNAME_FIELD from '@salesforce/schema/User.CompanyName';
-import PROFILE_NAME_FIELD from '@salesforce/schema/User.Profile.Name';
-import PROFILE_ID_FIELD from '@salesforce/schema/User.ProfileId';
 import getTranslations from '@salesforce/apex/visitZonesMapController.getTranslations';
+import USER_LOCALE from '@salesforce/i18n/locale';
 
 //custom Labels
-import Filter from '@salesforce/label/c.Filter';
-import Select_Company from '@salesforce/label/c.Select_Company';
-import Select_Sales_Manager from '@salesforce/label/c.Select_Sales_Manager';
-import Representative from '@salesforce/label/c.Representative';
-import Company from '@salesforce/label/c.Company';
-import Sales_Manager from '@salesforce/label/c.Sales_Manager';
-import Select_Representative from '@salesforce/label/c.Select_Representative';
 import Monday from '@salesforce/label/c.Monday';
 import Tuesday from '@salesforce/label/c.Tuesday';
 import Wednesday from '@salesforce/label/c.Wednesday';
@@ -48,13 +31,6 @@ import Last_Direct_Visit_Date from '@salesforce/label/c.Last_Direct_Visit_Date';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class CustomerReviewFilter extends LightningElement {
-    @track companyOptions = [];
-    @track salesManagerOptions = [];
-    @track representativeOptions = [];
-    @track isRepresentativeDisabled = true;
-    @track isSalesManagerDisabled = true;
-    @track isRepresentativeReadonly = false;
-    @track isCompanyDisabled = true;
     @track startDate;
     @track endDate;
     @track isASM = false;
@@ -63,15 +39,10 @@ export default class CustomerReviewFilter extends LightningElement {
     @track showVisitDays = false;
     @track showLegendtoggle = false;
     @track visitViewButtonLabel = Show_Visit_Days;
+    //@track visitViewButtonLabel = Show_Visit_Zones;
     @track visits = [];
     @track translations = [];
-    
-    selectedCompany;
-    selectedSalesManagerId;
     selectedRepresentativeId;
-    currentUserId = USER_ID;
-    currentUserName;
-    currentUserRole;
     selectedFilter = '';
 
     subArea1;
@@ -79,7 +50,7 @@ export default class CustomerReviewFilter extends LightningElement {
     subArea3;
     subArea4;
     subArea5;
-    notSelected;
+    //notSelected;
 
     connectedCallback() {
         getTranslations()
@@ -92,9 +63,13 @@ export default class CustomerReviewFilter extends LightningElement {
                     this.subArea3 = this.translations["Sub-area 3"];
                     this.subArea4 = this.translations["Sub-area 4"];
                     this.subArea5 = this.translations["Sub-area 5"];
-                    this.notSelected = this.translations["Not Selected"];
+                    //this.notSelected = this.translations["Not Selected"];
                 }
                 this.setStartAndEndDate(new Date());
+                // If representativeId is already set, call fetchVisits
+                if (this.selectedRepresentativeId) {
+                    this.fetchVisits(); // Ensure translations are loaded before this call
+                }
             })
             .catch(error => {
                 this.showToast('Error','An error occurred during fetching Translations==>'+error.message,'error');
@@ -102,161 +77,33 @@ export default class CustomerReviewFilter extends LightningElement {
     }
 
     custLabel ={
-        Filter,Select_Company,Select_Sales_Manager,Representative,Company,
-        Sales_Manager,Select_Representative,Monday,Tuesday,
-        Wednesday,Thursday,Friday,Saturday,Sunday,Show_Visit_Days,Show_Visit_Zones,
+        Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday,Show_Visit_Days,Show_Visit_Zones,
         Start_Date,End_Date,Display_list,Hide_list,No_Visit_Error,Visit_Planning_Map
 
     }
 
-    // Wire service to get current user data
-    @wire(getRecord, { recordId: USER_ID, fields: [SALES_ROLE_FIELD, USER_NAME_FIELD, PROFILE_NAME_FIELD, USER_COMPANYNAME_FIELD, PROFILE_ID_FIELD] })
-    userData({ error, data }) {
-        if (data) {
-            const salesRole = getFieldValue(data, SALES_ROLE_FIELD);
-            const profileName = getFieldValue(data, PROFILE_NAME_FIELD);
-            const profileId = getFieldValue(data, PROFILE_ID_FIELD);
-            this.currentUserName = getFieldValue(data, USER_NAME_FIELD);
-            this.currentUserRole = salesRole;
-            // Logic based on user role and profile
-            if (profileName === 'SFDC LOCAL ADMIN') {
-                this.loadSalesManagerOptions();
-            } else if (profileId === '00eb0000000lainAAA') {
-                this.loadCompanyOptions();
-            } else if (salesRole === 'ASM' || salesRole === 'AMS' || salesRole === 'KAM') {
-                this.isASM = true;
-                this.setASMManager();
-            } else {
-                this.loadSalesManagerOptions();
-            }
-        } else if (error) {
-            this.showToast('Error','An error occurred during fetching user details==>'+error.message,'error');
-        }
-    }
-
-    // Load company options for System Administrator profile
-    loadCompanyOptions() {
-        getCompanies()
-            .then(data => {
-                this.companyOptions = data.map(company => ({
-                    label: company,
-                    value: company
-                }));
-                this.isCompanyDisabled = false;
-                this.isSalesManagerDisabled = true; // Ensure Sales Manager is disabled initially for Admin
-            })
-            .catch(error => {
-                this.showToast('Error','An error occurred during loading Companies==>'+error.message,'error');
-            });
-    }
-
-    // Handle change in selected company
-    handleCompanyChange(event) {
-        this.selectedCompany = event.detail.value;
-        this.updateClassNames('');
-        this.selectedSalesManagerId = '';
-        this.visits = [];
-        this.mapMaker = [];
-        this.zoomLevel = 6;
-        this.isSalesManagerDisabled = false;
-        this.selectedRepresentativeId = '';
-        this.isRepresentativeDisabled = true; // Disable Representative dropdown
-        this.representativeOptions = []; // Clear Representative dropdown options
-        this.loadSalesManagerOptions();
-    }
-
-    // Load sales manager options based on selected company
-    loadSalesManagerOptions() {
-        getSalesManagerList({ companyName: this.selectedCompany })
-            .then(data => {
-                this.isSalesManagerDisabled = false;
-                this.salesManagerOptions = data.map(user => ({
-                    label: user.Name,
-                    value: user.Id
-                }));
-            })
-            .catch(error => {
-                this.showToast('Error','An error occurred during fetching manager ==>'+error.message,'error');
-            });
-    }
-
-    // Set ASM manager details
-    setASMManager() {
-        getASMManager()
-            .then(manager => {
-                this.selectedSalesManagerId = manager.Id;
-                this.salesManagerOptions = [{ label: manager.Name, value: manager.Id }];
-                this.isSalesManagerDisabled = true;
-                this.isRepresentativeDisabled = false;
-                this.isRepresentativeReadonly = true;
-                this.loadRepresentativeOptionsForASM();
-            })
-            .catch(error => {
-                this.showToast('Error','An error occurred during fetching manager ==>'+error.message,'error');
-            });
-    }
-
-    // Handle change in selected sales manager
-    handleSalesManagerChange(event) {
-        this.updateClassNames('');
-        this.selectedSalesManagerId = event.detail.value;
-        this.selectedRepresentativeId = '';
-        this.isRepresentativeDisabled = false;
-        this.visits = [];
-        this.mapMaker = [];
-        this.loadRepresentativeOptions();
-        this.zoomLevel = 6;
-    }
-
-    // Handle change in selected representative
-    handleRepresentativeChange(event) {
-        this.updateClassNames('');
-        this.showDateFields = true;
-        this.selectedRepresentativeId = event.detail.value;
-        this.isRepresentativeDisabled = false;
-        this.showLegendtoggle = true;
-        this.fetchVisits();
-    }
-
-
     @api 
     set representativeId(val){
         this.selectedRepresentativeId = val;
-        if(val){
-            this.updateClassNames('');
-            this.showDateFields = true;
-            this.showLegendtoggle = true;
-        }else{
-            this.showDateFields = false;
-            this.showLegendtoggle = false;
+        if (this.translations) {
+            this.setStartAndEndDate(new Date());
+            if(val){
+                this.updateClassNames('');
+                this.showDateFields = true;
+                this.showLegendtoggle = true;
+            }else{
+                this.showDateFields = false;
+                this.showLegendtoggle = false;
+            }
+            if(this.selectedRepresentativeId != undefined && this.selectedRepresentativeId != null){
+                this.fetchVisits();
+            }
         }
-         this.fetchVisits();
     }
-
     get representativeId(){
         return this.selectedRepresentativeId;
     }
     
-    // Load representative options based on selected sales manager
-    loadRepresentativeOptions() {
-        getRepresentativeList({ selectedManagerId: this.selectedSalesManagerId })
-            .then(data => {
-                this.representativeOptions = data
-                    .map(user => ({
-                        label: user.Name,
-                        value: user.Id
-                    }))
-            })
-            .catch(error => {
-                this.showToast('Error','An error occurred during fetching representatives==>'+error.message,'error');
-            });
-    }
-
-    // Load representative options for ASM role
-    loadRepresentativeOptionsForASM() {
-        // For ASM, the representative should only be the ASM themselves
-        this.representativeOptions = [{ label: this.currentUserName, value: this.currentUserId }];
-    }
 
     // Get start date of the week
     getStartOfWeek(date) {
@@ -276,7 +123,7 @@ export default class CustomerReviewFilter extends LightningElement {
     
     // Handle next week button click
     handleNextWeek() {
-        this.zoomLevel = 6;
+        this.zoomLevel = 8;
         const nextWeek = new Date(this.startDate);
         nextWeek.setDate(nextWeek.getDate() + 7);
         this.setStartAndEndDate(nextWeek);
@@ -285,7 +132,7 @@ export default class CustomerReviewFilter extends LightningElement {
 
     // Handle previous week button click
     handlePreviousWeek() {
-        this.zoomLevel = 6;
+        this.zoomLevel = 8;
         const previousWeek = new Date(this.startDate);
         previousWeek.setDate(previousWeek.getDate() - 7);
         this.setStartAndEndDate(previousWeek);
@@ -298,7 +145,7 @@ export default class CustomerReviewFilter extends LightningElement {
             if(this.selectedRepresentativeId !=''){
                 this.fetchVisits();
             }
-            this.zoomLevel = 6;
+            this.zoomLevel = 8;
             this.visitViewButtonLabel = Show_Visit_Zones;
             this.showVisitZone = false;
             this.showVisitDays = true;
@@ -306,7 +153,7 @@ export default class CustomerReviewFilter extends LightningElement {
             if(this.selectedRepresentativeId !=''){
                 this.fetchVisits();
             }
-            this.zoomLevel = 6;
+            this.zoomLevel = 9;
             this.visitViewButtonLabel = Show_Visit_Days;
             this.showVisitDays = false;
             this.showVisitZone = true;
@@ -329,7 +176,7 @@ export default class CustomerReviewFilter extends LightningElement {
     @track vCenter;
     @track mapMakerTitle = Visit_Planning_Map;
     @track isDisplayList = true;
-    @track zoomLevel = 6;
+    @track zoomLevel = 8;
     @track displayListView = 'hidden';
 
     // Show list view of visits
@@ -355,7 +202,7 @@ export default class CustomerReviewFilter extends LightningElement {
                 } else {
                     this.handleKeyMapChangeForDays('');
                 }
-                console.log(this.visits);
+                console.log('log visits ==> '+JSON.stringify(this.visits));
             })
             .catch(error => {
                 this.showToast('Error','An error occurred during fetching visits ==>'+error.message,'error');
@@ -367,14 +214,14 @@ export default class CustomerReviewFilter extends LightningElement {
         return value === undefined || value === null ? '' : value;
     }
     replaceUndefinedForTacticom(value) {
-        return value === undefined || value === null ? 'Not Selected' : value;
+        return value === undefined || value === null ? 'No Visit Zone' : value;
     }
 
     // Handle click on subarea for visit zones
     handleClickSubarea(event) {
         event.preventDefault(); // Prevents the default anchor behavior
         const dataId = event.currentTarget.getAttribute('data-id');
-        this.zoomLevel = 6;
+        this.zoomLevel = 9;
         if(this.selectedFilter === ''){
             this.selectedFilter = dataId;
             this.updateClassNames(dataId);
@@ -405,20 +252,20 @@ export default class CustomerReviewFilter extends LightningElement {
     handleKeyMapChangeForZones(areaName) {
         const result = this.visits;
         this.mapMaker = [];
-    
         // Filter logic based on areaName
         let filteredResult;
         if (areaName === 'not_Selected') {
-            filteredResult = result.filter(r => !r.Account__r.TACTICOM_SOF__c || r.Account__r.TACTICOM_SOF__c === 'Not Selected');
+            filteredResult = result.filter(r => r.Account__r.TACTICOM_SOF__c === null || r.Account__r.TACTICOM_SOF__c === undefined);
         } else if (areaName) {
             filteredResult = result.filter(r => r.Account__r.TACTICOM_SOF__c === this.translations[areaName]);
         } else {
             filteredResult = result;
         }
-    
+
         if (filteredResult.length > 0) {
             for (var i = 0; i < filteredResult.length; i++) {
                 let fillColor;
+                console.log('sub-area => '+filteredResult[i].Account__r.TACTICOM_SOF__c);
                 switch (filteredResult[i].Account__r.TACTICOM_SOF__c) {
                     case this.translations["Sub-area 1"]:
                         fillColor = 'yellow';
@@ -444,7 +291,7 @@ export default class CustomerReviewFilter extends LightningElement {
                                     '<br><b>'+Visit_Zone+' : </b>' + this.replaceUndefinedForTacticom(filteredResult[i].Account__r.TACTICOM_SOF__c) +
                                     '<br><b>'+Segmentation+' : </b>' + filteredResult[i].Account__r.Segmentation_Net__c +
                                     '<br><b>'+Total_Visits_Planned+' : </b>' + filteredResult[i].Account__r.Total_Visits_Planned__c +
-                                    '<br><b>'+Last_Direct_Visit_Date+' : </b>' + filteredResult[i].Account__r.Last_Visit_date__c +
+                                    '<br><b>'+Last_Direct_Visit_Date+' : </b>' + this.replaceFormatDate(filteredResult[i].Account__r.Last_Visit_date__c) +
                                     '<br><b>'+Address+' : </b>' +
                                     this.replaceUndefined(filteredResult[i].Account__r.Shop_Street__c) + ' ' +
                                     this.replaceUndefined(filteredResult[i].Account__r.Shop_City__c) + ' ' +
@@ -455,6 +302,8 @@ export default class CustomerReviewFilter extends LightningElement {
                 this.mapMaker = [...this.mapMaker,
                     {
                         location: {
+                            Latitude : filteredResult[i].Account__r.ShippingLatitude,
+                            Longitude : filteredResult[i].Account__r.ShippingLongitude,
                             Street: filteredResult[i].Account__r.Shop_Street__c,
                             City: filteredResult[i].Account__r.Shop_City__c,
                             State: filteredResult[i].Account__r.Shop_State__c,
@@ -477,6 +326,8 @@ export default class CustomerReviewFilter extends LightningElement {
             }
             this.vCenter = {
                 location: {
+                    Latitude : filteredResult[0].Account__r.ShippingLatitude,
+                    Longitude : filteredResult[0].Account__r.ShippingLongitude,
                     Street: filteredResult[0].Account__r.Shop_Street__c,
                     City: filteredResult[0].Account__r.Shop_City__c,
                     State: filteredResult[0].Account__r.Shop_State__c,
@@ -509,7 +360,7 @@ export default class CustomerReviewFilter extends LightningElement {
                 this.updateClassNames(dataId);
             }
         }
-        this.zoomLevel = 6;
+        this.zoomLevel = 8;
     }
     // Handle map change for visit days
     handleKeyMapChangeForDays(areaName){
@@ -555,7 +406,7 @@ export default class CustomerReviewFilter extends LightningElement {
                                     '<br><b>'+Visit_Zone+' : </b>' + this.replaceUndefinedForTacticom(filteredResult[i].Account__r.TACTICOM_SOF__c) +
                                     '<br><b>'+Segmentation+' : </b>' + filteredResult[i].Account__r.Segmentation_Net__c +
                                     '<br><b>'+Total_Visits_Planned+' : </b>' + filteredResult[i].Account__r.Total_Visits_Planned__c +
-                                    '<br><b>'+Last_Direct_Visit_Date+' : </b>' + filteredResult[i].Account__r.Last_Visit_date__c +
+                                    '<br><b>'+Last_Direct_Visit_Date+' : </b>' + this.replaceFormatDate(filteredResult[i].Account__r.Last_Visit_date__c) +
                                     '<br><b>'+Address+' : </b>' +
                                     this.replaceUndefined(filteredResult[i].Account__r.Shop_Street__c) + ' ' +
                                     this.replaceUndefined(filteredResult[i].Account__r.Shop_City__c) + ' ' +
@@ -567,8 +418,8 @@ export default class CustomerReviewFilter extends LightningElement {
                 this.mapMaker = [...this.mapMaker,
                     {
                         location : {
-                            //Latitude : result[i].Account__r.sf_latitude__c,
-                            //Longitude : result[i].Account__r.sf_longitude__c,
+                            Latitude : result[i].Account__r.ShippingLatitude,
+                            Longitude : result[i].Account__r.ShippingLongitude,
                             Street : filteredResult[i].Account__r.Shop_Street__c,
                             City : filteredResult[i].Account__r.Shop_City__c,
                             State : filteredResult[i].Account__r.Shop_State__c,
@@ -594,8 +445,8 @@ export default class CustomerReviewFilter extends LightningElement {
             }
             this.vCenter = {
                 location : {
-                    //Latitude : result[0].Account__r.sf_latitude__c,
-                    //Longitude : result[0].Account__r.sf_longitude__c,
+                    Latitude : result[0].Account__r.ShippingLatitude,
+                    Longitude : result[0].Account__r.ShippingLongitude,
                     Street : filteredResult[0].Account__r.Shop_Street__c,
                     City : filteredResult[0].Account__r.Shop_City__c,
                     State : filteredResult[0].Account__r.Shop_State__c,
@@ -610,6 +461,17 @@ export default class CustomerReviewFilter extends LightningElement {
         this.isLoading = false;
     }
 
+    replaceFormatDate(value){
+        if(value == undefined || value == null){
+            return '';
+        }else{
+            var datetime = new Date(value);
+            const user_locale = USER_LOCALE;
+            const options = {year:'numeric', month:'2-digit', day:'2-digit'};
+            return new Intl.DateTimeFormat(user_locale, options).format(datetime) + '&nbsp;&nbsp;&nbsp;' + datetime.toTimeString().substring(0,5);
+        }
+    }
+    
     showToast(title, variant, message) {
         this.dispatchEvent(
             new ShowToastEvent({

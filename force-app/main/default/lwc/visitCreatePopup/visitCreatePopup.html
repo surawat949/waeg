@@ -13,7 +13,7 @@
             <template if:true={isLoading}>
                 <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
             </template>
-            <lightning-record-edit-form object-api-name="Visits__c" onsuccess={handleSuccess} onerror={handleError} >
+            <lightning-record-edit-form record-type-id = {recordTypeId} object-api-name="Visits__c" onsuccess={handleSuccess} onerror={handleError} >
                 <div class="slds-grid">
                     <div class="slds-col slds-size_1-of-2">
                         <lightning-input-field field-name="Account__c" value={accountId} disabled="true" ></lightning-input-field>
@@ -28,6 +28,7 @@
                             name="Contact"
                             label="Contact"
                             value={contact}
+                            disabled={disableContact}
                             placeholder="Select Contact"
                             options={contactList}
                             onchange={handleContactChange} >

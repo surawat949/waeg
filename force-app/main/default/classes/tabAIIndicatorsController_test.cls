@@ -187,6 +187,14 @@ public class tabAIIndicatorsController_test {
         lastSales4.Total_Production_Returns_L12Mo__c =1.8;
         lastSales4.Lenses_Shipment_STOCK_Average_Delay_3Mo__c = 4;
         
+        Visits__c visits = new Visits__c();
+        visits.Account__c = acc4.Id;
+        visits.Assigned_to__c = UserInfo.getUserId();
+        visits.Start_Time__c = System.today()-2;
+        visits.End_Time__c = System.today()-1;
+        visits.Visit_Status__c = 'Complete';
+        insert visits;
+        
         tabAIIndicatorsController.getAIIndicators(acc4.Id,'Address');
         tabAIIndicatorsController.getAIIndicators(acc4.Id,'Statistics');
         
@@ -396,6 +404,7 @@ public class tabAIIndicatorsController_test {
         acc13.RecordTypeId=Account_Ind_RecType;
         acc13.Account_Status__c = 'Blocked';
         acc13.Payment_issue__c = true;
+        acc13.Lenses_Net_Sales_Last_12Mo__c = 2;
         insert acc13;
         Last_Sales_Statistics__c lastSales13 = new Last_Sales_Statistics__c();
         lastSales13.Account__c = acc13.Id;
@@ -435,6 +444,7 @@ public class tabAIIndicatorsController_test {
         acc14.RecordTypeId = Account_Ind_RecType;
         acc14.First_Competitor_local_name__c = null;
         acc14.Second_Competitor_Local_Name__c = null;
+        acc14.Account_Status__c = 'Blocked';
         insert acc14;
         tabAIIndicatorsController.getAIIndicators(acc14.Id, 'Address');
         tabAIIndicatorsController.getAIIndicators(acc14.Id, 'Statistics');

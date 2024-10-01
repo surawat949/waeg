@@ -1,0 +1,23 @@
+<template>
+    <!--<tr class="tree-grid-row" draggable={isDraggable} ondragstart={handleDragStart}>-->
+        <template for:each={columnValues} for:item="cell">
+            <td key={cell.fieldName} class="tree-grid-cell" style="padding-left: {level}rem;">
+                <span>{cell.value}</span>
+                  <template if:true={isExpanded}>
+                    <template for:each={rowData.contacts} for:item="contact">
+                        <c-custom-tree-grid-row
+                            key={contact.contactId}
+                            columns={columns}
+                            row-data={contact}
+                            level={nextLevel}
+                            ondragstart={handleDragStart}
+                            onrowexpanded={handleRowExpanded}
+                            onrowcollapsed={handleRowCollapsed}>
+                        </c-custom-tree-grid-row>
+                    </template>
+                </template>
+            </td>
+        </template>
+    <!--</tr>-->
+  
+</template>

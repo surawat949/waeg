@@ -73,7 +73,7 @@ public with sharing class TabMVCVisitsContactNearby {
             String query = 'SELECt Id, FirstName, LastName, Name, MiyoSmart_Attitude__c, Last_contact_visit_date__c, '
                             +'Preferred_contact_method__c, Account.Name, MailingStreet, MailingPostalCode, MailingCity, MailingState, '
                             +'MailingCountry, MailingLatitude, MailingLongitude, Account.Clinic_Name__c, MiyoSmart_Segmentation__c FROM Contact '
-                            +'WHERE RecordTypeId=:CON_OPT_RT AND '
+                            +'WHERE RecordTypeId=:CON_OPT_RT AND Account.Account_Status__c != \'Closed\' AND '
                             +'DISTANCE(MailingAddress, GEOLOCATION('+Latitude+', '+Longitude+'), \'km\')<'+distance;
             
             String aconQuery = 'SELECt Id, ContactId, Contact.FirstName, Contact.LastName, '
@@ -81,7 +81,7 @@ public with sharing class TabMVCVisitsContactNearby {
                                 + 'Contact.Preferred_contact_method__c, Preferred_contact_day_time__c, Account.Name, Contact.MailingStreet, '
                                 + 'Contact.MailingPostalCode, Contact.MailingCity, Contact.MailingState, '
                                 + 'Contact.MailingCountry, Contact.MailingLatitude, Contact.MailingLongitude, Account.Clinic_Name__c, Contact.MiyoSmart_Segmentation__c '
-                                + 'FROM AccountContactRelation WHERE Contact.RecordTypeId=:CON_OPT_RT AND Preferred_contact_day_time__c=\''+PreferDayTime+'\' AND '
+                                + 'FROM AccountContactRelation WHERE Account.Account_Status__c != \'Closed\' AND Contact.RecordTypeId=:CON_OPT_RT AND Preferred_contact_day_time__c=\''+PreferDayTime+'\' AND '
                                 + 'DISTANCE(Contact.MailingAddress, GEOLOCATION('+Latitude+', '+Longitude+'), \'km\')<'+distance;
             
             if(String.isNotBlank(miyoSmartAttitude) && String.isBlank(PreferDayTime)){
@@ -100,7 +100,7 @@ public with sharing class TabMVCVisitsContactNearby {
                 firstSpecialityClause = ' and First_Speciality__c LIKE \'%'+firstSpeciality+'%\'';
             }
 
-           /* if(String.isNotBlank(professional) && String.isBlank(PreferDayTime)){
+            /* if(String.isNotBlank(professional) && String.isBlank(PreferDayTime)){
                 professionalClause = ' and Professional_Type__c LIKE \'%'+professional+'%\'';
             }*/
 

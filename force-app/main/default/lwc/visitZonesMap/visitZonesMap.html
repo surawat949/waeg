@@ -82,7 +82,7 @@
                                 </div>
                             </td>
                             <td data-label="Not Selected" title="Not Selected">
-                                <div class="slds-truncate" title="Not Selected">{notSelected}</div>
+                                <div class="slds-truncate" title="Not Selected">Not selected Customers</div>
                             </td>
                         </tr>
                         <tr>
@@ -121,7 +121,7 @@
                         <tr class="slds-line-height_reset">
                             <td style="white-space: normal !important;">
                                 <div class="checkbox-container">
-                                    <lightning-input type="checkbox" label="Exclude Not Selected Customers" name="Not_Selected" 
+                                    <lightning-input type="checkbox" label="Include Customers without sub area" name="Not_Selected" 
                                     id="Not_Selected" data-id="Not_Selected" 
                                     onchange={hanndledCheckboxChanged} checked={IsCheckBoxChecked}></lightning-input>
                                 </div>

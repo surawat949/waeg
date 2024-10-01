@@ -33,15 +33,21 @@ public without sharing class tabAIIndicatorsController {
     }
      @AuraEnabled(cacheable=true)
     public static IndicatorWrapper getAIIndicators(Id receivedId,String tabName) {
-        Account currAcc = [Select Id,Hoya_Account_ID__c,Strategic_Value_Gross_Sales__c,Account_Status__c,First_Competitor_local_name__c,Second_Competitor_Local_Name__c,Lenses_Net_Sales_Last_12Mo__c,Net_Promoter_Score__c,Payment_issue__c,Segmentation_Net__c,Seiko_objective_ECP_agr__c,Seiko_Network__c,Visionary_Alliance__c,
+        DateTime now = System.now();
+        DateTime fourMonthsAgo = now.addMonths(-4);
+        DateTime SixMonthsAgo = now.addMonths(-6);
+        Account currAcc = [Select Id,Hoya_Account_ID__c,Last_Visit_date__c,Lenses_Net_Sales_L12Mo_vs_LFY__c,Strategic_Value_Gross_Sales__c,Account_Status__c,First_Competitor_local_name__c,Second_Competitor_Local_Name__c,Lenses_Net_Sales_Last_12Mo__c,Net_Promoter_Score__c,Payment_issue__c,Segmentation_Net__c,Seiko_objective_ECP_agr__c,Seiko_Network__c,Visionary_Alliance__c,
                            Strategic_Value_Net_Sales__c,Owner.CompanyName From Account WHERE id =: receivedId limit 1];
+        List<Visits__c> listOfLastVisit = [SELECT ID,Visit_Reason__c,End_Time__c	 
+                                           FROM Visits__c WHERE Account__c =: receivedId  AND End_Time__c >= :sixMonthsAgo
+                                           ORDER BY End_Time__c DESC
+                                           ]; 
         List<Last_Sales_Statistics__c> statsList = [Select Id, Lenses_Net_Sales_Last_12Mo_vs_LFY__c,Lenses_Gross_Sales_LFY__c,Lenses_Gross_Sales_Last_12Mo__c, Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY__c, Lenses_Net_Sales_Last_12Mo__c, Lenses_Net_Sales_Forecast_CFY__c, 
                                                     Total_Returns_L12Mo__c,Total_Production_Returns_L12Mo__c,Lenses_Shipment_RX_Average_Delay_3Mo__c,Uncut_Lenses_L3Mo__c,Remote_Edging_L3Mo__c,Mounting_L3Mo__c,
                                                     Lenses_Shipment_STOCK_Average_Delay_3Mo__c,Lenses_Net_Sales_LFY__c,Lenses_Net_Sales_Last_Month__c
                                                     From Last_Sales_Statistics__c Where  Account__c = :receivedId];
         IndicatorWrapper wrapper = new IndicatorWrapper();
         String userLanguage = UserInfo.getLanguage();
-        
         if(currAcc.Account_Status__c == 'Closed'){
             wrapper.satisfactionFlag = 'GREY';
             
@@ -78,31 +84,85 @@ public without sharing class tabAIIndicatorsController {
         else{//If Account status is not closed
             if(tabName == 'Address'){
                 //Satisfaction Flag
-                if(currAcc.Net_Promoter_Score__c > 0 && currAcc.Net_Promoter_Score__c != null){
-                    if(currAcc.Net_Promoter_Score__c < 5){
-                        wrapper.satisfactionFlag = 'REDALERT';
-                        
-                        wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction02', userLanguage);                    }
-                    else if(currAcc.Net_Promoter_Score__c >= 5 && currAcc.Net_Promoter_Score__c < 7){
+                String visitMainObjectivelast = '';
+                String visitMainObjectiveNext = '';
+				DateTime lastVisit = null;
+                
+				
+                List<Visits__c>  listOfLastVisits = new List<Visits__c>();
+                List<Visits__c>  listOfNextVisit = new List<Visits__c>();
+                List<Visits__c>  listOfTwoMonthVisits = new List<Visits__c>();
+				// Check if the last visit date is within the last four months
+				system.debug('>>'+currAcc.Last_Visit_date__c);
+                system.debug('>>'+fourMonthsAgo);
+				if (currAcc.Last_Visit_date__c >= fourMonthsAgo) {
+					for (Visits__c visit : listOfLastVisit) {
+                        if (visit.End_Time__c >= fourMonthsAgo) {
+                            listOfNextVisit.add(visit);
+                        }  
+                        else {
+                                listOfTwoMonthVisits.add(visit);
+                        }
+                    }  
+                    system.debug('>>>>listOfsize'+listOfTwoMonthVisits.size());
+                    system.debug('>>>>listOfNextVisit'+listOfNextVisit);
+                    for (Visits__c visit : listOfNextVisit) {       // This visit is in the past
+                        if (visit.End_Time__c < now && visit.End_Time__c<listOfNextVisit[0].End_Time__c) {
+                            lastVisit = visit.End_Time__c;
+                            visitMainObjectiveLast = visit.Visit_Reason__c;
+                            System.debug('>>>> Last Visit Updated to: ' + lastVisit);
+                            System.debug('>>>> Last Visit Reason: ' + visitMainObjectiveLast);
+                            break;
+                        }
+                    }
+                    system.debug('>>>>listOfNextVisit[0]'+listOfNextVisit[0].End_Time__c);
+                     system.debug('>>>>visitMainObjectivelast'+visitMainObjectiveNext);
+                    system.debug('>>>>visitMainObjectivelast'+listOfNextVisit[0].Visit_Reason__c);
+                    if (listOfNextVisit[0].Visit_Reason__c == 'Problem Solving' || visitMainObjectivelast == 'Problem Solving') {
                         wrapper.satisfactionFlag = 'RED';
-                        
-                        wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction03', userLanguage); 
+                        wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction02', userLanguage);
+                    }else if (listOfNextVisit[0].Visit_Reason__c  == 'Customer Retention' 
+                                || visitMainObjectivelast == 'Customer Retention') {
+                            wrapper.satisfactionFlag = 'REDALERT';
+                            wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction03', userLanguage);
+                    } else if (listOfNextVisit[0].Visit_Reason__c  == 'Cash Collection'
+                                            || visitMainObjectivelast == 'Cash Collection') {
+                            wrapper.satisfactionFlag = 'REDALERT';
+                            wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction04', userLanguage);
+                    } else {
+                        boolean hasRelevantVisits = false;
+                        for (Visits__c visitObj : listOfTwoMonthVisits){
+                            if (visitObj.Visit_Reason__c == 'Problem Solving' ||
+                                visitObj.Visit_Reason__c == 'Customer Retention' ||
+                                visitObj.Visit_Reason__c == 'Cash Collection') {
+                                hasRelevantVisits = true;
+                                break;
+                            }
+                        }
+                        if (hasRelevantVisits) {
+                            wrapper.satisfactionFlag = 'GREENALERT';
+                            wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction05', userLanguage);
+                        } else {
+                            wrapper.satisfactionFlag = 'GREEN';
+                            wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction06', userLanguage);
+                            }
                     }
-                    else if(currAcc.Net_Promoter_Score__c >= 7 && currAcc.Net_Promoter_Score__c < 9){
-                        wrapper.satisfactionFlag = 'GREENALERT';
-                        
-                        wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction04', userLanguage); 
-                    }
-                    else if(currAcc.Net_Promoter_Score__c >= 9 ){
-                        wrapper.satisfactionFlag = 'GREEN';
-                        
-                        wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction05', userLanguage); 
-                    }
-                }
+			    }		
                 else{
-                    wrapper.satisfactionFlag = 'GREEN';
-                    
-                    wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction06', userLanguage); 
+                    if(currAcc.Lenses_Net_Sales_Last_12Mo__c>0){
+                        if(currAcc.Lenses_Net_Sales_L12Mo_vs_LFY__c>=0){
+                            wrapper.satisfactionFlag = 'GREENALERT';
+                            wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction07', userLanguage); 
+                        }
+                        else{
+                            wrapper.satisfactionFlag = 'GREENALERT';
+                            wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction08', userLanguage); 
+                        }   
+                    }
+                    else{
+                        wrapper.satisfactionFlag = 'GREEN';
+                        wrapper.satisfactionFlagMeaning = System.Label.get('', 'Satisfaction09', userLanguage); 
+                    }
                 }
                 //Payment Flag
                 if (!statsList.isEmpty() && statsList[0].Lenses_Net_Sales_Last_12Mo__c > 0 ){
@@ -454,7 +514,7 @@ public without sharing class tabAIIndicatorsController {
                         }
                         else if(statsList[0].Lenses_Shipment_STOCK_Average_Delay_3Mo__c >= 1.5){
                             wrapper.deliveriesFlag = 'RED';
-                             wrapper.deliveriesFlagMeaning= System.Label.get('', 'Deliveries09', userLanguage);
+                            wrapper.deliveriesFlagMeaning= System.Label.get('', 'Deliveries09', userLanguage);
                         }
                         else if(statsList[0].Lenses_Shipment_STOCK_Average_Delay_3Mo__c >= 1){
                             wrapper.deliveriesFlag = 'GREENALERT';

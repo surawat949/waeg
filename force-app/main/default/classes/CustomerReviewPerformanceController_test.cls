@@ -134,7 +134,7 @@ public class CustomerReviewPerformanceController_test {
         }
         insert visit2;
         CustomerReviewPerfomanceController.getPerformanceDetails(user,true);
-        
+        CustomerReviewPerfomanceController.getVisitDetails(user,true);
         Test.StopTest();
     }
 }

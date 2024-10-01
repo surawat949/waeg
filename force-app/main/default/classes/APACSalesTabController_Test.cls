@@ -5,9 +5,8 @@
 */
 @isTest
 public with sharing class APACSalesTabController_Test {
-    public APACSalesTabController_Test() {
 
-    }
+    public static final string AccountRECType = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('Independents').getRecordTypeId();
     @IsTest
     static void runTestCtrl(){
 
@@ -22,7 +21,7 @@ public with sharing class APACSalesTabController_Test {
         Account acc = new Account();
         acc.Name = 'Test Account APAC';
         acc.Hoya_Account_Id__c = 'TEST-APAC-123456';
-        acc.RecordTypeId = '012b00000000P38';
+        acc.RecordTypeId = AccountRECType;
         acc.Door__c = door.id;
         acc.Budget_April_Current_Year__c=0;
         acc.Budget_May_Current_Year__c=0;
@@ -41,7 +40,7 @@ public with sharing class APACSalesTabController_Test {
         Account acc2 = new Account();
         acc2.Name='sales test account2';
         acc2.hoya_account_id__c='SO3366666xx';
-        acc2.RecordTypeId='012b00000000P38';
+        acc2.RecordTypeId = AccountRECType;
         acc2.Door__c = door.id;
         acc2.ParentId = acc.Id;
         insert acc2;
@@ -204,7 +203,7 @@ public with sharing class APACSalesTabController_Test {
         Account acc = new Account();
         acc.Name = 'Test';
         acc.hoya_account_id__c = '123456';
-        acc.RecordTypeId = '012b00000000P38';
+        acc.RecordTypeId = AccountRECType;
         insert acc;
 
         Opportunity o = new Opportunity();
@@ -264,7 +263,7 @@ public with sharing class APACSalesTabController_Test {
         Account acc = new Account();
         acc.Name = 'Test Account APAC-THAI';
         acc.Hoya_Account_Id__c = 'TEST123456';
-        acc.RecordTypeId = '012b00000000P38';
+        acc.RecordTypeId = AccountRECType;
         acc.Door__c = door.id;
         acc.Budget_April_Current_Year__c=0;
         acc.Budget_May_Current_Year__c=0;
@@ -281,9 +280,9 @@ public with sharing class APACSalesTabController_Test {
         insert acc;
 
         Account acc2 = new Account();
-        acc2.Name='sales test account2';
-        acc2.hoya_account_id__c='SO3366666xx';
-        acc2.RecordTypeId='012b00000000P38';
+        acc2.Name = 'sales test account2';
+        acc2.hoya_account_id__c = 'SO3366666xx';
+        acc2.RecordTypeId = AccountRECType;
         acc2.Door__c = door.id;
         acc2.ParentId = acc.Id;
         insert acc2;

@@ -1,7 +1,7 @@
 public class TabAccountNewTaskLWCController {
     @AuraEnabled(cacheable=true)
     public static ID taskRecordTypeId(){
-      ID SupportTask = Schema.SObjectType.Task.getRecordTypeInfosByDeveloperName().get('SFDC_V2_Standard_Task').getRecordTypeId();
+      ID SupportTask = Schema.SObjectType.Task.getRecordTypeInfosByDeveloperName().get('SFDC_V2_Local_Ticket').getRecordTypeId();
         return SupportTask; 
     }
     @AuraEnabled(cacheable=true)

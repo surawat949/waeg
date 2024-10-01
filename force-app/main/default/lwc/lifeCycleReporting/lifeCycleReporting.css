@@ -1,5 +1,5 @@
 .card_Design{
-    padding: .5rem;
+    padding: .15rem;
     display: flex;
     justify-content: center;
     background: #fff;
@@ -90,7 +90,6 @@
 }
 .filterSection{
     border-bottom: 0.5rem;
-    padding-bottom: 1.5rem;
     border:1px solid #C9C9C9;
     background: #F3F3F3;
 }
@@ -125,48 +124,10 @@
     border-radius: 5px;
     margin-bottom: 5px;
 }
-
-.slide-in {
-    max-height: 1000px; /* Adjust to your content's height */
-    transform: translateX(0px);
-    -webkit-animation: slide 0.5s forwards;
-    -webkit-animation-delay: 2s;
-    animation: slide 0.5s forwards;
-    animation-delay: 2s;
-    position: relative;
-    animation: animateleft 0.4s;
-    visibility: collapse;
-}
-
-.slide-out {
-    max-height: 0;
-    -webkit-animation: slide 0.5s forwards;
-    -webkit-animation-delay: 2s;
-    animation: slide 0.5s forwards;
-    animation-delay: 2s;
-    position: relative;
-    animation: animateright 0.4s;
-}
 .padding{
     padding-bottom: 4rem;
     position: relative;
     left: -15rem;
-}
-@-webkit-keyframes slide {
-    100% { left: 0; }
-}
-
-@keyframes slide {
-    100% { left: 0; }
-}
-.left-end {
-    /*position: absolute;*/
-    top: 1.65rem;
-    left: 1rem;
-}
-.left-end:hover{
-    transform: translateY(-2px);
-    box-shadow: 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
 }
 .fullcontainer{
     height: 100%;

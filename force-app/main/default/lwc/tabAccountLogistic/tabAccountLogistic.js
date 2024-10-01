@@ -21,6 +21,9 @@ import ACC_SHIPPING_EMAIL from '@salesforce/schema/Account.Shipping_Email_Addres
 import ACC_LOCAL_COURIER from '@salesforce/schema/Account.Local_Carrier__c';
 import ACC_BOX from '@salesforce/schema/Account.Internal_Shipping_Box_Number__c';
 import AccountObj from '@salesforce/schema/Account';
+import RECORDTYPE from '@salesforce/schema/Account.RecordType.Name';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+const FIELDS = [RECORDTYPE];
 
 export default class TabAccountLogistic extends LightningElement {
 
@@ -32,7 +35,7 @@ export default class TabAccountLogistic extends LightningElement {
     @track mapMarkers = [];
     @track markerTitle = 'Account';
     @track zoomLevel = 13;
-
+    isHealthInsuranceRC = true;
     AccObj = AccountObj;
     specificCommentField = [shippingComment];
     ACC_SHIPPINGS = [ACC_SHIPPING_ACC, ACC_SHIPPING_ACC_NAME, ACC_SHIPPING_PHONE, ACC_SHIPPING_EMAIL];
@@ -46,7 +49,21 @@ export default class TabAccountLogistic extends LightningElement {
     connectedCallback() {
         //console.log('child connected call-' + this.receivedId);
     }
-
+    @wire(getRecord, {
+        recordId: '$receivedId',
+        fields: FIELDS
+    })
+    wiredAccountRecord({data}) {
+        if (data) {  
+            let recordTypeName = data.fields['RecordType']['value']['fields']['Name'].value;  
+            if(recordTypeName == 'Health Insurance'){
+                this.isHealthInsuranceRC = false; 
+            }
+            else{
+                this.isHealthInsuranceRC = true; 
+            }      
+        }   
+    }
     @wire(getShippingAddress, {recordId : '$receivedId'})
     fetchShippingAdress({data, error}){
         if(data){
@@ -76,7 +93,6 @@ export default class TabAccountLogistic extends LightningElement {
             this.showToast('Error', 'error', this.error1);
         }
     }
-
     get Street(){
         return this.record?.accountStreet;
     }

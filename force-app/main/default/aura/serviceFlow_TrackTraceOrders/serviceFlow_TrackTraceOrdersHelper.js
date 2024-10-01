@@ -10,7 +10,7 @@
             if (state === "SUCCESS") {
                 debugger;
                 let result = JSON.parse(JSON.stringify(response.getReturnValue()));
-                console.log(JSON.stringify(result));
+                console.log("******"+JSON.stringify(result));
                 if(result && result.returnResult === "SUCCESS" && result.statusCode === 200){
                     let data = result.ordersList;
                     component.set("v.listOfOrders", data);                    

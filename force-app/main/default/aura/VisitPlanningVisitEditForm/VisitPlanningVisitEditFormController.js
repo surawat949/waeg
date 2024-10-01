@@ -54,15 +54,37 @@
     },
     handleSave : function(component, event, helper)
     {
-        component.set('v.spinner',true);
-        var picklistField = component.find("picklistFieldPlanning");
-        picklistField.set("v.value", "Visit Planning");
-        component.find('visitEditForm').submit();
-        window.setTimeout(
-       $A.getCallback(function() {
-        component.set('v.spinner',false);
-    }), 3000
-);
+        const requiredFields = component.find('field') || [];
+        var isValid = true;
+        requiredFields.forEach(e => {
+            e.reportValidity();
+            if (e.get('v.value')== undefined || e.get('v.value')=='' || e.get('v.value').trim().length==0 ) {    
+                isValid = false;
+            }
+        });
+        
+        if (!isValid) {
+            return;
+        }
+/*
+       var allValid = component.find('field').reduce(function (validSoFar, inputCmp) {
+            inputCmp.reportValidity();
+            return validSoFar //&& inputCmp.checkValidity();
+        }, true);
+  */      
+        if(isValid) {
+            component.set('v.spinner',true);
+            var picklistField = component.find("picklistFieldPlanning");
+            picklistField.set("v.value", "Visit Planning");
+            //alert('here to submit')
+            component.find('visitEditForm').submit();
+            window.setTimeout(
+                $A.getCallback(function() {
+                    component.set('v.spinner',false);
+                }), 3000
+            );
+        }
+        
     },
     handleCancel : function(component, event, helper)
     {

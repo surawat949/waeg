@@ -121,8 +121,8 @@ export default class VpmPlannedVisitsMap extends LightningElement {
                     this.mapMaker = [...this.mapMaker,
                         {
                             location : {
-                                //Latitude : result[i].Account__r.sf_latitude__c,
-                                //Longitude : result[i].Account__r.sf_longitude__c,
+                                Latitude : result[i].Account__r.ShippingLatitude,
+                                Longitude : result[i].Account__r.ShippingLongitude,
                                 Street : result[i].Account__r.Shop_Street__c,
                                 City : result[i].Account__r.Shop_City__c,
                                 State : result[i].Account__r.Shop_State__c,
@@ -148,8 +148,8 @@ export default class VpmPlannedVisitsMap extends LightningElement {
                 }
                 this.vCenter = {
                     location : {
-                        //Latitude : result[0].Account__r.sf_latitude__c,
-                        //Longitude : result[0].Account__r.sf_longitude__c,
+                        Latitude : result[0].Account__r.ShippingLatitude,
+                        Longitude : result[0].Account__r.ShippingLongitude,
                         Street : result[0].Account__r.Shop_Street__c,
                         City : result[0].Account__r.Shop_City__c,
                         State : result[0].Account__r.Shop_State__c,

@@ -45,7 +45,7 @@ public class FullCalenderV2Controller_Test {
         FullCalenderV2Controller.upsertVisit(visit);
         String startTime = '2024-05-22T15:30:00+05:30';
         String endTime = '2024-05-22T16:30:00+05:30'; 
-        FullCalenderV2Controller.createVisit(String.valueOf(AccountId),'Visit',String.valueOf(con.Id),String.valueOf(UserInfo.getUserId()),false,startTime,endTime,false,'Hunt','Test Notes');
+        FullCalenderV2Controller.createVisit(String.valueOf(AccountId),'Visit',String.valueOf(con.Id),String.valueOf(UserInfo.getUserId()),false,startTime,endTime,false,'Hunt','Test Notes','');
         String rectType = FullCalenderV2Controller.getExtraActivityRecTypeId();
         FullCalenderV2Controller.addExtraActivity(rectType,String.valueOf(UserInfo.getUserId()),'Other','Email',startTime,endTime,false,true);   
         system.assert(true);

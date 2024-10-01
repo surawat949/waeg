@@ -1,0 +1,87 @@
+.custom-container{
+	color : black;
+}
+.fit{
+    height: 50rem;
+}
+/* filter css */
+.filterFormat{
+    top: 1.45rem;
+    position: relative;
+}
+.tabPosition{
+    padding-bottom: 0.25rem;
+    padding-top: 0rem;
+    padding-left: 0rem;
+    padding-right: 0rem;
+}
+/* Pagination css */
+.pagination {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.keepRight{
+    left: 100%;
+    position: sticky;
+}
+.keepMiddle{
+    position: relative;
+    left: 38%;
+}
+/* display Table css */
+.custom-table {
+    width: 100%;
+    border-collapse: separate;
+}
+.custom-table th, .custom-table td {
+    border: 1px solid #ddd; /* Define border style */
+    padding: 8px; /* Add padding inside cells */
+}
+.colormatch{
+    color: #0B5CAB;
+}
+.removeLabel{
+    top: -1.17rem;
+}
+.slds-button1{
+    text-align: center;
+    border-color: rgba(1, 118, 211, 1);
+    color: white;
+    background-color: rgba(1, 118, 211, 1);
+    border-radius: .25rem;
+    padding: 0.30rem;
+}   
+.slds-button1:hover {
+    background-color: #005fb2; /* Slightly darker blue on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adding a shadow effect on hover */
+}
+.buttonPosition{
+    position: relative;
+    top: 1.47rem;
+}
+/* Ensure the entire grid uses the correct width */
+.custom-tree-grid lightning-datatable {
+    min-width: 1200px; /* Adjust if necessary */
+}
+
+/* First column should be sticky */
+.custom-tree-grid .slds-cell_fixed {
+    position: sticky;
+    left: 0;
+    z-index: 2; /* Ensures it stays on top of other columns */
+    background-color: #fff; /* Ensures the column background stays white */
+    border-right: 2px solid #ddd; /* Add border for visual separation */
+}
+
+/* Adjusting the width of all columns */
+.custom-tree-grid .slds-cell {
+    min-width: 200px; /* Increase the width for better data visibility */
+    white-space: normal; /* Allow text wrapping */
+    overflow: visible; /* Ensure overflow content is visible */
+    text-overflow: clip; /* Don't clip text */
+}
+
+/* Make scrollbar visible if needed */
+.custom-tree-grid .slds-scrollable_x {
+    overflow-x: scroll; /* Enable horizontal scrolling */
+}

@@ -1,5 +1,6 @@
 <template>
-    <lightning-tabset variant="scoped">
+    <template if:true={isHealthInsuranceRC}>
+        <lightning-tabset variant="scoped">
         <lightning-tab label={custLabel.tacticomTab}>
             <c-tab-visits-tacticom received-id = {recordId}> </c-tab-visits-tacticom>
         </lightning-tab>
@@ -20,5 +21,14 @@
                 <c-tab-visits-ecp-nearby received-id= {recordId}></c-tab-visits-ecp-nearby>
             </lightning-tab>
         </template>
-    </lightning-tabset>
+        </lightning-tabset>
+    </template>
+    <template if:false={isHealthInsuranceRC}>
+        <lightning-tabset variant="scoped">
+            <lightning-tab label={custLabel.Reports}>
+                <c-tab-visits-reports received-id = {recordId}>
+                </c-tab-visits-reports> 
+            </lightning-tab>    
+        </lightning-tabset>
+    </template>
 </template>

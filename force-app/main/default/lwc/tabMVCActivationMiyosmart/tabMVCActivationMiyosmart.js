@@ -53,8 +53,8 @@ export default class TabMVCActivationMiyosmart extends NavigationMixin(Lightning
     messageData;
     orderMiyoSmartRelatedList;
     recCount = 0;
-    PotentialFields = [MyopicChildPatients,MyopiaPrescriptions,MiyosmartPrescriptions,MyopiaTreatment,MyopiaFirstCompetitor,MiyoSOWVsMyopiaPrescriptions];
-    MiyosmartSegmentation = [MiyoSmartSegmentation];
+    PotentialFields = [MyopicChildPatients,MyopiaPrescriptions,MiyosmartPrescriptions,MiyoSmartSegmentation,MyopiaFirstCompetitor,MiyoSOWVsMyopiaPrescriptions];
+    MyopiaTreatment = [MyopiaTreatment];
     MiyoSmartAttitude = [MiyosmartAttitude];
     custLabel = {
         MiyosmartPotential,

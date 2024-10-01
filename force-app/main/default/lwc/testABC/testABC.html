@@ -1,0 +1,20 @@
+<template>
+    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+        <lightning-button label="Preferred Contact Day/Time" onclick={toggleDropdown} class="slds-button slds-button_neutral"></lightning-button>
+        <div if:true={isDropdownOpen} class="slds-dropdown slds-dropdown_fluid slds-dropdown_left">
+            <ul class="slds-dropdown__list" role="listbox">
+                <template for:each={options} for:item="option">
+                    <li key={option.value} role="presentation" class="slds-dropdown__item">
+                        <label class="slds-checkbox">
+                            <input type="checkbox" value={option.value} checked={option.selected} onchange={handleCheckboxChange} />
+                            <span class="slds-checkbox__label">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">{option.label}</span>
+                            </span>
+                        </label>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </div>
+</template>

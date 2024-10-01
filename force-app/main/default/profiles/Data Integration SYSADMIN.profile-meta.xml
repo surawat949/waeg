@@ -677,6 +677,14 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>EyeDoctorVisitPlanningController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>EyeDoctorVisitPlanningControllerTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ForgotPasswordController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -714,6 +722,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>GetAuthorizationsV2</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HLIB_X3N_Skills_BasedRouting</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -1469,6 +1481,14 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>V2LeadDetailController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>V2LeadDetailControllerTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>VPMCampaignOverviewMapController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -2216,6 +2236,10 @@
     </flowAccesses>
     <flowAccesses>
         <enabled>false</enabled>
+        <flow>Create_Platform_Event_To_Refresh_Event_Records</flow>
+    </flowAccesses>
+    <flowAccesses>
+        <enabled>false</enabled>
         <flow>Credit_Collection_Application_Review</flow>
     </flowAccesses>
     <flowAccesses>
@@ -2241,6 +2265,10 @@
     <flowAccesses>
         <enabled>false</enabled>
         <flow>HLFR_test_replicate_visit_to_manager_for_coaching</flow>
+    </flowAccesses>
+    <flowAccesses>
+        <enabled>false</enabled>
+        <flow>HLIB_X3N_CasesRoutingBasedSkills</flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>false</enabled>
@@ -2305,6 +2333,10 @@
     <flowAccesses>
         <enabled>false</enabled>
         <flow>Refresh_Dashboard_Screen</flow>
+    </flowAccesses>
+    <flowAccesses>
+        <enabled>false</enabled>
+        <flow>Refresh_Equipment_record</flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>false</enabled>

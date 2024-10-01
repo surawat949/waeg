@@ -3,19 +3,18 @@
  */
 
  global without sharing class VisitPlanningController {
-    @AuraEnabled(Cacheable = true)
+    @AuraEnabled
     public static List<Visits__c> getVisits (Datetime periodStart, Datetime periodEnd) {
         System.debug('periodStart: ' + periodStart);
         System.debug('periodEnd: ' + periodEnd);
+
         List<Visits__c> visits = [
                 SELECT Id, Name, Start_Time__c, End_Time__c, Duration_Minutes__c, Is_All_Day_Event__c, Visit_Notes__c, Visit_Type__c, Visit_Reason__c, Actions_executed__c, Private__c, View__c, Assigned_to__c, Show_time_as__c, Visit_Status__c,
                         Visit_Objective_follow_up_notes__c, Call_To_Action__c, Cold_call__c, Visited_but_not_seen__c, Call_To_Action_Notes__c, Account__r.Shop_City__c, Account__r.Hoya_Account_ID__c,
                         MKT_Acquisition_Pa__c, MKT_Hoya_YOU__c, MKT_Hoya_Coatings_promotion__c, MKT_Hot_or_Cold__c, MKT_Yuniku__c, MKT_Seiko_Sensity__c, MKT_Enroute_Campaign__c, MKT_Local_Campaign__c, SUN_Campaign_including_SENSITY__c, MKT_No_campaign_presented__c, MKT_Incentive_trips_Contracts_assignment__c, MKT_PAL_and_Functional_Lens__c, MKT_New_Products__c, Account__c, Account__r.Id, Account__r.Name, Account__r.ShippingPostalCode, Account__r.Actual_Classification__c, Account__r.Contract_Expiration__c, Account__r.Channel__c, Account__r.Visit_Frequency_Status__c, Account__r.AMT_gross_sales__c, Account__r.Quantity__c,
                         Contact__c, Contact__r.Id, Contact__r.Name, Contact__r.AccountId, Contact__r.FirstName, Contact__r.LastName, Contact__r.RecordTypeId, Contact__r.Title, Contact__r.IsDeleted,
             			SEIKO_LIFESTYLE_PRODUCTS__c, SEIKO_BRAND__c, SEIKO_COATING__c, SEIKO_EXCELLENCE__c, Sync_III__c,MySelf__c, SEIKO_PREMIUM_PAL__c, SEIKO_VISION_SPECIALIST__c, Orgreen_Yuniku__c,
-            			Coaching_Visit__c, Segmentation_Box__c,miyosmart__c,
-            			SOC_Call_To_Action_Notes__c, SOC_Sales_Actions_executed__c, SOC_Sales_Call_To_Action__c, SOC_VCC_Action_Exectued__c,
-            			SOC_VCC_Call_To_Action__c, HLSH_Action_Excecuted__c, Visit_Reason_APAC__c,  Send_Email__c,
+            			Coaching_Visit__c, Segmentation_Box__c,miyosmart__c, Send_Email__c,
                         HVNA_Appointment__c, HVNA_Customer_Goal__c, HVNA_Visit_Objective__c,Secondary_Tactic__c, HVNA_Visit_Type__c,HVNA_Subject__c,HLFR_Origine_France_Garantie__c, Campaign_Name__c, 
                         Opportunity__c, Campaign__c, Visit_Opp_New_Close_Date__c, Visit_Campaign_Present__c, Visit_Campaign_Interested__c, Campaign2__c,
                         Campaign3__c, Visit_Campaign_Present_2__c, Visit_Campaign_Present_3__c, Visit_Campaign_Interested_2__c, Visit_Campaign_Interested_3__c
@@ -26,7 +25,6 @@
                 AND Start_Time__c < :periodEnd
 
         ];
-        system.debug(visits);
         return visits;
     }
 
@@ -41,7 +39,7 @@
             AND EndDateTime > :periodStart
             AND StartDateTime < :periodEnd
             AND Visit_Id__c = null
-        ];	
+        ];
         System.debug('Nb userEvent=' + events.size());
         return events;
     }
@@ -108,9 +106,7 @@
                         Account__r.ShippingPostalCode, 
                         Account__r.Actual_Classification__c, Account__r.Contract_Expiration__c, Account__r.Channel__c, Account__r.Visit_Frequency_Status__c, Account__r.AMT_gross_sales__c, Account__r.Quantity__c,
                         Contact__c, Contact__r.Id, Contact__r.Name, Contact__r.AccountId, Contact__r.FirstName, Contact__r.LastName, Contact__r.RecordTypeId, Contact__r.Title, Contact__r.IsDeleted,
-            			Coaching_Visit__c, Segmentation_Box__c, Account__r.Segmentation_Box__c,
-            			SOC_Call_To_Action_Notes__c, SOC_Sales_Actions_executed__c, SOC_Sales_Call_To_Action__c, SOC_VCC_Action_Exectued__c,
-            			SOC_VCC_Call_To_Action__c, HLSH_Action_Excecuted__c, Visit_Reason_APAC__c, Send_Email__c, 
+            			Coaching_Visit__c, Segmentation_Box__c, Account__r.Segmentation_Box__c, Send_Email__c, 
                         HVNA_Appointment__c, HVNA_Customer_Goal__c, HVNA_Visit_Objective__c,Secondary_Tactic__c, HVNA_Visit_Type__c,HVNA_Subject__c,HLFR_Origine_France_Garantie__c, Campaign_Name__c, 
                         Opportunity__c, Campaign__c, Visit_Opp_New_Close_Date__c, Visit_Campaign_Present__c, Visit_Campaign_Interested__c, Campaign2__c, Campaign3__c,
                         Visit_Campaign_Interested_2__c, Visit_Campaign_Interested_3__c, Visit_Campaign_Present_2__c, Visit_Campaign_Present_3__c 
@@ -127,45 +123,18 @@
         }
         
     }
-     
-      @AuraEnabled
-     public static Visits__c upsertVisit (Visits__c visit) {
-         //get the recordType of clinic record type of account
-         String clinicRecordType = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('Clinic').getRecordTypeId();
-         //get the recordType of Eye_Doctor_Visit of visit
-         String eyeDoctoreRecordType = Schema.SObjectType.Visits__c.getRecordTypeInfosByDeveloperName().get('Eye_Doctor_Visit').getRecordTypeId();
-         //get the record type of account selected by the user
-         Id accountRecordType = [Select Id,Name,RecordTypeId from Account where Id = :visit.Account__c ].RecordTypeId;
-         
-         if(visit.id==null && visit.Visit_Type__c==null){
-             //default type for creation only, otherwise moving visit on calendar may change type
-             visit.Visit_Type__c='Visit';
-         }
-         
-         if(visit.Account__c!=null && accountRecordType == clinicRecordType){
-             visit.RecordTypeId = eyeDoctoreRecordType;
-         }
-         
-         System.debug('XXXXXXX UPSERT VISIT: ' + visit.Start_Time__c + ',type=' + visit.Visit_Type__c + ',HLSI obj2=' + visit.Visit_Reason_APAC__c);
-         visit.assigned_to__c=UserInfo.getUserId();
-         upsert visit;
-         return visit;
-     }
-     
 
-     /*
     @AuraEnabled
     public static Visits__c upsertVisit (Visits__c visit) {
         if(visit.id==null && visit.Visit_Type__c==null){
             //default type for creation only, otherwise moving visit on calendar may change type
             visit.Visit_Type__c='Visit';
         }
-        System.debug('XXXXXXX UPSERT VISIT: ' + visit.Start_Time__c + ',type=' + visit.Visit_Type__c + ',HLSI obj2=' + visit.Visit_Reason_APAC__c);
+        //System.debug('XXXXXXX UPSERT VISIT: ' + visit.Start_Time__c + ',type=' + visit.Visit_Type__c + ',HLSI obj2=' + visit.Visit_Reason_APAC__c);
         visit.assigned_to__c=UserInfo.getUserId();
         upsert visit;
         return visit;
-    }*/
-     
+    }
     @AuraEnabled
     public static void deleteVisit (Visits__c visit) {
         delete visit;
@@ -374,7 +343,7 @@
             if(String.isNotEmpty(filter) && hasCampaign==false && targetList==null){
             	String filter2 = '%'+filter+'%';
              	for(AccountShare sh : [select accountId from accountShare where UserOrGroupId in :relatedGroups and account.owner.id<> :UserInfo.getUserId()
-                                    and (account.Hoya_Account_ID__c like :filter2 or account.name like :filter2 or account.Segmentation_Box__c like :filter2
+                                    and (account.Hoya_Account_ID__c like :filter2 or account.name like :filter2 or account.Segmentation_box__c like :filter2
                                          or account.shop_postal_code__c like :filter2 or account.shop_city__c like :filter2
                                          or account.shop_name__c like :filter2 or account.shop_state__c like :filter2 )
                                     and account.Account_Status__c<>'Closed'
@@ -391,7 +360,7 @@
             		accountList.addAll([select account.Id, account.Name, account.Hoya_Account_ID__c, account.recordtype.name, account.Account_Status__c, account.shop_city__c, phone, Segmentation_Box__c, account.Financial_Status_Identifier__c, recordtypeid
                                     FROM Account Where Id in :accountShareList
                                     and ownerId!=:UserInfo.getUserId()
-                                    and (Hoya_Account_ID__c like :filter2 or name like :filter2 or Segmentation_Box__c like :filter2
+                                    and (Hoya_Account_ID__c like :filter2 or name like :filter2 or Segmentation_box__c like :filter2
                                          or shop_postal_code__c like :filter2 or shop_city__c like :filter2
                                          or shop_name__c like :filter2 or shop_state__c like :filter2 )
                                     and account.Account_Status__c<>'Closed'
@@ -421,7 +390,8 @@
         System.debug('Orderby=' + orderby);
         if(query.indexOf(' or ')>0 || query.indexOf(' OR ')>0){ query =  query.replace('where', 'where (').replace('WHERE', 'where (') + ') ';}
         
-        if('ASM'==salesRole){
+        String companyName = [select Id, Sales_Role__c,CompanyName from User where id=:UserInfo.getUserId()].CompanyName;
+        if('ASM'==salesRole && (companyName!='HVNA' && companyName!='HOLA' && companyName!='HLCA' && companyName!='SRX')){
             System.debug('XXXXX 1111');
         	query = 'SELECT ' + fieldString 
                 + ' FROM Account WHERE OwnerId = \'' + UserInfo.getUserId() + '\' '
@@ -466,8 +436,6 @@
             }
             accountList.addAll(tmpAccList);
             System.debug('List size:' + accountList.size());
-            System.debug('List size:' + query);
-            System.debug('List size:' + ownerAccountList);
             //Cache.Session.put('vpm.account.list', accountList);
             return accountList;
         }
@@ -496,7 +464,7 @@
         System.debug('call getOpportunityByAccountList -' + accountId);
 
         List<SelectOption> options = new List<SelectOption>();
-        for (Opportunity o : [Select Id, Name, StageName from Opportunity where (AccountId =: accountId) and (IsClosed=false) and (Account.Target_List__c=true) and (Account.Segmentation_Box__c='A3' or Account.Segmentation_Box__c='B3' or Account.Manual_Segment__c='A3' or Account.Manual_Segment__c='B3') order by CreatedDate desc limit 1])
+        for (Opportunity o : [Select Id, Name, StageName from Opportunity where (AccountId =: accountId) and (IsClosed=false) and (Account.Target_List__c=true) and (Account.Segmentation_box__c='A3' or Account.Segmentation_box__c='B3' or Account.Manual_Segment__c='A3' or Account.Manual_Segment__c='B3') order by CreatedDate desc limit 1])
         {
             options.add(new SelectOption(o.Id, o.Name));
 
@@ -532,7 +500,7 @@
         System.debug('call getOpportunityByAccountList -' + accountId);
 
         List<SelectOption> options = new List<SelectOption>();
-        for (Opportunity o : [Select Id, StageName from Opportunity where (AccountId =: accountId) and (IsClosed=false) and (Account.Target_List__c=true) and (Account.Segmentation_Box__c='A3' or Account.Segmentation_Box__c='B3' or Account.Manual_Segment__c='A3' or Account.Manual_Segment__c='B3') order by CreatedDate desc limit 1])
+        for (Opportunity o : [Select Id, StageName from Opportunity where (AccountId =: accountId) and (IsClosed=false) and (Account.Target_List__c=true) and (Account.Segmentation_box__c='A3' or Account.Segmentation_box__c='B3' or Account.Manual_Segment__c='A3' or Account.Manual_Segment__c='B3') order by CreatedDate desc limit 1])
         {
             options.add(new SelectOption(o.Id, o.StageName));
 
@@ -547,7 +515,7 @@
         System.debug('call getOpportunityByAccountList -' + accountId);
 
         List<SelectOption> options = new List<SelectOption>();
-        for (Opportunity o : [Select Id, CloseDate from Opportunity where (AccountId =: accountId) and (IsClosed=false) and (Account.Target_List__c=true) and (Account.Segmentation_Box__c='A3' or Account.Segmentation_Box__c='B3' or Account.Manual_Segment__c='A3' or Account.Manual_Segment__c='B3') order by CreatedDate desc limit 1])
+        for (Opportunity o : [Select Id, CloseDate from Opportunity where (AccountId =: accountId) and (IsClosed=false) and (Account.Target_List__c=true) and (Account.Segmentation_box__c='A3' or Account.Segmentation_box__c='B3' or Account.Manual_Segment__c='A3' or Account.Manual_Segment__c='B3') order by CreatedDate desc limit 1])
         {
             options.add(new SelectOption(o.Id, string.valueof(o.CloseDate)));
 
@@ -663,12 +631,12 @@
         return fieldsToReturn;
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<ListView> getListViews() {
         /* CDU 11/06/2018 add auto-filter on user id, user should see only his own listview */
         /* SS 23/02/2021 for user should can see in target customer (Opportunity Account List) by their Account, Request from Yung & Samson */
-        //return [SELECT Id, Name, DeveloperName, NamespacePrefix, SobjectType, IsSoqlCompatible, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate FROM ListView where (SobjectType = :'Account') and (createdbyid =:UserInfo.getUserId() or DeveloperName = 'Your Opportunities Accounts')];
-        return [SELECT Id, Name, DeveloperName, NamespacePrefix, SobjectType, IsSoqlCompatible, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate FROM ListView where SobjectType = :'Account' ];
+        return [SELECT Id, Name, DeveloperName, NamespacePrefix, SobjectType, IsSoqlCompatible, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate FROM ListView where (SobjectType = :'Account') and (createdbyid =:UserInfo.getUserId() or DeveloperName = 'Your Opportunities Accounts')];
+        //return [SELECT Id, Name, DeveloperName, NamespacePrefix, SobjectType, IsSoqlCompatible, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastViewedDate, LastReferencedDate FROM ListView where SobjectType = :'Account' ];
     }
 
     @AuraEnabled
@@ -908,6 +876,7 @@
         Map<String, Object> theMap = new Map<String,Object>();
 
         theMap.put('Visits__c_Visit_Status__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Status__c.getDescribe()),false));
+        
         if(!isSRX){
             theMap.put('Visits__c_Visit_Reason__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Reason__c.getDescribe()),true));//objective
             theMap.put('Visits__c_Call_To_Action__c', toOptionList(getOptionsForDescribe(Visits__c.Call_To_Action__c.getDescribe()),true));//outcome
@@ -930,16 +899,15 @@
             theMap.put('Visits__c_Call_To_Action__c', getSRX_OutcomeOptionList());//outcome
             theMap.put('Visits__c_Actions_executed__c', getSRX_ActionExecutedOptionList());
         }
-        system.debug('>>>>>'+theMap);
         //SOC specific picklist
-        theMap.put('Visits__c_SOC_Sales_Actions_executed__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_Sales_Actions_executed__c.getDescribe()),true));
-        theMap.put('Visits__c_SOC_Sales_Call_To_Action__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_Sales_Call_To_Action__c.getDescribe()),true));
+        //theMap.put('Visits__c_SOC_Sales_Actions_executed__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_Sales_Actions_executed__c.getDescribe()),true));
+        //theMap.put('Visits__c_SOC_Sales_Call_To_Action__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_Sales_Call_To_Action__c.getDescribe()),true));
         //theMap.put('Visits__c_SOC_Sales_Visit_Reason__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_Sales_Visit_Reason__c.getDescribe()),true));
-        theMap.put('Visits__c_SOC_VCC_Action_Exectued__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_VCC_Action_Exectued__c.getDescribe()),true));
-        theMap.put('Visits__c_SOC_VCC_Call_To_Action__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_VCC_Call_To_Action__c.getDescribe()),true));
+        //theMap.put('Visits__c_SOC_VCC_Action_Exectued__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_VCC_Action_Exectued__c.getDescribe()),true));
+        //theMap.put('Visits__c_SOC_VCC_Call_To_Action__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_VCC_Call_To_Action__c.getDescribe()),true));
         //theMap.put('Visits__c_SOC_VCC_Visit_Reason__c', toOptionList(getOptionsForDescribe(Visits__c.SOC_VCC_Visit_Reason__c.getDescribe()),true));
 		//HLSH specific picklist
-        theMap.put('Visits__c_HLSH_Action_Excecuted__c', toOptionList(getOptionsForDescribe(Visits__c.HLSH_Action_Excecuted__c.getDescribe()),true));
+        //theMap.put('Visits__c_HLSH_Action_Excecuted__c', toOptionList(getOptionsForDescribe(Visits__c.HLSH_Action_Excecuted__c.getDescribe()),true));
         //theMap.put('Visits__c_HLSH_Visit_Reason__c', toOptionList(getOptionsForDescribe(Visits__c.HLSH_Visit_Reason__c.getDescribe()),true));
         //theMap.put('Visits__c_HLSH_Visit_Type__c', toOptionList(getOptionsForDescribe(Visits__c.HLSH_Visit_Type__c.getDescribe()),true));
         //HLSI specific picklist
@@ -947,7 +915,7 @@
         //theMap.put('Visits__c_HLSI_Visit_Objective__c', toOptionList(getOptionsForDescribe(Visits__c.HLSI_Visit_Objective__c.getDescribe()),true));
         //theMap.put('Visits__c_HLSI_Call_to_action__c', toOptionList(getOptionsForDescribe(Visits__c.HLSI_Call_to_action__c.getDescribe()),true));
         //theMap.put('Visits__c_HLSI_action_executed__c', toOptionList(getOptionsForDescribe(Visits__c.HLSI_action_executed__c.getDescribe()),true));
-        theMap.put('Visits__c_Visit_Reason_APAC__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Reason_APAC__c.getDescribe()),true));
+        //theMap.put('Visits__c_Visit_Reason_APAC__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Reason_APAC__c.getDescribe()),true));
         //HLHK specific picklist with marketing campaign and should related with Campaign object
         //theMap.put('Account_Zonal__c', toOptionList(getOptionsForDescribe(Account.Zonal__c.getDescribe()),true));
         theMap.put('Account_TACTICOM_HLFR__c', toOptionList(getOptionsForDescribe(Account.TACTICOM_HLFR__c.getDescribe()),true));
@@ -955,7 +923,6 @@
         theMap.put('Visits__c_Visit_Campaign_Interested_2__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Campaign_Interested_2__c.getDescribe()), true));
         theMap.put('Visits__c_Visit_Campaign_Interested_3__c', toOptionList(getOptionsForDescribe(Visits__c.Visit_Campaign_Interested_3__c.getDescribe()), true));
         ret.put('picklists' , theMap);
-        System.debug(ret);
         return ret;
     }
 
@@ -996,9 +963,14 @@
     Set<ID> currentRoleIds = new Set<ID>();
 
     // get all of the roles underneath the passed roles
-    for(UserRole userRole :[select Id from UserRole where ParentRoleId 
+    /*for(UserRole userRole :[select Id from UserRole where ParentRoleId 
       IN :roleIds AND ParentRoleID != null])
-    currentRoleIds.add(userRole.Id);
+    currentRoleIds.add(userRole.Id);*/
+
+    List<UserRole> userRole = [SELECT Id FROM UserRole WHERE ParentRoleId IN: roleIds AND ParentRoleId != null];
+    for(UserRole u : userRole){
+        currentRoleIds.add(u.Id);
+    }
 
     // go fetch some more rolls!
     if(currentRoleIds.size() > 0)
@@ -1012,10 +984,14 @@
     
         map<Id, set<Id>> parentAndChildren = new map<Id, set<Id>>();
         set<Id> children;
-        for(UserRole ur : [select Id, ParentRoleId from UserRole]) {
+        /*for(UserRole ur : [select Id, ParentRoleId from UserRole]) {
             children = parentAndChildren.containsKey(ur.ParentRoleId) ? parentAndChildren.get(ur.ParentRoleId) : new set<Id>();
             children.add(ur.Id);
             parentAndChildren.put(ur.ParentRoleId, children);
+        }*/
+        List<UserRole> ur = [SELECT Id, ParentRoleId FROM UserRole];
+        for(UserRole u : ur){
+            children = parentAndChildren.containsKey(u.ParentRoleId) ? parentAndChildren.get(u.ParentRoleId) : new Set<Id>();
         }
         return getSubordinateRoles(roleID, parentAndChildren);
     }
@@ -1085,6 +1061,7 @@
 
     }
     */
+    /*
     @future (callout=true)
     public static void getOpportunityStageList(){
         String sfdcURL = URL.getSalesforceBaseUrl().toExternalForm();
@@ -1121,10 +1098,10 @@
         }
         //System.debug(' ** response ** : ' + response );
         
-    }
+    }*/
 
     public static List<SelectOption> oppOptions;
-    
+    /*
     public static List<SelectOption> getOpportunityStageName(){
         getOpportunityStageList();
         Integer start = System.Now().millisecond();
@@ -1138,7 +1115,7 @@
             System.debug(option.getValue());
         }
         return oppOptions;
-    }
+    }*/
 
     @AuraEnabled
     public static Account getAccountByOpportunity(String oppid){

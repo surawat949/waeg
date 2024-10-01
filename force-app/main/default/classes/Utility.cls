@@ -1,7 +1,7 @@
 public without sharing class Utility {
     
     private static final String Task_Status_SFDC_V2 = Schema.SObjectType.Task.getRecordTypeInfosByDeveloperName().get('SFDC_V2_Standard_Task').getRecordTypeId();
-    
+   
     // method to send email with template name
     public static void sendEmailWithTemplate(String template_name,Id obj_id, String from_address){
         EmailTemplate et = [SELECT Id,Subject, Body FROM EmailTemplate WHERE DeveloperName =: template_name LIMIT 1];
@@ -10,7 +10,7 @@ public without sharing class Utility {
         //set object Id
         singleMail.setTargetObjectId(obj_id);
         singleMail.setWhatId(obj_id);
-        System.debug('owea ID:'+ owea.get(0).Id);
+        //System.debug('owea ID:'+ owea.get(0).Id);
         if (owea.size() > 0) {
             singleMail.setOrgWideEmailAddressId(owea.get(0).Id);
         }
@@ -311,6 +311,19 @@ public without sharing class Utility {
         }
         
         return false; // The modal should not be displayed again
+    }
+    
+    // Recursive method to fetch direct and indirect reportees
+    public static List<id> getAllReportees(Set<Id> managerIds) {
+        List<Id> reporteesList = new List<Id>();
+        // Fetch the direct reportees for the managerIds
+		Map<ID,User> directReporteesMap = new Map<Id,User>([SELECT Id, Name, ManagerId, Sales_Role__c FROM User WHERE ManagerId = :managerIds AND IsActive = TRUE AND Sales_Role__c IN ('ASM', 'KAM', 'AMS', 'RSM', 'RMS' ,'NSM', 'NMS')]);
+        reporteesList.addAll(directReporteesMap.keySet());
+        if(directReporteesMap.keySet().size() > 0){
+            List<id> tempIdList = getAllReportees(directReporteesMap.keySet());
+            reporteesList.addAll(tempIdList);
+        }
+        return reporteesList;
     }
     
 }

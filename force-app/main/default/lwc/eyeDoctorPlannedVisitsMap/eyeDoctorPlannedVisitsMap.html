@@ -1,0 +1,121 @@
+<template>
+    <div if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" class="slds-is-fixed"></lightning-spinner>
+    </div>
+
+    <div class="slds-box">
+        <div class="slds-form-element">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-5">
+                    <lightning-input type="date" name="date01" data-my-id="date01" label="Start Date" value={todayDate} onchange={handleDateChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <lightning-input type="date" name="date02" data-my-id="date02" label="End Date" value={nextDateWeekend} onchange={handleDateChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <label class="slds-form-element__label" for="btnSearch">&nbsp;</label>
+                    <div class="slds-form-element__control">
+                        <lightning-button label="Find" name="btnSearch" id="btnSearch" data-my-id="btnSearch" variant="brand" title="Search" onclick={handleSearchBtn}></lightning-button>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <lightning-combobox
+                        id="picklistOptDistance"
+                        name="picklistOptDistance"
+                        label={custLbl.lblDistance}
+                        value={distanceValue}
+                        options={optDistanceValue}
+                        onchange={handleKeyChange}
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <p align="right">
+                        <template if:true={isDisplayList}>
+                            <div class="slds-p-top_large">
+                                <lightning-button label={custLbl.lblDisplay} onclick={handleListViewShow} variant="brand"></lightning-button>
+                            </div>
+                        </template>
+                        <template if:false={isDisplayList}>
+                            <div class="slds-p-top_large">
+                                <lightning-button label={custLbl.lblHideDisplay} onclick={handleListViewHide} variant="brand"></lightning-button>
+                            </div>
+                        </template>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="slds-box">
+            <div class="slds-grid slds-gutters slds-m_top_medium slds-m_bottom_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:yellow;stroke: black;stroke-width: 1px;"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">{subArea1}</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:#fcb207;stroke: black;stroke-width: 1px;"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">{subArea2}</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:#ec1717;stroke: black;stroke-width: 1px;"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">{subArea3}</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:#13cddc;stroke: black;stroke-width: 1px;"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">{subArea4}</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:#58bd08;stroke: black;stroke-width: 1px;"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">{subArea5}</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <span style="vertical-align: middle;display: inline-block">
+                        <svg version="1.1" baseProfile="full" viewBox="0 0 25 25" width="30" y="30" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                            style="fill:#000F2E;stroke: black;stroke-width: 1px;"></path>
+                        </svg>
+                    </span>
+                    <span style="vertical-align: middle;display: inline-block">No Visit Zone</span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="slds-grid slds-m_top_medium">
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-map
+                    map-markers={mapMaker}
+                    markers-title={mapTitle}
+                    zoom-level={zoomLevel}
+                    center={vCenter}
+                    list-view={displayListView}
+                ></lightning-map>
+            </div>
+        </div>
+    </div>
+</template>

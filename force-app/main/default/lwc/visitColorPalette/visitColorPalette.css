@@ -1,0 +1,7 @@
+.color-box {
+    width: 15px;
+    height: 15px;
+    border: 1px solid #ddd;
+    display: inline-block;
+    flex-shrink: 0; 
+}

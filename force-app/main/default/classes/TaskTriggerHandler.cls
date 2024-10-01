@@ -6,7 +6,7 @@
  * @last modified by  : Mohan G (Encora)
 **/
 public class TaskTriggerHandler {
-     //SSU add and create on 2-Apr-2021
+    //SSU add and create on 2-Apr-2021
     //Trigger helper for Task generate from approval process.
     public static Id taskCreateRecordTypeId = Schema.SObjectType.Task.getRecordTypeInfosByDeveloperName().get('serviceFlow_AgentCreateTask').getRecordTypeId();
     public static Id taskEditRecordTypeId = Schema.SObjectType.Task.getRecordTypeInfosByDeveloperName().get('serviceFlow_AgentEditTask').getRecordTypeId();

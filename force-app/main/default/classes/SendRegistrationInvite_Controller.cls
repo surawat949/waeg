@@ -75,6 +75,9 @@ public with sharing class SendRegistrationInvite_Controller {
                     }
                 }
                 System.debug('from address:'+ fromAddress);
+                if (String.isBlank(fromAddress)) {
+                    return 'Portal is not setup for HOYA HUB/SEIKO PRO. Contact System Admin for more details.';
+                }
                 Utility.sendEmailWithTemplate(template, c.Id, fromAddress);
                 if (!c.Send_Registration_Email_Flag__c) {
                     c.Send_Registration_Email_Flag__c = true;

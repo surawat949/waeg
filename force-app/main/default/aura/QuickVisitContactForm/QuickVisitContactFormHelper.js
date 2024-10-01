@@ -62,9 +62,14 @@
         event.start = moment(userEvent.StartDateTime).tz(timezone).format();
         event.end = moment(userEvent.EndDateTime).tz(timezone).format();
         console.log('In userEventToCalendarEvent 2',JSON.stringify(userEvent));
-        event.title = "Event " + userEvent.Subject;
         event.sfid = userEvent.id;
-        event.backgroundColor = '#FF9411';
+        if(userEvent.RecordTypeId && userEvent.RecordType.DeveloperName == 'Lead_Visits'){
+            event.backgroundColor = '#5867e8';
+            event.title = "Lead Visit Event " + userEvent.Subject;
+        }else{
+        	event.backgroundColor = '#FF9411';
+            event.title = "Event " + userEvent.Subject;
+        }
         event.editable=false;
         event.visitId = userEvent.Visit__c ? userEvent.Visit__c : '';
         event.accountId = (userEvent.Visit__c && userEvent.Visit__r.Account__c) ? userEvent.Visit__r.Account__c : '';

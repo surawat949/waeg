@@ -188,8 +188,8 @@ public class TabVisitsIndicatorControllerTest {
         visit2.contact__c = c1.Id;
         visit2.Visit_Type__c = 'Visit';
         visit2.CurrencyIsoCode = 'EUR';
-        visit2.Start_Time__c = date.today()-3;
-        //visit2.End_Time__c = date.today()-2;
+        visit2.Start_Time__c = date.today()-4;
+        visit2.End_Time__c = date.today()-2;
         visit2.Assigned_to__c = UserInfo.getUserId();
         visit2.Visit_Status__c='Complete';
         visit2.Visitfreqchk_c__c='1';
@@ -204,8 +204,8 @@ public class TabVisitsIndicatorControllerTest {
         visit3.Visit_Type__c = 'Visit';
         visit3.CurrencyIsoCode = 'EUR';
         visit3.Visit_Status__c = 'Complete';
-        visit3.Start_Time__c = date.today()-2;
-        visit3.End_Time__c = date.today();
+        visit3.Start_Time__c = date.today()-3;
+        visit3.End_Time__c = date.today()-2;
         visit3.Assigned_to__c = UserInfo.getUserId();
         //insert visit3;
         visitList.add(visit3);
@@ -214,8 +214,8 @@ public class TabVisitsIndicatorControllerTest {
         visit4.contact__c = c1.Id;
         visit4.Visit_Type__c = 'Visit';
         visit4.Visit_Status__c = 'Planned';
-        visit4.Start_Time__c = date.today()-13;
-        visit4.End_Time__c = date.today();
+        visit4.Start_Time__c = date.today()-5;
+        visit4.End_Time__c = date.today()+1;
         visit4.Assigned_to__c = UserInfo.getUserId();
         //insert visit4;   
         visitList.add(visit4);
@@ -262,7 +262,7 @@ public class TabVisitsIndicatorControllerTest {
         TabVisitsIndicatorController.getAIIndicators(acc4.Id);
         visitObj.Account__c = acc4.id;
         visitObj.Start_Time__c = system.today()-170;
-		visitObj.End_Time__c = null;
+		visitObj.End_Time__c = system.today()-171;
         visitObj.Visit_Status__c = 'Complete';
         update visitObj;
          TabVisitsIndicatorController.tecticomIndicators(acc4.id,'A','Test','English');

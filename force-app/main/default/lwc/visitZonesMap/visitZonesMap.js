@@ -32,14 +32,14 @@ export default class VisitZonesMap extends LightningElement {
     @track displayListView = 'hidden';
     @track zoomLevel = 8;
     @track IsSelected;
-    IsCheckBoxChecked=true;
+    IsCheckBoxChecked = false;
     _userId;
     subArea1;
     subArea2;
     subArea3;
     subArea4;
     subArea5;
-    notSelected;
+    //notSelected;
     @api numberOfDays = 7;
     @api iscustomerReviewtab = false;
 
@@ -80,11 +80,11 @@ export default class VisitZonesMap extends LightningElement {
             this.subArea3 = translations["Sub-area 3"];
             this.subArea4 = translations["Sub-area 4"];
             this.subArea5 = translations["Sub-area 5"];
-            this.notSelected = translations["Not Selected"];
+            //this.notSelected = translations["Not Selected"];
         }
         if(!this.iscustomerReviewtab){
             this._userId = CURRENT_USERID;
-            this.IsSelected = true;
+            this.IsSelected = false;
         }else{
             this.isLoading = false;
             this.IsCheckBoxChecked = false;
@@ -97,119 +97,129 @@ export default class VisitZonesMap extends LightningElement {
         this.isLoading = true;
         const { data, error } = wireResult;
         this.wireData = wireResult;
-        if(data){
-            this.mapMaker = [];
-            if(data.length > 0){
-                data.forEach(dataItem=>{
-                    let descritptionVal = '<strong>Hoya Account Id : </strong>'+dataItem.Hoya_Account_Id + '<br><strong>Visit Zone : </strong>'+dataItem.VisitZone +
-                                            '<br><strong>Segmentation : </strong>'+dataItem.Segmentation +'<br><strong>Total Visit Planned : </strong>' + dataItem.TotalVisitsPlanned+
-                                            '<br><strong>Last Direct Visit Date : </strong>'+this.replaceFormatDate(dataItem.LastVisitDate) +'<br><strong>Address : </strong>' + (dataItem.AccountStreet ? dataItem.AccountStreet + ' ' : '') + (dataItem.AccountCity ? dataItem.AccountCity + ' ' : '' )+ (dataItem.AccountState ? dataItem.AccountState + ' ' : '' )+(dataItem.AccountPostalCode ? dataItem.AccountPostalCode + ' ' : '')+ (dataItem.AccountCountry ? dataItem.AccountCountry : '');
-                    let fillcolor;
-                    switch(dataItem.VisitZone){
-                        case 'Sub-area 1':
-                        fillcolor = 'yellow';
-                        break;
+        this.mapMaker = [];
 
-                        case 'Sub-area 2':
-                        fillcolor = '#fcb207';
-                        break;
+        if(this._userId){
+            if(data){
+                if(data.length > 0){
+                    data.forEach(dataItem=>{
+                        let descritptionVal = '<strong>Hoya Account Id : </strong>'+dataItem.Hoya_Account_Id + '<br><strong>Visit Zone : </strong>'+ (dataItem.VisitZone ? dataItem.VisitZone + ' ' : '') +
+                                                '<br><strong>Segmentation : </strong>'+dataItem.Segmentation +'<br><strong>Total Visit Planned : </strong>' + dataItem.TotalVisitsPlanned+
+                                                '<br><strong>Last Direct Visit Date : </strong>'+this.replaceFormatDate(dataItem.LastVisitDate) +'<br><strong>Address : </strong>' + (dataItem.AccountStreet ? dataItem.AccountStreet + ' ' : '') + (dataItem.AccountCity ? dataItem.AccountCity + ' ' : '' )+ (dataItem.AccountState ? dataItem.AccountState + ' ' : '' )+(dataItem.AccountPostalCode ? dataItem.AccountPostalCode + ' ' : '')+ (dataItem.AccountCountry ? dataItem.AccountCountry : '');
+                        let fillcolor;
+                        switch(dataItem.VisitZone){
+                            case 'Sub-area 1':
+                            fillcolor = 'yellow';
+                            break;
 
-                        case 'Sub-area 3':
-                        fillcolor = '#ec1717';
-                        break;
+                            case 'Sub-area 2':
+                            fillcolor = '#fcb207';
+                            break;
 
-                        case 'Sub-area 4':
-                        fillcolor = '#13cddc';
-                        break;
+                            case 'Sub-area 3':
+                            fillcolor = '#ec1717';
+                            break;
 
-                        case 'Sub-area 5':
-                        fillcolor = '#58bd08';
-                        break;
+                            case 'Sub-area 4':
+                            fillcolor = '#13cddc';
+                            break;
 
-                        default :
-                        fillcolor = '#000F2E';
-                        break;
+                            case 'Sub-area 5':
+                            fillcolor = '#58bd08';
+                            break;
+
+                            default :
+                            fillcolor = '#000F2E';
+                            break;
+                        }
+
+                        if(dataItem.VisitCouter > 0){
+                            console.log('Visit counter => '+dataItem.VisitCouter);
+                            this.mapMaker = [...this.mapMaker,
+                                {
+                                    location: {
+                                        Latitude: dataItem.AccountShippingLatitude,
+                                        Longitude: dataItem.AccountShippingLongitude,
+                                        Street: dataItem.AccountStreet,
+                                        City: dataItem.AccountCity,
+                                        State: dataItem.AccountState,
+                                        PostalCode: dataItem.AccountPostalCode,
+                                        Country: dataItem.AccountCountry,
+                                    },
+                                    mapIcon: {
+                                        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+                                        fillColor: fillcolor,
+                                        fillOpacity: 0.7,
+                                        strokeWeight: 1,
+                                        scale: 1.3,
+                                    },
+                                    icons: 'standard:account',
+                                    title: dataItem.AccountName,
+                                    value: dataItem.AccountId,
+                                    description: descritptionVal,
+                                }
+                            ];
+                        }else{
+                            this.mapMaker = [...this.mapMaker,
+                                {
+                                    location: {
+                                        Latitude: dataItem.AccountShippingLatitude,
+                                        Longitude: dataItem.AccountShippingLongitude,
+                                        Street: dataItem.AccountStreet,
+                                        City: dataItem.AccountCity,
+                                        State: dataItem.AccountState,
+                                        PostalCode: dataItem.AccountPostalCode,
+                                        Country: dataItem.AccountCountry,
+                                    },
+                                    mapIcon: {
+                                        path: 'M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z',
+                                        fillColor: fillcolor,
+                                        fillOpacity: 0.7,
+                                        strokeWeight: 1,
+                                        scale: 0.85,
+                                    },
+                                    icon: 'standard:account',
+                                    title: dataItem.AccountName,
+                                    value: dataItem.AccountId,
+                                    description: descritptionVal,
+                                }
+                            ];
+                        }
+                    });
+                    this.vCenter = {
+                        location : {
+                            Latitude : data[0].AccountShippingLatitude,
+                            Longitude : data[0].AccountShippingLongitude,
+                            Street : data[0].AccountStreet,
+                            City : data[0].AccountCity,
+                            State : data[0].AccountState,
+                            PostalCode : data[0].AccountPostalCode,
+                            Country : data[0].AccountCountry,
+                        }
                     }
-
-                    if(dataItem.VisitCouter > 0){
-                        this.mapMaker = [...this.mapMaker,
-                            {
-                                location: {
-                                    //Latitude: dataItem.AccountShippingLatitude,
-                                    //Longitude: dataItem.AccountShippingLongitude,
-                                    Street: dataItem.AccountStreet,
-                                    City: dataItem.AccountCity,
-                                    State: dataItem.AccountState,
-                                    PostalCode: dataItem.AccountPostalCode,
-                                    Country: dataItem.AccountCountry,
-                                },
-                                mapIcon: {
-                                    path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-                                    fillColor: fillcolor,
-                                    fillOpacity: 0.7,
-                                    strokeWeight: 1,
-                                    scale: 1.3,
-                                },
-                                icons: 'standard:account',
-                                title: dataItem.AccountName,
-                                value: dataItem.AccountId,
-                                description: descritptionVal,
-                            }
-                        ];
-                    }else{
-                        this.mapMaker = [...this.mapMaker,
-                            {
-                                location: {
-                                    //Latitude: dataItem.AccountShippingLatitude,
-                                    //Longitude: dataItem.AccountShippingLongitude,
-                                    Street: dataItem.AccountStreet,
-                                    City: dataItem.AccountCity,
-                                    State: dataItem.AccountState,
-                                    PostalCode: dataItem.AccountPostalCode,
-                                    Country: dataItem.AccountCountry,
-                                },
-                                mapIcon: {
-                                    path: 'M11,0A11.01245,11.01245,0,0,0,0,11C0,21.36133,9.95166,29.44238,10.37549,29.78125a1.00083,1.00083,0,0,0,1.249,0C12.04834,29.44238,22,21.36133,22,11A11.01245,11.01245,0,0,0,11,0Z',
-                                    fillColor: fillcolor,
-                                    fillOpacity: 0.7,
-                                    strokeWeight: 1,
-                                    scale: 0.85,
-                                },
-                                icon: 'standard:account',
-                                title: dataItem.AccountName,
-                                value: dataItem.AccountId,
-                                description: descritptionVal,
-                            }
-                        ];
-                    }
-                });
-                this.vCenter = {
-                    location : {
-                        //Latitude : data[0].AccountShippingLatitude,
-                        //Longitude : data[0].AccountShippingLongitude,
-                        Street : data[0].AccountStreet,
-                        City : data[0].AccountCity,
-                        State : data[0].AccountState,
-                        PostalCode : data[0].AccountPostalCode,
-                        Country : data[0].AccountCountry,
-                    }
+                    this.zoomLevel = 8;
+                }else{
+                    this.showToast('Warning', 'Warning', Visit_Zones_Map_Warning);
                 }
-                this.zoomLevel = 8;
-            }else{
-                this.showToast('Warning', 'Warning', Visit_Zones_Map_Warning);
+                this.showMap = true;
+                this.isLoading = false;
+            }else if(error){
+                this.showMap = true;
+                this.showToast('Error', 'Error', JSON.stringify(error));
+                this.isLoading = false;
             }
-            this.showMap = true;
+        }else{
+            this.zoomLevel = 8;
             this.isLoading = false;
-        }else if(error){
             this.showMap = true;
-            this.showToast('Error', 'Error', JSON.stringify(error));
-            this.isLoading = false;
         }
+        
     }
-    async refreshComponent(){
+
+    refreshComponent(){
         this.showMap = false;
-        this.VisitZone = '';
-        return refreshApex(this.wireData);
+        
+        //return refreshApex(this.wireData);
     }
 
     handleClickSubarea1 = () =>{
@@ -230,11 +240,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = true;
             }
             this.VisitZone = 'Sub-area 1';
-			this.IsSelected = true;           
+			this.IsSelected = false;           
         }else{
             var divBlock = this.template.querySelector('[data-id="sub_area_1"]');
             if(divBlock){
@@ -244,11 +254,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = false;
             }
             this.VisitZone = '';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }
     }
 
@@ -270,11 +280,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = true;
             }
             this.VisitZone = 'Sub-area 2';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }else{
             var divBlock = this.template.querySelector('[data-id="sub_area_2"]');
             if(divBlock){
@@ -284,11 +294,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = false;
             }
             this.VisitZone = '';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }
         
     }
@@ -311,11 +321,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = true;
             }
             this.VisitZone = 'Sub-area 3';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }else{
             var divBlock = this.template.querySelector('[data-id="sub_area_3"]');
             if(divBlock){
@@ -325,11 +335,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = false;
             }
             this.VisitZone = '';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }
         
     }
@@ -352,11 +362,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class1';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = true;
             }
             this.VisitZone = 'Sub-area 4';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }else{
             var divBlock = this.template.querySelector('[data-id="sub_area_4"]');
             if(divBlock){
@@ -364,13 +374,13 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_2"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_3"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
-                this.template.querySelector('[data-id="sub_area_5"]').className = 'class1';
+                this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = false;
             }
             this.VisitZone = '';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }
     }
 
@@ -392,11 +402,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class1';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = true;
             }
             this.VisitZone = 'Sub-area 5';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }else{
             var divBlock = this.template.querySelector('[data-id="sub_area_5"]');
             if(divBlock){
@@ -406,11 +416,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = false;
             }
             this.VisitZone = '';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }
     }
     
@@ -432,10 +442,10 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class1';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = true;
             }
-            this.VisitZone = 'Not Selected';
+            this.VisitZone = 'Not Selected Customers';
             this.IsSelected = true;
         }else{
             var divBlock = this.template.querySelector('[data-id="sub_area_6"]');
@@ -446,11 +456,11 @@ export default class VisitZonesMap extends LightningElement {
                 this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
                 this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-                this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+                this.template.querySelector('[data-id="Not_Selected"]').checked = false;
                 this.template.querySelector('[data-id="Not_Selected"]').disabled = false;
             }
             this.VisitZone = '';
-            this.IsSelected = true;
+            this.IsSelected = false;
         }
         
     }
@@ -468,12 +478,13 @@ export default class VisitZonesMap extends LightningElement {
     }
 
     handleRefreshData(){
+        this.refreshComponent();
         this.showMap = false;
         // Below two lines are required in case if somebody does nothing and clicks refresh button directly then 
         // to get the wire method called automatically. wire will understand that there is a change in visitZone.
         this.VisitZone = null;
         this.VisitZone = '';
-        this.IsSelected = true;
+        this.IsSelected = false;
 
         this.counting1 = 0;
         this.counting2 = 0;
@@ -488,7 +499,7 @@ export default class VisitZonesMap extends LightningElement {
         this.template.querySelector('[data-id="sub_area_4"]').className = 'class2';
         this.template.querySelector('[data-id="sub_area_5"]').className = 'class2';
         this.template.querySelector('[data-id="sub_area_6"]').className = 'class2';
-        this.template.querySelector('[data-id="Not_Selected"]').checked = true;
+        this.template.querySelector('[data-id="Not_Selected"]').checked = false;
         this.template.querySelector('[data-id="Not_Selected"]').disabled = false;
         
     }

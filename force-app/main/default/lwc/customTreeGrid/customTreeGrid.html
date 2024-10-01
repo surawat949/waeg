@@ -1,0 +1,109 @@
+<template>
+    <div class="custom-tree-grid contacts-container" style={containerStyle}>
+        <table class="custom-table slds-table slds-table_bordered">
+            <thead>
+                <tr class="fixed-header-container">
+                    <th class="slds-text-left tableheader sticky-first-column"></th>
+                    <template for:each={columns} for:item="column" for:index="index">
+                         <template if:false={index}>
+                             <th key={column.fieldName} class="slds-text-left tableheader sticky-column colormatch" data-field={column.fieldName} onclick={handleSort}>
+                                {column.label}
+                                <!-- Show the up or down icon based on sort direction -->
+                            <template if:true={column.isSortedAsc}>
+                                    <lightning-icon icon-name="utility:arrowup" size="xx-small" alternative-text="Sort Ascending"></lightning-icon>
+                                </template>
+
+                                <template if:true={column.isSortedDesc}>
+                                    <lightning-icon icon-name="utility:arrowdown" size="xx-small" alternative-text="Sort Descending"></lightning-icon>
+                                </template>
+                            </th>
+                         </template>
+                          <template if:true={index}>
+                            <th key={column.fieldName} class="slds-text-left tableheader colormatch" data-field={column.fieldName} onclick={handleSort}>
+                                {column.label}
+                                <!-- Show the up or down icon based on sort direction -->
+                            <template if:true={column.isSortedAsc}>
+                                    <lightning-icon icon-name="utility:arrowup" size="xx-small" alternative-text="Sort Ascending"></lightning-icon>
+                                </template>
+
+                                <template if:true={column.isSortedDesc}>
+                                    <lightning-icon icon-name="utility:arrowdown" size="xx-small" alternative-text="Sort Descending"></lightning-icon>
+                                </template>
+                            </th>
+                          </template>
+                    </template>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={rowsWithIcons} for:item="row" for:index="parentIndex">
+                    <tr class="accheadersection" key={row.acrId}>
+                        <template for:each={row.children} for:item="childRecord" for:index="index">
+                            <template if:false={index}>
+                                <td key={childRecord.id} class="sticky-first-column">
+                                    <lightning-button-icon icon-name={row.iconName}
+                                                        alternative-text="Expand/Collapse"
+                                                        title="Expand/Collapse"
+                                                        onclick={handleExpandCollapse}
+                                                        data-index={row.acrId}
+                                                        size="small">
+                                    </lightning-button-icon>
+                                </td>
+                                <template for:each={childRecord.cells} for:item="cell">
+                                        <td key={cell.fieldName} class={cell.cssClass}>
+                                                <template lwc:if={cell.nameField}>
+                                                        <div class="draggable-row" data-account-id={childRecord.accountId} data-id={childRecord.id} data-name={childRecord.contactName}>
+                                                            <a href={childRecord.recordUrl} data-record-id={childRecord.Id} onclick={handleRowAction} >
+                                                                <span class="slds-p-around_none">
+                                                                    {cell.value}
+                                                                </span>
+                                                            </a>
+                                                        </div>
+                                                </template>
+                                                 <template lwc:else>
+                                                    <div data-account-id={childRecord.accountId} data-id={childRecord.id} data-name={childRecord.contactName}>
+                                                    {cell.value}
+                                                    </div>
+                                                </template>
+                                        </td>
+                                </template>
+                            </template>
+                        </template>
+                        <!--<template for:each={row.cells} for:item="cell">
+                            <td key={cell.fieldName} class="slds-text-left">
+                                {cell.value}
+                            </td>
+                        </template>-->
+                    </tr>
+                     <template if:true={row.isExpanded}>
+                          <template for:each={row.children} for:item="childRecord" for:index="index">
+                            <template if:true={index}>
+                                <tr class="accheadersection childsection" key={row.id}>
+                                    <td key={childRecord.id} class="sticky-first-column">
+                                    </td>
+                                    <template for:each={childRecord.cells} for:item="cell">
+                                        <td key={cell.fieldName} class={cell.cssClass}>
+											 <template lwc:if={cell.nameField}>
+                                                        <div class="draggable-row" data-account-id={childRecord.accountId} data-id={childRecord.id} data-name={childRecord.contactName}>
+                                                            <a href={childRecord.recordUrl} target="_blank" onclick={handleRowAction} >
+                                                                <span class="slds-p-around_none draggable-row" data-account-id={childRecord.accountId} data-id={childRecord.id} data-name={childRecord.contactName}>
+                                                                    {cell.value}
+                                                                </span>
+                                                            </a>
+                                                        </div>
+                                                </template>
+                                                 <template lwc:else>
+                                                    <div data-account-id={childRecord.accountId} data-id={childRecord.id} data-name={childRecord.contactName}>
+                                                        {cell.value}
+                                                    </div>
+                                                </template>
+                                        </td>
+                                    </template>
+                                </tr>
+                            </template>
+                        </template>
+                    </template>
+                </template>
+            </tbody>
+        </table>
+    </div>
+</template>

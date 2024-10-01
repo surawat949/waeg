@@ -44,7 +44,7 @@ public class VisitTriggerHelperTest {
         visit.Account__c = AccountId;
         visit.Visit_Type__c = 'Visit';
         visit.Visit_Status__c = 'Planned';
-        visit.Visit_Reason__c = 'Retain';
+        visit.Visit_Reason__c = 'Customer Retention';
         visit.Start_Time__c = date.today()-1;
         visit.End_Time__c = visit.Start_Time__c.addMinutes(60);
         visit.Assigned_to__c = UserInfo.getUserId();
@@ -53,8 +53,8 @@ public class VisitTriggerHelperTest {
         Visits__c visit1 = new Visits__c();
         visit1.Account__c = AccountId;
         visit1.Visit_Type__c = 'Visit';
-        visit1.Visit_Status__c = 'Complete';
-        visit1.Visit_Reason__c = 'Retain';
+        visit1.Visit_Status__c = 'Planned';
+        visit1.Visit_Reason__c = 'Negotiation';
         visit1.Start_Time__c = date.today()-1;
         visit1.End_Time__c = visit1.Start_Time__c.addMinutes(60);
         visit1.Assigned_to__c = UserInfo.getUserId();
@@ -74,6 +74,8 @@ public class VisitTriggerHelperTest {
         
         visit.Visit_Status__c = 'Complete';
         update visit;
+        visit1.Start_Time__c = date.today()-2;
+        update visit1;
         
         system.assert(true);
         Test.StopTest();

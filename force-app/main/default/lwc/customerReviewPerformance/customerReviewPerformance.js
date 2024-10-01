@@ -1,40 +1,14 @@
-import { LightningElement, wire, track } from 'lwc';
-
-//Getting fields for UI API
-import USER_COMPANYNAME_FIELD from '@salesforce/schema/User.CompanyName';
-import PROFILE_NAME_FIELD from '@salesforce/schema/User.Profile.Name';
-import PROFILE_ID_FIELD from '@salesforce/schema/User.ProfileId';
+import { LightningElement, api, track } from 'lwc';
 import alc_performance_graph from '@salesforce/resourceUrl/alc_performance_graph';
-
 import alc_performance_blue_backgrnd from '@salesforce/resourceUrl/alc_performance_blue_backgrnd';
 import alc_performance_kpi from '@salesforce/resourceUrl/alc_performance_kpi';
 
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import USER_ID from '@salesforce/user/Id';
-import SALES_ROLE_FIELD from '@salesforce/schema/User.Sales_Role__c';
-import USER_NAME_FIELD from '@salesforce/schema/User.Name';
-import USER_REGION from '@salesforce/schema/User.User_Region__c';
-import CURRENCYISOCODE from '@salesforce/schema/User.DefaultCurrencyIsoCode';
-import COMPANYNAME from '@salesforce/schema/User.CompanyName';
-
 //Calling apex methods
 import getPerformanceDetails from '@salesforce/apex/CustomerReviewPerfomanceController.getPerformanceDetails';
-import getSalesManagerList from '@salesforce/apex/CustomerReviewFilterHandler.getSalesManagerList';
-import getRepresentativeList from '@salesforce/apex/CustomerReviewFilterHandler.getRepresentativeList';
-import getASMManager from '@salesforce/apex/CustomerReviewFilterHandler.getASMManager';
-import getCompanies from '@salesforce/apex/CustomerReviewFilterHandler.getCompanies';
-
+import getVisitDetails from '@salesforce/apex/CustomerReviewPerfomanceController.getVisitDetails';
 
 //Custom Labels for Filters
-import Filter from '@salesforce/label/c.Filter';
-import Select_Company from '@salesforce/label/c.Select_Company';
-import Select_Sales_Manager from '@salesforce/label/c.Select_Sales_Manager';
-import Representative from '@salesforce/label/c.Representative';
-import Company from '@salesforce/label/c.Company';
-import Sales_Manager from '@salesforce/label/c.Sales_Manager';
-import Select_Representative from '@salesforce/label/c.Select_Representative';
 import Consolidation_Team_Performance from '@salesforce/label/c.Consolidation_Team_Performance';
-import Visits_Per_Day_In_Field from '@salesforce/label/c.Visits_Per_Day_In_Field';
 
 //toast message declaration 
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -49,10 +23,12 @@ import Greater_than_01 from '@salesforce/label/c.Greater_than_01';
 import Greater_than_500_USD from '@salesforce/label/c.Greater_than_500_USD';
 import CustomerReviewAdminAlert from '@salesforce/label/c.CustomerReviewAdminAlert';
 import CustomerReviewErrorAlert from '@salesforce/label/c.CustomerReviewErrorAlert';
-
 import Team_or_User_Sales_Performance from '@salesforce/label/c.Team_or_User_Sales_Performance';
 import Team_or_User_Key_Performance_Indicators from '@salesforce/label/c.Team_or_User_Key_Performance_Indicators';
-
+import Visits_Per_Day_In_Field from '@salesforce/label/c.Visits_Per_Day_In_Field';
+import GREATER_THAN_500_USD_PERCENTAGE from '@salesforce/label/c.GREATER_THAN_500_USD_PERCENTAGE';
+import NewDoors from '@salesforce/label/c.Monthly_New_Doors';
+import LostDoors from '@salesforce/label/c.Monthly_Lost_Door';
 import Direct_Digital from '@salesforce/label/c.Direct_Digital';
 import Days_in_Field from '@salesforce/label/c.Days_in_Field';
 import Accounts_Visited from '@salesforce/label/c.Accounts_Visited';
@@ -60,24 +36,10 @@ import Visits_A3_B3_C3 from '@salesforce/label/c.Visits_A3_B3_C3';
 import Accounts_Visited_A3_B3_C3 from '@salesforce/label/c.Accounts_Visited_A3_B3_C3';
 
 export default class CustomerReviewPerformance extends LightningElement {
-    @track companyOptions = [];
-    @track salesManagerOptions = [];
-    @track representativeOptions = [];
-    @track isRepresentativeDisabled = true;
-    @track isSalesManagerDisabled = true;
-    @track isRepresentativeReadonly = false;
-    @track isCompanyDisabled = true;
-    @track isASM = false;
-    @track isSlideVisible = false;
     @track displayListView = 'hidden';
-    @track selectedCompany;
-    @track selectedSalesManagerId;
     @track selectedRepresentativeId;
-    @track currentUserId = USER_ID;
-    @track currentUserName;
-    @track currentUserRole;
     @track alc_performance_graph = alc_performance_graph;
-    @track alc_performance_kpi = alc_performance_kpi;
+	@track alc_performance_kpi = alc_performance_kpi;
     @track isTeamPerformanceChecked = false;
     @track isTeamPerformanceDisabled = true;
     @track emptyData = [];
@@ -107,7 +69,8 @@ export default class CustomerReviewPerformance extends LightningElement {
     @track uniqueDaysCount = [];
     @track accountsVisitedLst = [];
     @track visitsA3 = [];
-    @track visitsPerDayInField = [];
+	@track visitsPerDayInField = [];
+	@track greaterThan500USDPercentage = [];
     @track accsVisitedA3 = [];
     @track tableMonths = [];
     @track emptyRow = [];
@@ -115,56 +78,66 @@ export default class CustomerReviewPerformance extends LightningElement {
     @track currencyTitle = 'Lenses Net Sales';
     @track greaterThan500Currency = '';
     @track repUserRecord = {};
-    @track currentUserRegion;
-    @track currentUserCurrency;
-    @track companyName;
-    @track currentUserDefaultCurrency
+    newDoorCount = [];
+    lostDoorCount = [];
+    activeSalesAvg='';
+    greaterThan0Avg='';
+    greaterThan500Avg='';
+    dVisitsAvg='';
+    uniqueDaysCountAvg='';
+    accountsVisitedLstAvg='';
+    greaterThan500PercAvg='';
+    visitsA3Avg='';
+    accsVisitedA3Avg='';
+    visitsPerDayInFieldAvg='';
+    newDoorAvg='';
+    lostDoorAvg='';
+    last12MonAvg='L12Mo AVG';
 	custLabel = {
-        Filter,Select_Company,Select_Sales_Manager,
-        Representative,Company,Sales_Manager,Select_Representative,
 		Consolidation_Team_Performance,Monthly_Performance,Sales_Per_Active_Accounts,
 		Active_Accounts,Visits,Prospection_Rate_A3_B3_C3,Greater_than_01,
 		Greater_than_500_USD,Direct_Digital,Days_in_Field,Accounts_Visited,Visits_A3_B3_C3,Accounts_Visited_A3_B3_C3,
         CustomerReviewAdminAlert,CustomerReviewErrorAlert,Team_or_User_Sales_Performance,Team_or_User_Key_Performance_Indicators,
-        Visits_Per_Day_In_Field	
+        Visits_Per_Day_In_Field,GREATER_THAN_500_USD_PERCENTAGE,NewDoors,LostDoors
     }
+
+    @api 
+    set representativeObj(val){
+        this.loadFirstTabEmptyData();
+        this.loadSecondTabEmptyData();
+        this.isTeamPerformanceChecked = false;
+        //this.resetAllArrays();
+        if(val && val.Id){
+            this.selectedRepresentativeId = val.Id;
+            this.repUserRecord = val;
+            this.getPerformanceDetailsUtility(false);
+        }else{
+            this.repUserRecord = {};
+            this.selectedRepresentativeId = null;
+        }
+    }
+
+    get representativeObj(){
+        return this.selectedRepresentativeId;
+    }
+
+    @api 
+    set consolidationDisabled(val){
+        this.isTeamPerformanceDisabled = val;
+    }
+
+    get consolidationDisabled(){
+        return this.isTeamPerformanceDisabled;
+    }
+	
 	
     connectedCallback(){
         this.loadFirstTabEmptyData();
 		this.loadSecondTabEmptyData();
     }   
-    get containerStyle() {
+	get containerStyle() {
         return `background-image: url(${alc_performance_blue_backgrnd});`;
-    }   
-    @wire(getRecord, {
-        recordId: USER_ID,
-        fields: [SALES_ROLE_FIELD, USER_NAME_FIELD, PROFILE_NAME_FIELD, USER_COMPANYNAME_FIELD,USER_REGION,CURRENCYISOCODE,COMPANYNAME,PROFILE_ID_FIELD]
-    })
-    userData({ error, data }) {
-        if (data) {
-            const salesRole = getFieldValue(data, SALES_ROLE_FIELD);
-            const profileName = getFieldValue(data, PROFILE_NAME_FIELD);
-            const profileId = getFieldValue(data, PROFILE_ID_FIELD);
-            this.currentUserName = getFieldValue(data, USER_NAME_FIELD);
-            this.currentUserRole = salesRole;   
-            this.currentUserRegion = getFieldValue(data, USER_REGION);
-            this.currentUserCurrency = getFieldValue(data, CURRENCYISOCODE);
-            this.companyName =  getFieldValue(data, COMPANYNAME);
-            // Logic based on user role and profile
-            if (profileName === 'SFDC LOCAL ADMIN') {
-                this.loadSalesManagerOptions();
-            } else if (profileId === '00eb0000000lainAAA') {
-                this.loadCompanyOptions();
-            } else if (salesRole === 'ASM' || salesRole === 'AMS' || salesRole === 'KAM') {
-                this.isASM = true;
-                this.setASMManager();
-            } else {
-                this.loadSalesManagerOptions();
-            }
-        } else if (error) {
-            console.error(error);
-        }
-    }
+    } 
     loadFirstTabEmptyData(){
          const metrics = ["Quota FY","Sales FY","% Quota Achievement","Sales Last FY","% Last Year Achievement"];
          const months = ["APR", "AUG", "DEC", "FEB", "JAN", "JUL", "JUN", "MAR", "MAY", "NOV", "OCT", "SEP", "TOT_YTD"];
@@ -174,129 +147,41 @@ export default class CustomerReviewPerformance extends LightningElement {
          }));
     }
 	loadSecondTabEmptyData(){ 
-        this.tableMonths = ['AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL'];
-        this.activeSales = ['', '', '', '', '', '', '', '', '', '', '', ''];
-        this.greaterThan0 = ['', '', '', '', '', '', '', '', '', '', '', ''];
-        this.greaterThan500 = ['', '', '', '', '', '', '', '', '', '', '', ''];
-        this.dVisits = ['', '', '', '', '', '', '', '', '', '', '', ''];
-        this.uniqueDaysCount =['', '', '', '', '', '', '', '', '', '', '', ''];
-        this.accountsVisitedLst = ['', '', '', '', '', '', '', '', '', '', '', ''];
-        this.visitsA3 = ['', '', '', '', '', '', '', '', '', '', '', ''];
-        this.accsVisitedA3 = ['', '', '', '', '', '', '', '', '', '', '', ''];
-
-        //Adding default empty rows.
-        this.emptyRow = ['', '', '', '', '', '', '', '', '', '', '', ''];     
-    }
-    loadCompanyOptions() {
-        getCompanies()
-        .then(data => {
-            this.companyOptions = data.map(company => ({
-                label: company,
-                value: company
-            }));
-            this.isCompanyDisabled = false;
-            this.isSalesManagerDisabled = true;
-        })
-        .catch(error => {
-            this.showToast(this.custLabel.CustomerReviewErrorAlert,this.custLabel.CustomerReviewAdminAlert,'error','dismissable');
-            console.error(error);
-        });
-    }
-    handleCompanyChange(event) {
-        this.selectedCompany = event.detail.value;
-        this.isSalesManagerDisabled = false;
-        this.isRepresentativeDisabled = true;
-        this.representativeOptions = [];
-        this.loadSalesManagerOptions();
-        this.resetAllArrays();
-        this.loadFirstTabEmptyData();
-	    this.loadSecondTabEmptyData();
-    }
-    
-    loadSalesManagerOptions() {
-        getSalesManagerList({ companyName: this.selectedCompany })
-        .then(data => {          
-            this.isSalesManagerDisabled = false;  
-            this.salesManagerOptions = data.map(user => ({
-                label: user.Name,
-                value: user.Id
-            }));
-        })
-        .catch(error => {
-            this.showToast(this.custLabel.CustomerReviewErrorAlert,this.custLabel.CustomerReviewAdminAlert,'error','dismissable');
-            console.error(error);
-        });
-    }
-    setASMManager() {
-        getASMManager()
-        .then(manager => {
-            this.selectedSalesManagerId = manager.Id;
-            this.salesManagerOptions = [{ label: manager.Name, value: manager.Id }];
-            this.isSalesManagerDisabled = true;
-            this.isRepresentativeDisabled = false;
-            this.isRepresentativeReadonly = true;
-            this.loadRepresentativeOptionsForASM();
-        })
-        .catch(error => {
-            this.showToast(this.custLabel.CustomerReviewErrorAlert,this.custLabel.CustomerReviewAdminAlert,'error','dismissable');
-            console.error(error);
-        });
-    }
-
-    handleSalesManagerChange(event) {
-        this.selectedSalesManagerId = event.detail.value;
-        this.isRepresentativeDisabled = false;
-        this.loadRepresentativeOptions();
-        this.resetAllArrays();
-        this.loadFirstTabEmptyData();
-	    this.loadSecondTabEmptyData();
-    }
-    loadRepresentativeOptions() {
-        getRepresentativeList({ selectedManagerId: this.selectedSalesManagerId })
-        .then(data => {
-            this.persistantRepData = data;
-            this.representativeOptions = data.map(user => ({
-                label: user.Name,
-                value: user.Id
-            })).sort((a, b) => a.label.localeCompare(b.label));
-        })
-        .catch(error => {
-            this.showToast(this.custLabel.CustomerReviewErrorAlert,this.custLabel.CustomerReviewAdminAlert,'error','dismissable');
-            console.error(error);
-        });
-    }
-    loadRepresentativeOptionsForASM() {
-        this.representativeOptions = [{ label: this.currentUserName, value: this.currentUserId }];
-        this.persistantRepData =  [{
-            "Id": this.currentUserId,
-            "Name": this.currentUserName,
-            "Sales_Role__c": this.currentUserRole,
-            "User_Region__c": this.currentUserRegion,
-            "defaultCurrencyISOcode": this.currentUserCurrency,
-            "CompanyName" : this.companyName
-        }];
-    }
-    get buttonContainerClass() {
-        return this.isSlideVisible ? 'button-container slide-in' : 'button-container slide-out';
-    }
-    toggleSlide() {
-        this.isSlideVisible = !this.isSlideVisible;
-    }    
-    handleRepresentativeChange(event) {
-        this.selectedRepresentativeId = event.detail.value;
-        this.isRepresentativeDisabled = false;
-        let matchingRecord = this.persistantRepData.find(record => record.Id === event.detail.value);        
-        this.repUserRecord = matchingRecord;
-        let representativeRole = matchingRecord.Sales_Role__c;
-        if(representativeRole === 'NSM' || representativeRole === 'RSM' || representativeRole === 'RMS'){
-            this.isTeamPerformanceDisabled = false;
-            this.isTeamPerformanceChecked = false;
-        }else{
-            this.isTeamPerformanceDisabled = true;
-            this.isTeamPerformanceChecked = false;
+        const date = new Date();
+        var lastMonths = [],
+        monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+        for (var i = 0; i < 12; i++) {
+            lastMonths.push(monthNames[date.getMonth()]);
+            date.setMonth(date.getMonth() - 1);
         }
-        this.getPerformanceDetailsUtility(false);
-    }     
+        this.tableMonths = lastMonths;
+        this.activeSales = ['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.greaterThan0 = ['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.greaterThan500 = ['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.dVisits = ['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.uniqueDaysCount =['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.accountsVisitedLst = ['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.visitsA3 = ['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.accsVisitedA3 = ['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.visitsPerDayInField = ['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.greaterThan500USDPercentage = ['', '', '', '', '', '', '', '', '', '', '', '']; 
+        this.newDoorCount = ['', '', '', '', '', '', '', '', '', '', '', ''];  
+        this.lostDoorCount = ['', '', '', '', '', '', '', '', '', '', '', ''];          
+        this.activeSalesAvg = '';
+        this.greaterThan0Avg = '';
+        this.greaterThan500Avg = '';
+        this.greaterThan500PercAvg = '';
+        this.accountsVisitedLstAvg = '';
+        this.accsVisitedA3Avg = '';
+        this.visitsA3Avg = '';
+        this.visitsPerDayInFieldAvg = '';
+        this.dVisitsAvg = '';
+        this.uniqueDaysCountAvg ='';
+        this.newDoorAvg='';
+        this.lostDoorAvg='';
+        //Adding default empty rows.
+        this.emptyRow = ['', '', '', '', '', '', '', '', '', '', '', '',''];  
+    }    
     handleCheckboxEvents(event){
         this.isTeamPerformanceChecked = event.target.checked;
         if(this.isTeamPerformanceChecked){
@@ -309,24 +194,24 @@ export default class CustomerReviewPerformance extends LightningElement {
     getPerformanceDetailsUtility(requireConsolidation) {
         this.showSpinner = true;
         this.resetAllArrays();
-        getPerformanceDetails({ user: this.repUserRecord, requireConsolidation : requireConsolidation})
-        .then(result => { 
-            if (result) {           
-                this.budgetUtility(result.budgetDetails);                
-                this.convertData(result)
-            }else{
-                this.loadFirstTabEmptyData();
-                this.loadSecondTabEmptyData();
-            }
+        Promise.all([
+            getPerformanceDetails({ user: this.repUserRecord, requireConsolidation : requireConsolidation}), 
+            getVisitDetails({ user: this.repUserRecord, requireConsolidation : requireConsolidation}) 
+        ])
+        .then((results) => {
+            this.salesData = results[0];  
+            this.visitsData = results[1];
+            this.budgetUtility(this.salesData.budgetDetails);
+            this.convertData(this.salesData,this.visitsData);  
             this.showSpinner = false;
         })
-        .catch(error => {
+        .catch((error) => {
             this.loadFirstTabEmptyData();
 		    this.loadSecondTabEmptyData();
             this.showToast(this.custLabel.CustomerReviewErrorAlert,this.custLabel.CustomerReviewAdminAlert,'error','dismissable');
             this.showSpinner = false;
-        }); 
-    }
+        });             
+    } 
     resetAllArrays(){
         this.tableMonths = [];
         this.activeSales = [];
@@ -338,46 +223,72 @@ export default class CustomerReviewPerformance extends LightningElement {
         this.visitsA3 = [];
         this.accsVisitedA3 = [];
         this.data = [];
+		this.visitsPerDayInField = [];
+		this.greaterThan500USDPercentage = [];
+        this.newDoorCount = [];
+        this.lostDoorCount = [];
+        this.last12MonAvg='';
+        this.activeSalesAvg = '';
+        this.greaterThan0Avg = '';
+        this.greaterThan500Avg = '';       
+        this.newDoorAvg = '';
+        this.lostDoorAvg = '';
+        this.greaterThan500PercAvg = '';
+        this.accountsVisitedLstAvg = '';
+        this.accsVisitedA3Avg = '';
+        this.visitsA3Avg = '';
+        this.visitsPerDayInFieldAvg = '';
+        this.dVisitsAvg = '';
+        this.uniqueDaysCountAvg ='';
     }    
     
-    convertData(jsonData) {
-        // Utility function to map data with CSS classes
-        const mapDataWithClass = (monthList, dataArray, dynamicMonth) => {
+    convertData(jsonData,visitData) {
+        // Utility function to compare with average and assign class        
+        const mapDataWithClass = (monthList, dataArray, avgValue, dynamicMonth, isDoorsNewOrLost) => {
             return monthList.map((item, index) => ({
-                value: dataArray[index],
-                class: (item === dynamicMonth) ? 'dynamic-css' : ''
+                value:dataArray[index],
+                class: (item === dynamicMonth) ? 'dynamic-css' : '',
+                fieldClass: isDoorsNewOrLost ? ((parseFloat(dataArray[index]) > avgValue) ? 'red-highlight' : '') : ((parseFloat(dataArray[index]) < avgValue) ? 'red-highlight' : '')
             }));
-        };
-    
+        }; 
         // Get the previous month
-        let previousMonthName = this.getPreviousMonth();
-    
-        // Set properties
-        this.showSpinner = false;
+        let previousMonthName = this.getPreviousMonth();    
         this.tableMonths = jsonData.monthList;
         // Round and format data as needed
-        this.activeSales = mapDataWithClass(jsonData.monthList, jsonData.activeSales.map(value => Math.round(value)), previousMonthName);
-        this.greaterThan0 = mapDataWithClass(jsonData.monthList, jsonData.greaterThan0.map(value => Math.round(value)), previousMonthName);
-        this.greaterThan500 = mapDataWithClass(jsonData.monthList, jsonData.greaterThan500.map(value => Math.round(value)), previousMonthName);
-        this.dVisits = mapDataWithClass(jsonData.monthList, jsonData.dVisits.map(value => Math.round(value)), previousMonthName);
-        this.uniqueDaysCount = mapDataWithClass(jsonData.monthList, jsonData.uniqueDaysCount.map(value => Math.round(value)), previousMonthName);
-        this.accountsVisitedLst = mapDataWithClass(jsonData.monthList, jsonData.accountsVisitedLst.map(value => Math.round(value)), previousMonthName);
-    
-        //let visitsA3Temp = jsonData.visitsA3.map(value => parseFloat(value.toFixed(2)));
-        let visitsA3Temp = jsonData.visitsA3.map(value => Math.round(value));        
-        this.visitsA3 = mapDataWithClass(jsonData.monthList, visitsA3Temp.map(value => `${value}%`), previousMonthName);
-        this.accsVisitedA3 = mapDataWithClass(jsonData.monthList, jsonData.accsVisitedA3.map(value => Math.round(value)), previousMonthName);
-    
+        this.activeSales = mapDataWithClass(jsonData.monthList, jsonData.activeSales.map(value => Math.round(value)), jsonData.activeSalesAvg, previousMonthName, false);
+        this.greaterThan0 = mapDataWithClass(jsonData.monthList, jsonData.greaterThan0.map(value => Math.round(value)), jsonData.greaterThan0Avg, previousMonthName, false);
+        this.greaterThan500 = mapDataWithClass(jsonData.monthList, jsonData.greaterThan500.map(value => Math.round(value)), jsonData.greaterThan500Avg, previousMonthName, false);
+      
         this.currencyTitle = jsonData.title;
-        this.greaterThan500Currency = jsonData.greaterThan500Currency;
-        
-        let visitsPerDayInFieldTemp = jsonData.visitsPerDayInField.map(value => parseFloat(value.toFixed(2)));        
-        this.visitsPerDayInField = mapDataWithClass(jsonData.monthList, visitsPerDayInFieldTemp.map(value => `${value}%`), previousMonthName);
+        this.greaterThan500Currency = jsonData.greaterThan500Currency;		
+		let greaterThan500USDPercentageTemp = jsonData.greaterThan500USDPercentage.map(value => Math.round(value)); 
+        this.greaterThan500USDPercentage = mapDataWithClass(jsonData.monthList, greaterThan500USDPercentageTemp.map(value => `${value}%`), jsonData.greaterThan500USDPercAvg, previousMonthName, false);
+        this.newDoorCount = mapDataWithClass(jsonData.monthList, jsonData.newDoorCount.map(value => Math.round(value)), jsonData.newDoorAvg, previousMonthName, true);
+        this.lostDoorCount = mapDataWithClass(jsonData.monthList, jsonData.LostDoorCount.map(value => Math.round(value)), jsonData.lostDoorAvg, previousMonthName, true);       
 
-        //this.visitsPerDayInField = mapDataWithClass(jsonData.monthList, jsonData.visitsPerDayInField, previousMonthName);
-        console.log(JSON.stringify(jsonData.visitsPerDayInField));
-    }
-    
+        this.activeSalesAvg = jsonData.activeSalesAvg;
+        this.greaterThan0Avg = jsonData.greaterThan0Avg;
+        this.greaterThan500Avg = jsonData.greaterThan500Avg;       
+        this.newDoorAvg = jsonData.newDoorAvg;
+        this.lostDoorAvg = jsonData.lostDoorAvg;
+        this.greaterThan500PercAvg = jsonData.greaterThan500USDPercAvg+'%';
+        this.last12MonAvg = 'L12Mo AVG';
+
+        this.dVisits = mapDataWithClass(visitData.monthList, visitData.dVisits.map(value => Math.round(value)), visitData.dVisitsAvg, previousMonthName, false);
+        this.uniqueDaysCount = mapDataWithClass(visitData.monthList, visitData.uniqueDaysCount.map(value => Math.round(value)), visitData.uniqueDaysCountAvg, previousMonthName, false);
+        this.accountsVisitedLst = mapDataWithClass(visitData.monthList, visitData.accountsVisitedLst.map(value => Math.round(value)), visitData.accountsVisitedLstAvg, previousMonthName, false);
+        let visitsA3Temp = visitData.visitsA3.map(value => Math.round(value)); 
+        this.visitsA3 = mapDataWithClass(visitData.monthList, visitsA3Temp.map(value => `${value}%`), visitData.visitsA3Avg, previousMonthName, false);
+        this.accsVisitedA3 = mapDataWithClass(visitData.monthList, visitData.accsVisitedA3.map(value => Math.round(value)), visitData.accsVisitedA3Avg, previousMonthName, false);
+		let visitsPerDayInFieldTemp = visitData.visitsPerDayInField.map(value => Math.floor(value * 10) / 10);  
+		this.visitsPerDayInField = mapDataWithClass(visitData.monthList, visitsPerDayInFieldTemp, visitData.visitsPerDayInFieldAvg, previousMonthName, false);		
+        this.dVisitsAvg = visitData.dVisitsAvg;
+        this.uniqueDaysCountAvg = visitData.uniqueDaysCountAvg;
+        this.accountsVisitedLstAvg = visitData.accountsVisitedLstAvg;
+        this.visitsA3Avg = visitData.visitsA3Avg+'%';
+        this.accsVisitedA3Avg = visitData.accsVisitedA3Avg;
+        this.visitsPerDayInFieldAvg = visitData.visitsPerDayInFieldAvg;
+	}   
     budgetUtility(budgetDetails){
         let performanceList = budgetDetails.map(item => {
             const roundedValues = Object.fromEntries(
@@ -411,7 +322,7 @@ export default class CustomerReviewPerformance extends LightningElement {
                     isPercentageHolder : item.metric.includes('%')
                 };
             });
-            console.log(JSON.stringify(performanceListTemp));
+            //console.log(JSON.stringify(performanceListTemp));
             this.data = performanceListTemp;
         }else{
             this.loadFirstTabEmptyData();

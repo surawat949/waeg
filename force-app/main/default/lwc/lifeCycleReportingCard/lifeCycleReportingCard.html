@@ -29,7 +29,8 @@
                             <lightning-icon icon-name="utility:travel_and_places" class="iconMargin red-utility-icon" size="x-small" title={custLabel.Follow_up_rate_120}></lightning-icon>
                         </template>
                         <template if:true={isAlert}>
-                            <lightning-icon icon-name="utility:alert" class="iconMargin red-utility-icon" size="x-small" title={custLabel.Issue}></lightning-icon>
+                            <lightning-icon icon-name="utility:alert" class="iconMargin red-utility-icon" size="x-small" title={retainReason}></lightning-icon>
+                            <!--<lightning-icon icon-name="utility:alert" class="iconMargin red-utility-icon" size="x-small" title={custLabel.Issue}></lightning-icon>-->
                         </template>
                         <template if:true={isTaskOverDue}>
                             <lightning-icon icon-name="utility:expired" class="iconMargin red-utility-icon" size="x-small" title={taskStatus}></lightning-icon>

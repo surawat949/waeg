@@ -7,7 +7,7 @@
 */
 public with sharing class VisitPlanningV2Controller {
     private static String clinicRecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('Clinic').getRecordTypeId();
-    private static String accountFields = 'Id, Hoya_Account_ID__c, Channel__c, Total_Visits_Planned__c, CurrencyIsoCode, sf_latitude__c, sf_longitude__c, Name, Shop_Street__c, Shop_Postal_Code__c, Shop_State__c, Shop_Country__c, First_Competitor_local_name__c, CHCUSTCLASSIFICATIONID__c, Shop_City__c, Last_Visit_date__c, Total_Visits_Achieved__c, TACTICOM_SOF__c, Segmentation_Net__c, Visionary_Alliance__c, Seiko_Network__c, Myo_Smart_AuthorizeDealer__c, Lenses_Net_Sales_Last_12Mo__c, Share_of_Wallet__c, Account_Status__c, Strategic_Value_Net_Sales__c, Visit_Frequency_Status__c, Visits_performed__c, Last_Digital_Visit_Date__c, Total_Visits_Performed__c, ';
+    private static String accountFields = 'Id, Hoya_Account_ID__c, Channel__c, Total_Visits_Planned__c, CurrencyIsoCode, sf_latitude__c, sf_longitude__c, Name, Shop_Street__c, Shop_Postal_Code__c, Shop_State__c, Shop_Country__c, First_Competitor_local_name__c,Second_Competitor_local_Name__c, CHCUSTCLASSIFICATIONID__c, Shop_City__c, Last_Visit_date__c, Total_Visits_Achieved__c, TACTICOM_SOF__c, Segmentation_Net__c, Visionary_Alliance__c, Seiko_Network__c, Myo_Smart_AuthorizeDealer__c, Lenses_Net_Sales_Last_12Mo__c, Share_of_Wallet__c, Account_Status__c, Strategic_Value_Net_Sales__c, Visit_Frequency_Status__c, Visits_performed__c, Last_Digital_Visit_Date__c, Total_Visits_Performed__c, ';
     private static String visitsQuery = '(SELECT Id, Start_Day__c FROM Visits__r WHERE Visit_Type__c = \'Visit\' AND Assigned_to__c = :userId AND Visit_Status__c != \'Cancelled\' ORDER BY Start_Day__c DESC LIMIT 1),';
     private static String alcQuery = '(SELECT Id, Name, Stage__c FROM Account_Life_Cycles__r LIMIT 1),';
     private static String lastSalesStats = '(Select Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY__c from Last_Sales_Statistics__r limit 1),';
@@ -194,6 +194,7 @@ public with sharing class VisitPlanningV2Controller {
         }
         return matched;
     }
+    
     public class MyRecordWrapper {
         @AuraEnabled
         public String fieldApiName { get; set; }

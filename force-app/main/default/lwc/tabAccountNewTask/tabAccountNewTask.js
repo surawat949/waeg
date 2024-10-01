@@ -15,6 +15,15 @@ export default class TabAccountNewTask extends NavigationMixin(LightningElement)
     nevigateFromContact=false;
     nevigateFromAccount=false;
     accountId;
+    isHeaderVisible = true;
+
+    get headerClass() {
+        return this.isHeaderVisible ? '' : 'hidden';
+    }
+
+    toggleHeader() {
+        this.isHeaderVisible = !this.isHeaderVisible;
+    }
     @wire(getRecordTypeId)
         wiredGetRecordType({ error, data }) {
             if (data) {

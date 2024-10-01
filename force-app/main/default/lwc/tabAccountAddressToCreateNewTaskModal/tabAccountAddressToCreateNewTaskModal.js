@@ -28,7 +28,8 @@ import label_searchContact from '@salesforce/label/c.tabLabelSearchContact';
 import label_searchUser from '@salesforce/label/c.tabLabelSearchUser';
 import label_save from '@salesforce/label/c.tabLabelSave';
 import label_Close from '@salesforce/label/c.tabLabelClose';
-import label_instruction from '@salesforce/label/c.SFDC_V_2_Account_Membership_Instruction';
+//import label_instruction from '@salesforce/label/c.SFDC_V_2_Account_Membership_Instruction';
+import label_Comments from '@salesforce/label/c.Comment';
 
 import createTask from '@salesforce/apex/tabAccountAddressLWCController.createTask';
 import SFDC_V2_StandardTask from '@salesforce/apex/Utility.getTaskSFDCStandardTask';
@@ -55,7 +56,8 @@ export default class TabAccountAddressToCreateNewTaskModal extends LightningModa
     labelClose = label_Close;
     labelSearchUser = label_searchUser;
     labelSearchContact = label_searchContact;
-    labelInstruction = label_instruction;
+    //labelInstruction = label_instruction;
+    labelComments = label_Comments
     userId = strusrId;
     copiedtoId = copytoId;
 

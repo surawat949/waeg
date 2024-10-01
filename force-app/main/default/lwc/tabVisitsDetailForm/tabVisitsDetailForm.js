@@ -13,12 +13,14 @@ import Coaching_Visit from '@salesforce/schema/Visits__c.Coaching_Visit__c';
 import Visit_Notes from '@salesforce/schema/Visits__c.Visit_Notes__c';
 import Visit_Reason from '@salesforce/schema/Visits__c.Visit_Reason__c';
 import Call_To_Action from '@salesforce/schema/Visits__c.Call_To_Action__c';
+import Visit_RealTime_Tracker from '@salesforce/schema/Visits__c.Visit_Real_Time_Report_Tracker__c';
+
 import Visit_Segmentation_Net_Tracker from '@salesforce/schema/Visits__c.Visit_Segmentation_Net_Tracker__c';
 
 import Visit_Status from '@salesforce/schema/Visits__c.Visit_Status__c';
 import 	Visit_Contact_Segmentation_Tracker from '@salesforce/schema/Visits__c.Visit_Contact_Segmentation_Tracker__c';
 import Actions_executed from '@salesforce/schema/Visits__c.Actions_executed__c';
-import Call_To_Action_Notes from '@salesforce/schema/Visits__c.SOC_Call_To_Action_Notes__c';
+import Call_To_Action_Notes from '@salesforce/schema/Visits__c.Call_To_Action_Notes__c';
 import Expected_Incremental_Sales from '@salesforce/label/c.Expected_Incremental_Sales';
 import Monthly_Incremental from '@salesforce/label/c.Monthly_Incremental';
 import Visit_Objective_followUp from '@salesforce/schema/Visits__c.Visit_Objective_follow_up_notes__c';
@@ -122,7 +124,7 @@ export default class TabVisitsDetailForm extends LightningElement {
               Visit_Start_Day_Tracker__c,Visit_Home_Office_Tracker,Visit_Reporting_Day_Tracker__c,
               Visit_Bus_Opp_Tracker__c,Visit_Presc_Tracker__c,Visit_Contacts_Tracker__c,
               Visit_Prospection_Tracker__c,Visit_Strategic_Value_Tracker__c,
-              Visit_Account_Owner_Tracker__c,Visit_Competitors_Tracker__c,Visit_Segmentation_Net_Tracker,Visit_Contact_Segmentation_Tracker];
+              Visit_Account_Owner_Tracker__c,Visit_Competitors_Tracker__c,Visit_Segmentation_Net_Tracker,Visit_Contact_Segmentation_Tracker,Visit_RealTime_Tracker];
     field7= [CreatedDate,LastModifiedDate,CreatedByName,LastModifiedByName,RecordType_Name];
     //Identified business opportunity Creation  - Start
     get categoryOptions(){

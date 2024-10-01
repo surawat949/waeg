@@ -41,6 +41,7 @@ public with sharing class VPMPlannedVisitsMapController_Test {
 
         List<Visits__c> vList = [SELECT Id, Name, Account__c FROM Visits__c WHERE Account__c IN:AccountId];
         VPMPlannedVisitsMapController.getVisitPlanning(StartDate, EndDate);
+        VPMPlannedVisitsMapController.getMedicalVisitsPlanning(StartDate, EndDate);
         Test.StopTest();
     }
 }

@@ -167,10 +167,6 @@ export default class TabVisitsTrainings extends NavigationMixin(LightningElement
         subscribe(this.CHANNEL_NAME, -1, this.refreshList).then(response => {
           this.subscription = response;
         });
-        onError(error => {
-          this.showToast('Server Error--->', error, 'error');
-        });
-
     }
     refreshList = ()=> {
       this.getTrainingRecordsFromApex();

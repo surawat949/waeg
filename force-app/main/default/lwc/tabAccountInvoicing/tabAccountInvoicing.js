@@ -22,11 +22,13 @@ import ACC_ACCOUNT_STATUS from '@salesforce/schema/Account.Account_Status__c';
 import ACC_PAYMENT_OUTSTANDING from '@salesforce/schema/Account.Outstanding_Amount__c';
 import ACC_PAYMENT_LAST_OUTSTANDING from '@salesforce/schema/Account.Last_Outstanding_update__c';
 import CREDIT_RISK from '@salesforce/schema/Account.Credit_Risk__c';
+import RECORDTYPE from '@salesforce/schema/Account.RecordType.Name';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 
 //get apex class starting here
 import getAccountFetchMap from '@salesforce/apex/TabAccountInvoiceController.getAccountForMap';
 //end
-
+const FIELDS = [RECORDTYPE];
 export default class TabAccountInvoicing extends LightningElement {
 
     @api receivedId;
@@ -36,6 +38,7 @@ export default class TabAccountInvoicing extends LightningElement {
     @track mapMarkers = [];
     @track marketTitle = 'Account';
     @track zoomLevel = 13;
+    isHealthInsuranceRC= true;
 
     ACC_BILL_FIELDS = [VAT_EU_NUM, ACC_CURRENNCY, ACC_BILL_ACC, ACC_BILL_ACC_NAME, ACC_BILL_ACC_PHONE, ACC_BILL_ACC_EMAIL];
     ACC_PAYMENT_FIELD = [ACC_PAYMENT_METHOD,ACC_SAP_CODE];
@@ -48,6 +51,21 @@ export default class TabAccountInvoicing extends LightningElement {
 
     connectedCallback() {
         //console.log('child connected call-' + this.receivedId);
+    }
+    @wire(getRecord, {
+        recordId: '$receivedId',
+        fields: FIELDS
+    })
+    wiredAccountRecord({data}) {
+        if (data) {  
+            let recordTypeName = data.fields['RecordType']['value']['fields']['Name'].value;  
+            if(recordTypeName == 'Health Insurance'){
+                this.isHealthInsuranceRC = false; 
+            }
+            else{
+                this.isHealthInsuranceRC = true; 
+            }      
+        }   
     }
 
     @wire(getAccountFetchMap, {recordId : '$receivedId'})

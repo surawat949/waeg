@@ -20,6 +20,7 @@ import Save from '@salesforce/label/c.Save_Button';
 import LocalKeyNet from '@salesforce/label/c.Local_Key_Consolidation_Net';
 import LocalKeyGross from '@salesforce/label/c.Local_Key_Consolidation_Gross';
 import lblClose from '@salesforce/label/c.tabLabelClose';
+import lblComment from '@salesforce/label/c.Comment';
 //Object
 import Account_obj from '@salesforce/schema/Account';
 //Fields
@@ -48,7 +49,7 @@ export default class TabStatisticsLocalConsolidationSales extends LightningEleme
     
     @track isModalOpen = false;
     @track defaultSubjectValue = 'Please add a unique Local Consolidation Key value (SFDC V2/Statistics/Net Sales tab)';
-    @track defaultInstructionValue = 'Please check additional details in Comments fields under Follow up section below.';
+    @track defaultInstructionValue = 'Please check additional details in Comments fields above section.';
     @track statusOption;
     @track value='New';
     @track defaultComment = '';
@@ -646,6 +647,7 @@ export default class TabStatisticsLocalConsolidationSales extends LightningEleme
         Save,
         LocalKeyNet,
         LocalKeyGross,
-        lblClose
+        lblClose,
+        lblComment
     };
 }
