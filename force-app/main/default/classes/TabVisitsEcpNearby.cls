@@ -112,7 +112,7 @@ public with sharing class TabVisitsEcpNearby {
                             +'Shop_Street__c, Shop_City__c, Shop_State__c, Shop_Postal_Code__c, Shop_country__c, Brand__c, '
                             +'Potential__c, Lenses_Net_Sales_Last_12Mo__c, ShippingLatitude, ShippingLongitude, '
                             +'Seiko_Network__c, First_Competitor_SOW__c, Last_Visit_date__c, Visit_Frequency_Status__c, Phone, Strategic_Value_Net_Sales__c, CurrencyIsoCode ' 
-                            +'FROM Account WHERE RecordTypeId IN: getRecId '
+                            +'FROM Account WHERE RecordTypeId IN: getRecId AND Account_Status__c != \'Closed\' ' +
                             +'AND Strategic_Value_Net_Sales__c>='+PotentialMin.longValue()+' AND Strategic_Value_Net_Sales__c<='+PotentialMax.longValue()+' AND '
                             +'DISTANCE(ShippingAddress, GEOLOCATION('+latitude+', '+longitude+'), \'km\')<'+distance +
                             critSegmentation + critFstCompetitor + critSvsNetwork + ' AND Id <>: accId ORDER BY Name ASC LIMIT 500';

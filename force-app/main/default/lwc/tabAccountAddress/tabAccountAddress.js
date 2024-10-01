@@ -67,8 +67,10 @@ import TabAccountAddressToCreateNewTaskModal from 'c/tabAccountAddressToCreateNe
 import TabAccountContactDeployment from 'c/tabAccountContactDeployment';
 import AI_Indicators from '@salesforce/resourceUrl/SFDC_V2_AI_Indicators';
 import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
+import RECORDTYPE from '@salesforce/schema/Account.RecordType.Name';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 /**======================================================================== **/
-
+const FIELDS = [RECORDTYPE];
 export default class TabAccountAddress extends NavigationMixin(LightningElement) {
     @track ContactRecord;
     @track isLoading = false;
@@ -97,7 +99,7 @@ export default class TabAccountAddress extends NavigationMixin(LightningElement)
     paymentsFlagMeaning;
     satisfactionFlagMeaning;
     deliveriesFlagMeaning;
-
+    isHealthInsuranceRC = true;
 
     @track columns = [
         {
@@ -147,6 +149,21 @@ export default class TabAccountAddress extends NavigationMixin(LightningElement)
     field4 = [Account_Shop_City, Account_Shop_Email_Address];
     field5 = [Account_Shop_State, Account_Shop_Website];
     field6 = [Account_Shop_Country, Account_Legacy_Number];
+    @wire(getRecord, {
+        recordId: '$receivedId',
+        fields: FIELDS
+    })
+    wiredAccountRecord({data}) {
+        if (data) {  
+            let recordTypeName = data.fields['RecordType']['value']['fields']['Name'].value;  
+            if(recordTypeName == 'Health Insurance'){
+                this.isHealthInsuranceRC = false; 
+            }
+            else{
+                this.isHealthInsuranceRC = true; 
+            }      
+        }   
+    }
 
     @wire(getRelatedContactAccountRec, {receivedId:'$receivedId'})
         contactRec({error, data}){
@@ -159,8 +176,16 @@ export default class TabAccountAddress extends NavigationMixin(LightningElement)
             }else if (error){
                 this.showToast('Error '+JSON.stringify(error));
             }
+    }
+    /*@wire(checkRecordType, {receivedId: '$receivedId'})
+    checkHealthRecordType({error, data}){
+        if(data){
+            this.isHealthInsuranceRC = true;  
         }
-    
+        else{
+            this.isHealthInsuranceRC = false; 
+        }
+    }*/
     @wire(getConCount, {receivedId: '$receivedId'})
         conCount({error, data}){
             if(data){

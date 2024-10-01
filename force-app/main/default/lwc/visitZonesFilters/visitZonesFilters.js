@@ -365,10 +365,12 @@ export default class VisitZonesFilters extends LightningElement {
             if(result && result.filteredAccounts){
                 this.fetchAccountData(result.filteredAccounts);
                 console.log('>>>result',result.filteredAccounts);
+                console.log('>>>12this.allowedtoDrag',this.allowedtoDrag);
+                this.allowedtoDrag = true;
                 if (result.prospectCount >= 20) {
-                        console.log('>>>this.allowedtoDrag',this.allowedtoDrag);
+                        console.log('>>>1this.allowedtoDrag',this.allowedtoDrag);
                         this.allowedtoDrag = false;
-                        console.log('>>>this.allowedtoDrag',this.allowedtoDrag);
+                        console.log('>>>3this.allowedtoDrag',this.allowedtoDrag);
                 }
             }else{
                  this.isLoading = false;
@@ -471,12 +473,10 @@ export default class VisitZonesFilters extends LightningElement {
 
     handleDragStart(event) {
         const target = event.target;
-
         // Log all data attributes for debugging
-        console.log('Data attributes:', target.dataset);
         const lensesNetSales = target.dataset.lensesNetSalesLast12mo;
-        if(!this.allowedtoDrag && (lensesNetSales <= 0 || lensesNetSales == null)){
-            event.preventDefault();
+        console.log('>>>>',lensesNetSales);
+        if(!this.allowedtoDrag && (lensesNetSales <= 0 || lensesNetSales == null)){            event.preventDefault();
             this.openProspectLimitWarning();
             return;
         }

@@ -4,6 +4,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import Id from '@salesforce/user/Id';
 import RoleName from '@salesforce/schema/User.Sales_Role__c';
 import ProfileName from '@salesforce/schema/User.Profile.Name';
+import ProfileId from '@salesforce/schema/User.Profile.Id';
 //labels
 import potentialTab from '@salesforce/label/c.PotentialTab';
 import netSales from '@salesforce/label/c.Net_Sales';
@@ -22,12 +23,13 @@ export default class TabStatistics extends LightningElement {
     showAllTab=false;
     userRoleName;
     userProfileName;
+    userProfileId;
     showSalesChannelTab= false;
     constructor() {
         super();
         // record Id not generated yet here
     }
-    @wire(getRecord, { recordId: Id, fields: [ RoleName, ProfileName] })
+    @wire(getRecord, { recordId: Id, fields: [ RoleName, ProfileName, ProfileId] })
     userDetails({ error, data }) {
         if (error) {
             this.error = error;
@@ -39,8 +41,12 @@ export default class TabStatistics extends LightningElement {
             }
             if (data.fields.Profile.value != null) {
                 this.userProfileName = data.fields.Profile.value.fields.Name.value;
+                this.userProfileId = data.fields.Profile.value.fields.Id.value;
             }
-           
+            //Profile Id is hardcoded as it is same as production.
+            if((this.userRoleName == 'KAM' && this.userProfileName == 'SALES & MARKETING') || this.userProfileName == 'SFDC LOCAL ADMIN' || this.userProfileId == '00eb0000000lainAAA'){
+                this.showSalesChannelTab=true;
+            } 
         }
     }
     custLabel = {
@@ -59,11 +65,7 @@ export default class TabStatistics extends LightningElement {
             this.showToast('Error', 'Error',error);
         }
     }
-    connectedCallback() { 
-        if((this.userRoleName == 'KAM' && this.userProfileName == 'SALES & MARKETING') || this.userProfileName == 'SFDC LOCAL ADMIN' || this.userProfileName == 'System Administrator'){
-            this.showSalesChannelTab=true;
-        }         
-        //console.log('parent connected callback call' + this.recordId);        
+    connectedCallback() {           
     }
 
     renderedCallback(){

@@ -109,16 +109,6 @@
             </div>
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size_1-of-1">
-                    <aura:if isTrue="{!v.companyName=='HLSH'}">
-                        <lightning:select disabled="{!v.isdisabled}"
-                                label="{!v.translations.Visits__c_HLSH_Visit_Type__c}"
-                                required="true" aura:id="field"
-                                value="{!v.visit.HLSH_Visit_Type__c}" >
-                            <aura:iteration items="{!v.translations.picklists.Visits__c_HLSH_Visit_Type__c}" var="option">
-                                <option value="{!option.value}" text="{!option.label}"></option>
-                            </aura:iteration>
-                        </lightning:select>
-                    <aura:set attribute="else">
                         <lightning:select disabled="{!v.isdisabled}"
                                 label="{!v.translations.Visits__c_Visit_Type__c}"
                                 required="true" aura:id="field"
@@ -127,8 +117,6 @@
                                 <option value="{!option.value}" text="{!option.label}"></option>
                             </aura:iteration>
                         </lightning:select>
-                    </aura:set>
-                    </aura:if>
                     <lightning:input disabled="{!v.isdisabled}"
                     label="{!v.translations.Visits__c_Visited_but_not_seen__c}"
                     checked="{!v.visit.Visited_but_not_seen__c}"

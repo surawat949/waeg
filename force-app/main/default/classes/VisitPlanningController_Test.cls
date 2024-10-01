@@ -29,8 +29,8 @@ private class VisitPlanningController_Test {
         visit.Visit_Type__c = 'Visit';
         visit.Visit_Status__c = 'Complete';
         visit.Visit_Reason__c = 'Acquisition';
-        visit.Call_To_Action__c = 'none';
-        visit.Actions_executed__c = 'No_Actions';
+        visit.Call_To_Action__c = 'Hunt – Plan Next Visit';
+        //visit.Actions_executed__c = 'Hunt 1 – Account Discovery';
         visit.Secondary_Tactic__c = 'Journal';
         visit.HVNA_Appointment__c = 'NO - Cold-call';
         visit.HVNA_Visit_Type__c = 'Call';

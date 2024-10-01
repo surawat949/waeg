@@ -210,7 +210,7 @@ public with sharing class TrainingCertificateController {
                 }
 
                 Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-                List<OrgWideEmailAddress> orgWideEmail = [SELECT Id, Address, DisplayName, IsAllowAllProfiles, Purpose FROM OrgWideEmailAddress WHERE Address = 'do_not_reply@seikovision.com'];
+                List<OrgWideEmailAddress> orgWideEmail = [SELECT Id, Address, DisplayName, IsAllowAllProfiles, Purpose FROM OrgWideEmailAddress WHERE Address = 'salesforce@hoya.eu'];
                 
                 mail.setOrgWideEmailAddressId(orgWideEmail[0].Id);
                 mail.setUseSignature(false);

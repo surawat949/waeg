@@ -1,0 +1,10 @@
+.css{
+    background-color: aliceblue;
+}
+.slds-form-element_readonly {
+    max-width: 14rem !important; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #d8dde6; 
+}

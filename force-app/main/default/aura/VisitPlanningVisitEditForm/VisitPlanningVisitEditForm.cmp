@@ -114,7 +114,7 @@
                         <aura:if isTrue="{!v.isHVNA==false}">
                             <!-- EMEA + APAC-->
                             <div class="slds-grid">
-                                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Visit_Type__c"/></div>
+                                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Visit_Type__c" aura:id="field" required="true"/></div>
                                 <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Visit_Status__c" aura:id="vstatus"/></div>
                             </div>
                             <div class="slds-form_horizontal slds-form slds-grid slds-wrap">
@@ -122,25 +122,15 @@
                                 <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Visited_but_not_seen__c"/></div>
                             </div>
                             <div class="slds-grid">
-                                <aura:if isTrue="{!v.companyName=='SOC' || v.companyName=='HLSH'|| v.companyName=='HLSI' || v.companyName=='HAPL' || v.companyName=='HOLK' || v.companyName=='HLHK' || v.companyName=='HOLM' || v.companyName=='ILENS' || v.companyName=='THAI' || v.companyName=='HLPH' || v.companyName=='HLID' || v.companyName=='HOTA' || v.companyName=='HLIN'}">
-                                    <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Visit_Reason_APAC__c"/></div>
-                                    <aura:set attribute="else">
-                                        <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Visit_Reason__c"/></div>
-                                    </aura:set>
-                                </aura:if>
+                                <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Visit_Reason__c" aura:id="field" required="true"/></div>
                                 <div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Call_To_Action__c"/></div>
                             </div>
-                            <aura:if isTrue="{!or(v.companyName=='SOES' , v.companyName=='HLIB')}">
-                                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_Objective_follow_up_notes__c"/></div>
-							 </aura:if>
                             <div class="slds-grid">
                                 <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Visit_Notes__c"/></div>
                             </div> 
-                          
-
-                              <div class="slds-grid">
-                                        <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Visit_Objective_follow_up_notes__c"/></div>
-                                    </div>
+                            <div class="slds-grid">
+                                <div class="slds-col slds-size_1-of-1"> <lightning:inputField fieldName="Visit_Objective_follow_up_notes__c"/></div>
+                            </div>
                             <div class="slds-grid">
                                 <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Call_To_Action_Notes__c" /></div>
                             </div>
@@ -148,14 +138,8 @@
                                 <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Actions_executed__c"/></div>
                             </div>
                             <div class="slds-grid">
-                                <!-- div class="slds-col slds-size_1-of-2"><lightning:inputField fieldName="Campaign__c" value="{!v.visit.Campaign__c}" onchange="{!c.handleCampaignChange}"/></div -->
                                 <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Opportunity__c" value="{!v.visit.Opportunity__c}" onchange="{!c.handleOpportunityChange}"/></div>
                             </div>
-                            <!--
-                            <div class="slds-grid">
-                                <div class="slds-col slds-size_1-of-1"><lightning:inputField fieldName="Assigned_to__c" value="{!v.visit.Assigned_to__c}"/></div>
-                            </div>
-                        -->
                         </aura:if>
                         <!-- Account__c, assigned_to__c needs to be here for new visit, cannot save otherwise, don't need to be display-->
                         <aura:if isTrue="{!empty(v.visit.Id)}">
@@ -165,7 +149,7 @@
                             </div>
                         </aura:if>
                     </lightning:recordEditForm>
-                    isHVNA={!v.isHVNA}
+
                     <div class="slds-grid">
                         <div class="slds-col slds-size_1-of-1">
                             <!-- Opportunity Form -->
@@ -232,9 +216,7 @@
             
             </div>
         </section>
-        
-        
-        
+
         <div class="slds-backdrop slds-backdrop_open"></div>
     </div>
 </aura:component>

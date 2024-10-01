@@ -64,6 +64,7 @@ import lblErrorSubject from '@salesforce/label/c.SFDC_V_2_AccountMembership_Subj
 import lblAccount from '@salesforce/label/c.tabTaskModalAccContact';
 import lblAccountError from '@salesforce/label/c.SFDC_V_2_AccountMembership_RelateErrBody';
 import getChatterUserDetail from '@salesforce/apex/tabChatterProfileUserDetail.getUserDetail';
+import lblComment from '@salesforce/label/c.Comment';
 
 // Fields to retrieve
 const FIELDS =  [Account_First_Local_Name,Account_Second_Local_Name];
@@ -128,7 +129,7 @@ export default class TabStatisticsPotential extends LightningElement {
         HSLensGrossSales,
         HSLensNetSales,
         lblErrorAssignTo, lblErrorSubject,
-        lblAccount, lblAccountError
+        lblAccount, lblAccountError, lblComment
     }
     constructor() {
         super();

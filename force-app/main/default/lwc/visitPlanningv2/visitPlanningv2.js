@@ -27,15 +27,10 @@ import Name from '@salesforce/label/c.Name';
 import ZIP from '@salesforce/label/c.ZIP';
 import city from '@salesforce/label/c.city';
 import State from '@salesforce/label/c.State';
-import Last_Visit_S_D from '@salesforce/label/c.Last_Visit_S_D';
-import Total_visits_achieved from '@salesforce/label/c.Total_visits_achieved_New';
 import Tacticom from '@salesforce/label/c.Tacticom';
+import Total_visits_achieved from '@salesforce/label/c.Total_visits_achieved_New';
 import AccountVisitTabSegmentation from '@salesforce/label/c.AccountVisitTabSegmentation';
-import VisionaryAlliance from '@salesforce/label/c.VisionaryAlliance';
 import HVC_Loyalty_Program from '@salesforce/label/c.HVC_Program';
-import Miyo_Smart_AuthorizeDealer from '@salesforce/label/c.Miyo_Smart_AuthorizeDealer';
-import Lens_Net_Sales_L12Mo from '@salesforce/label/c.Lens_Net_Sales_L12Mo';
-import AccountShareofWallet3Mo from '@salesforce/label/c.Share_of_wallet_3Mo';
 import Local_competitor from '@salesforce/label/c.Local_competitor';
 import page from '@salesforce/label/c.Page';
 import of from '@salesforce/label/c.of';
@@ -44,7 +39,14 @@ import Select_Campaign from '@salesforce/label/c.Select_Campaign';
 import Exclude_Presented_Campaigns from '@salesforce/label/c.Exclude_Presented_Campaigns';
 import Campaign_Priority_Only from '@salesforce/label/c.Campaign_Priority_Only';
 import Select_List_View from '@salesforce/label/c.Select_List_View';
-import Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY from '@salesforce/label/c.Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY';
+import Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY from '@salesforce/label/c.Sales_3Mo_L3Mo_vs_LFY';
+import Street from '@salesforce/label/c.SFDC_V2_MVA_Activation_Street';
+import x2nd_Competitor from '@salesforce/label/c.X2nd_Competitor';
+import Next_Visit from '@salesforce/label/c.Next_Visit';
+import Miyo_Smart_AuthorizeDealer from '@salesforce/label/c.MiyoSmart_Dealer';
+import AccountShareofWallet3Mo from '@salesforce/label/c.Share_of_wallet_L3Mo';
+import Lens_Net_Sales_L12Mo from '@salesforce/label/c.Lens_Sales_L12Mo';
+import Last_Visit_S_D from '@salesforce/label/c.Last_Visit';
 import lblDistance from '@salesforce/label/c.SFDC_V2_MVC_Visits_ContactNearby_Distance';
 import Show_Calender from '@salesforce/label/c.Show_Calender';
 import Hide_Calender from '@salesforce/label/c.Hide_Calender';
@@ -68,7 +70,6 @@ import AddExtraActivity from '@salesforce/label/c.AddExtraActivity';
 import label_save from '@salesforce/label/c.tabLabelSave';
 import cancel from '@salesforce/label/c.ButtonCancel';
 import schedule from '@salesforce/label/c.Schedule';
-import accountStatus from '@salesforce/label/c.Account_Status';
 import state from '@salesforce/label/c.SFDC_V2_MVA_Activation_State';
 import QuickFilterLabel from '@salesforce/label/c.QuickFilter';
 import QuickFilterHelpText from '@salesforce/label/c.QuickFilterHelpText';
@@ -123,13 +124,13 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     @track secondComponentClass = 'slds-size--1-of-2';
 
     custLabel ={
-        QuickFilterHelpText,QuickFilterLabel,listView,location,lifeCycle,campaigns,accountList,accountMap,campaignOverview,plannedVisitsMap,Select_List_View,lblDistance,
+        Total_visits_achieved,Street,x2nd_Competitor,Next_Visit,QuickFilterHelpText,QuickFilterLabel,listView,location,lifeCycle,campaigns,accountList,accountMap,campaignOverview,plannedVisitsMap,Select_List_View,lblDistance,
         removeFilters,page,of,Name,Select_Campaign,Exclude_Presented_Campaigns,Campaign_Priority_Only,lblDisplay,lblHideDisplay,
-        ZIP,city,State,Last_Visit_S_D,Total_visits_achieved,Tacticom,AccountVisitTabSegmentation,VisionaryAlliance,HVC_Loyalty_Program,
+        ZIP,city,State,Last_Visit_S_D,Tacticom,AccountVisitTabSegmentation,HVC_Loyalty_Program,
         Show_Calender,Hide_Calender,Show_Filters,Hide_Filters,Account_has_Visit_planned_in_next_fortnight,Visit_not_planned_in_next_fortnight,
         Miyo_Smart_AuthorizeDealer,Lens_Net_Sales_L12Mo,AccountShareofWallet3Mo,Local_competitor,Customer_Review_Stage,
         Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY,Hoya_Account_ID,Accounts,label_save,schedule,cancel,AddExtraActivity,
-        ExtraActivityPopup,Calender_Details,AssignedTo,Start_Date,End_Date,e_status,IsAllDayEvent,IsPrivate,Subject,Type,accountStatus,state
+        ExtraActivityPopup,Calender_Details,AssignedTo,Start_Date,End_Date,e_status,IsAllDayEvent,IsPrivate,Subject,Type,state
     }
 
     initialisedCalendar = false;
@@ -151,7 +152,7 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
     _defaultfilterCriteria = {'$NotClinics':'Not Clinics'};
     filterCriteria =  {...this._defaultfilterCriteria};
     picklistOptions = [{'TACTICOM_SOF__c':'Account'},{'Seiko_Network__c':'Account'},{'Stage__c':'Account_Life_Cycle__c'}];
-
+    visitrecordTypeId;
     @wire(getRecord, { recordId: userId, fields: [userName] })
     userDetails({ error, data }) {
         if (error) {
@@ -163,6 +164,7 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
             }
         }
     }
+
     @wire(getExtraActivityRecType)
     getRecTypeId({data,error}){
         if(data){
@@ -397,7 +399,9 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
         });
     }    
     handleRowAction(event) {
+        console.log('handleRowAction ev'+event);
         const row = event.currentTarget.dataset.recordId;
+        console.log('handleRowAction'+row);
         this.navigateToAccountPage(row);
         //this.selectedListView = this.listViewName;
     }
@@ -500,6 +504,7 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
             return {
                 ...account,
                 Last_Visit_date__c: formattedLastVisitDate,
+                recommendation : this.getRecommendation(account),
                 FormattedLenses_Net_Sales_Last_12Mo: formattedLnetSales,
                 formattedLastVisitDateForMap:formattedLastVisitDateForMap,
                 recordUrl: `/lightning/r/Account/${account.Id}/view`
@@ -512,6 +517,63 @@ export default class VisitPlanningv2 extends NavigationMixin(LightningElement) {
         this.displayOnMap();
         this.isLoading = false;
     }
+
+    getRecommendation(acc){
+        var recommendation = 'NO VISIT ZONE';
+        console.log('accId'+acc.Id);
+        if(acc.TACTICOM_SOF__c){
+            if(acc.Total_Visits_Planned__c){
+                if(acc.Lenses_Net_Sales_Last_12Mo__c){
+                    if(acc.Last_Visit_date__c){
+                        const lastVisit = new Date(acc.Last_Visit_date__c);
+                        const today = new Date();
+                        const timeDiff = today - lastVisit; 
+                        console.log('timeDiff'+timeDiff);
+                        const daysSinceLastVisit = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Convert to days
+                        console.log('daysSinceLastVisit'+daysSinceLastVisit);
+                        const visitsPlanned = acc.Total_Visits_Planned__c;
+                        if (isNaN(visitsPlanned) || visitsPlanned <= 0) {
+                            visitsPlanned = 0;
+                        }
+                        const threshold = 365 / visitsPlanned;
+                        console.log('threshold'+threshold);
+                        console.log('final calculation'+(daysSinceLastVisit + 7) >= threshold);
+                        if((daysSinceLastVisit + 7) >= threshold){
+                             recommendation = 'VISIT NOW';
+                        }else{
+                             recommendation = 'VISIT LATER';
+                        }
+                         console.log('recommentation first'+recommendation);
+                    }else{
+                        recommendation = 'VISIT NOW';
+                        console.log('recommentation second'+recommendation);
+                    }
+                }else{
+                    recommendation = 'VISIT NOW';
+                   let totalVistsAchievedCount = (acc.Visits_performed__c ? acc.Visits_performed__c : 0) + (acc.Digital_Visits_Performed__c ? acc.Digital_Visits_Performed__c : 0);
+                    if(acc.Last_Visit_date__c){
+                        if(acc.Total_Visits_Planned__c == 1){
+                            if(totalVistsAchievedCount >= 1){
+                                recommendation = 'PLANNED VISIT ACHIEVED';
+                            }
+                        }else if((totalVistsAchievedCount - acc.Total_Visits_Planned__c)>= 1){
+                            recommendation = 'ALREADY OVER-VISITED';
+                        }else if((totalVistsAchievedCount - acc.Total_Visits_Planned__c) == 0){
+                            recommendation = 'PLANNED VISITS ACHIEVED';
+                        }
+                    }
+                    console.log('totalVistsAchievedCount'+totalVistsAchievedCount);
+                }
+            }else{
+                recommendation = 'NO VISITS PLANNED';
+                console.log('recommentation four'+recommendation);
+            }
+        }
+        console.log('recommentation last'+recommendation);
+        return recommendation;
+
+    }
+
 
     toggleFilterVisibility() {
         this.showFilters = !this.showFilters; // Toggle filter visibility

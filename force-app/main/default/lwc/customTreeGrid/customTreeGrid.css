@@ -1,0 +1,89 @@
+.custom-tree-grid {
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+}
+.fixed-header-container {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    border-bottom: 1px solid #ddd;
+}
+
+.sticky-column {
+    position: sticky;
+    left: 40px;
+    z-index: 5;
+    background-color: #f5f5f5;
+}
+.sticky-first-column{
+    position: sticky;
+    width:40px;
+    left: 0;
+    z-index: 10; 
+    background-color: #f5f5f5;
+ }
+
+ th.sticky-first-column {
+    position: sticky;
+    left: 0;
+    top: 0; /* If needed */
+    z-index: 80; /* Higher than other columns */
+}
+
+th.sticky-column {
+    position: sticky;
+    top: 0;
+    z-index: 50; /* Ensure lower z-index compared to first column */
+}
+
+ tr.accheadersection .sticky-first-column {
+    position: sticky;
+    left: 0;
+    z-index: 50;
+}
+
+ .sticky-header-column{
+    position: sticky;
+    width:40px;
+    z-index: 5;
+    background-color: #f5f5f5;
+ }
+.slds-table {
+    width: 100%;
+}
+
+.slds-table th, .slds-table td {
+    padding: 0.5rem;
+}
+
+.slds-hint-parent {
+    background-color: #f4f6f9;
+}
+
+    .contacts-container {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .contacts-table {
+        width: 100%;
+    }
+
+    .childsection{
+        background-color: azure;
+    }
+
+    .draggable-row,.tableheader{
+        cursor: pointer;
+    }
+
+    .custom-table th, .custom-table td {
+    border: 1px solid #ddd; /* Define border style */
+    padding: 8px; /* Add padding inside cells */
+}
+
+.colormatch{
+    border: none;
+    color: #0B5CAB;
+    background-color: #f5f5f5;
+}

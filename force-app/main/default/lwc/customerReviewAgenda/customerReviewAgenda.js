@@ -1,18 +1,12 @@
-import { LightningElement ,api, wire} from 'lwc';
+import { LightningElement ,api} from 'lwc';
 import { loadStyle,loadScript } from 'lightning/platformResourceLoader';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import FullCalendarJS from '@salesforce/resourceUrl/fullcalendar';
 import FullCalendarJS_5 from '@salesforce/resourceUrl/FullCalendar5';
 import TimeZone from '@salesforce/i18n/timeZone';
 import LangLocale from "@salesforce/i18n/lang";
 import firstDayOfWeek from '@salesforce/i18n/firstDayOfWeek';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import userId from '@salesforce/user/Id';
-import SALES_ROLE_FIELD from '@salesforce/schema/User.Sales_Role__c';
-import USER_NAME_FIELD from '@salesforce/schema/User.Name';
-import USER_COMPANYNAME_FIELD from '@salesforce/schema/User.CompanyName';
-import PROFILE_NAME_FIELD from '@salesforce/schema/User.Profile.Name';
-import PROFILE_ID_FIELD from '@salesforce/schema/User.ProfileId';
+import { getBackgroundColor } from "c/utility";
 
 //Custom Labels
 import Today from '@salesforce/label/c.Today';
@@ -22,20 +16,6 @@ import Day from '@salesforce/label/c.Day';
 //Apex Classes
 import getEvents from '@salesforce/apex/FullCalenderV2Controller.getAllRelatedEvents';
 import getTranslations from '@salesforce/apex/FullCalenderV2Controller.getTranslations';
-import getAccountId from '@salesforce/apex/FullCalenderV2Controller.getAccountId';
-import getSalesManagerList from '@salesforce/apex/CustomerReviewFilterHandler.getSalesManagerList';
-import getRepresentativeList from '@salesforce/apex/CustomerReviewFilterHandler.getRepresentativeList';
-import getASMManager from '@salesforce/apex/CustomerReviewFilterHandler.getASMManager';
-import getCompanies from '@salesforce/apex/CustomerReviewFilterHandler.getCompanies';
-
-//Custom Labels for Filters
-import Filter from '@salesforce/label/c.Filter';
-import Select_Company from '@salesforce/label/c.Select_Company';
-import Select_Sales_Manager from '@salesforce/label/c.Select_Sales_Manager';
-import Representative from '@salesforce/label/c.Representative';
-import Company from '@salesforce/label/c.Company';
-import Sales_Manager from '@salesforce/label/c.Sales_Manager';
-import Select_Representative from '@salesforce/label/c.Select_Representative';
 
 export default class CustomerReviewAgenda extends LightningElement {
     translations;
@@ -48,32 +28,10 @@ export default class CustomerReviewAgenda extends LightningElement {
     calendar;
     headerDate;
     currentUserId;
-    selectedCompany;
-    selectedSalesManagerId;
-    selectedRepresentativeId;
-    isSlideVisible = false;
-    isASM = false;
-    showDateFields = true;
-    companyOptions = [];
-    salesManagerOptions = [];
-    representativeOptions = [];
-    isRepresentativeDisabled = true;
-    isSalesManagerDisabled = true;
-    isRepresentativeReadonly = false;
-    isCompanyDisabled = true;
-    currentUserName;
-    currentUserRole;
     startDate;
     endDate;
     custLabel = {
-        Today,Month,Week,Day, Filter,Select_Company,Select_Sales_Manager,
-        Representative,Company,Sales_Manager,Select_Representative
-    }
-    toggleSlide() {
-        this.isSlideVisible = !this.isSlideVisible;
-    }
-    get buttonContainerClass() {
-        return this.isSlideVisible ? 'button-container slide-in' : 'button-container slide-out';
+        Today,Month,Week,Day
     }
 
     @api 
@@ -86,124 +44,12 @@ export default class CustomerReviewAgenda extends LightningElement {
         return this.currentUserId;
     }
 
-    @wire(getRecord, { recordId: userId, fields: [SALES_ROLE_FIELD, USER_NAME_FIELD, PROFILE_NAME_FIELD,USER_COMPANYNAME_FIELD,PROFILE_ID_FIELD] })
-    userData({ error, data }) {
-        if (data) {
-            const salesRole = getFieldValue(data, SALES_ROLE_FIELD);
-            const profileName = getFieldValue(data, PROFILE_NAME_FIELD);
-            const profileId = getFieldValue(data, PROFILE_ID_FIELD);
-            this.currentUserName = getFieldValue(data, USER_NAME_FIELD);
-            this.currentUserRole = salesRole;
-            // Logic based on user role and profile
-            if (profileName === 'SFDC LOCAL ADMIN') {
-                this.loadSalesManagerOptions();
-            } else if (profileId === '00eb0000000lainAAA') {
-                this.loadCompanyOptions();
-            } else if (salesRole === 'ASM' || salesRole === 'AMS' || salesRole === 'KAM') {
-                this.isASM = true;
-                this.setASMManager();
-            } else {
-                this.loadSalesManagerOptions();
-            }
-        } else if (error) {
-            console.error(error);
-        }
-    }
-
-    
-    setASMManager() {
-        getASMManager()
-            .then(manager => {
-                this.selectedSalesManagerId = manager.Id;
-                this.salesManagerOptions = [{ label: manager.Name, value: manager.Id }];
-                this.isSalesManagerDisabled = true;
-                this.isRepresentativeDisabled = false;
-                this.isRepresentativeReadonly = true;
-                this.loadRepresentativeOptionsForASM();
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-
-    loadCompanyOptions() {
-        getCompanies()
-            .then(data => {
-                this.companyOptions = data.map(company => ({
-                    label: company,
-                    value: company
-                }));
-                this.isCompanyDisabled = false;
-                this.isSalesManagerDisabled = true; // Ensure Sales Manager is disabled initially for Admin
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-    
-    loadSalesManagerOptions() {
-        getSalesManagerList({ companyName: this.selectedCompany })
-        .then(data => {
-            this.isSalesManagerDisabled = false;
-            this.salesManagerOptions = data.map(user => ({
-                label: user.Name,
-                value: user.Id
-            }));
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
-
     getStartOfWeek(date) {
         const day = date.getDay();
         const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
         return new Date(date.setDate(diff));
     }
 
-    handleCompanyChange(event) {
-        this.selectedCompany = event.detail.value;
-        this.isSalesManagerDisabled = false;
-        this.isRepresentativeDisabled = true; // Disable Representative dropdown
-        this.representativeOptions = []; // Clear Representative dropdown options
-        this.loadSalesManagerOptions();
-        this.currentUserId = null;
-        this.updateCalenderEvents();
-    }
-    
-    handleSalesManagerChange(event) {
-        this.selectedSalesManagerId = event.detail.value;
-        this.currentUserId = null;
-        this.isRepresentativeDisabled = false;
-        this.loadRepresentativeOptions();
-        this.updateCalenderEvents();
-    }
-
-    handleRepresentativeChange(event) {
-        this.showDateFields = true;
-        this.selectedRepresentativeId = event.detail.value;
-        this.isRepresentativeDisabled = false;
-        this.currentUserId = this.selectedRepresentativeId;
-        this.updateCalenderEvents();
-    }
-    loadRepresentativeOptions() {
-        getRepresentativeList({ selectedManagerId: this.selectedSalesManagerId})
-            .then(data => {
-                this.representativeOptions = data
-                    .map(user => ({
-                        label: user.Name,
-                        value: user.Id
-                    }))
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-    
-    loadRepresentativeOptionsForASM() {
-        // For ASM, the representative should only be the ASM themselves
-        this.representativeOptions = [{ label: this.currentUserName, value: userId }];
-    }
     connectedCallback(){
         loadScript(this, FullCalendarJS + '/moment.min.js')
          .then(()=>{
@@ -343,13 +189,13 @@ export default class CustomerReviewAgenda extends LightningElement {
     updateCalenderEvents(){
         this.isLoading = true;
         this.allEvents = [];
-        if(this.calendar){
+         if(this.calendar){
             var view = this.calendar.view;
             this.calendar.removeAllEvents();
             this.calendar.addEventSource(this.allEvents);
             this.calendar.render();
-            this.getAllEvents(view.activeStart,view.activeEnd);  
-        }
+            this.getAllEvents(view.activeStart,view.activeEnd); 
+         } 
     }
     convertDateToISOWithZeroTime(date,isEnd) {
         const d = new Date(date); 
@@ -384,6 +230,7 @@ export default class CustomerReviewAgenda extends LightningElement {
                     var backgroundColor;
                     var editable;
                     if(Events[event].eventType == 'UserEvent'){
+                        var leadVisitEvent = Events[event].recordTypeName && Events[event].recordTypeName == 'Lead_Visits' ? true : false;
                         this.timezone = TimeZone;
                         this.locale = locale;                   
                         allDay = Events[event].isAllDayEvent;
@@ -398,6 +245,9 @@ export default class CustomerReviewAgenda extends LightningElement {
                         else{
                             title = "Event";
                         }
+                        if(leadVisitEvent){
+                            title = 'Lead Visit Event ';
+                        }
                         if(Events[event].isExtraEvent){
                             if(Events[event].visitType ){
                                 title += " " + Events[event].visitType;
@@ -408,7 +258,11 @@ export default class CustomerReviewAgenda extends LightningElement {
                         }
                     
                         sfid = Events[event].eventId;                    
-                        backgroundColor = '#FF9411';
+                        if(leadVisitEvent){
+                            backgroundColor = '#5867e8';
+                        }else{
+                            backgroundColor = '#FF9411';
+                        }
                         editable=false;
                         this.allEvents.push({
                             title:title,
@@ -422,89 +276,95 @@ export default class CustomerReviewAgenda extends LightningElement {
                         });
                     }
                     else{
-                        if(Events[event].accountName != null)
-                        {
-                            title = Events[event].accountName;
-                            if(Events[event].accountShopStreet != null)
-                            {
-                                title  = title + "\n" + Events[event].accountShopStreet;
+                    var eyeDoctorEvent = Events[event].recordTypeName && Events[event].recordTypeName == 'Eye_Doctor_Visit' ? true : false;
+                    if(eyeDoctorEvent){
+                        if(Events[event].contactName){
+                            title  = Events[event].contactName;
+                        }
+                        if(Events[event].visitReason != null){
+                            try {
+                                var visitReason = this.translations.picklists.Visits__c_Visit_Reason__c.find(function(vr) {
+                                return vr.value ===  Events[event].Visit_Reason__c;});
+                                title = title + "\n" + visitReason.label;
                             }
-
-                            if(Events[event].accountShopCity != null)
+                            catch (e)
                             {
-                                title  = title + "," + Events[event].accountShopCity;
-                            }
-
-                            if(Events[event].accountShopZipcode != null)
-                            {
-                                title  = title + "," + Events[event].accountShopZipcode;
-                            }
-                        
-                            if(Events[event].accountShopstate != null)
-                            {
-                                title  = title + "," + Events[event].accountShopstate;
-                            }
-
-                            if(Events[event].visitReason != null)
-                            {
-                                try {
-                                    var visitReason = this.translations.picklists.Visits__c_Visit_Reason__c.find(function(vr) {
-                                    return vr.value ===  Events[event].Visit_Reason__c;});
-                                    title = title + "\n" + visitReason.label;
-                                }
-                                catch (e)
-                                {
                                 title = title + "\n" + Events[event].visitReason;
-                                }
-        
-                            }
-                            if(Events[event].hoyaAccountId != null)
-                            {
-                                title = title + "\n" + Events[event].hoyaAccountId;
-                            }
-                            if(Events[event].isPrivate){
-                                title = "Busy"
                             }
                         }
+                        if(Events[event].clinicName != null){
+                                title = title + "\n" + Events[event].clinicName;
+                        }
+                            if(Events[event].accountShopStreet != null)
+                        {
+                            title  = title + "\n" + Events[event].accountShopStreet;
+                        }
+
+                        if(Events[event].accountShopCity != null)
+                        {
+                            title  = title + "," + Events[event].accountShopCity;
+                        }
+
+                        if(Events[event].accountShopZipcode != null)
+                        {
+                            title  = title + "," + Events[event].accountShopZipcode;
+                        }
+                    
+                        if(Events[event].accountShopstate != null)
+                        {
+                            title  = title + "," + Events[event].accountShopstate;
+                        }
+                    }else if(Events[event].accountName != null){   
+                        title = Events[event].accountName;
+                        if(Events[event].accountShopStreet != null)
+                        {
+                            title  = title + "\n" + Events[event].accountShopStreet;
+                        }
+
+                        if(Events[event].accountShopCity != null)
+                        {
+                            title  = title + "," + Events[event].accountShopCity;
+                        }
+
+                        if(Events[event].accountShopZipcode != null)
+                        {
+                            title  = title + "," + Events[event].accountShopZipcode;
+                        }
+                       
+                        if(Events[event].accountShopstate != null)
+                        {
+                            title  = title + "," + Events[event].accountShopstate;
+                        }
+
+                        if(Events[event].visitReason != null)
+                        {
+                            try {
+                                var visitReason = this.translations.picklists.Visits__c_Visit_Reason__c.find(function(vr) {
+                                   return vr.value ===  Events[event].Visit_Reason__c;});
+                                title = title + "\n" + visitReason.label;
+                            }
+                            catch (e)
+                            {
+                              title = title + "\n" + Events[event].visitReason;
+                            }
+    
+                        }
+                        if(Events[event].hoyaAccountId != null)
+                        {
+                            title = title + "\n" + Events[event].hoyaAccountId;
+                        }
+
+                        if(Events[event].isPrivate){
+                            title = "Busy";
+                        }
+                    }
                         allDay =Events[event].isAllDayEvent;     
                         this.timezone = TimeZone;
                         this.locale = locale;
                         start = moment(Events[event].startTime).tz(this.timezone).format();
                         end = moment(Events[event].endTime).tz(this.timezone).format();                   
                         sfid = Events[event].eventId;
-                        if(Events[event].visitType=='Visit'){
-                            backgroundColor = {
-                                "Planned" : '#082841',
-                                "Prepared" : '#082841',
-                                "Complete" : '#999966',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }
-                        else if(Events[event].visitType=='Digital Visit'){
-                            backgroundColor = {
-                                "Planned" : '#2eb82e',
-                                "Prepared" : '#2eb82e',
-                                "Complete" : '#999966',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }
-                        else if(Events[event].visitType=='Call'){
-                            backgroundColor = {
-                                "Planned" : '#ff0066',
-                                "Prepared" : '#ff0066',
-                                "Complete" : '#999966',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }   
-                        else{
-                            backgroundColor = {
-                                "Planned" : '#bf8040',
-                                "Prepared" : '#bf8040',
-                                "Complete" : '#999966',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }                 
-                                        
+                        backgroundColor = getBackgroundColor(Events[event]);                                             
                         this.allEvents.push({
                             title:title,
                             allDay:allDay,

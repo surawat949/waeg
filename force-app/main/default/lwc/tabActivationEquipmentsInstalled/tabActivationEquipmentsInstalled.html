@@ -3,6 +3,8 @@
         <table class="slds-table slds-table_bordered " aria-label="visionaryAlliance">
             <tr data-id="header1"  class="row" style="background-color: #aacbff;">
                 <td><h3 class="slds-section__title">{CustLabel.Instruments_In_Shop}</h3></td>
+                <td><p align="right"><lightning-button label="New" variant="netural" onclick={navigateToNewPage}></lightning-button></p></td>
+
             </tr>
         </table><br>
           <lightning-datatable data={InstraucInShop} columns={columns} key-field="Id" hide-checkbox-column="true" show-row-number-column="true"></lightning-datatable>

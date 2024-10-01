@@ -1,29 +1,27 @@
 <template>
-    <div class="slds-grid slds-grid_vertical fullbgwhite">
+    <div class="slds-box fullbgwhite">
         <div class="filterSection slds-col flex-container">
-            <div class="slds-grid slds-gutters heightsize">
-                <div class="slds-col slds-size_11-of-12">
-                    <div class="button-container">
-                        <div class="slds-grid slds-gutters">
-                            <template if:true={companyOptions.length}>
-                                <div class="slds-form-element slds-form-element_horizontal slds-size_3-of-12 slds-col">
-                                    <label class="slds-form-element__label" for="company" style="max-width:100%">{custLabel.Company}</label>
-                                    <div class="slds-form-element__control">
-                                        <lightning-combobox name="company" options={companyOptions} placeholder={custLabel.Select_Company} onchange={handleCompanyChange} disabled={isCompanyDisabled}></lightning-combobox>
-                                    </div>
-                                </div>
-                            </template>
-                            <div class="slds-form-element slds-form-element_horizontal slds-size_3-of-12 slds-col">
-                                <label class="slds-form-element__label" for="salesManager" style="max-width:100%">{custLabel.Sales_Manager}</label>
-                                <div class="slds-form-element__control">
-                                    <lightning-combobox name="salesManager" options={salesManagerOptions} placeholder={custLabel.Select_Sales_Manager} onchange={handleSalesManagerChange} value={selectedSalesManagerId} disabled={isSalesManagerDisabled}></lightning-combobox>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_8-of-12">
+                    <div class="slds-grid slds-gutters">
+                        <template if:true={companyOptions.length}>
+                            <div class="slds-form-element slds-form-element_horizontal slds-size_4-of-12 slds-col">
+                                <label class="slds-form-element__label" for="company" style="max-width:100%; margin-right: -0.5rem;">{custLabel.Company}</label>
+                                <div class="slds-form-element__control" style="padding-left: 0; margin-left: 0;">
+                                    <lightning-combobox name="company" options={companyOptions} placeholder={custLabel.Select_Company} onchange={handleCompanyChange} disabled={isCompanyDisabled} value={selectedCompany}></lightning-combobox>
                                 </div>
                             </div>
-                            <div class="slds-form-element slds-form-element_horizontal slds-size_3-of-12 slds-col">
-                                <label class="slds-form-element__label" for="representative" style="max-width:100%">{custLabel.Representative}</label>
-                                <div class="slds-form-element__control">
-                                    <lightning-combobox name="representative" placeholder={custLabel.Select_Representative} options={representativeOptions}  disabled={isRepresentativeDisabled} value={selectedRepresentativeId} onchange={handleRepresentativeChange}></lightning-combobox>
-                                </div>
+                        </template>
+                        <div class="slds-form-element slds-form-element_horizontal slds-size_4-of-12 slds-col">
+                            <label class="slds-form-element__label" for="salesManager" style="max-width:100%; margin-right: -0.5rem;">{custLabel.Sales_Manager}</label>
+                            <div class="slds-form-element__control" style="padding-left: 0; margin-left: 0;">
+                                <lightning-combobox name="salesManager" options={salesManagerOptions} placeholder={custLabel.Select_Sales_Manager} onchange={handleSalesManagerChange} value={selectedSalesManagerId} disabled={isSalesManagerDisabled}></lightning-combobox>
+                            </div>
+                        </div>
+                        <div class="slds-form-element slds-form-element_horizontal slds-size_4-of-12 slds-col">
+                            <label class="slds-form-element__label" for="representative" style="max-width:100%; margin-right: -0.5rem;">{custLabel.Representative}</label>
+                            <div class="slds-form-element__control"  style="padding-left: 0; margin-left: 0;">
+                                <lightning-combobox name="representative" placeholder={custLabel.Select_Representative} options={representativeOptions}  disabled={isRepresentativeDisabled} value={selectedRepresentativeId} onchange={handleRepresentativeChange}></lightning-combobox>
                             </div>
                         </div>
                     </div>
@@ -32,20 +30,33 @@
         </div>
     </div>
     <lightning-tabset variant="scoped">
-        <lightning-tab label="Activity">
-            <c-life-cycle-reporting></c-life-cycle-reporting>
+        <lightning-tab label="Activity" value="activityTab" onactive={handleActiveTab}>
+            <template lwc:if={activityTab}>
+                <c-life-cycle-reporting  representative-id={selectedRepresentativeId} consolidation-disabled={isTeamPerformanceDisabled}></c-life-cycle-reporting>
+            </template>
         </lightning-tab>
-        <lightning-tab label="Agenda">
-            <c-customer-review-Agenda representative-id={selectedRepresentativeId}></c-customer-review-Agenda>
+        <lightning-tab label="Visit Zones" value="visitzonesTab" onactive={handleActiveTab}>
+            <template lwc:if={visitzonesTab}>
+                <c-customer-review-visit-zones representative-id={selectedRepresentativeId}></c-customer-review-visit-zones>
+            </template>
         </lightning-tab>
-        <lightning-tab label="Weekly Visits">
-            <c-customer-review-weekly-visits representative-id={selectedRepresentativeId}></c-customer-review-weekly-visits>
+        <lightning-tab label="Weekly Visits" value="weeklyvisitsTab" onactive={handleActiveTab}>
+            <template lwc:if={weeklyvisitsTab}>
+                <c-customer-review-weekly-visits representative-id={selectedRepresentativeId}></c-customer-review-weekly-visits>
+            </template>
         </lightning-tab>
-        <lightning-tab label="Visit Zones">
-            <c-customer-review-visit-zones representative-id={selectedRepresentativeId}></c-customer-review-visit-zones>
+        <lightning-tab label="Agenda" value="agendaTab" onactive={handleActiveTab}>
+            <template lwc:if={agendaTab}>
+                <c-customer-review-Agenda representative-id={selectedRepresentativeId}></c-customer-review-Agenda>
+            </template>
         </lightning-tab>
-        <lightning-tab label="Performance">
-            <c-customer-review-performance></c-customer-review-performance>
+        <lightning-tab label="Scoring Card" value="scoringCardTab" onactive={handleActiveTab}>
+            <c-customer-review-scoring-card representative-obj={selectedRepresentativeUserObject} consolidation-disabled={isTeamPerformanceDisabled}></c-customer-review-scoring-card>
+        </lightning-tab>
+        <lightning-tab label="Performance" value="performanceTab" onactive={handleActiveTab}>
+            <template lwc:if={performanceTab}>
+                <c-customer-review-performance representative-obj={selectedRepresentativeUserObject} consolidation-disabled={isTeamPerformanceDisabled}></c-customer-review-performance>
+            </template>
         </lightning-tab>
     </lightning-tabset>
 </template>

@@ -1,4 +1,4 @@
-import { LightningElement, api,track } from 'lwc';
+import { LightningElement, api,track,wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation'
 
 import On_boarding_Customer from '@salesforce/label/c.On_boarding_Customer';
@@ -8,7 +8,8 @@ import Follow_up_rate_120 from '@salesforce/label/c.Follow_up_rate_120';
 import Issue from '@salesforce/label/c.Issue';
 import Missing_Strategic_Value from '@salesforce/label/c.Missing_Strategic_Value';
 import SOW_100_review_Strategic_Value from '@salesforce/label/c.SOW_100_review_Strategic_Value';
-
+import Retain_ReasonField from '@salesforce/schema/Account_Life_Cycle__c.Retain_Reason__c';
+import { getRecord , getFieldValue } from 'lightning/uiRecordApi';
 export default class LifeCycleReportingCard extends NavigationMixin(LightningElement) {
     @api stage
     @api record
@@ -35,6 +36,7 @@ export default class LifeCycleReportingCard extends NavigationMixin(LightningEle
     lensesNetSales = 0;
     addNew = false;
     banFlag = false;
+    retainReason;
 
     get isSameStage(){
         return this.stage === this.record.Stage__c
@@ -59,6 +61,7 @@ export default class LifeCycleReportingCard extends NavigationMixin(LightningEle
             this.isFollowUpRatemorethan120 = true;
         }
         if(this.record.Retain_Stage__c){
+            this.retainReason =  this.record.Retain_Reason__c;
             this.isAlert = true;
         }
         if(this.record.Account__r.Strategic_Value_Net_Sales__c == undefined || this.record.Account__r.Strategic_Value_Net_Sales__c == 0){

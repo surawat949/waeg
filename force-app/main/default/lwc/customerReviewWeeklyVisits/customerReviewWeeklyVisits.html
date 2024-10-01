@@ -1,40 +1,17 @@
 <template>
     <div class="slds-grid slds-grid_vertical maxheight">
-        <!--<div class="filterSection flex-container">
-            <div class="slds-grid heightsize">
-                <div class="slds-col slds-size_1-of-12">
-                    <button class="toggle-btn slds-button slds-button_outline-brand filterButton" onclick={toggleSlide}>{custLabel.Filter}</button>
-                </div>
-                <div class="slds-col slds-size_11-of-10">
-                    <div class={buttonContainerClass}>
-                        <div class="slds-grid slds-gutters">
-                            <template if:true={companyOptions.length}>
-                                <lightning-combobox class="slds-size_1-of-6 slds-col" name="company" label={custLabel.Company} options={companyOptions} placeholder={custLabel.Select_Company} onchange={handleCompanyChange} disabled={isCompanyDisabled}></lightning-combobox>
-                            </template>
-                            <lightning-combobox class="slds-size_1-of-6 slds-col" name="salesManager" label={custLabel.Sales_Manager} options={salesManagerOptions} placeholder={custLabel.Select_Sales_Manager} onchange={handleSalesManagerChange} value={selectedSalesManagerId} disabled={isSalesManagerDisabled}></lightning-combobox>
-                            <lightning-combobox class="slds-size_1-of-6 slds-col" name="representative" label={custLabel.Representative} options={representativeOptions} placeholder={custLabel.Select_Representative} disabled={isRepresentativeDisabled} value={selectedRepresentativeId} onchange={handleRepresentativeChange}></lightning-combobox>
-                            <template if:true={showLegendtoggle}>
-                                <button class="slds-button slds-size_1-of-6 slds-button_brand slds-col displayButton" onclick={toggleVisitView}>{visitViewButtonLabel}</button>
-                            </template>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>-->
         <div class="datePosition">
             <template if:true={showDateFields}>
                 <div class="slds-box slds-theme_default">
                     <div class="slds-grid slds-gutters">
-                        <div class="slds-col slds-size_3-of-12">
+                        <div class="slds-col slds-size_5-of-12">
                             <div class="slds-grid slds-gutters date-section">
-                                <lightning-input type="date" class="slds-col slds-size_1-of-3 keepMiddle" label={custLabel.Start_Date} value={startDate} disabled></lightning-input>
-                                <lightning-input type="date" class="slds-col slds-size_1-of-3 keepMiddle" label={custLabel.End_Date} value={endDate} disabled></lightning-input>
+                                <lightning-input type="date" class="slds-col slds-size_2-of-7 keepMiddle" label={custLabel.Start_Date} value={startDate} disabled></lightning-input>
+                                <lightning-input type="date" class="slds-col slds-size_2-of-7 keepMiddle" label={custLabel.End_Date} value={endDate} disabled></lightning-input>
                                 <button class="slds-button slds-button_brand dateControl" onclick={handlePreviousWeek}>&lt;</button>
-                                <button class="slds-button slds-button_brand dateControl" onclick={handleNextWeek}>&gt;</button>
+                                <button class="slds-button slds-button_brand dateControl" onclick={handleNextWeek}>&gt;</button>&nbsp;
+                                <button class="slds-button slds-button_brand dateControl" style="top: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" onclick={toggleVisitView}>{visitViewButtonLabel}</button>
                             </div>
-                        </div>
-                        <div class="slds-col slds-size_2-of-12" style="text-align:center;">
-                            <button class="slds-button slds-button_brand" style="top: 1rem;" onclick={toggleVisitView}>{visitViewButtonLabel}</button>
                         </div>
                         <div class="slds-col slds-size_6-of-12 centerAlign">
                             <template if:true={showVisitZone}>
@@ -94,7 +71,7 @@
                                                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
                                                                 style="fill:#000F2E;stroke: black;stroke-width:1.3px"></path>
                                                             </svg>
-                                                            {notSelected}
+                                                            No Visit Zone
                                                         </div>
                                                     </td>
                                                 </tr>

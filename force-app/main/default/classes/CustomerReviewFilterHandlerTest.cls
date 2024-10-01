@@ -35,7 +35,8 @@ public class CustomerReviewFilterHandlerTest {
             LanguageLocaleKey = 'en_US',
             Sales_Role__c = 'RSM',
             CompanyName = 'Test Company',
-            ManagerId = testNSM.Id
+            ManagerId = testNSM.Id,
+            User_Data_Access__c = 'HLBE'
         );
         insert testRSM;
 
@@ -102,12 +103,24 @@ public class CustomerReviewFilterHandlerTest {
     }
     
     @isTest
+    static void testGetSalesManagerListForRSM() {
+        User testUserRMS = [SELECT Id FROM User WHERE Username = 'testrsm@example.com' LIMIT 1];
+        System.runAs(testUserRMS) {
+            Test.startTest();
+            CustomerReviewFilterHandler.getRepresentativeList(testUserRMS.Id);
+            CustomerReviewFilterHandler.getCompanies();
+            Test.stopTest();
+        }
+    }
+    
+    @isTest
     static void testGetSalesManagerListForNSM() {
         User testUser = [SELECT Id FROM User WHERE Username = 'testnsm@example.com' LIMIT 1];
         User testUserRMS = [SELECT Id FROM User WHERE Username = 'testrsm@example.com' LIMIT 1];
         System.runAs(testUser) {
             Test.startTest();
             List<User> managerList = CustomerReviewFilterHandler.getSalesManagerList(null);
+            CustomerReviewFilterHandler.getRepresentativeList(testUserRMS.Id);
             Test.stopTest();
 
             System.assertNotEquals(0, managerList.size(), 'Manager list should not be empty');
@@ -128,6 +141,7 @@ public class CustomerReviewFilterHandlerTest {
     @isTest
     static void testGetASMManager() {
         User testASM = [SELECT Id FROM User WHERE Username = 'testasm@example.com' LIMIT 1];
+        User testRSM = [SELECT Id FROM User WHERE Username = 'testRSM@example.com' LIMIT 1];
         Test.startTest();
         User asmManager = CustomerReviewFilterHandler.getASMManager();
         Test.stopTest();

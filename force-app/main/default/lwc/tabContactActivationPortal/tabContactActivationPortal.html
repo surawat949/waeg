@@ -6,13 +6,22 @@
             </tr>
         </table><br>
         <div class="slds-grid slds-m-left_small">
-            <div class="slds-col slds-size_1-of-1">
+            <div class="slds-col slds-size_1-of-3">                
+                <lightning-record-form
+                    record-id={receivedId}
+                    object-api-name={Contact_Obj}
+                    fields={fields0}
+                    mode="view"
+                    columns="1"
+                ></lightning-record-form>
+            </div>
+            <div class="slds-col slds-size_2-of-3">
                 <lightning-record-form
                     record-id={receivedId}
                     object-api-name={Contact_Obj}
                     fields={fields1}
                     mode="readOnly"
-                    columns="3"
+                    columns="2"
                 ></lightning-record-form>
             </div>
         </div>

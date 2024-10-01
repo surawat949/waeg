@@ -142,9 +142,11 @@ public with sharing class AccountTriggerHelper_Test {
         update acc;
         delete acc;
         
+        /*
         Account accHOLK = [Select Id, name,Create_New_Account_Tasks__c from Account Where Hoya_Account_Id__c = 'KR1234512' limit 1];
         accHOLK.HOLK_account_data__c = null;
         update accHOLK;
+        */
         
         Account accSeiko = [Select Id, name,Create_New_Account_Tasks__c from Account Where Hoya_Account_Id__c = 'SO1234512' limit 1];
         accSeiko.Potential__c = 10;

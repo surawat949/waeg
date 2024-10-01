@@ -13,7 +13,8 @@ public with sharing class tabMVAVisitsClinicNearbyController {
                             Phone, Record_Type_Name__c, Brand__c, Segmentation_Net__c, Myo_Smart_AuthorizeDealer__c, Last_Visit_date__c, 
                             First_Competitor_global_name__c, First_Competitor_local_name__c, First_Competitor_SOW__c, RecordType.DeveloperName, Clinic_Name__c, 
                             (SELECT Id, Name FROM Contacts WHERE recordtypeid=:CONTACT_RT), 
-                            (SELECT Id, Contact.Name FROM AccountContactRelations WHERE contact.recordtypeId=:CONTACT_RT AND Account.RecordTypeId!=null) FROM Account WHERE Id=:recordId];
+                            (SELECT Id, Contact.Name FROM AccountContactRelations WHERE contact.recordtypeId=:CONTACT_RT AND Account.RecordTypeId!=null) FROM Account 
+                            WHERE Id=:recordId];
             result.add(acc);
 
             String accountId = acc.Id;
@@ -46,7 +47,7 @@ public with sharing class tabMVAVisitsClinicNearbyController {
                             'First_Competitor_global_name__c, First_Competitor_local_name__c, First_Competitor_SOW__c, RecordType.DeveloperName, Clinic_Name__c, ' +
                             '(SELECT Id, Name FROM Contacts WHERE recordtypeid=:CONTACT_RT), ' +
                             '(SELECT Id, Contact.Name FROM AccountContactRelations WHERE ' + 
-                            'contact.recordtypeId=:CONTACT_RT AND Account.RecordTypeId!=null) FROM Account WHERE Id <>: accountId AND ' +
+                            'contact.recordtypeId=:CONTACT_RT AND Account.RecordTypeId!=null) FROM Account WHERE Id <>: accountId AND Account_Status__c != \'Closed\' AND ' +
                             'DISTANCE(ShippingAddress, GEOLOCATION('+latitude+', '+longitude+'), \'km\')<'+distance + IsMyoSmart + ' ORDER BY CreatedDate DESC LIMIT 500';
             
             System.debug('soql == > '+soql);

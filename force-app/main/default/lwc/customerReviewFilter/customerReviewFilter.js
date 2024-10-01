@@ -20,6 +20,7 @@ export default class CustomerReviewFilter extends LightningElement {
     selectedCompany;
     selectedSalesManagerId;
     currentUserId = USER_ID;
+    profileName;
     currentUserName;
     isASM = false;
 
@@ -27,16 +28,18 @@ export default class CustomerReviewFilter extends LightningElement {
     userData({ error, data }) {
         if (data) {
             const salesRole = getFieldValue(data, SALES_ROLE_FIELD);
-            const profileName = getFieldValue(data, PROFILE_NAME_FIELD);
+            this.profileName = getFieldValue(data, PROFILE_NAME_FIELD);
             this.currentUserName = getFieldValue(data, USER_NAME_FIELD);
-            if (profileName === 'Local Admin') {
+            if (this.profileName === 'Local Admin') {
+                this.loadCompanyOptions();
                 this.loadSalesManagerOptions();
             } else if (salesRole === 'ASM') {
                 this.isASM = true;
                 this.setASMManager();
-            } else if (profileName === 'System Administrator') {
+            } else if (this.profileName === 'System Administrator') {
                 this.loadCompanyOptions();
             } else {
+                this.loadCompanyOptions();
                 this.loadSalesManagerOptions();
             }
         } else if (error) {
@@ -47,17 +50,28 @@ export default class CustomerReviewFilter extends LightningElement {
     loadCompanyOptions() {
         getCompanies()
             .then(data => {
+                console.log('loadCompanyOptions called');
                 this.companyOptions = data.map(company => ({
                     label: company,
                     value: company
                 }));
-                this.isCompanyDisabled = false;
-                this.isSalesManagerDisabled = true; // Ensure Sales Manager is disabled initially for Admin
+                alert(this.companyOptions.length );
+                // Check if there are more than one company options
+                if (this.companyOptions.length > 0) {
+                    
+                    this.isCompanyDisabled = false; // Enable company combobox
+                    this.isSalesManagerDisabled = true; // Disable Sales Manager combobox initially for Admin
+                } else {
+                    this.isCompanyDisabled = true; // Keep company combobox disabled if only one option
+                    // If there's only one company, handle the next logic (like auto-selecting)
+                    this.handleCompanyChange({ detail: { value: this.companyOptions[0].value } });
+                }
             })
             .catch(error => {
                 console.error(error);
             });
     }
+    
 
     handleCompanyChange(event) {
         this.selectedCompany = event.detail.value;
@@ -70,6 +84,7 @@ export default class CustomerReviewFilter extends LightningElement {
     loadSalesManagerOptions() {
         getSalesManagerList({ companyName: this.selectedCompany })
             .then(data => {
+                console.log('loadSalesManagerOptions called');
                 this.salesManagerOptions = data.map(user => ({
                     label: user.Name,
                     value: user.Id

@@ -156,7 +156,7 @@ public with sharing class TabAccountMemberParentId {
             Task t = new Task(
                 Subject = subject,
                 WhatId = relatedTo,
-                Instructions__c = Instruction,
+                Description = Instruction,
                 OwnerId = assignTo,
                 ActivityDate = DueDate,
                 Status = sStatus,

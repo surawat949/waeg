@@ -1,27 +1,29 @@
 <template>
-    <div class="calendarbody slds" id="calendarbodyId">
-        <div class="slds-grid">            
-            <div class="slds-col slds-size_1-of-3" style="text-align:start;">
-                <lightning-button-group>
-                    <lightning-button icon-name="utility:chevronleft" onclick={prev}></lightning-button>
-                    <lightning-button icon-name="utility:chevronright" onclick={next}></lightning-button>
-                    <lightning-button label={custLabel.Today} onclick={today}></lightning-button>
-                </lightning-button-group>
+    <div class="slds-box">
+        <div class="calendarbody slds" id="calendarbodyId">
+            <div class="slds-grid">            
+                <div class="slds-col slds-size_1-of-3" style="text-align:start;">
+                    <lightning-button-group>
+                        <lightning-button icon-name="utility:chevronleft" onclick={prev}></lightning-button>
+                        <lightning-button icon-name="utility:chevronright" onclick={next}></lightning-button>
+                        <lightning-button label={custLabel.Today} onclick={today}></lightning-button>
+                    </lightning-button-group>
+                </div>
+                <div class="slds-col slds-align_absolute-center slds-size_1-of-3">
+                    <div>{headerDate}</div>
+                </div>
+                <div class="slds-col slds-size_1-of-3" style="text-align:end;">
+                    <lightning-button-group class="slds-grid_align-end slds-wrap">
+                        <lightning-button label={custLabel.Month} onclick={month}></lightning-button>
+                        <lightning-button label={custLabel.Week} onclick={basicWeek}></lightning-button>
+                        <lightning-button label={custLabel.Day} onclick={listDay}></lightning-button>
+                    </lightning-button-group>
+                </div>
             </div>
-            <div class="slds-col slds-align_absolute-center slds-size_1-of-3">
-                <div>{headerDate}</div>
+            <div id="calendar" class="fullcalendarjs">       
             </div>
-            <div class="slds-col slds-size_1-of-3" style="text-align:end;">
-                <lightning-button-group class="slds-grid_align-end slds-wrap">
-                    <lightning-button label={custLabel.Month} onclick={month}></lightning-button>
-                    <lightning-button label={custLabel.Week} onclick={basicWeek}></lightning-button>
-                    <lightning-button label={custLabel.Day} onclick={listDay}></lightning-button>
-                </lightning-button-group>
-            </div>
+            
         </div>
-        <div id="calendar" class="fullcalendarjs">       
-        </div>
-        
     </div>
 
 </template>

@@ -2,6 +2,148 @@ public with sharing class CustomerReviewPerfomanceController {
     public static String defaultCurrencyISOcode;
     public static Double selectedRepCurrencyRate = 1;
     public static Double usdCurrencyRate = 1;
+    public static List<String> monthNameList = new List<String>();
+    public static List<String> Last12MonthLst = new List<String>();
+    public static List<Integer> monthNumLst =  new List<integer>();
+    public static List<double> monthListLy = new List<double>();
+    //Separated two methods as we are getting Limit Exception for SOQL Rows 50001 if the reportees are more
+    @AuraEnabled
+    public static visitsWrapper getVisitDetails(User user,Boolean requireConsolidation){
+        visitsWrapper wrapper = new visitsWrapper();
+        List<Id> userIdLst = new List<Id>();
+        //current selected user
+        userIdLst.add(user.Id);
+        //get all the users who are reporting to the selected user
+        if(requireConsolidation){           
+            Set<Id> currentUserId = new Set<Id>();
+            currentUserId.add(user.Id);
+            userIdLst.addAll(Utility.getAllReportees(currentUserId));
+        }
+        Map<Integer,Integer> DvisitMonthMap = new Map<Integer,Integer>();
+        Map<Integer,Set<Date>> uniqueDateMap = new Map<Integer,Set<Date>>();
+        Map<Integer,Set<Id>> accountMonthMap = new Map<Integer,Set<Id>>();
+        Map<Integer,Set<Id>> SegAccMonthMap = new Map<Integer,Set<Id>>();
+        Map<Integer,Integer> segDVisitsMap = new Map<Integer,Integer>();
+        Decimal totalDVisits=0;
+        Decimal totalAccsVisited = 0;
+        Decimal totalDays =0;
+        Decimal totalVisitsPerDay = 0;
+        Decimal totalVisitsA3 = 0;
+        Decimal totalAccsVisitedA3 = 0;
+        List<Object> dVisits = new List<Object>();
+        List<Object> uniqueDaysCount = new List<Object>();
+        List<Object> accountsVisitedLst = new List<Object>();
+        List<Object> visitsA3 = new List<Object>();
+        List<Object> accsVisitedA3 = new List<Object>();
+        List<Object> visitsPerDayInField = new List<Object>();
+        Integer month = Date.today().month();
+        Map<Integer,String> monthNameMap = new Map<Integer,String>{1=>'JAN',2=>'FEB',3=>'MAR',4=>'APR',5=>'MAY',6=>'JUN',7=>'JUL',8=>'AUG',9=>'SEP',10=>'OCT',11=>'NOV',12=>'DEC'};
+        Last12MonthLst.addAll(getLast12MonthList(month));
+        for(String mon:Last12MonthLst){
+            monthNumLst.add(Integer.valueOf(mon.substringBefore(':')));
+            monthNameList.add(monthNameMap.get(Integer.valueOf(mon.substringBefore(':'))));
+        } 
+        List<Visits__c> visits = [SELECT id,Visit_Type__c,Visit_Status__c,End_Time__c,Account__c,Account__r.Segmentation_Net__c FROM Visits__c WHERE Assigned_to__c in : userIdLst
+                            AND RecordType.DeveloperName = 'Standard_Visit' AND Visit_Status__c = 'Complete' AND Visit_Type__c in('Visit','Digital Visit') AND End_Time__c = LAST_N_MONTHS:12 ORDER BY End_Time__c ASC];
+        if(visits.size() > 0){
+        	for(Visits__c visit:visits){
+                if(DvisitMonthMap.size() > 0 && DvisitMonthMap.containsKey(visit.End_Time__c.Month())){
+                    Integer dCount = DvisitMonthMap.get(visit.End_Time__c.Month());
+                    DvisitMonthMap.put(visit.End_Time__c.Month(),dCount+1);
+                }else{
+                    DvisitMonthMap.put(visit.End_Time__c.Month(),1);
+                }
+                if(visit.Account__r.Segmentation_Net__c == 'A3' || visit.Account__r.Segmentation_Net__c == 'B3' || visit.Account__r.Segmentation_Net__c == 'C3'){
+                    if(segDVisitsMap.size() > 0 && segDVisitsMap.containsKey(visit.End_Time__c.Month())){
+                        Integer dCount = segDVisitsMap.get(visit.End_Time__c.Month());
+                        segDVisitsMap.put(visit.End_Time__c.Month(),dCount+1);
+                    }else{
+                        segDVisitsMap.put(visit.End_Time__c.Month(),1);
+                    }
+                    if(SegAccMonthMap.size() > 0 && SegAccMonthMap.containsKey(visit.End_Time__c.Month())){
+                        Set<Id> accIdSet = SegAccMonthMap.get(visit.End_Time__c.Month());
+                        accIdSet.add(visit.Account__c);
+                        SegAccMonthMap.put(visit.End_Time__c.Month(),accIdSet);
+                    }
+                    else{
+                        Set<Id> accIdSet = new Set<Id>();
+                        accIdSet.add(visit.Account__c);
+                        SegAccMonthMap.put(visit.End_Time__c.Month(),accIdSet);
+                    }
+                }
+                if(uniqueDateMap.size() > 0 && uniqueDateMap.containsKey(visit.End_Time__c.Month())){
+                    Set<Date> uniqueDaysSet = uniqueDateMap.get(visit.End_Time__c.Month());
+                    uniqueDaysSet.add(visit.End_Time__c.Date());
+                    uniqueDateMap.put(visit.End_Time__c.Month(),uniqueDaysSet);
+                }
+                else{
+                    Set<Date> uniqueDaysSet = new Set<Date>();
+                    uniqueDaysSet.add(visit.End_Time__c.Date());
+                    uniqueDateMap.put(visit.End_Time__c.Month(),uniqueDaysSet);
+                }
+                
+                if(accountMonthMap.size() > 0 && accountMonthMap.containsKey(visit.End_Time__c.Month())){
+                    Set<Id> accIdSet = accountMonthMap.get(visit.End_Time__c.Month());
+                    accIdSet.add(visit.Account__c);
+                    accountMonthMap.put(visit.End_Time__c.Month(),accIdSet);
+                }
+                else{
+                    Set<Id> accIdSet = new Set<Id>();
+                    accIdSet.add(visit.Account__c);
+                    accountMonthMap.put(visit.End_Time__c.Month(),accIdSet);
+                }  
+       		 }  
+        }
+        for(Integer mon:monthNumLst){
+           //Visits
+            Set<Date> uniqueDateSet = new Set<Date>();
+            uniqueDateSet = uniqueDateMap.get(mon);
+            Integer uniqueDayCount = (uniqueDateSet != null && uniqueDateSet.size() > 0) ? uniqueDateSet.size() : 0;
+            uniqueDaysCount.add(uniqueDayCount);
+            totalDays += uniqueDayCount;
+            
+            Set<Id> uniqueAccSet = new Set<Id>();
+            uniqueAccSet = accountMonthMap.get(mon);
+            Integer uniqueAccCount = (uniqueAccSet != null && uniqueAccSet.size() > 0) ? uniqueAccSet.size() : 0;
+            accountsVisitedLst.add(uniqueAccCount);
+            totalAccsVisited += uniqueAccCount;
+            
+            Set<Id> segUniqueAccSet = new Set<Id>();
+            segUniqueAccSet = SegAccMonthMap.get(mon);
+            Integer segUniqueAccCount = (segUniqueAccSet != null && segUniqueAccSet.size() > 0) ? segUniqueAccSet.size() : 0;
+            accsVisitedA3.add(segUniqueAccCount);
+            totalAccsVisitedA3 += segUniqueAccCount;
+            
+            decimal prospectionRate = 0;
+            double segDCount = (segDVisitsMap.size() > 0 && segDVisitsMap.containsKey(mon))?segDVisitsMap.get(mon):0;
+            double dVisitsCount = (DvisitMonthMap.size() > 0 && DvisitMonthMap.containsKey(mon))?DvisitMonthMap.get(mon):0;
+            if(dVisitsCount > 0){
+                prospectionRate = (segDCount/dVisitsCount)*100;
+            }
+            dVisits.add(dVisitsCount);
+            totalDVisits += dVisitsCount;
+            visitsA3.add(prospectionRate);
+            totalVisitsA3 +=Math.round(prospectionRate);
+            
+            Double visitsPerDayInFieldCount = uniqueDayCount > 0 ? (dVisitsCount/uniqueDayCount) : 0;
+            visitsPerDayInField.add(visitsPerDayInFieldCount);
+            totalVisitsPerDay += visitsPerDayInFieldCount;    
+        }
+        wrapper.dVisitsAvg = (totalDVisits/12) > 0 ? (totalDVisits/12) : 0;
+        wrapper.uniqueDaysCountAvg = (totalDays/12) > 0 ? (totalDays/12) : 0;
+        wrapper.accountsVisitedLstAvg = (totalAccsVisited/12) > 0 ? (totalAccsVisited/12) : 0;
+        wrapper.visitsA3Avg = (totalVisitsA3/12) > 0 ?  (totalVisitsA3/12).setScale(2) : 0;
+        wrapper.accsVisitedA3Avg = (totalAccsVisitedA3/12) > 0 ? (totalAccsVisitedA3/12) : 0;
+        wrapper.visitsPerDayInFieldAvg = (totalVisitsPerDay/12) > 0 ? (totalVisitsPerDay/12) : 0;
+        wrapper.dVisits = dVisits;
+        wrapper.uniqueDaysCount = uniqueDaysCount;
+        wrapper.accountsVisitedLst = accountsVisitedLst;
+        wrapper.visitsA3 = visitsA3;
+        wrapper.accsVisitedA3 = accsVisitedA3;
+        wrapper.visitsPerDayInField = visitsPerDayInField;
+        wrapper.monthList = monthNameList;
+        return wrapper;
+    }
     @AuraEnabled
     public static PerformanceWrapper getPerformanceDetails(User user,Boolean requireConsolidation){        
         PerformanceWrapper wrapper = new PerformanceWrapper(); 
@@ -12,23 +154,18 @@ public with sharing class CustomerReviewPerfomanceController {
         if(month <= 4){               
             CurrentFiscalyear=CurrentFiscalyear-1;
         }
-        Set<Id> userIdLst = new Set<Id>();
+        List<Id> userIdLst = new List<Id>();
         //current selected user
         userIdLst.add(user.Id);
         String userRole = user.Sales_Role__c;
         String userRegion =  user.User_Region__c;
-        String userCurrency ='';        
-        if(String.IsBlank(userRegion) || userRegion == 'EMEA' || userRegion == 'LATAM' || userRegion == 'WESTERN EUROPE' || userRegion == 'EASTERN EUROPE')
-            userCurrency = 'EUR';
-        else if(userRegion == 'APAC' || userRegion == 'AMERICAS')
-            userCurrency = 'USD';
+        
         //if rep company name is HODG/SOG show gross sales
         Boolean isNet = true;
         if(user.CompanyName == 'HODG' || user.CompanyName == 'SOG')
             isNet = false; 
-        
+            
         defaultCurrencyISOcode = user.defaultCurrencyISOcode;
-        system.debug('******'+defaultCurrencyISOcode);
         Set<String> currencySet = new Set<String>();
         currencySet.add('USD');
         currencySet.add(defaultCurrencyISOcode);
@@ -37,18 +174,13 @@ public with sharing class CustomerReviewPerfomanceController {
                 selectedRepCurrencyRate = currencyValue.conversionrate;
             if(currencyValue.isocode == 'USD')
                 usdCurrencyRate = currencyValue.conversionrate;
-        }   
-        system.debug(selectedRepCurrencyRate+'*******'+usdCurrencyRate);      
+        }
         //get all the users who are reporting to the selected user
-        if(requireConsolidation){
-            if((userRole == 'NSM' || userRole == 'RSM' || userRole == 'RMS')){
-                List<User> reportingUsrList = [Select Id from User where ManagerId =:user.Id];
-                if(reportingUsrList.size() > 0){
-                    for(User u:reportingUsrList){
-                        userIdLst.add(u.Id);
-                    }
-                } 
-            }
+        if(requireConsolidation){           
+            Set<Id> currentUserId = new Set<Id>();
+            currentUserId.add(user.Id);
+            userIdLst.addAll(Utility.getAllReportees(currentUserId));
+            System.debug(userIdLst);
         }
         //For Budget Details
         List<MonthlyPerformanceWrapper> monthlyWrapperLst = new List<MonthlyPerformanceWrapper>();
@@ -169,61 +301,45 @@ public with sharing class CustomerReviewPerfomanceController {
             values5.TOT_YTD = 0;
         wrapper5.values=values5;
         monthlyWrapperLst.add(wrapper5);
-        List<Sales_Statistics__c> sales = new List<Sales_Statistics__c>();
-        //get the Active Accounts Sales
-        if(isNet){
-            sales=[SELECT Id,Lenses_Net_Sales__c,Month__c,Account__c,Fiscal_Year__c from Sales_Statistics__c where Account__r.OwnerId in:userIdLst
-               AND (Type__c='0' OR Type__c='1') AND (Fiscal_Year__c =: CurrentFiscalyear OR Fiscal_Year__c =: CurrentFiscalyear-1) AND Lenses_Net_Sales__c > 0 ORDER BY Month__c,Fiscal_Year__c asc];
-        }
-        else{
-          sales=[SELECT Id,Lenses_Gross_Sales__c,Month__c,Account__c,Fiscal_Year__c from Sales_Statistics__c where Account__r.OwnerId in:userIdLst
-            AND (Type__c='0' OR Type__c='1') AND (Fiscal_Year__c =: CurrentFiscalyear OR Fiscal_Year__c =: CurrentFiscalyear-1) AND Lenses_Gross_Sales__c > 0 ORDER BY Month__c,Fiscal_Year__c asc];
-        }
-        //Get last 12 months based on current month
-        List<String> monthNameList = new List<String>();
-        List<String> Last12MonthLst = new List<String>();
-        List<Integer> monthNumLst =  new List<integer>();
+        
         Map<Integer,String> monthNameMap = new Map<Integer,String>{1=>'JAN',2=>'FEB',3=>'MAR',4=>'APR',5=>'MAY',6=>'JUN',7=>'JUL',8=>'AUG',9=>'SEP',10=>'OCT',11=>'NOV',12=>'DEC'};
-       
         Last12MonthLst.addAll(getLast12MonthList(month));
         for(String mon:Last12MonthLst){
             monthNumLst.add(Integer.valueOf(mon.substringBefore(':')));
             monthNameList.add(monthNameMap.get(Integer.valueOf(mon.substringBefore(':'))));
-        }
+            if(mon.substringAfter(':') == 'LY'){
+                monthListLy.add(double.valueOf(mon.substringBefore(':')));
+            }
+        } 
+        List<Sales_Statistics__c> salesCY = [SELECT Id,Lenses_Net_Sales__c,Lenses_Gross_Sales__c,Month__c,Account__c,Fiscal_Year__c from Sales_Statistics__c where Account__r.OwnerId in:userIdLst
+                                          AND (Type__c='0' OR Type__c='1') AND Fiscal_Year__c =: CurrentFiscalyear ORDER BY Month__c,Fiscal_Year__c asc];
+        //For Last Year filtering only the required months.
+        List<Sales_Statistics__c> salesLY = [SELECT Id,Lenses_Net_Sales__c,Lenses_Gross_Sales__c,Month__c,Account__c,Fiscal_Year__c from Sales_Statistics__c where Account__r.OwnerId in:userIdLst
+                                          AND (Type__c='0' OR Type__c='1') AND  Fiscal_Year__c =: CurrentFiscalyear-1 AND Month__c in:monthListLy ORDER BY Month__c,Fiscal_Year__c asc];
         //collect monthly lens net sales per account CY/LY
         Map<Id,Map<Integer,double>> monthMapCY = new Map<Id,Map<Integer,double>>();
         Map<Id,Map<Integer,double>> monthMapLY = new Map<Id,Map<Integer,double>>(); 
-        if(sales.size() > 0){
-            for(Sales_Statistics__c salesStat:sales){
+        if(salesCY.size() > 0){
+            for(Sales_Statistics__c salesStat:salesCY){
                 double netOrGrossSales = 0;
                 if(isNet){
                     netOrGrossSales = (double)salesStat.Lenses_Net_Sales__c;
-                }else{
+                }else{ 
                     netOrGrossSales = (double)salesStat.Lenses_Gross_Sales__c;
                 }
-                if((Integer)salesStat.Fiscal_Year__c == CurrentFiscalyear){
-                    if(monthMapCY.size() > 0 && monthMapCY.containsKey(salesStat.Account__c)){
-                        Map<Integer,double> monthSaleMap =monthMapCY.get(salesStat.Account__c);
-                        if(monthSaleMap.containsKey((Integer)salesStat.Month__c)){//to get the other lenses 0/1
-                            double lensTotalSales =0;
-                            if(netOrGrossSales != null && netOrGrossSales > 0)
-                                lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c)+netOrGrossSales;
-                            else
-                                lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c);  
-                            monthSaleMap.put((Integer)salesStat.Month__c,lensTotalSales);
-                            monthMapCY.put(salesStat.Account__c,monthSaleMap);
-                        }
-                        else{
-                            if(netOrGrossSales != null && netOrGrossSales > 0)
-                                monthSaleMap.put((Integer)salesStat.Month__c,netOrGrossSales);
-                            else
-                                monthSaleMap.put((Integer)salesStat.Month__c,0);
-                            monthMapCY.put(salesStat.Account__c,monthSaleMap);
-                        }
+                if(monthMapCY.size() > 0 && monthMapCY.containsKey(salesStat.Account__c)){
+                    Map<Integer,double> monthSaleMap =monthMapCY.get(salesStat.Account__c);
+                    if(monthSaleMap.containsKey((Integer)salesStat.Month__c)){//to get the other lenses 0/1
+                        double lensTotalSales =0;
+                        if(netOrGrossSales != null)
+                            lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c)+netOrGrossSales;
+                        else
+                            lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c);  
+                        monthSaleMap.put((Integer)salesStat.Month__c,lensTotalSales);
+                        monthMapCY.put(salesStat.Account__c,monthSaleMap);
                     }
                     else{
-                        Map<Integer,double> monthSaleMap = new Map<Integer,double>();
-                        if(netOrGrossSales != null && netOrGrossSales > 0)
+                        if(netOrGrossSales != null)
                             monthSaleMap.put((Integer)salesStat.Month__c,netOrGrossSales);
                         else
                             monthSaleMap.put((Integer)salesStat.Month__c,0);
@@ -231,190 +347,239 @@ public with sharing class CustomerReviewPerfomanceController {
                     }
                 }
                 else{
-                  if(monthMapLY.size() > 0 && monthMapLY.containsKey(salesStat.Account__c)){
-                      Map<Integer,double> monthSaleMap =monthMapLY.get(salesStat.Account__c);
-                      if(monthSaleMap.containsKey((Integer)salesStat.Month__c)){//to get the other lenses 0/1
-                          double lensTotalSales =0;
-                          if(netOrGrossSales != null && netOrGrossSales > 0)
-                              lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c)+netOrGrossSales;
-                          else
-                              lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c);  
-                          monthSaleMap.put((Integer)salesStat.Month__c,lensTotalSales);
-                          monthMapLY.put(salesStat.Account__c,monthSaleMap);
-                      }
-                      else{
-                          if(netOrGrossSales != null && netOrGrossSales > 0)
-                              monthSaleMap.put((Integer)salesStat.Month__c,netOrGrossSales);
-                          else
-                              monthSaleMap.put((Integer)salesStat.Month__c,0);
-                          monthMapLY.put(salesStat.Account__c,monthSaleMap);
-                      }
-                  }
-                  else{
-                      Map<Integer,double> monthSaleMap = new Map<Integer,double>();
-                      if(netOrGrossSales != null && netOrGrossSales > 0)
-                          monthSaleMap.put((Integer)salesStat.Month__c,netOrGrossSales);
-                      else
-                          monthSaleMap.put((Integer)salesStat.Month__c,0);
-                      monthMapLY.put(salesStat.Account__c,monthSaleMap);
-                  }
-                }               
-            }            
-        }
-        Map<Integer,Sales> monthlyCountMap = getMonthlyCount(monthMapCY,monthMapLY,Last12MonthLst);
-        List<Object> monthlySales = new List<Object>();
-        List<Object> greaterThan0List = new List<Object>();
-        List<Object> greaterThan500List = new List<Object>();
-        List<Object> dVisits = new List<Object>();
-        List<Object> uniqueDaysCount = new List<Object>();
-        List<Object> accountsVisitedLst = new List<Object>();
-        List<Object> visitsA3 = new List<Object>();
-        List<Object> accsVisitedA3 = new List<Object>();
-        List<Object> visitsPerDayInField = new List<Object>();
-        //Visits
-        Map<Integer,Integer> DvisitMonthMap = new Map<Integer,Integer>();
-        List<Visits__c> visits = [SELECT id,Visit_Type__c,Visit_Status__c,End_Time__c,Account__c,Account__r.Segmentation_Net__c FROM Visits__c WHERE Assigned_to__c in : userIdLst
-                                  AND RecordType.DeveloperName = 'Standard_Visit' AND Visit_Status__c = 'Complete' AND End_Time__c = LAST_N_MONTHS:12 ORDER BY End_Time__c ASC];
-        Map<Integer,Set<Date>> uniqueDateMap = new Map<Integer,Set<Date>>();
-        Map<Integer,Set<Id>> accountMonthMap = new Map<Integer,Set<Id>>();
-        Map<Integer,Set<Id>> SegAccMonthMap = new Map<Integer,Set<Id>>();
-        Map<Integer,Integer> segDVisitsMap = new Map<Integer,Integer>();
-        if(visits.size() > 0){
-            for(Visits__c visit:visits){
-                if(visit.Visit_Type__c == 'Visit' || visit.Visit_Type__c == 'Digital Visit'){
-                    if(DvisitMonthMap.size() > 0 && DvisitMonthMap.containsKey(visit.End_Time__c.Month())){
-                        Integer dCount = DvisitMonthMap.get(visit.End_Time__c.Month());
-                        DvisitMonthMap.put(visit.End_Time__c.Month(),dCount+1);
-                    }else{
-                        DvisitMonthMap.put(visit.End_Time__c.Month(),1);
-                    }
-                    if(visit.Account__r.Segmentation_Net__c == 'A3' || visit.Account__r.Segmentation_Net__c == 'B3' || visit.Account__r.Segmentation_Net__c == 'C3'){
-                        if(segDVisitsMap.size() > 0 && segDVisitsMap.containsKey(visit.End_Time__c.Month())){
-                            Integer dCount = segDVisitsMap.get(visit.End_Time__c.Month());
-                            segDVisitsMap.put(visit.End_Time__c.Month(),dCount+1);
-                        }else{
-                            segDVisitsMap.put(visit.End_Time__c.Month(),1);
-                        }
-                        if(SegAccMonthMap.size() > 0 && SegAccMonthMap.containsKey(visit.End_Time__c.Month())){
-                            Set<Id> accIdSet = SegAccMonthMap.get(visit.End_Time__c.Month());
-                            accIdSet.add(visit.Account__c);
-                            SegAccMonthMap.put(visit.End_Time__c.Month(),accIdSet);
-                        }
-                        else{
-                            Set<Id> accIdSet = new Set<Id>();
-                            accIdSet.add(visit.Account__c);
-                            SegAccMonthMap.put(visit.End_Time__c.Month(),accIdSet);
-                        }
-                    }
-                    if(uniqueDateMap.size() > 0 && uniqueDateMap.containsKey(visit.End_Time__c.Month())){
-                        Set<Date> uniqueDaysSet = uniqueDateMap.get(visit.End_Time__c.Month());
-                        uniqueDaysSet.add(visit.End_Time__c.Date());
-                        uniqueDateMap.put(visit.End_Time__c.Month(),uniqueDaysSet);
-                    }
-                    else{
-                        Set<Date> uniqueDaysSet = new Set<Date>();
-                        uniqueDaysSet.add(visit.End_Time__c.Date());
-                        uniqueDateMap.put(visit.End_Time__c.Month(),uniqueDaysSet);
-                    }
-                   
-                    if(accountMonthMap.size() > 0 && accountMonthMap.containsKey(visit.End_Time__c.Month())){
-                        Set<Id> accIdSet = accountMonthMap.get(visit.End_Time__c.Month());
-                        accIdSet.add(visit.Account__c);
-                        accountMonthMap.put(visit.End_Time__c.Month(),accIdSet);
-                    }
-                    else{
-                        Set<Id> accIdSet = new Set<Id>();
-                        accIdSet.add(visit.Account__c);
-                        accountMonthMap.put(visit.End_Time__c.Month(),accIdSet);
-                    }
-                    
-                }
-                else if(visit.Visit_Type__c == 'Support Direct Visit' || visit.Visit_Type__c == 'Support Digital Visit'){
-                    if(uniqueDateMap.size() > 0 && uniqueDateMap.containsKey(visit.End_Time__c.Month())){
-                        Set<Date> uniqueDaysSet = uniqueDateMap.get(visit.End_Time__c.Month());
-                        uniqueDaysSet.add(visit.End_Time__c.Date());
-                        uniqueDateMap.put(visit.End_Time__c.Month(),uniqueDaysSet);
-                    }
-                    else{
-                        Set<Date> uniqueDaysSet = new Set<Date>();
-                        uniqueDaysSet.add(visit.End_Time__c.Date());
-                        uniqueDateMap.put(visit.End_Time__c.Month(),uniqueDaysSet);
-                    }
-                    if(accountMonthMap.size() > 0 && accountMonthMap.containsKey(visit.End_Time__c.Month())){
-                        Set<Id> accIdSet = accountMonthMap.get(visit.End_Time__c.Month());
-                        accIdSet.add(visit.Account__c);
-                        accountMonthMap.put(visit.End_Time__c.Month(),accIdSet);
-                    }
-                    else{
-                        Set<Id> accIdSet = new Set<Id>();
-                        accIdSet.add(visit.Account__c);
-                        accountMonthMap.put(visit.End_Time__c.Month(),accIdSet);
-                    }
+                    Map<Integer,double> monthSaleMap = new Map<Integer,double>();
+                    if(netOrGrossSales != null)
+                        monthSaleMap.put((Integer)salesStat.Month__c,netOrGrossSales);
+                    else
+                        monthSaleMap.put((Integer)salesStat.Month__c,0);
+                    monthMapCY.put(salesStat.Account__c,monthSaleMap);
                 }
             }
         }
+        if(salesLY.size() > 0){
+            for(Sales_Statistics__c salesStat:salesLY){
+                double netOrGrossSales = 0;
+                if(isNet){
+                    netOrGrossSales = (double)salesStat.Lenses_Net_Sales__c;
+                }else{
+                    netOrGrossSales = (double)salesStat.Lenses_Gross_Sales__c;
+                }
+                if(monthMapLY.size() > 0 && monthMapLY.containsKey(salesStat.Account__c)){
+                    Map<Integer,double> monthSaleMap =monthMapLY.get(salesStat.Account__c);
+                    if(monthSaleMap.containsKey((Integer)salesStat.Month__c)){//to get the other lenses 0/1
+                        double lensTotalSales =0;
+                        if(netOrGrossSales != null)
+                            lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c)+netOrGrossSales;
+                        else
+                            lensTotalSales = (double)monthSaleMap.get((Integer)salesStat.Month__c);  
+                        monthSaleMap.put((Integer)salesStat.Month__c,lensTotalSales);
+                        monthMapLY.put(salesStat.Account__c,monthSaleMap);
+                    }
+                    else{
+                        if(netOrGrossSales != null)
+                            monthSaleMap.put((Integer)salesStat.Month__c,netOrGrossSales);
+                        else
+                            monthSaleMap.put((Integer)salesStat.Month__c,0);
+                        monthMapLY.put(salesStat.Account__c,monthSaleMap);
+                    }
+                }
+                else{
+                    Map<Integer,double> monthSaleMap = new Map<Integer,double>();
+                    if(netOrGrossSales != null)
+                        monthSaleMap.put((Integer)salesStat.Month__c,netOrGrossSales);
+                    else
+                        monthSaleMap.put((Integer)salesStat.Month__c,0);
+                    monthMapLY.put(salesStat.Account__c,monthSaleMap);
+                }
+            }   
+        }
+        System.debug(monthMapCY);
+        System.debug(monthMapLY);
+        Map<Integer,Sales> monthlyCountMap = getMonthlyCount(monthMapCY,monthMapLY,Last12MonthLst);
+        List<Object> monthlySales = new List<Object>();
+        List<Object> greaterThan0List = new List<Object>();
+        List<Object> greaterThan500List = new List<Object>();       
+        List<Object> greaterThan500USDPercentage = new List<Object>();
+            
+        //getDoorInfo
+        Map<Integer,Integer> doorCountMap = new Map<Integer,Integer>();
+        List<Integer> CYMonList=new List<Integer>();
+        List<Integer> LYMonList=new List<Integer>();
+        if(Last12MonthLst.size() > 0){
+            for(String mon:Last12MonthLst){//2:CY
+                if(mon.substringAfter(':') != null && mon.substringAfter(':').equalsIgnoreCase('CY'))
+                    CYMonList.add(Integer.valueOf(mon.substringBefore(':')));
+                else
+                    LYMonList.add(Integer.valueOf(mon.substringBefore(':')));
+            } 
+        }
+        Set<Id> accIdSet = new Set<Id>();
+        if(monthMapCY.size() > 0)
+        	accIdSet.addAll(monthMapCY.keySet());
+        if(monthMapLY.size() > 0)   
+            accIdSet.addAll(monthMapLY.keySet());
+        Map<Integer,Integer> newDoorMonthlyCountMap = new Map<Integer,Integer>();
+        Map<Integer,Integer> lostDoorMonthlyCountMap = new Map<Integer,Integer>(); 
+        for(Id accId:accIdSet){ 
+            Map<Integer,double> monthCySalesMap = new Map<Integer,double>();
+            if(monthMapCY.size() > 0 && monthMapCY.containsKey(accId))
+                monthCySalesMap = monthMapCY.get(accId);
+            for(Integer mon:CYMonList){
+                Integer lastMon = mon-1 ;
+                Decimal lastMonSales = 0;
+                Decimal currMonSales = 0;
+                if(monthCySalesMap.size() > 0 && monthCySalesMap.containsKey(mon)){
+                    currMonSales = monthCySalesMap.get(mon);
+                }
+                System.debug(currMonSales);
+                if(mon == 4){
+                    //if same account is there in last month
+                    if(monthMapLY.size() > 0 && monthMapLY.containsKey(accId)){
+                        Map<Integer,double> lastMonthMap =  monthMapLY.get(accId);
+                        if(lastMonthMap.containsKey(lastMon)){
+                            lastMonSales = lastMonthMap.get(lastMon);
+                        }
+                    }
+                }else{
+                    if(monthCySalesMap.containsKey(lastMon)){
+                        lastMonSales = monthCySalesMap.get(lastMon);
+                    }
+                }
+                System.debug(lastMonSales);
+                if(currMonSales > 0 && lastMonSales <= 0){
+                    //New
+                    if(newDoorMonthlyCountMap.size() > 0 && newDoorMonthlyCountMap.containsKey(mon)){
+                          newDoorMonthlyCountMap.put(mon,newDoorMonthlyCountMap.get(mon)+1);
+                    }else{
+                        newDoorMonthlyCountMap.put(mon,1);
+                    }                    
+                }else if(currMonSales <= 0 && lastMonSales > 0){
+                    //lost
+                    if(lostDoorMonthlyCountMap.size() > 0 && lostDoorMonthlyCountMap.containsKey(mon)){
+                          lostDoorMonthlyCountMap.put(mon,lostDoorMonthlyCountMap.get(mon)+1);
+                    }else{
+                        lostDoorMonthlyCountMap.put(mon,1);
+                    }
+                }
+            }
+            for(Integer mon:LYMonList){
+                Integer lastMon;
+                Decimal lastMonSales = 0;
+                Decimal currMonSales = 0;
+                if(mon == 1){
+                    lastMon = 12;
+                }else{
+                    lastMon = mon - 1;
+                }
+                Map<Integer,double> monthLySalesMap = new  Map<Integer,double>();
+                if(monthMapLY.size() > 0 && monthMapLY.containsKey(accId)){
+                    monthLySalesMap = monthMapLY.get(accId);
+                }
+                System.debug(monthLySalesMap);
+                if(monthLySalesMap.size() > 0){
+                    if(monthLySalesMap.containskey(mon)){
+                        currMonSales = monthLySalesMap.get(mon);
+                    }
+                    if(monthLySalesMap.containsKey(lastMon)){
+                        lastMonSales = monthLySalesMap.get(lastMon);
+                    }
+                }
+                if(currMonSales > 0 && lastMonSales <= 0){
+                    //New
+                    if(newDoorMonthlyCountMap.size() > 0 && newDoorMonthlyCountMap.containsKey(mon)){
+                        newDoorMonthlyCountMap.put(mon,newDoorMonthlyCountMap.get(mon)+1);
+                    }else{
+                        newDoorMonthlyCountMap.put(mon,1);
+                    }                    
+                }else if(currMonSales <= 0 && lastMonSales > 0){
+                    //lost
+                    if(lostDoorMonthlyCountMap.size() > 0 && lostDoorMonthlyCountMap.containsKey(mon)){
+                        lostDoorMonthlyCountMap.put(mon,lostDoorMonthlyCountMap.get(mon)+1);
+                    }else{
+                        lostDoorMonthlyCountMap.put(mon,1);
+                    }
+                }
+            }
+        }        
+        Decimal total12MoSales = 0;
+        Decimal total12MoGreaterThan0 = 0;
+        Decimal total12MonGreaterThan500 = 0;
+        Decimal total12MoGreater500Perc = 0;       
+        List<Object> newDoorCount = new List<Object>();
+        List<Object> lostDoorCount =  new List<Object>();
+        Decimal totalNewDoor = 0;
+        Decimal totalLostDoor = 0;
         for(Integer mon:monthNumLst){
             if(monthlyCountMap.size() > 0 && monthlyCountMap.containsKey(mon)){
                 double accSales = 0;
+                System.debug(monthlyCountMap.get(mon).greaterThan0count);
                 if(monthlyCountMap.get(mon).greaterThan0count > 0 )
                     accSales = monthlyCountMap.get(mon).totalSales/monthlyCountMap.get(mon).greaterThan0count;
                 monthlySales.add(accSales);
-                if(monthlyCountMap.get(mon).greaterThan0count != null)
+                System.debug(mon+'--'+accSales);
+                total12MoSales += accSales;
+                if(monthlyCountMap.get(mon).greaterThan0count != null){
                     greaterThan0List.add(monthlyCountMap.get(mon).greaterThan0count);
+                    total12MoGreaterThan0 += monthlyCountMap.get(mon).greaterThan0count;
+                }
                 else
                     greaterThan0List.add(0);
-                if(monthlyCountMap.get(mon).greaterThan500count != null)
+                if(monthlyCountMap.get(mon).greaterThan500count != null){
                     greaterThan500List.add(monthlyCountMap.get(mon).greaterThan500count);
+                    total12MonGreaterThan500 += monthlyCountMap.get(mon).greaterThan500count;
+                }
                 else
                     greaterThan500List.add(0);
+                
+                //GREATER THAN 500 USD (%) calculation here    
+                Decimal greaterThan0CountValue = monthlyCountMap.get(mon).greaterThan0count != null ? monthlyCountMap.get(mon).greaterThan0count : 0;
+                Decimal greaterThan500CountValue = monthlyCountMap.get(mon).greaterThan500count != null ? monthlyCountMap.get(mon).greaterThan500count : 0;
+                Double greaterThan500USDPrctg = greaterThan0CountValue > 0 ? (greaterThan500CountValue/greaterThan0CountValue)*100 : 0;
+                total12MoGreater500Perc += greaterThan500USDPrctg;
+                greaterThan500USDPercentage.add(greaterThan500USDPrctg);
             }
             else{
                 monthlySales.add(0);
                 greaterThan0List.add(0);
                 greaterThan500List.add(0);
+                greaterThan500USDPercentage.add(0);
             }
-            //Visits
-            Set<Date> uniqueDateSet = new Set<Date>();
-            uniqueDateSet = uniqueDateMap.get(mon);
-            Integer uniqueDayCount = (uniqueDateSet != null && uniqueDateSet.size() > 0) ? uniqueDateSet.size() : 0;
-            uniqueDaysCount.add(uniqueDayCount);
-            
-            Set<Id> uniqueAccSet = new Set<Id>();
-            uniqueAccSet = accountMonthMap.get(mon);
-            Integer uniqueAccCount = (uniqueAccSet != null && uniqueAccSet.size() > 0) ? uniqueAccSet.size() : 0;
-            accountsVisitedLst.add(uniqueAccCount);
-            
-            Set<Id> segUniqueAccSet = new Set<Id>();
-            segUniqueAccSet = SegAccMonthMap.get(mon);
-            Integer segUniqueAccCount = (segUniqueAccSet != null && segUniqueAccSet.size() > 0) ? segUniqueAccSet.size() : 0;
-            accsVisitedA3.add(segUniqueAccCount);
-            
-            double prospectionRate = 0;
-            double segDCount = (segDVisitsMap.size() > 0 && segDVisitsMap.containsKey(mon))?segDVisitsMap.get(mon):0;
-            double dVisitsCount = (DvisitMonthMap.size() > 0 && DvisitMonthMap.containsKey(mon))?DvisitMonthMap.get(mon):0;
-            if(dVisitsCount > 0){
-                prospectionRate = (segDCount/dVisitsCount)*100;
+                     
+            //Door Info
+            if(newDoorMonthlyCountMap.size() > 0 && newDoorMonthlyCountMap.containsKey(mon)){
+                newDoorCount.add(newDoorMonthlyCountMap.get(mon));
+                totalNewDoor += newDoorMonthlyCountMap.get(mon);
+            }  
+            else{
+                 newDoorCount.add(0);
             }
-            dVisits.add(dVisitsCount);
-            visitsA3.add(prospectionRate);
-            Double visitsPerDayInFieldCount = uniqueDayCount > 0 ? (dVisitsCount/uniqueDayCount)*100 : 0;
-            visitsPerDayInField.add(visitsPerDayInFieldCount);
+            if(lostDoorMonthlyCountMap.size() > 0 && lostDoorMonthlyCountMap.containsKey(mon)){
+                lostDoorCount.add(lostDoorMonthlyCountMap.get(mon));
+                totalLostDoor += lostDoorMonthlyCountMap.get(mon);
+            }  
+            else{
+                lostDoorCount.add(0);
+            }
         }
+        wrapper.newDoorAvg = (totalNewDoor/12) > 0 ? (totalNewDoor/12) : 0;
+        wrapper.lostDoorAvg = (totalLostDoor/12) > 0 ? (totalLostDoor/12) : 0;
+        wrapper.activeSalesAvg = (total12MoSales/12) > 0 ? (total12MoSales/12) : 0;
+        wrapper.greaterThan0Avg = (total12MoGreaterThan0/12) > 0 ? (total12MoGreaterThan0/12) : 0;
+        wrapper.greaterThan500Avg = (total12MonGreaterThan500/12) > 0 ? (total12MonGreaterThan500/12) : 0;
+        wrapper.greaterThan500USDPercAvg=(total12MoGreater500Perc/12) > 0?(total12MoGreater500Perc/12).setScale(2) : 0;       
         wrapper.greaterThan0 = greaterThan0List;
         wrapper.greaterThan500 = greaterThan500List;
         wrapper.monthList = monthNameList;
-        wrapper.activeSales = monthlySales;
-        wrapper.dVisits = dVisits;
-        wrapper.uniqueDaysCount = uniqueDaysCount;
-        wrapper.accountsVisitedLst = accountsVisitedLst;
-        wrapper.visitsA3 = visitsA3;
-        wrapper.accsVisitedA3 = accsVisitedA3;
-        wrapper.visitsPerDayInField = visitsPerDayInField;
+        wrapper.activeSales = monthlySales;       
         wrapper.budgetDetails = monthlyWrapperLst;
+        wrapper.greaterThan500USDPercentage = greaterThan500USDPercentage;
+        wrapper.newDoorCount = newDoorCount;
+        wrapper.LostDoorCount = lostDoorCount; 
         if(isNet)
           wrapper.title = 'Lenses Net Sales ('+user.defaultCurrencyISOcode+')';
         else
             wrapper.title = 'Lenses Gross Sales ('+user.defaultCurrencyISOcode+')';
+        System.debug(monthNameList);
         return wrapper;
     }
     private static MonthValues addMonthValues(Map<String,double> valueMap){
@@ -432,7 +597,7 @@ public with sharing class CustomerReviewPerfomanceController {
         values.FEB=(valueMap.size() > 0 && valueMap.get('FEB') > 0) ? valueMap.get('FEB') : 0;
         values.MAR=(valueMap.size() > 0 && valueMap.get('MAR') > 0) ? valueMap.get('MAR') : 0;        
         return values;
-    }
+    }   
     //get Last 12 months list based on current month
     private static List<String> getLast12MonthList(Integer currentMonth){
         List<String> twelveMonList = new List<String>();
@@ -496,6 +661,7 @@ public with sharing class CustomerReviewPerfomanceController {
         return monthlySalesCountMap;
     }
     private static Map<Integer,Sales> getCountByYear(Map<Id,Map<Integer,double>> monthlyMap,List<Integer> monthLst){
+        System.debug(monthlyMap);
         Map<Integer,Sales> monthlySalesCountMap = new Map<Integer,Sales>();
         if(monthlyMap.size() > 0){
             for(Id accId:monthlyMap.keySet()){ 
@@ -511,11 +677,12 @@ public with sharing class CustomerReviewPerfomanceController {
                             if(monthSale.greaterThan500count != null)
                                 count500 = monthSale.greaterThan500count;
                             monthSale.totalSales = monthSale.totalSales+monthMap.get(mon);
+                            System.debug(monthSale.totalSales);
+                            System.debug(monthMap.get(mon));
                             monthSale.greaterThan0count = count0+1;
+                            
                             if(defaultCurrencyISOcode != 'USD'){
-                                system.debug('*******'+monthMap.get(mon));         
                                 Double usdConvertedRate = selectedRepCurrencyRate > 0 ? ((monthMap.get(mon)/selectedRepCurrencyRate)*usdCurrencyRate) : monthMap.get(mon);
-                                system.debug(mon+'****'+usdConvertedRate);
                                 if(usdConvertedRate > 500)
                                     monthSale.greaterThan500count = count500+1;
                             }else{
@@ -529,7 +696,7 @@ public with sharing class CustomerReviewPerfomanceController {
                         Integer accCount = 0;
                         if(monthMap.get(mon) > 0){ 
                             Sales monthSale= new Sales();
-                            monthSale.greaterThan0count = accCount+1;                            
+                            monthSale.greaterThan0count = accCount+1;
                             if(defaultCurrencyISOcode != 'USD'){
                                 Double usdConvertedRate = selectedRepCurrencyRate > 0 ? ((monthMap.get(mon)/selectedRepCurrencyRate)*usdCurrencyRate) : monthMap.get(mon);
                                 if(usdConvertedRate > 500)
@@ -546,7 +713,7 @@ public with sharing class CustomerReviewPerfomanceController {
             }
         }
         return monthlySalesCountMap;
-    }
+    }    
     public class MonthlyPerformanceWrapper{
         public MonthlyPerformanceWrapper(){}
         @AuraEnabled public String metric{get;set;}
@@ -570,18 +737,36 @@ public with sharing class CustomerReviewPerfomanceController {
     public class PerformanceWrapper{
         public PerformanceWrapper(){}
         @AuraEnabled public List<Object> greaterThan0{get;set;} 
+        @AuraEnabled public Decimal greaterThan0Avg{get;set;} 
         @AuraEnabled public List<Object> greaterThan500{get;set;}
+        @AuraEnabled public Decimal greaterThan500Avg{get;set;}
         @AuraEnabled public List<Object> monthList{get;set;}
         @AuraEnabled public List<Object> activeSales{get;set;}
-        @AuraEnabled public List<Object> dVisits{get;set;}
-        @AuraEnabled public List<Object> uniqueDaysCount{get;set;}
-        @AuraEnabled public List<Object> accountsVisitedLst{get;set;}
-        @AuraEnabled public List<Object> visitsA3{get;set;}
-        @AuraEnabled public List<Object> accsVisitedA3{get;set;}
+        @AuraEnabled public Decimal activeSalesAvg{get;set;}        
         @AuraEnabled public List<Object> budgetDetails{get;set;}
-        @AuraEnabled public List<Object> visitsPerDayInField{get;set;}
-        @AuraEnabled public String title{get;set;}
+        @AuraEnabled public String title{get;set;}       
+        @AuraEnabled public List<Object> greaterThan500USDPercentage{get;set;}  
+        @AuraEnabled public Decimal greaterThan500USDPercAvg{get;set;}  
+        @AuraEnabled public List<Object> newDoorCount{get;set;}
+        @AuraEnabled public List<Object> LostDoorCount{get;set;}
+        @AuraEnabled public Decimal newDoorAvg{get;set;} 
+        @AuraEnabled public Decimal lostDoorAvg{get;set;}         
     }   
+    public class visitsWrapper{
+        @AuraEnabled public List<Object> monthList{get;set;}
+        @AuraEnabled public List<Object> dVisits{get;set;}        
+        @AuraEnabled public Decimal dVisitsAvg{get;set;}
+        @AuraEnabled public List<Object> uniqueDaysCount{get;set;}
+        @AuraEnabled public Decimal uniqueDaysCountAvg{get;set;}
+        @AuraEnabled public List<Object> accountsVisitedLst{get;set;}
+        @AuraEnabled public Decimal accountsVisitedLstAvg{get;set;}
+        @AuraEnabled public List<Object> visitsA3{get;set;}
+        @AuraEnabled public Decimal visitsA3Avg{get;set;}
+        @AuraEnabled public List<Object> accsVisitedA3{get;set;}
+        @AuraEnabled public Decimal accsVisitedA3Avg{get;set;}
+        @AuraEnabled public List<Object> visitsPerDayInField{get;set;}
+        @AuraEnabled public Decimal visitsPerDayInFieldAvg{get;set;}
+    }
     public class Sales{
         @AuraEnabled public Decimal totalSales{get;set;}
         @AuraEnabled public Integer greaterThan0count{get;set;}
@@ -591,5 +776,5 @@ public with sharing class CustomerReviewPerfomanceController {
             greaterThan0count=0;
             greaterThan500count=0;
         }
-    }
+    }  
 }

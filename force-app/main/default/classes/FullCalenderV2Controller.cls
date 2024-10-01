@@ -1,5 +1,7 @@
 public without sharing class FullCalenderV2Controller {
     private static final String Extra_Activity_RecType = Schema.SObjectType.Event.getRecordTypeInfosByDeveloperName().get('Extra_Activity').getRecordTypeId();
+    private static final String Standard_Visit_RecType = Schema.SObjectType.Visits__c.getRecordTypeInfosByDeveloperName().get('Standard_Visit').getRecordTypeId();
+    private static final String Lead_Visits_RecType = Schema.SObjectType.Event.getRecordTypeInfosByDeveloperName().get('Lead_Visits').getRecordTypeId();
 
     @AuraEnabled(Cacheable = true)
     public static String getExtraActivityRecTypeId(){
@@ -24,7 +26,7 @@ public without sharing class FullCalenderV2Controller {
         return accountId;
     }  
     @AuraEnabled(Cacheable = false)
-    public static void createVisit(String accId,String visitType,String conId,String assignedTo,Boolean coachingEvent,String startTime,String endTime,Boolean isAllDay,String visitReason,String notes ){
+    public static void createVisit(String accId,String visitType,String conId,String assignedTo,Boolean coachingEvent,String startTime,String endTime,Boolean isAllDay,String visitReason,String notes,String recordTypeId ){
         DateTime startDate = (DateTime)Json.deserialize('"'+startTime+'"', DateTime.class);
         DateTime endDate = (DateTime)Json.deserialize('"'+endTime+'"', DateTime.class);
         if(conId == '')
@@ -43,7 +45,13 @@ public without sharing class FullCalenderV2Controller {
                Visit_Type__c=visitType,
                Account__c=accId
            );
+            if(recordTypeId != null && recordTypeId != ''){
+                visit.recordTypeId = recordTypeId;
+            }else{
+                visit.recordTypeId = Standard_Visit_RecType;
+            }
           insert visit;
+            
         } catch (Exception e) {
             System.debug(e);
             throw new AuraHandledException(e.getMessage());
@@ -87,7 +95,7 @@ public without sharing class FullCalenderV2Controller {
         DateTime startTime =  (DateTime)Json.deserialize('"'+startDateQuery+'"', DateTime.class);
         DateTime endTime =  (DateTime)Json.deserialize('"'+stopDateQuery+'"', DateTime.class);
         String status='Cancelled';
-        String query ='SELECT Id,Name, Start_Time__c,Private__c, End_Time__c,Is_All_Day_Event__c,Visit_Type__c,Visit_Reason__c,Assigned_to__c,Visit_Status__c,Account__r.Name,Account__r.Shop_City__c, Account__r.Hoya_Account_ID__c,Account__r.Shop_Country__c,Account__r.Shop_Postal_Code__c,Account__r.Shop_State__c,Account__r.Shop_Street__c';
+        String query ='SELECT Id,Name,Contact__c,Contact__r.Name,Account__c,Account__r.Clinic_Name__c,RecordTypeId,RecordType.Name,RecordType.DeveloperName,Start_Time__c,Private__c, End_Time__c,Is_All_Day_Event__c,Visit_Type__c,Visit_Reason__c,Assigned_to__c,Visit_Status__c,Account__r.Name,Account__r.Shop_City__c, Account__r.Hoya_Account_ID__c,Account__r.Shop_Country__c,Account__r.Shop_Postal_Code__c,Account__r.Shop_State__c,Account__r.Shop_Street__c';
         query += ' FROM Visits__c WHERE Visit_Status__c !=:status';
         if(!Test.isRunningTest())
         	query += '  AND Assigned_to__c =:userId AND End_Time__c >: startTime AND Start_Time__c <: endTime';
@@ -111,18 +119,41 @@ public without sharing class FullCalenderV2Controller {
                 wrapper.visitReason = visit.Visit_Reason__c;
                 wrapper.visitType = visit.Visit_Type__c;
                 wrapper.visitStatus = visit.Visit_Status__c;
+                if(visit.Account__c != null){
+                     wrapper.accountId = visit.Account__c;
+                }
+                if(visit.RecordTypeId != null){
+                    wrapper.recordTypeName = visit.RecordType.DeveloperName;
+                    wrapper.recordTypeId = visit.RecordTypeId;
+                }
+                 if(visit.contact__c != null){
+                    wrapper.ContactName = visit.contact__r.Name;
+                }
+                if(visit.Account__r.Clinic_Name__c != null){
+                    wrapper.clinicName = visit.Account__r.Clinic_Name__c;
+                }
                 wrapperLst.add(wrapper);
             }
         }
         String eventQuery =null;
-        eventQuery='SELECT Id, RecordTypeId,StartDateTime,IsPrivate, EndDateTime, Subject, Type,IsAllDayEvent,Description FROM Event WHERE OwnerId =:UserId AND ';
+        eventQuery='SELECT Id,whoId, Who.Type, RecordTypeId,RecordType.Name,RecordType.DeveloperName,StartDateTime,IsPrivate, EndDateTime, Subject, Type,IsAllDayEvent,Description FROM Event WHERE OwnerId =:UserId AND ';
         eventQuery += 'EndDateTime >: startTime AND StartDateTime <: endTime AND Visit_Id__c = null';
         if(Test.isRunningTest()){
-           eventQuery ='SELECT Id, RecordTypeId,StartDateTime,IsPrivate, EndDateTime, Subject, Type,IsAllDayEvent,Description FROM Event WHERE OwnerId =:UserId';
+           eventQuery ='SELECT Id,whoId, Who.Type, RecordTypeId,RecordType.DeveloperName,StartDateTime,IsPrivate, EndDateTime, Subject, Type,IsAllDayEvent,Description FROM Event WHERE OwnerId =:UserId';
         }
         System.debug(startTime+'-'+endTime);
         List<Event> Events = Database.query(eventQuery);
+        Set<Id> leadIds = new Set<Id>();
+         Map<Id, Lead> leadMap = new Map<Id, Lead>();
         if(Events.size() > 0){
+            for(Event eventRec:Events){
+                if(eventRec.RecordType.DeveloperName == 'Lead_Visits' && eventRec.whoId != null &&  eventRec.Who.Type == 'Lead'){
+                    leadIds.add(eventRec.whoId);
+                }
+            }
+            if(!leadIds.isEmpty()){
+                 leadMap = new Map<Id, Lead>([SELECT Id, Name,Company, Street, City, State, PostalCode, Country FROM Lead WHERE Id IN :leadIds]);
+            }
             for(Event event:Events){
                 EventWrapper wrapper = new EventWrapper();
                 wrapper.eventType = 'UserEvent';
@@ -132,12 +163,38 @@ public without sharing class FullCalenderV2Controller {
                 wrapper.subject = event.Subject;
                 wrapper.eventId = event.Id;
                 wrapper.isPrivate = event.IsPrivate;
+                if(event.RecordTypeId != null){
+                    wrapper.recordTypeName = event.RecordType.DeveloperName;
+                    wrapper.recordTypeId = event.RecordTypeId;
+                }
                 if(event.RecordTypeId == Extra_Activity_RecType ){
                		wrapper.isExtraEvent = true;
                		wrapper.description = event.Description;
                 	wrapper.visitType = event.Type;
                 }else{
                     wrapper.isExtraEvent = false;
+                }
+                if(event.WhoId != null && leadMap.containsKey(event.WhoId) && event.RecordTypeId == Lead_Visits_RecType){
+                    Lead leadRec =  leadMap.get(event.WhoId);
+                    wrapper.subject = leadRec.Company;
+                    if(leadRec.Street != null){
+                        String formattedAddress = '';
+                        if (leadRec.Street != null) {
+                            wrapper.accountShopStreet = leadRec.Street;
+                        }
+                        if (leadRec.City != null) {
+                            wrapper.accountShopCity = leadRec.City;
+                        }
+                        if (leadRec.State != null) {
+                             wrapper.accountShopstate = leadRec.State;
+                        }
+                        /*if (leadRec.Country != null) {
+                            wrapper.accountShopstate += ','+leadRec.Country;
+                        }*/
+                        if (leadRec.PostalCode != null) {
+                            wrapper.accountShopZipcode = leadRec.PostalCode;
+                        }                
+                    }
                 }
                 System.debug(wrapper);
                 wrapperLst.add(wrapper);
@@ -219,6 +276,7 @@ public without sharing class FullCalenderV2Controller {
         @AuraEnabled public DateTime endTime{get;set;}
         @AuraEnabled public Boolean isAllDayEvent{get;set;}
         @AuraEnabled public String eventId{get;set;}
+        @AuraEnabled public String accountId{get;set;}
         @AuraEnabled public String accountName{get;set;}
         @AuraEnabled public String accountShopCity{get;set;}
         @AuraEnabled public String accountShopStreet{get;set;}
@@ -232,5 +290,9 @@ public without sharing class FullCalenderV2Controller {
         @AuraEnabled public String description{get;set;}
         @AuraEnabled public Boolean isExtraEvent{get;set;}
         @AuraEnabled public Boolean isPrivate{get;set;}
+        @AuraEnabled public String recordTypeName{get;set;}
+        @AuraEnabled public String recordTypeId{get;set;}
+        @AuraEnabled public String contactName{get;set;}
+        @AuraEnabled public String clinicName{get;set;}
     }
 }

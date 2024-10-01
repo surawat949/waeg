@@ -40,7 +40,7 @@
                     record-id={receivedId}
                     object-api-name="Account"
                     fields={buyingGrpFields}
-                    mode="readonly"
+                    mode="view"
                     columns="2"
                     density="comfy"
                 ></lightning-record-form>
@@ -166,7 +166,7 @@
                             </div>
                             <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_small">
                                 <div class="slds-col slds-size_1-of-1">
-                                    <lightning-textarea label={custLbl.lblInstruction} name="form-input-5" data-my-id="form-input-5" value={defaultComment} onchange={descriptionCH}></lightning-textarea>
+                                    <lightning-textarea label={custLbl.lblComment} name="form-input-5" data-my-id="form-input-5" value={defaultComment} onchange={descriptionCH}></lightning-textarea>
                                 </div>
                             </div>
                             <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_small">

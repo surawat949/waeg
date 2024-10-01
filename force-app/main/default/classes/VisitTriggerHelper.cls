@@ -1,5 +1,6 @@
 public class VisitTriggerHelper {
-      private static final String EyeDoctor_RT = Schema.SObjectType.Visits__c.getRecordTypeInfosByDeveloperName().get('Eye_Doctor_Visit').getRecordTypeId();
+    private static final String EyeDoctor_RT = Schema.SObjectType.Visits__c.getRecordTypeInfosByDeveloperName().get('Eye_Doctor_Visit').getRecordTypeId();
+    public static  dateTime CompletionDate = null;
 
     public static void entry(
         System.TriggerOperation triggerEvent,
@@ -35,6 +36,7 @@ public class VisitTriggerHelper {
                         	ContactIdsLst.add(visit.Contact__c);
                         }    
                         if(visit.Visit_Status__c == 'Complete'){
+                            CompletionDate = system.now();
                             completedVisitAccLst.add(visit.Account__c);
                             completedVisitList.add(visit);
                         }
@@ -51,7 +53,6 @@ public class VisitTriggerHelper {
                             if (visit.Visit_Status__c == 'Complete' && oldVisit.Visit_Status__c == 'Complete') {
                                 if (oldVisit.Start_Time__c != visit.Start_Time__c || oldVisit.End_Time__c != visit.End_Time__c) {
                                     visit.addError(System.Label.Completed_Visit_Update_Error);
-                                    //visit.addError('Não é possível alterar a data e o horário da visita após a sua conclusão.');
                                 }
                             }
                         }
@@ -59,6 +60,7 @@ public class VisitTriggerHelper {
                         //
                         accountIdsLst.add(visit.Account__c);
                         if(oldMap.get(visit.Id).Visit_Status__c != 'Complete' && newMap.get(visit.Id).Visit_Status__c == 'Complete'){
+                            CompletionDate = system.now();
                             completedVisitAccLst.add(visit.Account__c);
                             completedVisitList.add(visit);
   
@@ -85,14 +87,14 @@ public class VisitTriggerHelper {
                 restrictUsersToWorkOnVisits(visitAssignedUserLst,newList,visitAccountLst);
             }
             if(completedVisitList.size()>0 && completedVisitAccLst.size()>0){
-                updateVisitTracker(completedVisitList,completedVisitAccLst,triggerEvent,oldMap);
+                updateCompletedVisitTracker(completedVisitList,completedVisitAccLst,triggerEvent,oldMap);
             } 
             if(accountIdsLst.size()>0){
                 Map<Id,Account> allAccVisitMap = new Map<Id,Account>();
                 if(accountIdsLst.size() > 0){
-                    allAccVisitMap = new Map<Id,Account>([SELECT Id,RecordTypeId,Total_Visits_Planned__c ,Tacticom_SOF__c,CHCUSTCLASSIFICATIONID__c from Account where Id in : accountIdsLst]);
+                    allAccVisitMap = new Map<Id,Account>([SELECT Id,RecordTypeId,Total_Visits_Planned__c ,Tacticom_SOF__c,CHCUSTCLASSIFICATIONID__c,Lenses_Net_Sales_Last_12Mo__c from Account where Id in : accountIdsLst]);
                 }
-                populateVisitTracker(allAccVisitMap,newList,oldMap,triggerEvent);
+                populateOpenVisitTracker(allAccVisitMap,newList,oldMap,triggerEvent);
             }
             if(eyeVisitIdsLst.size()>0){
             	updateEyeDoctorVisits(ContactIdsLst,eyeVisitIdsLst);    
@@ -101,22 +103,25 @@ public class VisitTriggerHelper {
         }
         if(triggerEvent == System.TriggerOperation.AFTER_INSERT || triggerEvent == System.TriggerOperation.AFTER_UPDATE){
             Set<Id> accountIdsLst = new Set<Id>();
+            Set<Account> considerableAccLst = new Set<Account>();
             Set<Id> considerableAccIdLst = new Set<Id>();
+            List<Visits__c> considerableVisitsLst = new List<Visits__c>();
             if(newList != null && newList.size() > 0){
                 for(Visits__c visit : newList){
                     if(triggerEvent == System.TriggerOperation.AFTER_INSERT) {
-                        if (visit.Visit_Type__c == 'Visit' && visit.Visit_Status__c != 'Cancelled' && isConsiderableStage(visit.Visit_Reason__c)) {
-                            accountIdsLst.add(visit.Account__c);    
+                        if (visit.Visit_Type__c == 'Visit' && visit.Visit_Status__c != 'Cancelled' && isConsiderableReason(visit.Visit_Reason__c)) {
+                            accountIdsLst.add(visit.Account__c);   
+                            considerableVisitsLst.add(visit);
                         }
                         // Get contact Last Visit Date
                         if (visit.Visit_Status__c == 'Complete' && visit.visit_Type__c == 'Visit' && !visit.Visited_but_not_seen__c && visit.Contact__c != null) {
-                            conIdSet.add(visit.Contact__c);
+                            conIdSet.add(visit.Contact__c);			
                         }
                         
                     } else if(triggerEvent == System.TriggerOperation.AFTER_UPDATE){
-                        //Need to check is any other check needed
-                        if(((newMap.get(visit.Id).Visit_Status__c == 'Cancelled' || oldMap.get(visit.Id).Visit_Status__c == 'Cancelled' ))|| (newMap.get(visit.Id).Visit_Type__c == 'Visit' || oldMap.get(visit.Id).Visit_Type__c == 'Visit')||(newMap.get(visit.Id).Start_Time__c != oldMap.get(visit.Id).Start_Time__c)||(isConsiderableStage(newMap.get(visit.Id).Visit_Reason__c) || isConsiderableStage(oldMap.get(visit.Id).Visit_Reason__c))){
+                        if(((newMap.get(visit.Id).Visit_Status__c != oldMap.get(visit.Id).Visit_Status__c) && (newMap.get(visit.Id).Visit_Status__c == 'Cancelled' || oldMap.get(visit.Id).Visit_Status__c == 'Cancelled' ))|| (newMap.get(visit.Id).Visit_Type__c != oldMap.get(visit.Id).Visit_Type__c && (newMap.get(visit.Id).Visit_Type__c == 'Visit' || oldMap.get(visit.Id).Visit_Type__c == 'Visit'))||(newMap.get(visit.Id).Start_Time__c != oldMap.get(visit.Id).Start_Time__c)||(newMap.get(visit.Id).Visit_Reason__c != oldMap.get(visit.Id).Visit_Reason__c &&(isConsiderableReason(newMap.get(visit.Id).Visit_Reason__c) || isConsiderableReason(oldMap.get(visit.Id).Visit_Reason__c)))){
                             accountIdsLst.add(visit.Account__c);
+                            considerableVisitsLst.add(visit);
                         }
                     }
                 }
@@ -127,47 +132,48 @@ public class VisitTriggerHelper {
                 
                 Map<Id,Account> accVisitMap = new Map<Id,Account>();
                 if(accountIdsLst.size() > 0)
-                    accVisitMap = new Map<Id,Account>([SELECT Id,RecordTypeId,Tacticom_SOF__c,CHCUSTCLASSIFICATIONID__c from Account where Id in : accountIdsLst]);
-                for(Visits__c visit : newList){
+                    accVisitMap = new Map<Id,Account>([SELECT Id,RecordTypeId,Tacticom_SOF__c,CHCUSTCLASSIFICATIONID__c,Lenses_Net_Sales_Last_12Mo__c,Segmentation_Net__c,Onboarding_Customer__c,Total_Visits_Performed__c,Account_Status__c from Account where Id in : accountIdsLst]);
+                for(Visits__c visit : considerableVisitsLst){//add considerable visit list
                     if(accVisitMap.size() > 0 && accVisitMap.containsKey(visit.Account__c)){
-                        if(AccountTriggerHelper.isConsiderableRecTypeForALC(accVisitMap.get(visit.Account__c).RecordTypeId) && accVisitMap.get(visit.Account__c).Tacticom_SOF__c != null && accVisitMap.get(visit.Account__c).Tacticom_SOF__c != 'none' && (accVisitMap.get(visit.Account__c).CHCUSTCLASSIFICATIONID__c == 'Ind' || accVisitMap.get(visit.Account__c).CHCUSTCLASSIFICATIONID__c == 'Chain')){
-                            considerableAccIdLst.add(visit.Account__c);
-                        }                            
+                        if(AccountTriggerHelper.isConsiderableRecTypeForALC(accVisitMap.get(visit.Account__c).RecordTypeId) && accVisitMap.get(visit.Account__c).Account_Status__c != 'Closed' && accVisitMap.get(visit.Account__c).Account_Status__c != 'Blocked' && accVisitMap.get(visit.Account__c).Account_Status__c != 'Suspended' ){                      
+                            if(accVisitMap.get(visit.Account__c).Lenses_Net_Sales_Last_12Mo__c <= 0 && accVisitMap.get(visit.Account__c).Tacticom_SOF__c != null && accVisitMap.get(visit.Account__c).Tacticom_SOF__c != 'none'){
+                                considerableAccLst.add(accVisitMap.get(visit.Account__c));
+                                considerableAccIdLst.add(visit.Account__c);
+                            }
+                            else if(accVisitMap.get(visit.Account__c).Lenses_Net_Sales_Last_12Mo__c > 0 && (accVisitMap.get(visit.Account__c).CHCUSTCLASSIFICATIONID__c == 'Chain' && accVisitMap.get(visit.Account__c).Tacticom_SOF__c != null && accVisitMap.get(visit.Account__c).Tacticom_SOF__c != 'none')|| accVisitMap.get(visit.Account__c).CHCUSTCLASSIFICATIONID__c == 'Ind' ){
+                                considerableAccLst.add(accVisitMap.get(visit.Account__c));
+                                considerableAccIdLst.add(visit.Account__c);
+                            }
+                        }                         
                     }
                 }
             }
-            if(considerableAccIdLst.size() > 0){
-                Set<Id> alcExistsAccsLst = new Set<Id>();
-                Map<Id,Visits__c> latestVisit = AccountTriggerHelper.getLatestVisit(considerableAccIdLst);
-                //get the account stage
-                Map<Id,String> accountStageMap = new Map<Id,String>();
-                Map<Id,Boolean> accountRetainStageMap = new Map<Id,Boolean>();
-                
-                if(latestVisit.size() > 0){
-                    accountStageMap = AccountTriggerHelper.getStage(latestVisit);
-                    accountRetainStageMap = AccountTriggerHelper.getRetainStage(latestVisit);
-                } 
-                else{//If there is no considerable visits,check if it has alc record
-                    alcExistsAccsLst = isAlcRecordExists(considerableAccIdLst);
-                }
-                for(Id accId:considerableAccIdLst){
-                    if(accountStageMap.size() > 0 && latestVisit.containsKey(accId)){ 
+            if(considerableAccLst.size() > 0){
+                Map<Id,Visits__c> latestVisitMap = AccountTriggerHelper.getLatestVisit(considerableAccIdLst);
+                Map<Id,AccountTriggerHelper.RetainDetails> accountRetainStageMap = AccountTriggerHelper.getRetainStage(latestVisitMap);              
+                for(Account acc:considerableAccLst){
+                    String stage = AccountTriggerHelper.getStage(acc,latestVisitMap);
+                    Boolean retainFlag=false;
+                    String retainReason='';
+                    if(accountRetainStageMap.size() > 0 && accountRetainStageMap.containsKey(acc.Id)){
+                       retainFlag = accountRetainStageMap.get(acc.Id).retainStageFlag;
+                       retainReason = accountRetainStageMap.get(acc.Id).retainReason;
+                    }
+                    if(stage != null || accountRetainStageMap.containsKey(acc.Id)){ 
                         Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
-                        alc.Active__c = true;
-                        alc.Stage__c = accountStageMap.get(accId);
-                        alc.Retain_Stage__c = accountRetainStageMap.get(accId);
-                        alc.External_Key__c = accId;
-                        alc.Account__c = accId;
-                        alc.Latest_Visit_Considered__c = latestVisit.get(accId).Id+'-'+latestVisit.get(accId).Name;
+                        //alc.Active__c = true;
+                        if(stage != null)
+                        	alc.Stage__c = stage;
+                        alc.Retain_Stage__c = retainFlag;
+                        alc.Retain_Reason__c = retainReason;
+                        alc.External_Key__c = acc.Id;
+                        alc.Account__c = acc.Id;
+                        if(latestVisitMap.size() > 0 && latestVisitMap.containsKey(acc.Id))
+                        	alc.Latest_Visit_Considered__c = latestVisitMap.get(acc.Id).Id+'-'+latestVisitMap.get(acc.Id).Name;
+                        else
+                            alc.Latest_Visit_Considered__c = '';
                         alcList.add(alc);
                         System.debug(alc);
-                    }
-                    else if(alcExistsAccsLst.contains(accId)){//If there is no considerable visit under that account but it already have a Alc then deactivate it
-                        Account_Life_Cycle__c alc = new Account_Life_Cycle__c();
-                        alc.Active__c = false;
-                        alc.External_Key__c = accId;
-                        alc.Account__c = accId;
-                        alcList.add(alc);
                     }
                 }
             }
@@ -176,7 +182,7 @@ public class VisitTriggerHelper {
             upsert alcList External_Key__c;
         }
     }
-    public static void populateVisitTracker(Map<Id,Account> allAccVisitMap,List <Visits__c> newList,Map <Id, Visits__c> oldMap, System.TriggerOperation triggerContext){
+    public static void populateOpenVisitTracker(Map<Id,Account> allAccVisitMap,List <Visits__c> newList,Map <Id, Visits__c> oldMap, System.TriggerOperation triggerContext){
         for (Visits__c visitUpdate : newList) {
             Visits__c oldVisit;
             if (oldMap!= null && oldMap.containsKey(visitUpdate.Id)) {
@@ -209,9 +215,8 @@ public class VisitTriggerHelper {
                     visitUpdate.Visit_Tacticom_Tracker__c = 'Outside Tacticom';
                 }
             }
-            else if(triggerContext === System.TriggerOperation.BEFORE_UPDATE){
-                //Visit Initial Date Tracker For Update
-                if(visitUpdate.Start_Time__c != oldMap.get(visitUpdate.Id).Start_Time__c){
+            else if(triggerContext === System.TriggerOperation.BEFORE_UPDATE){		
+			   if(visitUpdate.Start_Time__c != oldMap.get(visitUpdate.Id).Start_Time__c){
                     Date currentDate = Date.today();
                     Integer currentMonth = currentDate.month();
                     Integer currentYear = currentDate.year();
@@ -248,12 +253,12 @@ public class VisitTriggerHelper {
             }
         }
     }
-    public static Boolean isConsiderableStage(String visitReason){
-        Boolean isConsiderableStage =false;
-        if(visitReason != null && (visitReason.startsWith('Hunt') || visitReason.startsWith('On board') || visitReason.startsWith('Grow') || visitReason.startsWith('Retain'))){
-            isConsiderableStage = true;
+    public static Boolean isConsiderableReason(String visitReason){
+        Boolean isConsiderableReason =false;
+        if(visitReason == 'Problem Solving' || visitReason == 'Customer Retention' || visitReason == 'Cash Collection' || visitReason == 'Account Discovery' || visitReason == 'Negotiation' || visitReason == 'Contract signature'){
+            isConsiderableReason = true;
         }
-        return isConsiderableStage;
+        return isConsiderableReason;
     }
     public static Set<Id> isAlcRecordExists(Set<Id> accLst){
         Set<Id> alcExistsLst =  new Set<Id>();
@@ -265,7 +270,7 @@ public class VisitTriggerHelper {
         }
         return alcExistsLst;
     }
-    public static void updateVisitTracker(list<Visits__c> completedVisitList, Set<Id> accountIdsLst, System.TriggerOperation triggerContext,Map <Id, Visits__c> oldMap){
+    public static void updateCompletedVisitTracker(list<Visits__c> completedVisitList, Set<Id> accountIdsLst, System.TriggerOperation triggerContext,Map <Id, Visits__c> oldMap){
         //Map<Id,String> segmentationMap = new Map<Id,String>();
         list<Last_Sales_Statistics__c> listOfSalesStatistics = [SELECT Id,Account__c,H_S_Net_Sales_SOW_Last_12Mo__c 
                                                                 FROM Last_Sales_Statistics__c
@@ -351,9 +356,20 @@ public class VisitTriggerHelper {
             }
         }				
         for(Visits__c visitObj : completedVisitList){
+            visitObj.Visit_completed_date__c= system.now();
             String accountOwnerName = accountMap.get(visitObj.Account__c).Account_Owner_Name__c;
             Decimal StrategicValue = accountMap.get(visitObj.Account__c).Strategic_Value_Net_Sales__c;
-            
+			// update Visit Real Time Report Tracker
+			    system.debug('>>>>'+CompletionDate);
+				if(CompletionDate !=null){
+                     Decimal visitHoursDifference = (CompletionDate.getTime() - visitObj.End_Time__c.getTime()) / 3600000.0;
+                     if(visitHoursDifference<=24){
+                         visitObj.Visit_Real_Time_Report_Tracker__c = 'Real Time'; 
+                     }
+                     else{
+                        visitObj.Visit_Real_Time_Report_Tracker__c = 'Delayed'; 
+                     }
+			}		
             // update Visit_Segmentation_Net_Tracker  
             visitObj.Visit_Segmentation_Net_Tracker__c = accountMap.get(visitObj.Account__c).Segmentation_Net__c;
             // update Visit_Account_Owner_Tracker

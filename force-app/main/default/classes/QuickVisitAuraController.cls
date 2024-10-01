@@ -12,7 +12,7 @@ global without sharing class QuickVisitAuraController {
         //System.debug('userEvent periodEnd: ' + periodEnd);
         //System.debug('userEvent ID: ' + userId);
         List<Event> events = [
-            select Id, StartDateTime, EndDateTime, Subject,Type, WhoId,Visit__c,Visit__r.Account__c, RecordTypeId, EventSubtype, Description, IsAllDayEvent
+            select Id, StartDateTime, EndDateTime, Subject,Type, WhoId,Visit__c,Visit__r.Account__c, RecordTypeId,RecordType.DeveloperName, EventSubtype, Description, IsAllDayEvent
             from Event where OwnerId = :userId
             AND EndDateTime > :periodStart
             AND StartDateTime < :periodEnd

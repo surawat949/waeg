@@ -1,0 +1,130 @@
+<template>
+        <lightning-tabset variant="scoped">
+        <lightning-tab label={custLabel.clinicList}>
+            <div class="slds slds-grid fit">
+                <div class={firstComponentClass}>
+                    <div class="slds-m-bottom_x-small">
+                        <lightning-button variant="brand" label={toggleButtonText} onclick={toggleFilterVisibility}></lightning-button>&nbsp;&nbsp;&nbsp;
+                        <lightning-button variant="brand" label={custLabel.removeFilters} onclick={handleRemoveFilters}></lightning-button>&nbsp;&nbsp;&nbsp;
+                        <lightning-button variant="brand" label={toggleCalenderViewText} onclick={handleCalenderView}></lightning-button>&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <template if:false={showFilters}>
+                        <lightning-tabset variant="scoped">
+                            <template if:true={isLoading}>
+                                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                            </template>
+                            <lightning-tab label={custLabel.listView} class="tabPosition">
+                                <div>
+                                    <div class="slds-grid">
+                                        <!-- Checkbox -->
+                                        <div class="slds-col slds-size_5-of-16 filterFormat slds-p-left_small">
+                                            <lightning-input type="checkbox" label={custLabel.Target_Contact} onchange={handleTargetContactChange}></lightning-input>
+                                        </div>
+                                
+                                        <!-- Searchable combobox -->
+                                        <div class="slds-col slds-size_3-of-8 slds-p-right_x-small">
+                                            <lightning-combobox label={custLabel.listViewLabel} options={contactOptions} onchange={handleContactChange}></lightning-combobox>
+                                        </div>
+                                
+                                        <!-- Quick filter text box -->
+                                        <div class="slds-col slds-size_2-of-8 slds-p-right_x-small">
+                                            <lightning-input type="text" data-id="quickFilter" label={custLabel.QuickFilterLabel} onchange={handleQuickFilterChange} field-level-help= {custLabel.QuickFilterHelpText}></lightning-input>
+                                        </div>
+                                
+                                        <!-- Search button -->
+                                        <div class="slds-col slds-size_3-of-16 filterFormat">
+                                            <lightning-button variant="brand" label={custLabel.Search} value={selectedQuickFilter} onclick={handleSearch}></lightning-button>
+                                        </div>
+                                    </div>
+                                </div>    
+                            </lightning-tab>
+                            <lightning-tab label={custLabel.location} class="tabPosition">
+                                <lightning-layout>
+                                    <!-- Dropdown for Visit Zone -->
+                                    <lightning-layout-item size="3">
+                                        <lightning-combobox label={custLabel.Tacticom} options={visitZoneOptions} value={selectedVisitZone} class="slds-p-horizontal_small" onchange={handleZoneChange}></lightning-combobox>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="3">
+                                        <lightning-input label={custLabel.City} value={city} class="slds-p-horizontal_small" onchange={handleCityChange}></lightning-input>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="3">
+                                        <lightning-input label={custLabel.Zip} value={zip} class="slds-p-horizontal_small" onchange={handleZipChange}></lightning-input>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="3">
+                                        <lightning-input label={custLabel.State} value={state} class="slds-p-horizontal_small" onchange={handleStateChange}></lightning-input>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </lightning-tab>
+                            <lightning-tab label={custLabel.Eye_Doctor_Details} class="tabPosition">
+                                <lightning-layout>
+                                    <lightning-layout-item size="4">
+                                        <lightning-combobox label={custLabel.Miyosmart_Segmentation} options={miyoSegmentationOptions} class="slds-p-horizontal_small" value={selectedSegmentation} onchange={handleSegChange}></lightning-combobox>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="3">
+                                        <lightning-combobox label={custLabel.Miyosmart_Attitude} class="slds-p-horizontal_small" options={miyoAttitudeOptions} value={selectedAttitude} onchange={handleAttitudeChange}></lightning-combobox>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="3">
+                                        <lightning-combobox label={custLabel.Local_Specialization} class="slds-p-horizontal_small" options={localSpecializationOptions} value={selectedSpecialization} onchange={handleSpecializationChange}></lightning-combobox>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="2" class="buttonPosition">
+                                        <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                            <button onclick={toggleDropdown} class="slds-button1">{custLabel.Vist_Day_Time}</button>
+                                            <div if:true={isDropdownOpen} class="slds-dropdown slds-dropdown_fluid slds-dropdown_left" onmouseleave={handleMouseLeave}>
+                                                <ul class="slds-dropdown__list" role="listbox">
+                                                    <template for:each={preferredContactOptions} for:item="option">
+                                                        <li key={option.value} role="presentation" class="slds-dropdown__item" style="padding-left: .50rem;">
+                                                            <label class="">
+                                                                <input type="checkbox" value={option.value} checked={option.selected} onchange={handleComboboxChange} />
+                                                                <span class="slds-checkbox__label" style="padding-left: .5rem;">
+                                                                    <span class="slds-checkbox_faux"></span>
+                                                                    <span class="slds-form-element__label">{option.label}</span>
+                                                                </span>
+                                                            </label>
+                                                        </li>
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </lightning-tab>
+                        </lightning-tabset>
+                    </template>
+                    <div class="table-container">
+                        <!-- Pagination Controls -->
+                        <div class="slds-m-top_medium slds-grid slds-grid_align-spread pagination">
+                            <lightning-button 
+                                label="Previous" 
+                                onclick={handlePrevPage} 
+                                disabled={disablePrev}>
+                            </lightning-button>
+            
+                            <span>{custLabel.page} {currentPage} {custLabel.of} {totalPages}</span>
+            
+                            <lightning-button 
+                                label="Next" 
+                                onclick={handleNextPage} 
+                                disabled={disableNext}>
+                            </lightning-button>
+                        </div>
+                        <template if:true={paginatedData}>
+                            <c-custom-tree-grid columns={columns} tabledata={paginatedData} onsortchange={handleSorting}></c-custom-tree-grid>
+                        </template>
+                    </div>
+                </div>&nbsp;
+                <div class={secondComponentClass}>
+                    <template if:true={showCalender}>
+                        <div class="slds-box">
+                            <c-full-calenderv2 record-type-id={recordTypeId} page-ref="MedicalVisitPlanning"></c-full-calenderv2>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </lightning-tab>
+        <lightning-tab label={custLabel.clinicMap}>
+        </lightning-tab>
+        <lightning-tab label={custLabel.plannedVisitsMap}>
+            <c-eye-doctor-planned-visits-map record-type-id={recordTypeId}></c-eye-doctor-planned-visits-map>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

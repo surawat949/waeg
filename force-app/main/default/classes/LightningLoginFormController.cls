@@ -46,11 +46,11 @@ global class LightningLoginFormController {
     @AuraEnabled
     public static String login(String username, String password, String startUrl, String language) {
         system.debug('##LightningLoginFormController.login()');
-        /*if (!startUrl.contains('apex/WSFederation') && !startUrl.contains('/idp/login') && !startUrl.contains('/setup/secur/RemoteAccessAuthorizationPage') && !startUrl.contains('oauth')) {
+        if (!startUrl.contains('apex/WSFederation') && !startUrl.contains('/idp/login') && !startUrl.contains('/idp/endpoint') && !startUrl.contains('/setup/secur/RemoteAccessAuthorizationPage') && !startUrl.contains('oauth')) {
             system.debug('##returning service provider error:' + language);
             return mapCommunityLabel.get(language).Label_Use_Service_Provider__c;
         
-        }*/
+        }
         if (String.isBlank(username) || String.isBlank(password)) {
             System.debug('##returning login blank error');
             return mapCommunityLabel.get(language).Label_Fill_in_Credentials__c;

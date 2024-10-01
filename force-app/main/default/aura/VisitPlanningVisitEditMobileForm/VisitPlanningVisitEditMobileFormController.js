@@ -113,7 +113,7 @@
             visit.End_Time__c = new Date(date.getTime()+60*60000).toJSON();
             visit.Call_To_Action_Notes__c = null;
             visit.Visit_Reason__c = null;
-            visit.Visit_Reason_APAC__c = null;
+            //visit.Visit_Reason_APAC__c = null;
             visit.Call_To_Action__c = null;
 
             console.log(visit.Start_Time__c);

@@ -86,6 +86,8 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
     @track columns2 = columns2;
     @track sortBy;
     @track sortDirection;
+    @track sortByValidationList;
+    @track sortDirectionValidationList;
     @track rowId;
     @track rowName;
 
@@ -94,6 +96,7 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
     contactCount;
     errors;
     contactOpthalogistRecId;
+    listOfValidationRecords;
     
     CHANNEL_NAME = '/event/Refresh_Related_List_Contact__e';
 
@@ -134,7 +137,7 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
         });        
     }
 
-    @wire(getValidationAll, {recordId : '$recordId'})
+    @wire(getValidationAll, {recordId : '$receivedId'})
     validCount({data, error}){
         if(data){
             data = JSON.parse(JSON.stringify(data));
@@ -151,13 +154,16 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
         }
     }
     
-    @wire(getValidationList, {recordId : '$recordId'})
-    validation(result){
-        if(result.data){
-            this.data = JSON.parse(JSON.stringify(result.data));
-            if(this.data.length > 0)
+    @wire(getValidationList, {recordId : '$receivedId'})
+    validation({error, data}){
+        console.log('>>>>12',data);
+        if(data){
+            console.log('>>>>12',data);
+            
+            data = JSON.parse(JSON.stringify(data));
+            if(data.length > 0)
                 this.isValidationReqsExist = true;
-            this.data.forEach(res=>{
+                data.forEach(res=>{
                 res.ValidationId = '/'+res.Id;
                 res.ValidationName = res.Name;
                 res.ReqDate = res.QIDC__Request_Date_ims__c;
@@ -167,12 +173,10 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
                 res.Status = res.QIDC__Status_ims__c;
                 res.CreatedBy = res.CreatedBy.Name;
             });
-            this.error = undefined;
-        }else if(result.error){
-            //this.errors = error;
-            this.error = result.error;
-            this.data = undefined;
-            this.showToast('Error',JSON.stringify(this.errors),'error','dismissable');
+            this.listOfValidationRecords = data;
+        }else if(error){
+            this.error = error;
+            this.showToast('Error',JSON.stringify(this.error),'error','dismissable');
         }
     }
     /*
@@ -198,11 +202,9 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
     
     getAllContactData(){
         AllAssociatedContact({recordId : this.receivedId}).then(response=>{
-            console.log('>>>');
             this.isContactLstLoading = false;
             if(response){
                 this.data = JSON.parse(JSON.stringify(response));
-                console.log('>>>',this.data);
                 if(response.length > 0){
                     this.isAssociatedConsExist = true;
                     this.data.forEach(res=>{
@@ -214,7 +216,6 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
             }
         }).catch(error=>{
             debugger;
-            console.log('>>>error',this.error);
             this.data = undefined;
             this.showToast('Error',JSON.stringify(error.message),'error','dismissable');
         });
@@ -257,27 +258,48 @@ export default class TabMVAActivationContacts extends NavigationMixin(LightningE
     }*/
 
     doSorting(event) {
-        this.sortBy = event.detail.fieldName;
-        this.sortDirection = event.detail.sortDirection;
-        this.sortData(this.sortBy, this.sortDirection);
+        const fieldName = event.detail.fieldName;
+        const sortDirection = event.detail.sortDirection;
+        this.sortBy = fieldName;
+        this.sortDirection = sortDirection;
+        this.sortData(fieldName, sortDirection);
     }
-
-    sortData(fieldname, direction) {
-        let parseData = JSON.parse(JSON.stringify(this.data));
-        // Return the value stored in the field
-        let keyValue = (a) => {
-            return a[fieldname];
-        };
-        // cheking reverse direction
-        let isReverse = direction === 'asc' ? 1: -1;
-        // sorting data
-        parseData.sort((x, y) => {
-            x = keyValue(x) ? keyValue(x) : ''; // handling null values
-            y = keyValue(y) ? keyValue(y) : '';
-            // sorting values based on direction
-            return isReverse * ((x > y) - (y > x));
+    sortData(fieldName, direction) {    
+    const parseData = [...this.data];
+    const isReverse = direction === 'asc' ? 1 : -1;
+        parseData.sort((a, b) => {
+            const valueA = a[fieldName] ?? '';
+            const valueB = b[fieldName] ?? '';
+            if (typeof valueA === 'string' && typeof valueB === 'string') {
+                return isReverse * valueA.localeCompare(valueB);
+            } 
+            if (typeof valueA === 'number' && typeof valueB === 'number') {
+                return isReverse * (valueA - valueB);
+            }
+            return 0;
         });
         this.data = parseData;
+    }
+    
+    doSortingValidationList(event) {
+        const fieldName = event.detail.fieldName;
+        const sortDirection = event.detail.sortDirection;
+        this.sortByValidationList = fieldName;
+        this.sortDirectionValidationList = sortDirection;
+        this.sortDataValidationList(fieldName, sortDirection);
+    }
+    
+    sortDataValidationList(fieldName, direction) {
+        const parseData = [...this.listOfValidationRecords];
+        const isReverse = direction === 'asc' ? 1 : -1;
+        parseData.sort((a, b) => {
+            const valueA = a[fieldName] ?? '';
+            const valueB = b[fieldName] ?? '';
+            if (valueA < valueB) return -1 * isReverse;
+            if (valueA > valueB) return 1 * isReverse;
+            return 0;
+        });
+        this.listOfValidationRecords = parseData;
     }
     
     navigateToRelatedList(){

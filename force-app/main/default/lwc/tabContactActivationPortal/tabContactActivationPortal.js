@@ -31,7 +31,8 @@ export default class TabContactActivationPortal extends LightningElement {
     @api receivedId;
     custLabel={PortalSetting,User,Registrations,RegHoyanet};
     Contact_Obj = Contact_obj;
-    fields1 = [AccTemplate,AccPotal,AccLanguage];
+    fields0 = [AccTemplate];
+    fields1 = [AccPotal,AccLanguage];
     fields2 = [DateFormat,TimeFormat,TimeZoneOffset];
     fields3 = [SyncToPardot,TestEnv];
     portalUser =[PortalUserName];

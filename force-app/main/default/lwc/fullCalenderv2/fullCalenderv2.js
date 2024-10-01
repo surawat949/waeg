@@ -11,7 +11,7 @@ import TimeZone from '@salesforce/i18n/timeZone';
 import LangLocale from "@salesforce/i18n/lang";
 import firstDayOfWeek from '@salesforce/i18n/firstDayOfWeek';
 import visitCreatePopup from 'c/visitCreatePopup';
-
+import { getBackgroundColor } from "c/utility";
 //Custom Labels
 import Today from '@salesforce/label/c.Today';
 import Month from '@salesforce/label/c.Month';
@@ -27,6 +27,8 @@ export default class VisitPlanningCalenderLWC extends NavigationMixin(LightningE
     visit;
     @api top;
     @api right;
+    @api pageRef = 'VisitPlanning';
+    _recordTypeId;
     showToolTip;
     toolTip1;
     toolTip2;
@@ -42,12 +44,26 @@ export default class VisitPlanningCalenderLWC extends NavigationMixin(LightningE
     custLabel = {
         Today,Month,Week,Day
     }
+    @api 
+    set recordTypeId(val){
+        this._recordTypeId = val;
+        console.log('_recordTypeId',val);
+    }
+
+    get recordTypeId(){
+        return this._recordTypeId;
+    }
     @api refresh(){
         this.updateCalenderEvents();
     }
     constructor(){
         super();
-    }   
+    } 
+
+    get disableContact(){
+        return (this.pageRef == 'MedicalVisitPlanning') ? true : false;
+    }
+
     @wire(getRecord, { recordId: userId, fields: [userName] })
     userDetails({ error, data }) {
         if (error) {
@@ -141,6 +157,7 @@ export default class VisitPlanningCalenderLWC extends NavigationMixin(LightningE
             }
             nubbinpos = 'slds-nubbin_right-top';
         }
+        console.log('info'+JSON.stringify(info));
         var parts = info.event.title.split('\n');
         let elem = '<div class="calpopover slds-popover slds-popover_tooltip slds-popover_medium" role="tooltip" style="position:absolute;min-height:40px;transform:rotate(360deg)"><div class="slds-popover__body">';
         parts.forEach((part,index)=>{
@@ -157,6 +174,7 @@ export default class VisitPlanningCalenderLWC extends NavigationMixin(LightningE
 
     }
     handleEventDrop(info){
+        console.log('handleEventDrop');
         var v={};
         v.sobjectType = 'Visits__c';
         v.Id = info.event.extendedProps.sfid;
@@ -185,13 +203,18 @@ export default class VisitPlanningCalenderLWC extends NavigationMixin(LightningE
         $('.fc-daygrid-event').css('z-index',6); 
     }
     handleExternalDrop(info){ 
+        console.log('handleExternalDrop'+JSON.stringify(info));
         var Id = info.event.extendedProps.recordId;  
         var name =  info.event.title;
         var start=  info.event.start;  
         var v={};
         v.sobjectType = 'Visits__c';
-        v.Account__c =Id;
+        if(info.event.extendedProps.contactId){
+            v.Contact__c = info.event.extendedProps.contactId;
+            Id =  info.event.extendedProps.accountId;
+        }
         v.AccountName = name;
+        v.Account__c =Id;
         v.Account__r = {
             sobjectType : 'Account',
             Id: Id,
@@ -210,13 +233,18 @@ export default class VisitPlanningCalenderLWC extends NavigationMixin(LightningE
         v.Assigned_to__c = userId;
         v.userName = this.userName;
         v.Visit_Notes__c = null;
-        v.Visit_Type__c = null;      
+        v.Visit_Type__c = null;
+        if(this.recordTypeId){
+            v.recordTypeId = this.recordTypeId;
+        }    
+        console.log('handleExternalDrop After'+JSON.stringify(v));  
         this.showPopUp(v);
 }
 async showPopUp(visit){
         await visitCreatePopup.open({
-        size: 'small',
-        visit: visit
+            size: 'small',
+            visit: visit,
+            disableContact:this.disableContact
         });          
         this.updateCalenderEvents();
 }
@@ -234,37 +262,48 @@ navigateToRecord(recordId,ObjectName){
     this[NavigationMixin.Navigate](pageReference);
 }
 eventClickHandler = (info) => {
-    if(info.event.title != null && info.event.title.startsWith('Event') && info.event.extendedProps.isExtraEvent != null && info.event.extendedProps.isExtraEvent == true){
-        var url = '/'+info.event.extendedProps.sfid;
-        window.open(url, "_blank");
-       // this.navigateToRecord(info.event.extendedProps.sfid,'Event');
-    }
-    if(info.event.title != null && !info.event.title.startsWith('Event')){
-        const titleArray = info.event.title.split('\n');
-        var count = titleArray.length;        
-        if(info.event.start > new Date()){    
-            var hoyaAccId = titleArray[count-1];
-            getAccountId({hoyaAccId :hoyaAccId})
-            .then(response => {                  
-                var url =  '/' + response;
-                if(response == null ){
-                    this.showToast('Error', error, 'Missing data like HoyaAccountId');  
-                }
-                else{
-                   // this.navigateToRecord(response,'Account');
-                    window.open(url, "_blank");
-                }
-            }).catch(error => {
-                this.showToast('Error', error, error.message);         
-            })
-        }
-        else{          
-            var visitId = info.event.extendedProps.sfid;
-            var url = '/' + visitId;
-          //  this.navigateToRecord(info.event.extendedProps.sfid,'Visits__c');
+        console.log('info on click'+JSON.stringify(info));
+        if(info.event.title != null && info.event.title.startsWith('Event') && info.event.extendedProps.isExtraEvent != null && info.event.extendedProps.isExtraEvent == true){
+            var url = '/'+info.event.extendedProps.sfid;
             window.open(url, "_blank");
+        // this.navigateToRecord(info.event.extendedProps.sfid,'Event');
+        console.log('Extra section');
         }
-    }
+        if(info.event.title != null && !info.event.title.startsWith('Event') && !info.event.title.startsWith('Lead Visit Event')){
+            const titleArray = info.event.title.split('\n');
+            var count = titleArray.length;        
+            console.log('Not Event section');
+            if(info.event.start > new Date()){ 
+                var accId = info.event.extendedProps.accid;  
+                if(!accId){ 
+                    var hoyaAccId = titleArray[count-1];
+                    getAccountId({hoyaAccId :hoyaAccId})
+                    .then(response => {                  
+                        var url =  '/' + response;
+                        if (!response) {
+                            if(info.event.extendedProps.sfid){
+                                url = '/' + info.event.extendedProps.sfid;
+                            }
+                        } 
+                        window.open(url, "_blank");
+                    }).catch(error => {
+                        this.showToast('Error', error, error.message);         
+                    })
+                }else{
+                    window.open('/' + accId, "_blank");
+                }
+            }
+            else{          
+                var visitId = info.event.extendedProps.sfid;
+                var url = '/' + visitId;
+            //  this.navigateToRecord(info.event.extendedProps.sfid,'Visits__c');
+                window.open(url, "_blank");
+            }
+        }else if(info.event.title != null && info.event.title.startsWith('Lead Visit Event')){
+            var url = '/'+info.event.extendedProps.sfid;
+            window.open(url, "_blank");
+            console.log('Additiobnal final Event section');
+        }
     }
     setCalendarDate(){
         var view = this.calendar.view;
@@ -312,15 +351,18 @@ eventClickHandler = (info) => {
         .then(response => {
             this.eventOriginalData = response;
             let Events = JSON.parse(JSON.stringify(response));
+            console.log('Events'+JSON.stringify(Events));
             for (let event in Events) {
-                var title ;
+                var title;
                 var allDay;
                 var start;
                 var end;
                 var sfid;
                 var backgroundColor;
                 var editable;
+                var accId;
                 if(Events[event].eventType == 'UserEvent'){
+                    var leadVisitEvent = Events[event].recordTypeName && Events[event].recordTypeName == 'Lead_Visits' ? true : false;
                     this.timezone = TimeZone;
                     this.locale = locale;                   
                     allDay = Events[event].isAllDayEvent;
@@ -328,9 +370,32 @@ eventClickHandler = (info) => {
                     end = moment(Events[event].endTime).tz(this.timezone).format();
                     if(Events[event].subject != null && Events[event].subject != 'undefined'){
                         title = "Event " + Events[event].subject;
-                    }
-                    else{
+                    }else{
                         title = "Event";
+                    }
+                    if(leadVisitEvent){
+                        title = 'Lead Visit Event ';
+                        title += "\n";
+                        title += Events[event].subject;
+                        if(Events[event].accountShopStreet != null)
+                        {
+                            title  = title + "\n" + Events[event].accountShopStreet;
+                        }
+
+                        if(Events[event].accountShopCity != null)
+                        {
+                            title  = title + "," + Events[event].accountShopCity;
+                        }
+
+                        if(Events[event].accountShopZipcode != null)
+                        {
+                            title  = title + "," + Events[event].accountShopZipcode;
+                        }
+                    
+                        if(Events[event].accountShopstate != null)
+                        {
+                            title  = title + "," + Events[event].accountShopstate;
+                        }
                     }
                     if(Events[event].isExtraEvent){
                         if(Events[event].visitType ){
@@ -340,9 +405,13 @@ eventClickHandler = (info) => {
                             title += "\n" + Events[event].description;
                         }
                     }
+                    if(leadVisitEvent){
+                        backgroundColor = '#5867e8';
+                    }else{
+                        backgroundColor = '#FF9411';
+                    }
                    
                     sfid = Events[event].eventId;                    
-                    backgroundColor = '#FF9411';
                     editable=false;
                     this.allEvents.push({
                         title:title,
@@ -356,8 +425,45 @@ eventClickHandler = (info) => {
                     });
                 }
                 else{
-                    if(Events[event].accountName != null)
-                    {
+                    var eyeDoctorEvent = Events[event].recordTypeName && Events[event].recordTypeName == 'Eye_Doctor_Visit' ? true : false;
+                    if(eyeDoctorEvent){
+                        if(Events[event].contactName){
+                            title  = Events[event].contactName;
+                        }
+                        if(Events[event].visitReason != null){
+                            try {
+                                var visitReason = this.translations.picklists.Visits__c_Visit_Reason__c.find(function(vr) {
+                                return vr.value ===  Events[event].Visit_Reason__c;});
+                                title = title + "\n" + visitReason.label;
+                            }
+                            catch (e)
+                            {
+                                title = title + "\n" + Events[event].visitReason;
+                            }
+                        }
+                        if(Events[event].clinicName != null){
+                                title = title + "\n" + Events[event].clinicName;
+                        }
+                            if(Events[event].accountShopStreet != null)
+                        {
+                            title  = title + "\n" + Events[event].accountShopStreet;
+                        }
+
+                        if(Events[event].accountShopCity != null)
+                        {
+                            title  = title + "," + Events[event].accountShopCity;
+                        }
+
+                        if(Events[event].accountShopZipcode != null)
+                        {
+                            title  = title + "," + Events[event].accountShopZipcode;
+                        }
+                    
+                        if(Events[event].accountShopstate != null)
+                        {
+                            title  = title + "," + Events[event].accountShopstate;
+                        }
+                    }else if(Events[event].accountName != null){   
                         title = Events[event].accountName;
                         if(Events[event].accountShopStreet != null)
                         {
@@ -403,45 +509,15 @@ eventClickHandler = (info) => {
                     start = moment(Events[event].startTime).tz(this.timezone).format();
                     end = moment(Events[event].endTime).tz(this.timezone).format();                   
                     sfid = Events[event].eventId;
-                    if(Events[event].visitType=='Visit'){
-                        backgroundColor = {
-                            "Planned" : '#082841',
-                            "Prepared" : '#082841',
-                            "Complete" : '#999966',
-                            "Cancelled" : 'red'
-                        }[Events[event].visitStatus];
-                    }
-                    else if(Events[event].visitType=='Digital Visit'){
-                        backgroundColor = {
-                            "Planned" : '#2eb82e',
-                            "Prepared" : '#2eb82e',
-                            "Complete" : '#999966',
-                            "Cancelled" : 'red'
-                        }[Events[event].visitStatus];
-                    }
-                    else if(Events[event].visitType=='Call'){
-                        backgroundColor = {
-                            "Planned" : '#ff0066',
-                            "Prepared" : '#ff0066',
-                            "Complete" : '#999966',
-                            "Cancelled" : 'red'
-                        }[Events[event].visitStatus];
-                    }   
-                    else{
-                        backgroundColor = {
-                            "Planned" : '#bf8040',
-                            "Prepared" : '#bf8040',
-                            "Complete" : '#999966',
-                            "Cancelled" : 'red'
-                        }[Events[event].visitStatus];
-                    }                 
-                                       
+                    accId = Events[event].accountId ? Events[event].accountId : '';
+                    backgroundColor = getBackgroundColor(Events[event]);        
                     this.allEvents.push({
                         title:title,
                         allDay:allDay,
                         start:start,
                         end:end,
                         backgroundColor:backgroundColor,
+                        accid : accId,
                         sfid:sfid
                     });
                 }

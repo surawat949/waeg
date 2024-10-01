@@ -1050,8 +1050,7 @@ public with sharing class APACSalesTabController {
     public static List<Task> getTaskData(Id accountId){
         System.debug('XXX Get Task details from account Id '+accountId);
 
-        List<Task> task = [select Id, subject, OwnerId, Owner.Name, ActivityDate, description, 
-                            APAC_Comment__c, APAC_Task_Note__c, CreatedDate
+        List<Task> task = [select Id, subject, OwnerId, Owner.Name, ActivityDate, description, CreatedDate
                             from Task where whatid =: accountId order by LastModifiedDate desc limit 10];
         
         return task;
@@ -1064,8 +1063,7 @@ public with sharing class APACSalesTabController {
         Opportunity o = [select Id, Name from Opportunity where AccountId=:accountId and IsClosed=false order by lastmodifieddate desc limit 1];
         System.debug('XXX Get Data for Opportunity Id '+o.Id);
 
-        List<Task> taskOpp = [select Id, subject, OwnerId, Owner.Name, ActivityDate, description, 
-                                APAC_Comment__c, APAC_Task_Note__c 
+        List<Task> taskOpp = [select Id, subject, OwnerId, Owner.Name, ActivityDate, description 
                                 from Task where whatid =: o.Id order by LastModifiedDate desc limit 10];
         
         return taskOpp;

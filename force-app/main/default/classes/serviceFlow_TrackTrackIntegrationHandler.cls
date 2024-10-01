@@ -7,8 +7,9 @@ public class serviceFlow_TrackTrackIntegrationHandler
         serviceFlow_Track_Trace_Config__mdt trackTrackConfig = trackTrackConfig();
         ResponseWrapper responseWrapperObject = new ResponseWrapper();
         Map < String, Object > headerMap = headerPayload(recordId);
-        Map < String, Object > payloadMap = bodyPayload();
+        Map < String, Object > payloadMap = bodyPayload();        
         String jwt = base64URLencode(blob.valueof(JSON.serialize(headerMap))) + '.' + base64URLencode(blob.valueof(JSON.serialize(payloadMap)));
+        system.debug('******'+jwt);
         Blob key = blob.valueof(trackTrackConfig.Private_Key__c);
         blob signature = Crypto.generateMac(trackTrackConfig.Algorithm_Name__c, Blob.valueof(jwt), key);
         String accessToken = jwt + '.' + base64URLencode(signature);
@@ -150,6 +151,7 @@ public class serviceFlow_TrackTrackIntegrationHandler
         @AuraEnabled public Integer statusCode  { get;set;}
         @AuraEnabled public String returnResult { get;set;}
         @AuraEnabled public String errorMessage { get;set;}
+        @AuraEnabled public String req { get;set;}
         @AuraEnabled public List < Object > ordersList { get;set;}
     }
     @AuraEnabled 

@@ -104,7 +104,7 @@ public with sharing class tabAccountAddressLWCController {
             Task t = new Task(
                 Subject = Sject,
                 WhatId = relatedTo,
-                Instructions__c = Comment,
+                Description = Comment,
                 OwnerId = assignTo,
                 ActivityDate = DueDate,
                 Status = sStatus,
@@ -397,6 +397,24 @@ public with sharing class tabAccountAddressLWCController {
         }else{
             return null;
         }
-
+    }
+    @AuraEnabled(cacheable=true)
+    public static Boolean fetchRecordTypeId(String receivedId) {
+        System.debug(receivedId);
+        Boolean showExtraSection = true;
+                    // Query the Account record
+            Account acc = [SELECT RecordType.Name FROM Account WHERE Id = :receivedId LIMIT 1];
+            
+            // Get the RecordType.Name
+            String recordTypeName = acc.RecordType.Name;
+            System.debug('>>>>' + recordTypeName);
+            
+            // Determine whether to show the extra section
+            if (recordTypeName == 'Health Insurance') {
+                showExtraSection = false;
+            }
+            
+        System.debug('>>>> showExtraSection: ' + showExtraSection);
+        return showExtraSection;
     }
 }

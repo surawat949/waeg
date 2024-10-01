@@ -106,41 +106,26 @@
                                             <button class="slds-th__action sortable colormatch nameTagBig" name="Hoya_Account_ID__c" onclick={sortRecs}>{custLabel.Hoya_Account_ID}</button>
                                         </th>
                                         <th style="top: 0;" class="index2">
-                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Shop_Postal_Code__c" onclick={sortRecs}>{custLabel.ZIP}</button>
-                                        </th>
-                                        <th style="top: 0;" class="index2">
                                             <button class="slds-th__action sortable colormatch nameTagBig" name="Shop_City__c" onclick={sortRecs}>{custLabel.city}</button>
-                                        </th>
-                                        <th style="position: sticky; top: 0;" class="index2">
-                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Shop_State__c" onclick={sortRecs}>{custLabel.State}</button>
                                         </th>
                                         <th style="position: sticky; top: 0;">
                                             <button class="slds-th__action sortable colormatch nameTagBig" name="Last_Visit_date__c" onclick={sortRecs}>{custLabel.Last_Visit_S_D}</button>
                                         </th>
                                         <th style="position: sticky; top: 0;">
-                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Total_Visits_Achieved__c" onclick={sortRecs}>{custLabel.Total_visits_achieved}</button>
+                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Next Visit" onclick={sortRecs}>{custLabel.Next_Visit}</button>
+                                        </th>
+                                        <th style="position: sticky; top: 0;">
+                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Total Visits Achieved" onclick={sortRecs}>{custLabel.Total_visits_achieved}</button>
                                         </th>
                                         <th style="position: sticky; top: 0;">
                                             <button class="slds-th__action sortable colormatch nameTagBig" name="TACTICOM_SOF__c" onclick={sortRecs}>{custLabel.Tacticom}</button>
                                         </th>
                                         <th style="position: sticky; top: 0;">
-                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Account_Status__c" onclick={sortRecs}>{custLabel.accountStatus}</button>
+                                            <button class="slds-th__action sortable colormatch nameTagBig" name="HVC_Loyalty_Program" onclick={sortRecs}>{custLabel.HVC_Loyalty_Program}</button>
                                         </th>
                                         <th style="position: sticky; top: 0;">						  
                                             <button class="slds-th__action sortable colormatch nameTagBig" name="Segmentation_Net__c" onclick={sortRecs}>{custLabel.AccountVisitTabSegmentation}</button>
                                         </th> 
-                                        <th style="position: sticky; top: 0;">
-                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Account_Life_Cycles__r.Stage__c" onclick={sortRecs}>{custLabel.Customer_Review_Stage}</button>
-                                        </th>
-                                        <th style="position: sticky; top: 0;">
-                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Visionary_Alliance__c" onclick={sortRecs}>{custLabel.VisionaryAlliance}</button>
-                                        </th>
-                                        <th style="position: sticky; top: 0;">
-                                            <button class="slds-th__action sortable colormatch nameTagBig" name="HVC_Loyalty_Program" onclick={sortRecs}>{custLabel.HVC_Loyalty_Program}</button>
-                                        </th>
-                                        <th style="position: sticky; top: 0;">
-                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Myo_Smart_AuthorizeDealer__c" onclick={sortRecs}>{custLabel.Miyo_Smart_AuthorizeDealer}</button>
-                                        </th>
                                         <th style="position: sticky; top: 0;">
                                             <button class="slds-th__action sortable colormatch nameTagBig" name="Lenses_Net_Sales_Last_12Mo__c" onclick={sortRecs}>{custLabel.Lens_Net_Sales_L12Mo}</button>
                                         </th>
@@ -148,10 +133,25 @@
                                             <button class="slds-th__action sortable colormatch nameTagBig" name="Share_of_Wallet__c" onclick={sortRecs}>{custLabel.AccountShareofWallet3Mo}</button>
                                         </th>
                                         <th style="position: sticky; top: 0;">
+                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Last_Sales_Statistics__r.Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY__c" onclick={sortRecords}>{custLabel.Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY}</button>
+                                        </th>
+                                        <th style="position: sticky; top: 0;">
+                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Myo_Smart_AuthorizeDealer__c" onclick={sortRecs}>{custLabel.Miyo_Smart_AuthorizeDealer}</button>
+                                        </th>
+                                        <th style="position: sticky; top: 0;">
                                             <button class="slds-th__action sortable colormatch nameTagBig" name="First_Competitor_local_name__c" onclick={sortRecs}>{custLabel.Local_competitor}</button>
                                         </th>
                                         <th style="position: sticky; top: 0;">
-                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Last_Sales_Statistics__r.Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY__c" onclick={sortRecords}>{custLabel.Lenses_Net_Sales_Last_3Mo_CFY_vs_LFY}</button>
+                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Second_Competitor_local_Name__c" onclick={sortRecs}>{custLabel.x2nd_Competitor}</button>
+                                        </th>
+                                         <th style="position: sticky; top: 0;">
+                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Shop_Street__c" onclick={sortRecs}>{custLabel.Street}</button>
+                                        </th>
+                                        <th style="top: 0;" class="index2">
+                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Shop_Postal_Code__c" onclick={sortRecs}>{custLabel.ZIP}</button>
+                                        </th>
+                                        <th style="position: sticky; top: 0;" class="index2">
+                                            <button class="slds-th__action sortable colormatch nameTagBig" name="Shop_State__c" onclick={sortRecs}>{custLabel.State}</button>
                                         </th>
                                     </tr>
                                 </thead>
@@ -171,27 +171,15 @@
                                                 </div>
                                             </td>
                                             <td style="position: static">{record.Hoya_Account_ID__c}</td>
-                                            <td style="position: static">{record.Shop_Postal_Code__c}</td>
                                             <td style="position: static">{record.Shop_City__c}</td>
-                                            <td style="position: static">{record.Shop_State__c}</td>
                                             <td style="position: static">{record.Last_Visit_date__c}</td>
-                                            <td style="position: static">{record.Total_Visits_Achieved__c} %</td>
-                                            <td style="position: static">{record.TACTICOM_SOF__c}</td>											
-                                            <td style="position: static">{record.Account_Status__c}</td>															
-                                            <td style="position: static">{record.Segmentation_Net__c}</td>
-                                            <td style="position: static">
-                                                <template if:true={record.Account_Life_Cycles__r}>
-                                                    <template for:each={record.Account_Life_Cycles__r} for:item="stat">
-                                                        {stat.Stage__c}
-                                                    </template>
-                                                </template>
-                                            </td>
-                                            <td style="position: static">{record.Visionary_Alliance__c}</td>
-                                            <td style="position: static">{record.Seiko_Network__c}</td>
-                                            <td style="position: static">{record.Myo_Smart_AuthorizeDealer__c}</td>
-                                            <td style="position: static">{record.FormattedLenses_Net_Sales_Last_12Mo}</td>
-                                            <td style="position: static">{record.Share_of_Wallet__c} %</td>
-                                            <td style="position: static">{record.First_Competitor_local_name__c}</td>
+                                            <td style="position: static">{record.recommendation}</td>
+                                            <td style="position: static">{record.Total_Visits_Achieved__c}%</td>
+                                            <td style="position: static">{record.TACTICOM_SOF__c}</td>	
+                                            <td style="position: static">{record.Seiko_Network__c}</td>		
+                                            <td style="position: static">{record.Segmentation_Net__c}</td>	
+                                            <td style="position: static">{record.FormattedLenses_Net_Sales_Last_12Mo}</td>	
+                                            <td style="position: static">{record.Share_of_Wallet__c} %</td>	
                                             <td style="position: static">
                                                 <template if:true={record.Last_Sales_Statistics__r}>
                                                     <template for:each={record.Last_Sales_Statistics__r} for:item="stat">
@@ -199,6 +187,12 @@
                                                     </template>
                                                 </template>
                                             </td>
+                                            <td style="position: static">{record.Myo_Smart_AuthorizeDealer__c}</td>
+                                            <td style="position: static">{record.First_Competitor_local_name__c}</td>
+                                            <td style="position: static">{record.Second_Competitor_Local_Name__c}</td>
+                                            <td style="position: static">{record.Shop_Street__c}</td>
+                                            <td style="position: static">{record.Shop_Postal_Code__c}</td>
+                                            <td style="position: static">{record.Shop_State__c}</td>
                                         </tr>
                                     </template>
                                 </tbody>
@@ -208,7 +202,7 @@
                 </div>&nbsp;
                 <div class={secondComponentClass}>
                     <template if:true={showCalender}>
-                        <div class="slds-box"><c-full-calenderv2></c-full-calenderv2></div>
+                        <div class="slds-box"><c-full-calenderv2 ></c-full-calenderv2></div>
                     </template>
                 </div>
             </div>

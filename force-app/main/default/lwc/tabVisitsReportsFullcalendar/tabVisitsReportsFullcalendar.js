@@ -6,6 +6,7 @@ import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import TimeZone from '@salesforce/i18n/timeZone';
 import LangLocale from "@salesforce/i18n/lang";
+import { getBackgroundColor } from "c/utility";
 
 //Custom Labels
 import Today from '@salesforce/label/c.Today';
@@ -126,14 +127,23 @@ export default class tabVisitsReportsFullcalendar extends LightningElement {
                 var backgroundColor;
                 var editable;
                 if(Events[event].eventType == 'UserEvent'){
+                    var leadVisitEvent = Events[event].recordTypeName && Events[event].recordTypeName == 'Lead_Visits' ? true : false;
                     this.timezone = TimeZone;
                     this.locale = locale;
                     allDay = Events[event].isAllDayEvent;
                     start = moment(Events[event].startTime).tz(this.timezone).format();
                     end = moment(Events[event].endTime).tz(this.timezone).format();
-                    title = "Event " + Events[event].subject;
+                    if(leadVisitEvent){
+                        title = 'Lead Visit Event ';
+                    }else{
+                        title = "Event " + Events[event].subject;
+                    }
                     sfid = Events[event].eventId;                    
-                    backgroundColor = '#FF9411';
+                    if(leadVisitEvent){
+                        backgroundColor = '#5867e8';
+                    }else{
+                        backgroundColor = '#FF9411';
+                    }
                     editable=false;
                     this.allEvents.push({
                         title:title,
@@ -147,8 +157,47 @@ export default class tabVisitsReportsFullcalendar extends LightningElement {
                     });
                 }
                 else{
-                    if(Events[event].accountName != null)
-                    {
+                    var eyeDoctorEvent = Events[event].recordTypeName && Events[event].recordTypeName == 'Eye_Doctor_Visit' ? true : false;
+                    if(eyeDoctorEvent){
+                        if(Events[event].recordTypeName && Events[event].recordTypeName == 'Eye Doctor Visit'){
+                            if(Events[event].contactName){
+                                title  = Events[event].contactName;
+                            }
+                            if(Events[event].visitReason != null){
+                                try {
+                                    var visitReason = this.translations.picklists.Visits__c_Visit_Reason__c.find(function(vr) {
+                                    return vr.value ===  Events[event].Visit_Reason__c;});
+                                    title = title + "\n" + visitReason.label;
+                                }
+                                catch (e)
+                                {
+                                    title = title + "\n" + Events[event].visitReason;
+                                }
+                            }
+                            if(Events[event].clinicName != null){
+                                    title = title + "\n" + Events[event].clinicName;
+                            }
+                             if(Events[event].accountShopStreet != null)
+                            {
+                                title  = title + "\n" + Events[event].accountShopStreet;
+                            }
+
+                            if(Events[event].accountShopCity != null)
+                            {
+                                title  = title + "," + Events[event].accountShopCity;
+                            }
+
+                            if(Events[event].accountShopZipcode != null)
+                            {
+                                title  = title + "," + Events[event].accountShopZipcode;
+                            }
+                        
+                            if(Events[event].accountShopstate != null)
+                            {
+                                title  = title + "," + Events[event].accountShopstate;
+                            }
+                        }   
+                    }else if(Events[event].accountName != null){   
                         title = Events[event].accountName;
                         if(Events[event].accountShopStreet != null)
                         {
@@ -195,47 +244,7 @@ export default class tabVisitsReportsFullcalendar extends LightningElement {
                     start = moment(Events[event].startTime).tz(this.timezone).format();
                     end = moment(Events[event].endTime).tz(this.timezone).format();                   
                     sfid = Events[event].eventId;
-                    if(Events[event].hoyaAccountId != null && Events[event].hoyaAccountId.toUpperCase().startsWith('US') ){
-                        backgroundColor = {
-                        "Planned" : '#bf8040',
-                        "Prepared" : '#bf8040',
-                        "Complete" : '#999966',
-                        "Cancelled" : 'red'
-                        }[Events[event].visitStatus];
-                    }
-                    else{
-                        backgroundColor = {
-                        "Planned" : '#bf8040',
-                        "Prepared" : '#bf8040',
-                        "Complete" : '#999966',
-                        "Cancelled" : 'red'
-                        }[Events[event].visitStatus];
-                        if(Events[event].visitType=='Visit'){
-                            backgroundColor = {
-                                "Planned" : '#082841',
-                                "Prepared" : '#082841',//#039960
-                                "Complete" : '#999966',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }
-                        if(Events[event].visitType=='Digital Visit'){
-                            backgroundColor = {
-                                "Planned" : '#2eb82e',
-                                "Prepared" : '#2eb82e',//#039960
-                                "Complete" : '#999966',//'#bf8040',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }
-                        if(Events[event].visitType=='Call'){
-                            backgroundColor = {
-                                "Planned" : '#ff0066',
-                                "Prepared" : '#ff0066',
-                                "Complete" : '#999966',//'#ecc6d8',
-                                "Cancelled" : 'red'
-                            }[Events[event].visitStatus];
-                        }                    
-                    }
-                    
+                    backgroundColor = getBackgroundColor(Events[event]);     
                     this.allEvents.push({
                         title:title,
                         allDay:allDay,

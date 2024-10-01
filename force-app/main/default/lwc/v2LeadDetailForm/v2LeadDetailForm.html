@@ -1,0 +1,263 @@
+<template>
+    <template lwc:if={showLoading}>
+        <lightning-spinner alternative-text="Loading..." size="medium" class="spinnerClass"></lightning-spinner>
+    </template>
+    <div class="slds-box slds-p-around_none slds-m-horizontal_none">
+        <table class="slds-table slds-table_bordered" aria-label="mvaAddress" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.Company_Address}</p>
+                    </h3>
+                </td>
+            </tr>
+        </table>
+        <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+            <div class="slds-size_1-of-1">
+                <lightning-record-form object-api-name={ObjectApiName} record-id={recordId} fields={fieldSet1} mode={agentMode} density="comfy" columns="3"></lightning-record-form>
+            </div>
+        </div>
+        <table class="slds-table slds-table_bordered" aria-label="mvaAddress" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.Contact_Section}</p>
+                    </h3>
+                </td>
+            </tr>
+        </table>
+        <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+            <div class="slds-size_1-of-1">
+                <lightning-record-form object-api-name={ObjectApiName} record-id={recordId} fields={fieldSet4} mode={agentMode} density="comfy" columns="3"></lightning-record-form>
+            </div>
+        </div>
+        <table class="slds-table slds-table_bordered" aria-label="mvaAddress" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.Other_Key_Information}</p>
+                    </h3>
+                </td>
+            </tr>
+        </table>
+        <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+            <div class="slds-size_1-of-3" style="padding: 3px !important;">
+                <lightning-record-form object-api-name={ObjectApiName} record-id={recordId} fields={fieldSet5} mode={agentMode} density="comfy" columns="3"></lightning-record-form>
+            </div>&nbsp;&nbsp;            
+            <div class="slds-size_1-of-3 slds-m-right_small">
+                <div class="slds-form" role="list">
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                <span class="slds-form-element__label">{label.X1st_Competitor_Local_name}</span>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">{FirstCompLocalName}</div>
+                                    <template lwc:if={IsAgentMode}>
+                                        <button class="slds-button slds-button_icon slds-button_icon-bare" onclick={openModal}>
+                                            <lightning-icon icon-name="utility:edit" size="xx-small" class="slds-button__icon slds-button__icon_hint"></lightning-icon>
+                                            <span class="slds-assistive-text"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem"></div>
+                    </div>
+                </div>
+            </div>&nbsp;&nbsp;
+            <div class="slds-size_1-of-3">
+                <div class="slds-form" role="list">
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                <span class="slds-form-element__label">{label.X2nd_Competitor_Local_name}</span>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">{SecondCompLocalName}</div>
+                                    <template lwc:if={IsAgentMode}>
+                                        <button class="slds-button slds-button_icon slds-button_icon-bare" onclick={openModal}>
+                                            <lightning-icon icon-name="utility:edit" size="xx-small" class="slds-button__icon slds-button__icon_hint"></lightning-icon>
+                                            <span class="slds-assistive-text"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table_bordered" aria-label="mvaAddress" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.Submission}</p>
+                    </h3>
+                </td>
+                <template lwc:if={showSubmitButton}>
+                    <td>
+                        <p align="right"><lightning-button label="Submit" onclick={handleSubmit}></lightning-button></p>
+                    </td>
+                </template>
+            </tr>
+        </table>
+        <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+            <div class="slds-col slds-size_1-of-3">
+                <template lwc:if={IsSubmitToEditable}>                    
+                    <c-v2-lead-utility label="Submit To" record-id={recordId} selected-icon-name="standard:user" object-label="User" object-api-name="User" field-api-name="Name" selected-record-id={SubmittedTo} onvalueselected={handleValueSelectedOnLead}>
+                    </c-v2-lead-utility>
+                </template>
+                <template lwc:else>
+                    <div class="slds-form" role="list">
+                        <div class="slds-form__row">
+                            <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">{label.Submit_To}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{SubmitToUserName}</div>                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form__item" role="listitem"></div>
+                        </div>
+                    </div>                    
+                </template>
+            </div>
+        </div>
+        <table class="slds-table slds-table_bordered" aria-label="mvaAddress" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.Creation_Of_The_New_Account}</p>
+                    </h3>
+                </td>
+                <template lwc:if={showConvertConfirmButtons}>
+                    <td>
+                        <p align="right">
+                            <lightning-button label="Reject" onclick={handleReject}></lightning-button> &nbsp;&nbsp;
+                            <lightning-button label="Confirm" onclick={handleConfirm}></lightning-button>
+                        </p>
+                    </td>
+                </template>
+            </tr>
+        </table>
+        <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+            <div class="slds-size_1-of-1">
+                <lightning-record-form object-api-name={ObjectApiName} record-id={recordId} fields={fieldSet7} mode="view" density="comfy" columns="2"></lightning-record-form>
+            </div>
+        </div>
+        <table class="slds-table slds-table_bordered" aria-label="mvaAddress" style="background-color: #215ca0;">
+            <tr class="row" style="background-color: #aacbff;">
+                <td>
+                    <h3 class="slds-section__title  test-id__section-header-container" data-aura-rendered-by="344:1408;a">
+                        <p align="left">{label.Export_Contacts_Visit_Reports_To_The_New_Account}</p>
+                    </h3>
+                </td>
+                <template lwc:if={showConvertButton}>
+                    <td>
+                        <p align="right">
+                            <lightning-button label="Convert" onclick={handleConvert}></lightning-button>
+                        </p>
+                    </td>
+                </template>
+            </tr>
+        </table>
+        <div class="slds-grid slds-m-top_small slds-m-left_medium slds-m-right_medium slds-m-bottom_medium">
+            <div class="slds-size_1-of-3">
+                <div class="slds-form" role="list">
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                <span class="slds-form-element__label">{label.Account_ID}</span>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">{selectedAccountId}</div>
+                                    <button class="slds-button slds-button_icon slds-button_icon-bare" onclick={handleAccountModel}>
+                                        <lightning-icon icon-name="utility:edit" size="xx-small" class="slds-button__icon slds-button__icon_hint"></lightning-icon>
+                                        <span class="slds-assistive-text"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <template if:true={IsAccountSelectionOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-describedby="modal-content-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeHandleAccountModel}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">{label.Select_Account}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template lwc:if={showLoading}>
+                        <lightning-spinner alternative-text="Loading..." size="medium" class="spinnerClass"></lightning-spinner>
+                    </template>
+                    <c-v2-lead-utility label={label.Select_Account} record-id={recordId} selected-icon-name="standard:account" object-label="Account" object-api-name="Account" field-api-name="Name" selected-record-id={selectedAccountId} onvalueselected={handleValueSelectedAccount}>
+                    </c-v2-lead-utility><br /><br /><br /><br /><br /><br /><br />
+                </div>
+                <div class="slds-modal__footer">
+                    <p align="right">
+                        <lightning-button variant="netural" label="Cancel" onclick={closeHandleAccountModel} icon-name="utility:close"></lightning-button>&nbsp;
+                        <lightning-button variant="brand" label="Save" onclick={handleAccountChange} icon-name="utility:save"></lightning-button>&nbsp;
+                    </p>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{label.Change_Competitors}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template lwc:if={showLoading}>
+                        <lightning-spinner alternative-text="Loading..." size="medium" class="spinnerClass"></lightning-spinner>
+                    </template>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <c-custom-lookup-competitor icon-name="standard:picklist_choice" s-object-api-name="account" label="First Competitor Local Name" placeholder="Search" id="form-input-1" onlookupupdate={handleLookupSelectCompValue} default-record-id={FirstCompLocalName}>
+                            </c-custom-lookup-competitor>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <c-cust-lookup-competitor-2 icon-name="standard:picklist_choice" s-object-api-name="account" label="Second Competitor Local Name" placeholder="Search" id="form-comp-2" onlookupupdate={hadleLookupSelectCompValue2} default-record-id={SecondCompLocalName}>
+                            </c-cust-lookup-competitor-2>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1"><lightning-input type="text" onchange={handleChangeCompetitor} name="form-input-2" id="form-input-2" data-my-id="form-input-2" class="slds-hide" value={defaultValue}></lightning-input></div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1"><lightning-input type="text" onchange={handleChange2Competitor} name="form-input-3" id="form-input-3" data-my-id="form-input-3" class="slds-hide"></lightning-input></div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">&nbsp;</div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-left_medium slds-m-top_medium slds-m-bottom_medium slds-m-right_medium">
+                        <div class="slds-col slds-size_1-of-1">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <p align="right">
+                        <lightning-button variant="netural" label="Cancel" onclick={closeModal} icon-name="utility:close"></lightning-button>&nbsp;
+                        <lightning-button variant="brand" label="Save" onclick={handleUpdateCompetitor} icon-name="utility:save"></lightning-button>&nbsp;
+                    </p>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

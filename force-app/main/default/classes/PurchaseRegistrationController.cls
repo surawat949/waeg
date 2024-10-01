@@ -363,7 +363,7 @@ public static List<Purchase_Registration__c> GetWinnerList(Boolean all, String c
                         message.setFileAttachments(new Messaging.EmailFileAttachment[]{attach1});
                         
                          //setting from address
-                         OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where Address = 'do_not_reply@seikovision.com'];
+                         OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where Address = 'salesforce@hoya.eu'];
                            if ( owea.size() > 0 ) { 
                                 message.setOrgWideEmailAddressId(owea.get(0).Id);
                             } 

@@ -1,27 +1,9 @@
-import { LightningElement, wire ,track} from 'lwc';
+import { LightningElement, wire ,track,api} from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getLifeCycleRecords from '@salesforce/apex/LifeCycleReportingController.getAccountLifeCycleRecords';
 import getAccountLifeCycleRecordsUpdated from '@salesforce/apex/LifeCycleReportingController.getAccountLifeCycleRecordsUpdated';
-import getSalesManagerList from '@salesforce/apex/CustomerReviewFilterHandler.getSalesManagerList';
-import getRepresentativeList from '@salesforce/apex/CustomerReviewFilterHandler.getRepresentativeList';
-import getASMManager from '@salesforce/apex/CustomerReviewFilterHandler.getASMManager';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
-import SALES_ROLE_FIELD from '@salesforce/schema/User.Sales_Role__c';
-import PROFILE_NAME_FIELD from '@salesforce/schema/User.Profile.Name';
-import USER_COMPANYNAME_FIELD from '@salesforce/schema/User.CompanyName';
-import USER_NAME_FIELD from '@salesforce/schema/User.Name';
-import PROFILE_ID_FIELD from '@salesforce/schema/User.ProfileId';
-const FIELDS = [SALES_ROLE_FIELD,PROFILE_NAME_FIELD,USER_COMPANYNAME_FIELD,PROFILE_ID_FIELD,USER_NAME_FIELD];
 
 //Custom Labels for Filters
-import Filter from '@salesforce/label/c.Filter';
-import Select_Company from '@salesforce/label/c.Select_Company';
-import Select_Sales_Manager from '@salesforce/label/c.Select_Sales_Manager';
-import Representative from '@salesforce/label/c.Representative';
-import Company from '@salesforce/label/c.Company';
-import Sales_Manager from '@salesforce/label/c.Sales_Manager';
-import Select_Representative from '@salesforce/label/c.Select_Representative';
 import Visit_Zone from '@salesforce/label/c.Tacticom';
 import Segmentation from '@salesforce/label/c.SFDC_V_2_MVC_ContactRef_Segment';
 import Channel from '@salesforce/label/c.Channel';
@@ -33,7 +15,7 @@ import CustomerReviewActivityModal from '@salesforce/label/c.CustomerReviewActiv
 import Note from '@salesforce/label/c.Note';
 //New Filter UI Update
 import CustomerReviewChartWarning from '@salesforce/label/c.CustomerReviewChartWarning';
-import Consolidation_Team_Performance from '@salesforce/label/c.Consolidation_Team_Performance';
+import Consolidation_Team_Performance from '@salesforce/label/c.Consolidate_Team_Activity';
 
 export default class LifeCycleReporting extends LightningElement  {
     @track isChartsVisible = false;
@@ -54,10 +36,14 @@ export default class LifeCycleReporting extends LightningElement  {
     @track isTeamPerformanceChecked = false;
     @track isTeamPerformanceDisabled = true;
     @track repUserRecord = {};
-
+    renderedCallback() {
+        const divElement = this.template.querySelector('.customLabelContainer');
+        if (divElement) {
+            divElement.innerHTML =CustomerReviewActivityModal; // Set the custom label's HTML
+        }
+    }
     custLabel = {
-        Filter,Select_Company,Select_Sales_Manager,Visit_Zone,Segmentation,CloseButton,
-        Representative,Company,Sales_Manager,Select_Representative,Channel,CustomerReviewChartWarning,
+        Visit_Zone,Segmentation,CloseButton,Channel,CustomerReviewChartWarning,
         Strategic_Value_Net,Lenses_Net_Sales_L12Mo,Okay,CustomerReviewActivityModal,Note,
         Consolidation_Team_Performance    //New Filter UI Update
     }
@@ -65,50 +51,9 @@ export default class LifeCycleReporting extends LightningElement  {
     //New Filter UI Update
     handleCheckboxEvents(event){
         this.isTeamPerformanceChecked = event.target.checked;
-        this.fetchAccountRecords();
+        this.fetchAccountRecords(this.isTeamPerformanceChecked);
     }
 
-    @wire(getRecord, { recordId: USER_ID, fields: FIELDS })
-    wiredUser({ error, data }) {
-        if (data) {
-            this.currentUserRole = data.fields.Sales_Role__c.value;
-            this.profileId = getFieldValue(data, PROFILE_ID_FIELD);
-            this.currentUserProfile = getFieldValue(data, PROFILE_NAME_FIELD);
-            this.currentUserCompany = getFieldValue(data, USER_COMPANYNAME_FIELD);
-            this.currentUserName = getFieldValue(data, USER_NAME_FIELD);
-            // Logic based on user role and profile
-            if (this.currentUserProfile === 'SFDC LOCAL ADMIN') {
-                this.loadSalesManagerOptions();
-            } else if (this.currentUserRole === 'ASM' || this.currentUserRole === 'AMS' || this.currentUserRole === 'KAM') {
-                this.isASM = true;
-                this.setASMManager();
-            } else if (this.profileId !== '00eb0000000lainAAA') {
-                this.loadSalesManagerOptions();
-            }  
-            this.fetchAccountRecords();
-        } else if (error) {
-            this.showToast('Error','Error fetching user data: '+e.message,'error');
-        }
-    }
-    // Set ASM manager details
-    setASMManager() {
-        getASMManager()
-            .then(manager => {
-                this.selectedManagerValue = manager.Id;
-                this.SalesManagerList = [{ label: manager.Name, value: manager.Id }];
-                this.isRepresentativeDisabled = false;
-                this.isTeamPerformanceDisabled = true;
-                this.loadRepresentativeOptionsForASM();
-            })
-            .catch(error => {
-                this.showToast('Error','An error occurred during fetching manager ==>'+error.message,'error');
-            });
-    }
-    // Load representative options for ASM role
-    loadRepresentativeOptionsForASM() {
-        // For ASM, the representative should only be the ASM themselves
-        this.OwnerList = [{ label: this.currentUserName, value: this.currentUserId }];
-    }
     showModalBox() {  
         this.isShowModal = true;
     }
@@ -120,7 +65,7 @@ export default class LifeCycleReporting extends LightningElement  {
     records;
     recordsMaster;
     stageList;
-    pickVals;
+    pickVals = []; // This will hold the array of values
     stageMap;
     recordId;
     accountStats;
@@ -160,43 +105,19 @@ export default class LifeCycleReporting extends LightningElement  {
         { label: 'C3', value: 'C3' }
     ];
     
-    get buttonLabel() {
-        return this.showFilters ? 'Hide Filters' : 'Show Filters';
-    }
-    
     fetchAccountRecords() {
         this.showSpinner = true;
-        getAccountLifeCycleRecordsUpdated({isConsolidatedDataNeeded : this.isTeamPerformanceChecked})
+        getAccountLifeCycleRecordsUpdated({
+            isConsolidatedDataNeeded : this.isTeamPerformanceChecked,
+            selectedUserId : this.selectedOwnerValue
+        })
         .then(result => {
             this.recordsMaster = result.lifeCycleWrapperList;
             this.pickVals = result.pickVals;
             this.accountStats = result.accountStatsMap;
             this.visitflagMap = result.visitFlagMap;
             this.lensesnetsalesl12mo = result.sowL12MoMap;
-            this.taskstats = result.taskStatusMap;
-            if (this.currentUserRole === 'ASM' || this.currentUserRole === 'AMS' || this.currentUserRole === 'KAM'){
-                this.isSalesManagerDisabled = true;
-            }else{
-                this.isSalesManagerDisabled = false;
-                this.OwnerList = [
-                    { label: 'No Filter', value: 'No Filter' },  // Add this entry as the first item
-                    ...result.ownerNameList.map(user => ({
-                        Sales_Role__c: user.Sales_Role__c,
-                        label: user.Name,
-                        value: user.Id
-                    }))
-                ];
-                this.SalesManagerListOne = result.salesManagerList.map(option => ({ label: option, value: option }));
-                //this.SalesManagerList = result.managerList.map(option => ({ label: option, value: option }));
-                this.SalesManagerList = [
-                    { label: 'No Filter', value: 'No Filter' },  // Add this entry as the first item
-                    ...result.managerList.map(user => ({
-                        label: user.Name,
-                        value: user.Id
-                    }))
-                ];
-            }
-            
+            this.taskstats = result.taskStatusMap;         
             this.accountCompanyList = result.accountCompanyList.map(option => ({ label: option, value: option }));
             this.TacticomList = result.TacticomList.map(option => ({ label: option, value: option })); 
             this.filteredRecords();
@@ -213,7 +134,8 @@ export default class LifeCycleReporting extends LightningElement  {
             let tempPickList  = JSON.parse(JSON.stringify(this.pickVals));
             try{
                 for (let account of tempPickList){
-                    account['summation'] = this.convertToBrowserLocale(account['summation'],account.accountCurrency);
+                    let cleanedValue = String(account['summation']).replace(/,/g, '');
+                    account['summation'] = this.convertToBrowserLocale(parseFloat(cleanedValue),account.accountCurrency);
                 }
             }catch(e){
                 this.showToast('Error','An error was occurred during stage count==>'+e.message,'error');
@@ -249,46 +171,37 @@ export default class LifeCycleReporting extends LightningElement  {
         let len = this.pickVals.length
         return `width: calc(100%/ ${len})`
     }
-    
-    @track isSlideVisible = true;
 
-    get buttonContainerClass() {
-        return this.isSlideVisible ? 'button-container slide-out' : 'button-container slide-in';
-    }
-
-    toggleSlide() {
-        this.isSlideVisible = !this.isSlideVisible;
-    }
-
-    handleSalesManagerChange(event) {
-        this.selectedManagerValue = event.detail.value;
-        this.OwnerList = '';
-        if(this.selectedManagerValue == 'No Filter' || this.selectedManagerValue == ''){
-            this.isRepresentativeDisabled = true;
-            this.selectedOwnerValue='';
-            this.selectedManagerValue = '';
-            this.filteredRecords();
+    @api 
+    set representativeId(val){
+        this.selectedOwnerValue = val;
+        this.isTeamPerformanceChecked = false;
+        if(this.selectedOwnerValue != undefined && this.selectedOwnerValue != null){
+            this.isRepresentativeDisabled = false;
+            this.fetchAccountRecords(this.isTeamPerformanceChecked);
         }else{
-            this.loadRepresentativeOptions();
+            this.recordsMaster = [];
+            this.records = this.recordsMaster;
+            this.pickVals = {};
+            this.filteredRecords;
         }
     }
-    handleAOChange(event) {
-        this.selectedOwnerValue = event.detail.value;
-        let matchingRecord = this.OwnerList.find(record => record.value === this.selectedOwnerValue);  
-        if(this.selectedOwnerValue == 'No Filter'){
-            this.selectedOwnerValue = '';
-        } 
-        let representativeRole = matchingRecord.Sales_Role__c; 
-        if(representativeRole === 'NSM' || representativeRole === 'RSM' || representativeRole === 'RMS' || representativeRole === 'NMS'){
-            this.isTeamPerformanceDisabled = false;
-            this.isTeamPerformanceChecked = false;
-            this.fetchAccountRecords(true);
-        }else{
-            this.isTeamPerformanceDisabled = true;
-            this.isTeamPerformanceChecked = false;
-            this.fetchAccountRecords(false);
-        }
-        this.filteredRecords();
+
+    // Check if pickVals has items
+    get hasPickVals() {
+        return this.pickVals && this.pickVals.length > 0;
+    }
+    get representativeId(){
+        return this.selectedRepresentativeId;
+    }
+
+    @api 
+    set consolidationDisabled(val){
+        this.isTeamPerformanceDisabled = val;
+    }
+
+    get consolidationDisabled(){
+        return this.isTeamPerformanceDisabled;
     }
     handleSegmentationChange(event) {
         this.selectedSegmentationValue = event.detail.value;
@@ -311,93 +224,41 @@ export default class LifeCycleReporting extends LightningElement  {
         }
         this.filteredRecords();
     }
-    handleCommpanyChange(event) {
-        this.selectedCompanyValue = event.detail.value;
-        this.isRepresentativeDisabled = true;
-        if(this.selectedCompanyValue == 'No Filter' || this.selectedCompanyValue == ''){
-            this.selectedCompanyValue = '';
-            this.selectedOwnerValue='';
-            this.SalesManagerList = this.SalesManagerListOne;
-            this.OwnerList = this.OwnerList;
-        }else{
-            this.selectedManagerValue = '';
-        }
-        this.OwnerList = '';
-        this.loadSalesManagerOptions();
-    }
-    loadSalesManagerOptions() {
-        getSalesManagerList({ companyName: this.selectedCompanyValue })
-            .then(data => {
-                this.isSalesManagerDisabled = false;
-                this.SalesManagerList = [
-                    { label: 'No Filter', value: '' }  // Add this entry as the first item
-                ].concat(
-                    data.map(user => ({
-                        label: user.Name,
-                        value: user.Id
-                    }))
-                );                
-            })
-            .catch(error => {
-                this.showToast('Error','An error occurred during fetching manager ==>'+error.message,'error');
-            });
-    }
-    // Load representative options based on selected sales manager
-    loadRepresentativeOptions() {
-        getRepresentativeList({ selectedManagerId: this.selectedManagerValue })
-            .then(data => {
-                this.isRepresentativeDisabled = false;
-                this.OwnerList = [
-                    { label: 'No Filter', value: '' }  // Add this entry as the first item
-                ].concat(
-                    data
-                        .map(user => ({
-                            Sales_Role__c: user.Sales_Role__c,
-                            label: user.Name,
-                            value: user.Id
-                        }))
-                );
-                this.selectedOwnerValue='';
-            })
-            .catch(error => {
-                this.showToast('Error','An error occurred during fetching representatives==>'+error.message,'error');
-            });
-    }
     filteredRecords() {
-        if (this.selectedOwnerValue == '' && this.selectedSegmentationValue == '' && this.selectedTacticomValue == '' && this.selectedChannelValue == '' && this.selectedCompanyValue =='' && this.selectedManagerValue =='') {
-            this.records = this.recordsMaster;
-            if (['ASM', 'KAM', 'AMS'].includes(this.currentUserRole) && this.profileId !== '00eb0000000lainAAA' && this.currentUserProfile !== 'SFDC LOCAL ADMIN') {
-                this.records = this.recordsMaster.filter(record => {
-                    return record.Account__r.Owner.Id === this.currentUserId;
-                });
-            }            
-        } else {
-            let filteredRecords = this.recordsMaster.filter(record => { 
-                // Check if the record matches selected filter values
-                let matches = (!this.selectedOwnerValue || record.Account__r.Owner.Id === this.selectedOwnerValue) &&
-                              (!this.selectedSegmentationValue || record.Segmentation__c === this.selectedSegmentationValue) &&
-                              (!this.selectedTacticomValue || record.Tacticom__c === this.selectedTacticomValue) &&
-                              (!this.selectedChannelValue || record.Account__r.CHCUSTCLASSIFICATIONID__c === this.selectedChannelValue) &&
-                              (!this.selectedCompanyValue || record.Account__r.Account_Owner_Company__c === this.selectedCompanyValue);
-
-                // Additional check for roles ASM, KAM, AMS
+        if(this.recordsMaster && this.recordsMaster.length>0){
+            if (!this.selectedOwnerValue && this.selectedSegmentationValue == '' && this.selectedTacticomValue == '' && this.selectedChannelValue == '' && this.selectedCompanyValue =='' && this.selectedManagerValue =='') {
+                this.records = this.recordsMaster;
                 if (['ASM', 'KAM', 'AMS'].includes(this.currentUserRole) && this.profileId !== '00eb0000000lainAAA' && this.currentUserProfile !== 'SFDC LOCAL ADMIN') {
-                    return matches && record.Account__r.Owner.Id === this.currentUserId;
-                }
+                    this.records = this.recordsMaster.filter(record => {
+                        return record.Account__r.Owner.Id === this.currentUserId;
+                    });
+                }            
+            } else {
+                let filteredRecords = this.recordsMaster.filter(record => { 
+                    // Check if the record matches selected filter values
+                    let matches = (!this.selectedSegmentationValue || record.Segmentation__c === this.selectedSegmentationValue) &&
+                                (!this.selectedTacticomValue || record.Tacticom__c === this.selectedTacticomValue) &&
+                                (!this.selectedChannelValue || record.Account__r.CHCUSTCLASSIFICATIONID__c === this.selectedChannelValue);
 
-                return matches;
-            });
-            this.records = filteredRecords;
-        }
-        this.checkCountryCurrencyCodes();
-        this.revalidateStageCount();
-        this.calculateDataForCharts();
-        this.handleCallChildMethodInParent();
-        if(this.isCurrencyCodeSame == false){
-            this.firstComponentClass = 'full-width';
-            this.secondComponentClass = 'hidden';
-            this.isBarChartDataReceived=false;
-            this.isChartVisible = false;
+                    // Additional check for roles ASM, KAM, AMS
+                    if (['ASM', 'KAM', 'AMS'].includes(this.currentUserRole) && this.profileId !== '00eb0000000lainAAA' && this.currentUserProfile !== 'SFDC LOCAL ADMIN') {
+                        return matches && record.Account__r.Owner.Id === this.currentUserId;
+                    }
+
+                    return matches;
+                });
+                this.records = filteredRecords;
+            }
+            this.checkCountryCurrencyCodes();
+            this.revalidateStageCount();
+            this.calculateDataForCharts();
+            this.handleCallChildMethodInParent();
+            if(this.isCurrencyCodeSame == false){
+                this.firstComponentClass = 'full-width';
+                this.secondComponentClass = 'hidden';
+                this.isBarChartDataReceived=false;
+                this.isChartVisible = false;
+            }
         }
     }
     initializeStageMap(records) {
